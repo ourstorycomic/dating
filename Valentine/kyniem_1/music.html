@@ -1,0 +1,32 @@
+<script>
+    // Danh sách các bài nhạc (đường dẫn tương đối)
+    const songs = [
+        "./sound/Dam-Cuoi-Nha.mp3",
+        "./sound/Chi-Muon-Ben-Em-That-Gan.mp3",
+        "./sound/MatMoc.mp3",
+        "./sound/See-Tinh.mp3",
+        "./sound/Yeu5.mp3"
+    ];
+
+    // Random 1 bài
+    const randomIndex = Math.floor(Math.random() * songs.length);
+    const selectedSong = songs[randomIndex];
+</script>
+
+<audio id="backgroundMusic" autoplay loop>
+    <source id="musicSource" src="" type="audio/mp3">
+</audio>
+<script>
+    // Gán src cho audio
+    document.getElementById('musicSource').src = selectedSong;
+
+    // Đảm bảo phát nhạc khi có tương tác
+    const music = document.getElementById('backgroundMusic');
+    const playMusic = () => {
+        music.play();
+        document.removeEventListener('click', playMusic);
+        document.removeEventListener('touchstart', playMusic);
+    };
+    document.addEventListener('click', playMusic);
+    document.addEventListener('touchstart', playMusic);
+</script>

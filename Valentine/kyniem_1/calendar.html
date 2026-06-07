@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Love Journey</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #fff5f7;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background-color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 18px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #e75480;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #ffeef2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(231, 84, 128, 0.4);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .title {
+            color: #e75480;
+            font-size: 28px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            color: #e75480;
+            font-size: 14px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .heart-icon {
+            color: #e75480;
+            font-size: 30px;
+            margin: 10px 0;
+            animation: pulse 1.5s infinite;
+        }
+
+        .photo-container {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .photo-container:hover {
+            transform: scale(1.05);
+        }
+
+        .photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid #e75480;
+            box-shadow: 0 5px 15px rgba(231, 84, 128, 0.4);
+        }
+
+        .click-heart {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background-color: white;
+            color: #e75480;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            animation: bounce 1s infinite alternate;
+        }
+
+        .counter-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .counter-box {
+            background-color: white;
+            border-radius: 10px;
+            padding: 10px 15px;
+            min-width: 50px;
+            box-shadow: 0 4px 8px rgba(231, 84, 128, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .counter-number {
+            color: #e75480;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .counter-label {
+            color: #e75480;
+            font-size: 12px;
+            margin-top: 5px;
+            opacity: 0.8;
+        }
+
+        .love-message {
+            margin: 20px 0;
+            color: #e75480;
+            font-size: 16px;
+        }
+
+        .heart-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 10px;
+            color: #e75480;
+            font-size: 14px;
+        }
+
+        .small-heart {
+            color: #e75480;
+            font-size: 14px;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes bounce {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(-5px);
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            .counter-container {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            
+            .counter-box {
+                padding: 8px 12px;
+                min-width: 40px;
+            }
+            
+            .counter-number {
+                font-size: 20px;
+            }
+            
+            .counter-label {
+                font-size: 10px;
+            }
+            
+            .title {
+                font-size: 24px;
+            }
+            
+            .subtitle {
+                font-size: 12px;
+            }
+            
+            .photo-container {
+                width: 150px;
+                height: 150px;
+            }
+        }
+        
+        .thai-subtitle {
+            color: #e75480;
+            font-size: 14px;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        
+        .love-counter {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+        }
+        
+        .kiss-icon {
+            color: #e75480;
+            font-size: 16px;
+            margin: 0 5px;
+        }
+        
+        .corner-dog {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            width: 80px;
+            height: 80px;
+            z-index: 100;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .corner-dog:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Love Year Modal */
+        .love-year-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(240, 240, 240, 0.8);
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from {opacity: 0}
+            to {opacity: 1}
+        }
+        
+        .love-year-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            width: 90%;
+            max-width: 900px;
+            border-radius: 15px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        
+        .love-year-title {
+            color: #e75480;
+            font-size: 28px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .love-year-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+        
+        .month-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .month-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .month-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            aspect-ratio: 1/1;
+        }
+        
+        .month-image:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(231, 84, 128, 0.4);
+        }
+        
+        .month-name {
+            margin-top: 12px;
+            color: #e75480;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .close-love-year {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: #e75480;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        @media screen and (max-width: 600px) {
+            .love-year-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+            
+            .love-year-content {
+                padding: 20px;
+                margin: 10% auto;
+                width: 85%;
+                max-height: 80vh;
+            }
+            
+            .month-image {
+                height: 120px;
+            }
+            
+            .month-name {
+                font-size: 14px;
+            }
+            
+            .love-year-title {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+            
+            .close-love-year {
+                top: 10px;
+                right: 15px;
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="location.href='./selecter.html'">
+        ← Back
+    </button>
+    
+    <img src="./image/moments/dog.png" alt="Cute Dog" class="corner-dog">
+    
+    <div class="container">
+        <h1 class="title">Our Love Journey</h1>
+        <p class="thai-subtitle">How long have we been in love, honey?</p>
+        
+        <div class="heart-icon">❤️</div>
+        
+        <div class="photo-container" id="photoContainer" onclick="openLoveYearModal()">
+            <img src="./image/moments/quanghan_nhuocnam (7).jpg" alt="Our Photo" class="photo">
+            <div class="click-heart">❤️</div>
+        </div>
+        
+        <div class="counter-container">
+            <div class="counter-box">
+                <div class="counter-number" id="years">01</div>
+                <div class="counter-label">Years</div>
+            </div>
+            <div class="counter-box">
+                <div class="counter-number" id="months">00</div>
+                <div class="counter-label">Months</div>
+            </div>
+            <div class="counter-box">
+                <div class="counter-number" id="days">15</div>
+                <div class="counter-label">Days</div>
+            </div>
+            <div class="counter-box">
+                <div class="counter-number" id="hours">14</div>
+                <div class="counter-label">Hours</div>
+            </div>
+            <div class="counter-box">
+                <div class="counter-number" id="minutes">55</div>
+                <div class="counter-label">Minutes</div>
+            </div>
+            <div class="counter-box">
+                <div class="counter-number" id="seconds">08</div>
+                <div class="counter-label">Seconds</div>
+            </div>
+        </div>
+        
+        <div class="love-message">We've been in love for...</div>
+        
+        <div class="love-counter">
+            <div>
+                <span class="kiss-icon">💋</span>
+                <span id="kissCount">5000</span>
+                <span class="kiss-icon">💋</span>
+            </div>
+        </div>
+        
+        <div class="heart-footer">
+            <span class="small-heart">❤️</span>
+            <span>Forever Yours</span>
+            <span class="small-heart">❤️</span>
+        </div>
+    </div>
+    
+    <!-- Love Year Modal -->
+    <div id="loveYearModal" class="love-year-modal">
+        <div class="love-year-content">
+            <span class="close-love-year" onclick="closeLoveYearModal()">&times;</span>
+            <h2 class="love-year-title">Our Love Year</h2>
+            <div class="love-year-grid">
+                <div class="month-item">
+                    <img src="./image/moments/moment1.jpg" alt="January" class="month-image">
+                    <div class="month-name">January</div>
+                </div>
+                <div class="month-item">
+                    <img src="./image/moments/moment2.jpg" alt="February" class="month-image">
+                    <div class="month-name">February</div>
+                </div>
+                <div class="month-item">
+                    <img src="./image/moments/moment3.jpg" alt="March" class="month-image">
+                    <div class="month-name">March</div>
+                </div>
+                <div class="month-item">
+                    <img src="./image/moments/moment4.jpg" alt="April" class="month-image">
+                    <div class="month-name">April</div>
+                </div>
+                <div class="month-item">
+                    <img src="./image/moments/moment5.jpg" alt="May" class="month-image">
+                    <div class="month-name">May</div>
+                </div>
+                <div class="month-item">
+                    <img src="./image/moments/moment6.jpg" alt="June" class="month-image">
+                    <div class="month-name">June</div>
+                </div>
+                <div class="month-item">
+                    <img src="./image/moments/moment1.jpg" alt="July" class="month-image">
+                    <div class="month-name">July</div>
+                </div>
+                <div class="month-item">
+                    <img src="./image/moments/moment2.jpg" alt="August" class="month-image">
+                    <div class="month-name">August</div>
+                </div>
+                <div class="month-item">
+                    <img src="./image/moments/moment3.jpg" alt="September" class="month-image">
+                    <div class="month-name">September</div>
+                </div>
+                <div class="month-item">
+                    <img src="./image/moments/moment4.jpg" alt="October" class="month-image">
+                    <div class="month-name">October</div>
+                </div>
+                <div class="month-item">
+                    <img src="./image/moments/moment5.jpg" alt="November" class="month-image">
+                    <div class="month-name">November</div>
+                </div>
+                <div class="month-item">
+                    <img src="./image/moments/moment6.jpg" alt="December" class="month-image">
+                    <div class="month-name">December</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Set the date we're counting from (January 31, 2023)
+        const loveStartDate = new Date('2023-01-31T00:00:00');
+        
+        function updateCounter() {
+            const now = new Date();
+            const difference = now - loveStartDate;
+            
+            const years = Math.floor(difference / (1000 * 60 * 60 * 24 * 365));
+            const months = Math.floor((difference % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30.44));
+            const days = Math.floor((difference % (1000 * 60 * 60 * 24 * 30.44)) / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+            
+            document.getElementById('years').textContent = years.toString().padStart(2, '0');
+            document.getElementById('months').textContent = months.toString().padStart(2, '0');
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            
+            // Calculate kiss count based on time (just for fun)
+            const totalDays = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const kissCount = totalDays * 10 + 3000; // Assuming 10 kisses per day plus initial 3000
+            document.getElementById('kissCount').textContent = kissCount;
+        }
+        
+        // Update the counter every second
+        setInterval(updateCounter, 1000);
+        updateCounter(); // Initial update
+        
+        // Functions to open and close the Love Year Modal
+        function openLoveYearModal() {
+            document.getElementById('loveYearModal').style.display = 'block';
+        }
+        
+        function closeLoveYearModal() {
+            document.getElementById('loveYearModal').style.display = 'none';
+        }
+    </script>
+    
+<iframe src="./music.html" style="display:none;" allow="autoplay"></iframe>
+</body>
+</html>

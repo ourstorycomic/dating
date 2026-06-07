@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Không Gian Tình Yêu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #ffb6c1, #ff69b4, #ff1493);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            overflow: hidden;
+            color: #333;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 32px 0 rgba(255, 105, 180, 0.37);
+        }
+
+        /* Animations */
+        .fade-in { animation: fadeIn 0.8s ease-in-out forwards; }
+        .fade-out { animation: fadeOut 0.5s ease-in-out forwards; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+
+        .heartbeat {
+            animation: heartBeat 1.5s infinite;
+        }
+
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.1); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.1); }
+            70% { transform: scale(1); }
+        }
+
+        /* Custom Range Slider */
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%; background: #ff1493; cursor: pointer; margin-top: -4px; box-shadow: 0 0 5px rgba(255, 20, 147, 0.5); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: rgba(255, 255, 255, 0.6); border-radius: 2px; }
+        
+        .spin-slow { animation: spin 8s linear infinite; }
+        .spin-paused { animation-play-state: paused; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        #particle-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        .letter-font { font-family: 'Dancing Script', cursive; }
+        .menu-item:hover { transform: scale(1.05); box-shadow: 0 10px 25px rgba(255, 20, 147, 0.4); }
+        
+        /* Floating background hearts */
+        .bg-heart { position: absolute; color: rgba(255, 255, 255, 0.2); animation: floatUp 10s linear infinite; z-index: -2; }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg) scale(0.8); opacity: 0; }
+            20% { opacity: 0.5; }
+            80% { opacity: 0.5; }
+            100% { transform: translateY(-20vh) rotate(360deg) scale(1.2); opacity: 0; }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 105, 180, 0.6); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 20, 147, 0.9); }
+        html { scroll-behavior: smooth; }
+
+        /* --- Intro Animation & Text --- */
+        #intro-screen {
+            position: fixed; inset: 0;
+            background: linear-gradient(135deg, #ffe6f2, #ffb3d9, #ff99cc);
+            z-index: 9999;
+            transition: opacity 1.5s ease-in-out, visibility 1.5s ease-in-out;
+        }
+        .intro-hidden { opacity: 0; visibility: hidden; }
+        
+        .intro-text-1 {
+            font-family: 'Poppins', sans-serif; font-size: 1.2rem; letter-spacing: 0.2em;
+            color: #d81b60; text-transform: uppercase; font-weight: 500;
+            opacity: 0; animation: slideUpFade 1.2s ease-out 0.5s forwards; text-align: center;
+        }
+        .intro-text-2 {
+            font-family: 'Dancing Script', cursive; font-size: 4.5rem;
+            color: #ff1493; text-shadow: 0px 4px 15px rgba(255, 20, 147, 0.3);
+            opacity: 0; animation: slideUpFade 1.2s ease-out 1.5s forwards; margin-top: 0.5rem; text-align: center; line-height: 1.2;
+        }
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Intro Image Placeholder (Khung ảnh ở giữa) --- */
+        .intro-image-container {
+            position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%);
+            width: 180px; height: 180px; border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 25px rgba(255, 105, 180, 0.6), inset 0 0 10px rgba(0,0,0,0.2);
+            overflow: hidden; opacity: 0; z-index: 15;
+            animation: zoomInImage 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) 2.2s forwards; /* Xuất hiện sau chữ */
+        }
+        .intro-image-container img { width: 100%; height: 100%; object-fit: cover; }
+        @keyframes zoomInImage { from { opacity: 0; transform: translate(-50%, -50%) scale(0.3); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+
+        /* --- BIG BOUQUET ANIMATION (Nở sau Text) --- */
+        .beautiful-bouquet {
+            position: absolute; bottom: 5vh; left: 50%; transform: translateX(-50%);
+            width: 320px; height: 420px;
+            z-index: 10; pointer-events: none;
+        }
+
+        /* Giấy gói phía sau */
+        .wrap-back {
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 260px; height: 280px;
+            background: linear-gradient(to bottom, #fdf2f8, #fce7f3);
+            border: 3px solid #fbcfe8;
+            clip-path: polygon(0 0, 100% 0, 65% 100%, 35% 100%);
+            border-radius: 20px 20px 0 0;
+            opacity: 0;
+            animation: fadeInWrap 1s 2.8s forwards; /* Hiện sau chữ */
+        }
+        @keyframes fadeInWrap { from { opacity: 0; transform: translateX(-50%) translateY(30px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+        /* Giấy gói phía trước (Gập lên) */
+        .wrap-front {
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 130px; height: 120px;
+            background: linear-gradient(to top, #f9a8d4, #fbcfe8);
+            clip-path: polygon(0 0, 100% 0, 60% 100%, 40% 100%);
+            opacity: 0; z-index: 20;
+            border-top: 2px solid rgba(255,255,255,0.7);
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+            animation: foldFront 0.8s 4.8s forwards;
+        }
+        @keyframes foldFront { from { opacity: 0; transform: translateX(-50%) rotateX(-90deg); transform-origin: bottom; } to { opacity: 1; transform: translateX(-50%) rotateX(0); } }
+
+        /* Nơ trang trí (Bow) */
+        .bow {
+            position: absolute; bottom: 95px; left: 50%; transform: translateX(-50%) scale(0);
+            width: 30px; height: 30px;
+            background: #db2777; border-radius: 50%; z-index: 25;
+            animation: popBow 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 5.2s forwards;
+            box-shadow: inset -3px -3px 5px rgba(0,0,0,0.2), 0 5px 10px rgba(0,0,0,0.2);
+        }
+        .bow::before, .bow::after {
+            content: ''; position: absolute; top: 2px;
+            width: 45px; height: 28px; background: #ec4899; border-radius: 20px; z-index: -1;
+        }
+        .bow::before { left: -35px; transform: rotate(-15deg); box-shadow: inset 2px -2px 5px rgba(0,0,0,0.1); }
+        .bow::after { right: -35px; transform: rotate(15deg); box-shadow: inset -2px -2px 5px rgba(0,0,0,0.1); }
+        @keyframes popBow { to { transform: translateX(-50%) scale(1); opacity: 1; } }
+
+        /* Hoa (Flowers) & Cành (Stems) */
+        .f-item { position: absolute; bottom: 80px; left: 50%; transform-origin: bottom center; z-index: 15;}
+        .f-stem {
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%) scaleY(0);
+            width: 5px; background: #4ade80; border-radius: 3px; transform-origin: bottom center;
+        }
+        .f-head {
+            position: absolute; left: 50%; transform: translate(-50%, 0) scale(0);
+            width: 40px; height: 50px;
+        }
+        
+        /* Chi tiết cánh hoa */
+        .f-petal-c { position: absolute; width: 100%; height: 100%; border-radius: 50% 50% 40% 40%; z-index: 2; box-shadow: inset -3px -5px 10px rgba(0,0,0,0.1);}
+        .f-petal-l { position: absolute; width: 75%; height: 90%; bottom: 0; left: -15%; border-radius: 50% 40% 40% 50%; transform: rotate(-20deg); z-index: 1; box-shadow: inset 2px -2px 5px rgba(0,0,0,0.1);}
+        .f-petal-r { position: absolute; width: 75%; height: 90%; bottom: 0; right: -15%; border-radius: 40% 50% 50% 40%; transform: rotate(20deg); z-index: 1; box-shadow: inset -2px -2px 5px rgba(0,0,0,0.1);}
+
+        /* Bảng màu hoa */
+        .t-pink .f-petal-c { background: #ff7eb3; } .t-pink .f-petal-l { background: #ff9a9e; } .t-pink .f-petal-r { background: #ff66b2; }
+        .t-red .f-petal-c { background: #f43f5e; } .t-red .f-petal-l { background: #fb7185; } .t-red .f-petal-r { background: #e11d48; }
+        .t-white .f-petal-c { background: #fff0f5; } .t-white .f-petal-l { background: #ffffff; } .t-white .f-petal-r { background: #ffe6f2; }
+        .t-purple .f-petal-c { background: #e879f9; } .t-purple .f-petal-l { background: #f0abfc; } .t-purple .f-petal-r { background: #d946ef; }
+
+        /* Animations Hoa Nở */
+        @keyframes scaleYUp { to { transform: translateX(-50%) scaleY(1); } }
+        @keyframes bloomF { to { transform: translate(-50%, 0) scale(1); } }
+
+        /* Vị trí và thời gian nở 9 bông hoa xếp xung quanh */
+        .f1 { transform: translateX(-50%); z-index: 19;} /* Giữa cao */
+        .f1 .f-stem { height: 210px; animation: scaleYUp 0.8s 3.0s forwards; } 
+        .f1 .f-head { bottom: 205px; animation: bloomF 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) 3.8s forwards; }
+
+        .f2 { transform: translateX(-50%) rotate(-18deg); z-index: 18;} /* Trái 1 */
+        .f2 .f-stem { height: 180px; animation: scaleYUp 0.8s 3.1s forwards; } 
+        .f2 .f-head { bottom: 175px; animation: bloomF 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) 4.0s forwards; }
+
+        .f3 { transform: translateX(-50%) rotate(18deg); z-index: 18;} /* Phải 1 */
+        .f3 .f-stem { height: 185px; animation: scaleYUp 0.8s 3.2s forwards; } 
+        .f3 .f-head { bottom: 180px; animation: bloomF 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) 4.1s forwards; }
+
+        .f4 { transform: translateX(-50%) rotate(-35deg); z-index: 17;} /* Trái xa */
+        .f4 .f-stem { height: 150px; animation: scaleYUp 0.8s 3.3s forwards; } 
+        .f4 .f-head { bottom: 145px; animation: bloomF 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) 4.3s forwards; }
+
+        .f5 { transform: translateX(-50%) rotate(35deg); z-index: 17;} /* Phải xa */
+        .f5 .f-stem { height: 145px; animation: scaleYUp 0.8s 3.4s forwards; } 
+        .f5 .f-head { bottom: 140px; animation: bloomF 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) 4.4s forwards; }
+
+        .f6 { transform: translateX(-50%) rotate(-50deg); z-index: 16;} /* Trái góc thấp */
+        .f6 .f-stem { height: 120px; animation: scaleYUp 0.8s 3.5s forwards; } 
+        .f6 .f-head { bottom: 115px; animation: bloomF 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) 4.6s forwards; }
+
+        .f7 { transform: translateX(-50%) rotate(50deg); z-index: 16;} /* Phải góc thấp */
+        .f7 .f-stem { height: 125px; animation: scaleYUp 0.8s 3.6s forwards; } 
+        .f7 .f-head { bottom: 120px; animation: bloomF 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) 4.7s forwards; }
+
+        .f8 { transform: translateX(-50%) rotate(-8deg); z-index: 20;} /* Cận trái */
+        .f8 .f-stem { height: 160px; animation: scaleYUp 0.8s 3.7s forwards; } 
+        .f8 .f-head { bottom: 155px; animation: bloomF 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) 4.2s forwards; }
+
+        .f9 { transform: translateX(-50%) rotate(8deg); z-index: 20;} /* Cận phải */
+        .f9 .f-stem { height: 155px; animation: scaleYUp 0.8s 3.8s forwards; } 
+        .f9 .f-head { bottom: 150px; animation: bloomF 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) 4.5s forwards; }
+
+
+        /* Hiệu ứng mở phong bì (Thư tình) */
+        @keyframes zoomInFade {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1) rotate(5deg); opacity: 1; }
+            100% { transform: scale(4) rotate(-5deg); opacity: 0; }
+        }
+        .zoom-in-fade { animation: zoomInFade 0.8s forwards ease-in-out; pointer-events: none; }
+        .typing-cursor::after { content: '|'; animation: blink 0.8s step-end infinite; color: #ff69b4; margin-left: 2px; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* --- CSS ENVELOPE ANIMATION --- */
+        .css-envelope { position: relative; width: 160px; height: 110px; background: #fbcfe8; border-radius: 0 0 8px 8px; margin: 0 auto; z-index: 10; }
+        .css-envelope::before { content: ''; position: absolute; bottom: 0; left: 0; border-style: solid; border-width: 55px 80px 55px 80px; border-color: transparent #f472b6 #ec4899 #f472b6; border-radius: 0 0 8px 8px; z-index: 3; pointer-events: none; }
+        .env-flap { position: absolute; top: 0; left: 0; border-style: solid; border-width: 55px 80px 0 80px; border-color: #fbcfe8 transparent transparent transparent; transform-origin: top; z-index: 4; transition: transform 0.5s ease-in-out, z-index 0s 0.25s; }
+        .env-paper { position: absolute; top: 10px; left: 10px; width: 140px; height: 95px; background: #fff; z-index: 2; border-radius: 4px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); transition: transform 0.5s ease-in-out; }
+        .css-envelope.is-open .env-flap { transform: rotateX(180deg); z-index: 1; }
+        .css-envelope.is-open .env-paper { transform: translateY(-60px); transition: transform 0.5s ease-in-out 0.4s; }
+
+        /* --- BỔ SUNG ĐỘ TƯƠNG THÍCH CHO ĐIỆN THOẠI (RESPONSIVE) --- */
+        @media (max-width: 768px) {
+            .intro-text-2 { font-size: 3.2rem; }
+            .intro-text-1 { font-size: 1rem; }
+            .intro-image-container { width: 140px; height: 140px; top: 43%; }
+            .beautiful-bouquet { 
+                transform: translateX(-50%) scale(0.8); 
+                transform-origin: bottom center; 
+                bottom: 2vh; 
+            }
+        }
+        @media (max-height: 700px) {
+            .beautiful-bouquet { 
+                transform: translateX(-50%) scale(0.65); 
+                transform-origin: bottom center; 
+                bottom: -2vh; 
+            }
+            .intro-text-2 { font-size: 2.8rem; }
+            .absolute.top-\[12\%\] { top: 5%; }
+            .intro-image-container { width: 130px; height: 130px; top: 41%; }
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex items-center justify-center relative">
+
+    <!-- 0. MÀN HÌNH GIỚI THIỆU (INTRO) -->
+    <div id="intro-screen">
+        <!-- Chữ cố định phía trên -->
+        <div class="absolute top-[12%] w-full flex flex-col items-center z-20">
+            <h2 class="intro-text-1">Happy Women's Day</h2>
+            <h1 class="intro-text-2">Hồng Thương</h1>
+        </div>
+
+        <!-- Khung ảnh ở giữa -->
+        <div class="intro-image-container">
+            <!-- THAY LINK ẢNH CỦA BẠN VÀO THUỘC TÍNH src BÊN DƯỚI -->
+            <img src="logo.jpg" alt="Hồng Thương">
+        </div>
+
+        <!-- Bó hoa MỚI (Khổng lồ, 9 bông) -->
+        <div class="beautiful-bouquet">
+            <!-- Lớp giấy gói sau -->
+            <div class="wrap-back"></div>
+            
+            <!-- 9 Bông hoa vươn lên xung quanh -->
+            <div class="f-item f1"><div class="f-stem"></div><div class="f-head t-red"><div class="f-petal-l"></div><div class="f-petal-r"></div><div class="f-petal-c"></div></div></div>
+            <div class="f-item f2"><div class="f-stem"></div><div class="f-head t-pink"><div class="f-petal-l"></div><div class="f-petal-r"></div><div class="f-petal-c"></div></div></div>
+            <div class="f-item f3"><div class="f-stem"></div><div class="f-head t-white"><div class="f-petal-l"></div><div class="f-petal-r"></div><div class="f-petal-c"></div></div></div>
+            <div class="f-item f4"><div class="f-stem"></div><div class="f-head t-purple"><div class="f-petal-l"></div><div class="f-petal-r"></div><div class="f-petal-c"></div></div></div>
+            <div class="f-item f5"><div class="f-stem"></div><div class="f-head t-pink"><div class="f-petal-l"></div><div class="f-petal-r"></div><div class="f-petal-c"></div></div></div>
+            <div class="f-item f6"><div class="f-stem"></div><div class="f-head t-white"><div class="f-petal-l"></div><div class="f-petal-r"></div><div class="f-petal-c"></div></div></div>
+            <div class="f-item f7"><div class="f-stem"></div><div class="f-head t-red"><div class="f-petal-l"></div><div class="f-petal-r"></div><div class="f-petal-c"></div></div></div>
+            <div class="f-item f8"><div class="f-stem"></div><div class="f-head t-pink"><div class="f-petal-l"></div><div class="f-petal-r"></div><div class="f-petal-c"></div></div></div>
+            <div class="f-item f9"><div class="f-stem"></div><div class="f-head t-purple"><div class="f-petal-l"></div><div class="f-petal-r"></div><div class="f-petal-c"></div></div></div>
+
+            <!-- Lớp giấy gập phía trước & Nơ -->
+            <div class="wrap-front"></div>
+            <div class="bow"></div>
+        </div>
+    </div>
+
+    <!-- Background Decoration -->
+    <div id="bg-decorations"></div>
+
+    <!-- 1. MÀN HÌNH KHÓA (LOGIN) -->
+    <div id="login-screen" class="glass-panel p-6 rounded-3xl w-[90%] max-w-[320px] text-center relative z-10 transition-all duration-500">
+        <i class="fas fa-heart text-4xl text-white mb-2 heartbeat drop-shadow-lg"></i>
+        <h2 class="text-xl font-bold text-white mb-6 drop-shadow-md">Nhập Mật Khẩu</h2>
+        
+        <!-- Hiển thị 4 dấu chấm PIN -->
+        <div class="flex justify-center gap-4 mb-6" id="pin-display">
+            <div class="w-4 h-4 rounded-full border-2 border-white/80 bg-transparent transition-colors duration-300"></div>
+            <div class="w-4 h-4 rounded-full border-2 border-white/80 bg-transparent transition-colors duration-300"></div>
+            <div class="w-4 h-4 rounded-full border-2 border-white/80 bg-transparent transition-colors duration-300"></div>
+            <div class="w-4 h-4 rounded-full border-2 border-white/80 bg-transparent transition-colors duration-300"></div>
+        </div>
+        <p id="error-msg" class="text-red-500 text-sm mb-4 hidden font-medium bg-white/70 rounded-full py-1">Sai mật khẩu rồi nè!</p>
+
+        <!-- Bàn phím số -->
+        <div class="grid grid-cols-3 gap-3 md:gap-4 mb-2">
+            <button onclick="pressPin(1)" class="w-14 h-14 md:w-16 md:h-16 mx-auto rounded-full bg-white/20 hover:bg-white/40 active:bg-white/60 text-white text-xl md:text-2xl font-semibold transition-all shadow-sm">1</button>
+            <button onclick="pressPin(2)" class="w-14 h-14 md:w-16 md:h-16 mx-auto rounded-full bg-white/20 hover:bg-white/40 active:bg-white/60 text-white text-xl md:text-2xl font-semibold transition-all shadow-sm">2</button>
+            <button onclick="pressPin(3)" class="w-14 h-14 md:w-16 md:h-16 mx-auto rounded-full bg-white/20 hover:bg-white/40 active:bg-white/60 text-white text-xl md:text-2xl font-semibold transition-all shadow-sm">3</button>
+            
+            <button onclick="pressPin(4)" class="w-14 h-14 md:w-16 md:h-16 mx-auto rounded-full bg-white/20 hover:bg-white/40 active:bg-white/60 text-white text-xl md:text-2xl font-semibold transition-all shadow-sm">4</button>
+            <button onclick="pressPin(5)" class="w-14 h-14 md:w-16 md:h-16 mx-auto rounded-full bg-white/20 hover:bg-white/40 active:bg-white/60 text-white text-xl md:text-2xl font-semibold transition-all shadow-sm">5</button>
+            <button onclick="pressPin(6)" class="w-14 h-14 md:w-16 md:h-16 mx-auto rounded-full bg-white/20 hover:bg-white/40 active:bg-white/60 text-white text-xl md:text-2xl font-semibold transition-all shadow-sm">6</button>
+            
+            <button onclick="pressPin(7)" class="w-14 h-14 md:w-16 md:h-16 mx-auto rounded-full bg-white/20 hover:bg-white/40 active:bg-white/60 text-white text-xl md:text-2xl font-semibold transition-all shadow-sm">7</button>
+            <button onclick="pressPin(8)" class="w-14 h-14 md:w-16 md:h-16 mx-auto rounded-full bg-white/20 hover:bg-white/40 active:bg-white/60 text-white text-xl md:text-2xl font-semibold transition-all shadow-sm">8</button>
+            <button onclick="pressPin(9)" class="w-14 h-14 md:w-16 md:h-16 mx-auto rounded-full bg-white/20 hover:bg-white/40 active:bg-white/60 text-white text-xl md:text-2xl font-semibold transition-all shadow-sm">9</button>
+            
+            <div></div> <!-- Khoảng trống -->
+            <button onclick="pressPin(0)" class="w-14 h-14 md:w-16 md:h-16 mx-auto rounded-full bg-white/20 hover:bg-white/40 active:bg-white/60 text-white text-xl md:text-2xl font-semibold transition-all shadow-sm">0</button>
+            <button onclick="deletePin()" class="w-14 h-14 md:w-16 md:h-16 mx-auto rounded-full bg-white/10 hover:bg-white/30 active:bg-white/50 text-white text-lg md:text-xl flex items-center justify-center transition-all shadow-sm">
+                <i class="fas fa-backspace"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. MÀN HÌNH CHÍNH (MAIN MENU) -->
+    <div id="main-screen" class="hidden flex-col items-center justify-center relative z-10 w-full h-full p-4">
+        <h1 class="text-4xl md:text-5xl font-bold text-white mb-6 md:mb-12 drop-shadow-lg text-center letter-font tracking-wide">
+            Không Gian Của Chúng Mình
+        </h1>
+        
+        <!-- ĐÃ TÁCH LÀM 2 GIAO DIỆN RIÊNG BIỆT ĐỂ CHỐNG LỆCH -->
+
+        <!-- === 1. GIAO DIỆN CHO MÁY TÍNH (DESKTOP) === -->
+        <div class="hidden md:flex flex-row justify-center items-center gap-10 w-full max-w-5xl mx-auto">
+            <!-- Nút Trình Phát Nhạc -->
+            <div onclick="openMusicPlayer()" class="menu-item glass-panel w-48 h-48 rounded-3xl flex flex-col items-center justify-center cursor-pointer transition-all duration-300 group">
+                <div class="w-20 h-20 rounded-full bg-white/30 flex items-center justify-center mb-4 group-hover:bg-white/50 transition-colors">
+                    <i class="fas fa-music text-4xl text-pink-600 drop-shadow-md"></i>
+                </div>
+                <span class="text-white font-semibold text-lg drop-shadow-md">Giai Điệu</span>
+            </div>
+
+            <!-- Nút Bức Thư -->
+            <div onclick="openLetterScene()" class="menu-item glass-panel w-48 h-48 rounded-3xl flex flex-col items-center justify-center cursor-pointer transition-all duration-300 group">
+                <div class="w-20 h-20 rounded-full bg-white/30 flex items-center justify-center mb-4 group-hover:bg-white/50 transition-colors">
+                    <i class="fas fa-envelope-open-text text-4xl text-pink-600 drop-shadow-md"></i>
+                </div>
+                <span class="text-white font-semibold text-lg drop-shadow-md">Bức Thư</span>
+            </div>
+
+            <!-- Nút Vòng Quay Đi Chơi -->
+            <div onclick="openWheelModal()" class="menu-item glass-panel w-48 h-48 rounded-3xl flex flex-col items-center justify-center cursor-pointer transition-all duration-300 group">
+                <div class="w-20 h-20 rounded-full bg-white/30 flex items-center justify-center mb-4 group-hover:bg-white/50 transition-colors">
+                    <i class="fas fa-dharmachakra text-4xl text-pink-600 drop-shadow-md group-hover:animate-spin"></i>
+                </div>
+                <span class="text-white font-semibold text-lg drop-shadow-md">Đi Chơi</span>
+            </div>
+
+            <!-- Nút Cào Thưởng (Mới) -->
+            <div onclick="openScratchModal()" class="menu-item glass-panel w-48 h-48 rounded-3xl flex flex-col items-center justify-center cursor-pointer transition-all duration-300 group">
+                <div class="w-20 h-20 rounded-full bg-white/30 flex items-center justify-center mb-4 group-hover:bg-white/50 transition-colors">
+                    <i class="fas fa-gift text-4xl text-pink-600 drop-shadow-md group-hover:animate-bounce"></i>
+                </div>
+                <span class="text-white font-semibold text-lg drop-shadow-md">Quà Tặng</span>
+            </div>
+        </div>
+
+        <!-- === 2. GIAO DIỆN CHO ĐIỆN THOẠI (MOBILE) === -->
+        <div class="grid grid-cols-2 md:hidden gap-4 w-full max-w-[360px] mx-auto px-2 justify-items-center">
+            <!-- Nút Trình Phát Nhạc -->
+            <div onclick="openMusicPlayer()" class="menu-item glass-panel w-full aspect-square rounded-3xl flex flex-col items-center justify-center cursor-pointer transition-all duration-300 group">
+                <div class="w-14 h-14 rounded-full bg-white/30 flex items-center justify-center mb-3 group-hover:bg-white/50 transition-colors">
+                    <i class="fas fa-music text-2xl text-pink-600 drop-shadow-md"></i>
+                </div>
+                <span class="text-white font-semibold text-base drop-shadow-md">Giai Điệu</span>
+            </div>
+
+            <!-- Nút Bức Thư -->
+            <div onclick="openLetterScene()" class="menu-item glass-panel w-full aspect-square rounded-3xl flex flex-col items-center justify-center cursor-pointer transition-all duration-300 group">
+                <div class="w-14 h-14 rounded-full bg-white/30 flex items-center justify-center mb-3 group-hover:bg-white/50 transition-colors">
+                    <i class="fas fa-envelope-open-text text-2xl text-pink-600 drop-shadow-md"></i>
+                </div>
+                <span class="text-white font-semibold text-base drop-shadow-md">Bức Thư</span>
+            </div>
+
+            <!-- Nút Vòng Quay Đi Chơi -->
+            <div onclick="openWheelModal()" class="menu-item glass-panel w-full aspect-square rounded-3xl flex flex-col items-center justify-center cursor-pointer transition-all duration-300 group">
+                <div class="w-14 h-14 rounded-full bg-white/30 flex items-center justify-center mb-3 group-hover:bg-white/50 transition-colors">
+                    <i class="fas fa-dharmachakra text-2xl text-pink-600 drop-shadow-md group-hover:animate-spin"></i>
+                </div>
+                <span class="text-white font-semibold text-base drop-shadow-md">Đi Chơi</span>
+            </div>
+
+            <!-- Nút Cào Thưởng (Mới) -->
+            <div onclick="openScratchModal()" class="menu-item glass-panel w-full aspect-square rounded-3xl flex flex-col items-center justify-center cursor-pointer transition-all duration-300 group">
+                <div class="w-14 h-14 rounded-full bg-white/30 flex items-center justify-center mb-3 group-hover:bg-white/50 transition-colors">
+                    <i class="fas fa-gift text-2xl text-pink-600 drop-shadow-md group-hover:animate-bounce"></i>
+                </div>
+                <span class="text-white font-semibold text-base drop-shadow-md">Quà Tặng</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 3. GIAO DIỆN TRÌNH PHÁT NHẠC -->
+    <div id="music-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+        <div class="glass-panel w-11/12 max-w-sm rounded-3xl p-6 relative">
+            <button onclick="closeMusicPlayer()" class="absolute top-4 right-4 text-white/70 hover:text-white transition-colors">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            
+            <div class="flex justify-center mt-4 mb-8">
+                <div class="relative w-48 h-48 rounded-full shadow-2xl border-4 border-white/20 overflow-hidden">
+                    <img id="album-art" src="https://images.unsplash.com/photo-1518609878373-06d740f60d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Album Art" class="w-full h-full object-cover spin-slow spin-paused">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-12 h-12 bg-pink-200 rounded-full border-4 border-white/50"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mb-6">
+                <h3 id="song-title" class="text-2xl font-bold text-white drop-shadow-md">Ai Ngoài Anh</h3>
+                <p id="song-artist" class="text-pink-100 text-sm">VSTRA</p>
+            </div>
+
+            <div class="mb-6 px-2">
+                <input type="range" id="progress-bar" min="0" max="100" value="0" class="w-full" oninput="seekMusic()">
+                <div class="flex justify-between text-xs text-white/80 mt-2 font-medium">
+                    <span id="current-time">0:00</span>
+                    <span id="total-time">0:00</span>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-center gap-6 mb-6">
+                <button onclick="prevSong()" class="text-white/80 hover:text-white text-xl transition"><i class="fas fa-step-backward"></i></button>
+                <button onclick="togglePlay()" class="w-14 h-14 bg-white text-pink-500 rounded-full flex items-center justify-center text-2xl shadow-lg hover:scale-105 transition-transform">
+                    <i id="play-icon" class="fas fa-play ml-1"></i>
+                </button>
+                <button onclick="nextSong()" class="text-white/80 hover:text-white text-xl transition"><i class="fas fa-step-forward"></i></button>
+            </div>
+
+            <div class="flex items-center gap-3 px-4 text-white/80">
+                <i class="fas fa-volume-down text-sm"></i>
+                <input type="range" id="volume-bar" min="0" max="100" value="70" class="flex-1">
+                <i class="fas fa-volume-up text-sm"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. GIAO DIỆN BỨC THƯ TÌNH (CÓ PARTICLES) -->
+    <div id="letter-scene" class="hidden fixed inset-0 z-50 bg-pink-900/40 backdrop-blur-md flex items-center justify-center">
+        <canvas id="particle-canvas"></canvas>
+
+        <button onclick="closeLetterScene()" class="absolute top-6 right-6 text-white/80 hover:text-white transition-colors z-50">
+            <i class="fas fa-times text-3xl"></i>
+        </button>
+
+        <div id="envelope-wrapper" class="cursor-pointer z-20 hover:scale-105 transition-transform duration-300 relative flex items-center justify-center w-64 h-64" onclick="showLetterContent()">
+            <i id="big-heart-bg" class="fas fa-heart text-[250px] text-pink-500/90 absolute z-0 heartbeat drop-shadow-[0_0_40px_rgba(255,105,180,0.8)]"></i>
+            
+            <div class="relative z-10 flex flex-col items-center mt-6">
+                <div id="css-envelope" class="css-envelope drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]">
+                    <div class="env-flap"></div>
+                    <div class="env-paper">
+                        <i class="fas fa-heart text-pink-500 text-4xl heartbeat"></i>
+                    </div>
+                </div>
+                <p id="open-hint-text" class="text-white text-center mt-8 font-bold tracking-widest drop-shadow-md text-lg bg-black/20 px-4 py-1 rounded-full backdrop-blur-sm transition-opacity duration-300">MỞ THƯ</p>
+            </div>
+        </div>
+
+        <div id="letter-content" class="hidden glass-panel bg-white/80 w-11/12 max-w-2xl h-[80vh] rounded-xl p-8 md:p-12 relative z-30 overflow-y-auto shadow-2xl">
+            <button onclick="hideLetterContent()" class="absolute top-4 right-4 text-pink-400 hover:text-pink-600 transition-colors z-10">
+                <i class="fas fa-times-circle text-2xl"></i>
+            </button>
+            
+            <div id="letter-body" class="letter-font text-gray-800 text-xl md:text-3xl leading-relaxed relative">
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. GIAO DIỆN VÒNG QUAY HẸN HÒ -->
+    <div id="wheel-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md">
+        <div class="glass-panel w-11/12 max-w-md rounded-3xl p-6 md:p-8 relative flex flex-col items-center shadow-2xl">
+            <button onclick="closeWheelModal()" class="absolute top-4 right-4 text-white/70 hover:text-white transition-colors z-10">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+            
+            <h3 class="text-3xl font-bold text-white drop-shadow-md mb-8 mt-2 letter-font">Vòng Quay Đi Chơi</h3>
+            
+            <div class="relative w-64 h-64 md:w-80 md:h-80 mb-8">
+                <div class="absolute -top-4 left-1/2 -translate-x-1/2 z-20 text-pink-500 drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">
+                    <i class="fas fa-caret-down text-6xl"></i>
+                </div>
+                
+                <div class="w-full h-full rounded-full shadow-[0_0_25px_rgba(255,105,180,0.6)] overflow-hidden">
+                    <canvas id="wheel-canvas" width="320" height="320" class="w-full h-full"></canvas>
+                </div>
+                
+                <div onclick="spinWheel()" id="center-spin-btn" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-white/95 backdrop-blur-sm rounded-full z-10 shadow-[0_0_20px_rgba(255,20,147,0.6)] flex flex-col items-center justify-center border-4 border-pink-300 cursor-pointer hover:scale-110 active:scale-95 transition-transform group">
+                    <i class="fas fa-heart text-3xl text-pink-500 heartbeat group-hover:text-pink-600 transition-colors"></i>
+                    <span class="text-[10px] font-bold text-pink-500 mt-1 uppercase tracking-widest">Quay</span>
+                </div>
+            </div>
+
+            <div id="wheel-result" class="text-xl font-semibold text-pink-100 mb-2 h-8 text-center drop-shadow-md bg-white/20 px-6 py-2 rounded-full backdrop-blur-sm transition-all flex items-center justify-center">
+                Nhấn vào tim để quay nhé! 💖
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. GIAO DIỆN CÀO THƯỞNG -->
+    <div id="scratch-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md">
+        <div class="glass-panel w-11/12 max-w-md rounded-3xl p-6 md:p-8 relative flex flex-col items-center shadow-2xl text-center">
+            <button onclick="closeScratchModal()" class="absolute top-4 right-4 text-white/70 hover:text-white transition-colors z-10">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+
+            <h3 class="text-3xl font-bold text-white drop-shadow-md mb-4 mt-2 letter-font">Món Quà Bí Mật</h3>
+            <p class="text-pink-100 mb-8 text-sm px-2">Hãy cào lớp bạc bên dưới để xem phần thưởng của cậu hôm nay là gì nhé!</p>
+
+            <div class="relative w-64 h-32 md:w-72 md:h-40 rounded-2xl overflow-hidden shadow-[0_0_20px_rgba(255,105,180,0.5)] border-4 border-pink-200 bg-white flex items-center justify-center">
+                
+                <!-- Kết quả (luôn hiện, nhưng bị che bởi canvas bên trên) -->
+                <div id="scratch-result" class="absolute inset-0 flex flex-col items-center justify-center bg-pink-50 p-4 z-0">
+                    <span class="text-pink-600 font-bold text-lg md:text-xl mb-1 heartbeat">🎉 Chúc mừng 🎉</span>
+                    <span class="text-pink-500 font-semibold text-center text-sm md:text-base mt-2">Bạn đã trúng thưởng<br><b class="text-xl md:text-2xl text-pink-600 drop-shadow-sm leading-relaxed">1 Bó Hoa 💐</b></span>
+                </div>
+                
+                <!-- Lớp tráng bạc (Canvas) để cào -->
+                <canvas id="scratch-canvas" class="absolute inset-0 w-full h-full cursor-pointer z-10 touch-none"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- TÍNH NĂNG BẮN PHÁO HOA ---
+        function fireConfetti() {
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount,
+                    origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+                }));
+                confetti(Object.assign({}, defaults, { particleCount,
+                    origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+                }));
+            }, 250);
+        }
+
+        // --- NHẠC NỀN CHUNG CỦA WEB ---
+        const bgMusic = new Audio("link_nhac_nen_chung.m4a"); // <-- SỬA LINK NHẠC NỀN TẠI ĐÂY
+        bgMusic.loop = true;
+
+        let bgmFadeInterval;
+        function fadeBgMusic(targetVolume) {
+            clearInterval(bgmFadeInterval);
+            
+            if (targetVolume > 0 && bgMusic.paused) {
+                bgMusic.play().catch(e => console.log("Cần chèn link nhạc thật để phát"));
+            }
+            
+            bgmFadeInterval = setInterval(() => {
+                let currentVol = bgMusic.volume;
+                if (Math.abs(currentVol - targetVolume) < 0.05) {
+                    bgMusic.volume = targetVolume;
+                    clearInterval(bgmFadeInterval);
+                    if (targetVolume === 0) bgMusic.pause();
+                } else if (currentVol < targetVolume) {
+                    bgMusic.volume = Math.min(currentVol + 0.05, 1);
+                } else {
+                    bgMusic.volume = Math.max(currentVol - 0.05, 0);
+                }
+            }, 100);
+        }
+
+        // --- TỰ ĐỘNG PHÁT NHẠC KHI VÀO WEB ---
+        let hasBgMusicStarted = false;
+        function startBgMusic() {
+            if (hasBgMusicStarted) return;
+            bgMusic.volume = 0;
+            let playPromise = bgMusic.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    hasBgMusicStarted = true;
+                    fadeBgMusic(0.4);
+                    document.removeEventListener('click', startBgMusic);
+                    document.removeEventListener('touchstart', startBgMusic);
+                    document.removeEventListener('keydown', startBgMusic);
+                }).catch(error => {
+                    console.log("Trình duyệt chặn tự động phát nhạc. Đang đợi người dùng tương tác...");
+                });
+            }
+        }
+
+        window.addEventListener('load', startBgMusic);
+        document.addEventListener('click', startBgMusic);
+        document.addEventListener('touchstart', startBgMusic);
+        document.addEventListener('keydown', startBgMusic);
+
+        // --- 1. XỬ LÝ ĐĂNG NHẬP ---
+        let currentPin = '';
+        const correctPin = '0401';
+
+        function updatePinDisplay() {
+            const dots = document.querySelectorAll('#pin-display div');
+            dots.forEach((dot, index) => {
+                if (index < currentPin.length) {
+                    dot.classList.remove('bg-transparent');
+                    dot.classList.add('bg-white', 'shadow-[0_0_8px_rgba(255,255,255,0.8)]');
+                } else {
+                    dot.classList.add('bg-transparent');
+                    dot.classList.remove('bg-white', 'shadow-[0_0_8px_rgba(255,255,255,0.8)]');
+                }
+            });
+        }
+
+        function pressPin(num) {
+            const errorMsg = document.getElementById('error-msg');
+            errorMsg.classList.add('hidden');
+
+            if (currentPin.length < 4) {
+                currentPin += num;
+                updatePinDisplay();
+
+                if (currentPin.length === 4) {
+                    setTimeout(checkPassword, 300);
+                }
+            }
+        }
+
+        function deletePin() {
+            if (currentPin.length > 0) {
+                currentPin = currentPin.slice(0, -1);
+                updatePinDisplay();
+                document.getElementById('error-msg').classList.add('hidden');
+            }
+        }
+
+        function checkPassword() {
+            const errorMsg = document.getElementById('error-msg');
+            const loginScreen = document.getElementById('login-screen');
+            const mainScreen = document.getElementById('main-screen');
+
+            if (currentPin === correctPin) {
+                errorMsg.classList.add('hidden');
+                loginScreen.classList.add('fade-out');
+
+                setTimeout(() => {
+                    loginScreen.classList.add('hidden');
+                    mainScreen.classList.remove('hidden');
+                    mainScreen.classList.add('fade-in');
+                    generateBgHearts();
+                }, 500);
+            } else {
+                errorMsg.classList.remove('hidden');
+                loginScreen.style.transform = "translateX(-10px)";
+                setTimeout(() => loginScreen.style.transform = "translateX(10px)", 100);
+                setTimeout(() => loginScreen.style.transform = "translateX(-10px)", 200);
+                setTimeout(() => loginScreen.style.transform = "translateX(0)", 300);
+                currentPin = '';
+                updatePinDisplay();
+            }
+        }
+
+        function generateBgHearts() {
+            const container = document.getElementById('bg-decorations');
+            for(let i=0; i<15; i++) {
+                let heart = document.createElement('i');
+                heart.className = 'fas fa-heart bg-heart text-2xl md:text-4xl';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 5 + 8) + 's';
+                heart.style.animationDelay = (Math.random() * 5) + 's';
+                container.appendChild(heart);
+            }
+        }
+
+        // --- 2. XỬ LÝ MỞ/ĐÓNG MODAL CÁC TÍNH NĂNG ---
+        function openMusicPlayer() {
+            document.getElementById('music-modal').classList.remove('hidden');
+            document.getElementById('music-modal').classList.add('fade-in');
+        }
+
+        function closeMusicPlayer() {
+            document.getElementById('music-modal').classList.add('hidden');
+            document.getElementById('music-modal').classList.remove('fade-in');
+        }
+
+        function openLetterScene() {
+            document.getElementById('letter-scene').classList.remove('hidden');
+            document.getElementById('letter-scene').classList.add('fade-in');
+            document.getElementById('envelope-wrapper').classList.remove('hidden');
+            document.getElementById('letter-content').classList.add('hidden');
+            initParticles();
+        }
+
+        function closeLetterScene() {
+            document.getElementById('letter-scene').classList.add('hidden');
+            document.getElementById('letter-scene').classList.remove('fade-in');
+            cancelAnimationFrame(animationId);
+        }
+
+        // --- VÒNG QUAY HẸN HÒ ---
+        const wheelOptions = ["Xem Phim 🎬", "Ăn kem 🍦", "Lượn Hồ 🛵", "Trà Sữa 🧋", "Đi Ăn Ngoài 🧑‍🍳", "Dạo Phố 🚶‍♀️"];
+        const wheelColors = ["#ff9a9e", "#ffb3d9", "#ff7eb3", "#fecfef", "#ff66b2", "#ff99cc"];
+        let currentWheelRotation = 0;
+        let isSpinningWheel = false;
+
+        function initWheel() {
+            const canvas = document.getElementById('wheel-canvas');
+            const ctx = canvas.getContext('2d');
+            const radius = canvas.width / 2;
+            const arc = (Math.PI * 2) / wheelOptions.length;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < wheelOptions.length; i++) {
+                const angle = -Math.PI / 2 + i * arc;
+                ctx.beginPath();
+                ctx.fillStyle = wheelColors[i % wheelColors.length];
+                ctx.moveTo(radius, radius);
+                ctx.arc(radius, radius, radius, angle, angle + arc);
+                ctx.fill();
+                ctx.strokeStyle = "rgba(255,255,255,0.4)";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.save();
+                ctx.translate(radius, radius);
+                ctx.rotate(angle + arc / 2);
+                ctx.textAlign = "right";
+                ctx.fillStyle = "#fff";
+                ctx.font = "600 16px 'Poppins', sans-serif";
+                ctx.shadowColor = "rgba(0,0,0,0.3)";
+                ctx.shadowBlur = 4;
+                ctx.fillText(wheelOptions[i], radius - 25, 6);
+                ctx.restore();
+            }
+        }
+
+        function openWheelModal() {
+            document.getElementById('wheel-modal').classList.remove('hidden');
+            document.getElementById('wheel-modal').classList.add('fade-in');
+            initWheel();
+        }
+
+        function closeWheelModal() {
+            document.getElementById('wheel-modal').classList.add('hidden');
+            document.getElementById('wheel-modal').classList.remove('fade-in');
+        }
+
+        function spinWheel() {
+            if (isSpinningWheel) return;
+            isSpinningWheel = true;
+            
+            const centerBtn = document.getElementById('center-spin-btn');
+            const resultText = document.getElementById('wheel-result');
+            const canvas = document.getElementById('wheel-canvas');
+            const centerHeart = centerBtn.querySelector('.heartbeat');
+            
+            centerBtn.classList.add('opacity-90', 'cursor-not-allowed');
+            resultText.innerHTML = "Đang quay nè... 🥰";
+            centerHeart.style.animationDuration = "0.3s";
+
+            const minSpins = 5;
+            const extraDegrees = Math.floor(Math.random() * 360);
+            const spinAngle = (360 * minSpins) + extraDegrees; 
+            currentWheelRotation += spinAngle;
+            
+            canvas.style.transition = 'transform 4s cubic-bezier(0.25, 0.1, 0.15, 1)';
+            canvas.style.transform = `rotate(${currentWheelRotation}deg)`;
+
+            setTimeout(() => {
+                isSpinningWheel = false;
+                centerBtn.classList.remove('opacity-90', 'cursor-not-allowed');
+                centerHeart.style.animationDuration = "1.5s";
+                
+                const deg = currentWheelRotation % 360;
+                const sliceAngle = 360 / wheelOptions.length;
+                const index = Math.floor((360 - deg) / sliceAngle) % wheelOptions.length;
+                
+                resultText.innerHTML = `Chốt luôn: <span class="font-bold text-pink-300 ml-2 text-2xl uppercase tracking-wider">${wheelOptions[index]}</span> 🎉`;
+                
+                // Bắn pháo hoa ăn mừng
+                fireConfetti();
+                
+            }, 4000);
+        }
+
+        // --- CÀO THƯỞNG (SCRATCH CARD) ---
+        let scratchCanvas, scratchCtx;
+        let isScratching = false;
+        let isScratchRevealed = false;
+
+        function initScratch() {
+            scratchCanvas = document.getElementById('scratch-canvas');
+            scratchCtx = scratchCanvas.getContext('2d', { willReadFrequently: true });
+            
+            const rect = scratchCanvas.parentElement.getBoundingClientRect();
+            scratchCanvas.width = rect.width;
+            scratchCanvas.height = rect.height;
+            
+            const gradient = scratchCtx.createLinearGradient(0, 0, scratchCanvas.width, scratchCanvas.height);
+            gradient.addColorStop(0, '#d1d5db');
+            gradient.addColorStop(0.5, '#f3f4f6');
+            gradient.addColorStop(1, '#9ca3af');
+            
+            scratchCtx.globalCompositeOperation = 'source-over';
+            scratchCtx.fillStyle = gradient;
+            scratchCtx.fillRect(0, 0, scratchCanvas.width, scratchCanvas.height);
+            
+            scratchCtx.font = "bold 22px 'Poppins', sans-serif";
+            scratchCtx.fillStyle = "#6b7280";
+            scratchCtx.textAlign = "center";
+            scratchCtx.textBaseline = "middle";
+            scratchCtx.fillText("CÀO Ở ĐÂY NHÉ", scratchCanvas.width / 2, scratchCanvas.height / 2);
+
+            scratchCtx.globalCompositeOperation = 'destination-out';
+            scratchCtx.lineWidth = 30;
+            scratchCtx.lineCap = 'round';
+            scratchCtx.lineJoin = 'round';
+            
+            isScratchRevealed = false;
+            scratchCanvas.style.transition = 'none';
+            scratchCanvas.style.opacity = '1';
+        }
+
+        function getScratchPos(e) {
+            const rect = scratchCanvas.getBoundingClientRect();
+            let clientX = e.clientX;
+            let clientY = e.clientY;
+            
+            if (e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            }
+            
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+
+        function startScratch(e) {
+            if (isScratchRevealed) return;
+            isScratching = true;
+            const pos = getScratchPos(e);
+            scratchCtx.beginPath();
+            scratchCtx.moveTo(pos.x, pos.y);
+            e.preventDefault();
+        }
+
+        function moveScratch(e) {
+            if (!isScratching || isScratchRevealed) return;
+            const pos = getScratchPos(e);
+            scratchCtx.lineTo(pos.x, pos.y);
+            scratchCtx.stroke();
+            checkScratchReveal();
+            e.preventDefault();
+        }
+
+        function endScratch(e) {
+            isScratching = false;
+        }
+
+        function checkScratchReveal() {
+            const imageData = scratchCtx.getImageData(0, 0, scratchCanvas.width, scratchCanvas.height);
+            const pixels = imageData.data;
+            let transparentPixels = 0;
+            
+            for (let i = 3; i < pixels.length; i += 16) {
+                if (pixels[i] < 10) {
+                    transparentPixels++;
+                }
+            }
+            
+            const totalSampled = pixels.length / 16;
+            const percentage = (transparentPixels / totalSampled) * 100;
+            
+            // Yêu cầu cào sạch 80% thì lớp bạc mới bay hết
+            if (percentage > 80 && !isScratchRevealed) {
+                isScratchRevealed = true;
+                scratchCanvas.style.transition = 'opacity 0.8s ease';
+                scratchCanvas.style.opacity = '0';
+                
+                // Bắn pháo hoa ăn mừng khi cào xong
+                fireConfetti();
+            }
+        }
+
+        function openScratchModal() {
+            document.getElementById('scratch-modal').classList.remove('hidden');
+            document.getElementById('scratch-modal').classList.add('fade-in');
+            setTimeout(initScratch, 50); 
+        }
+
+        function closeScratchModal() {
+            document.getElementById('scratch-modal').classList.add('hidden');
+            document.getElementById('scratch-modal').classList.remove('fade-in');
+        }
+
+        function resetScratch() {
+            initScratch();
+        }
+
+        // --- LOGIC BỨC THƯ ---
+        let typingTimeouts = [];
+
+        function showLetterContent() {
+            const envelopeWrapper = document.getElementById('envelope-wrapper');
+            const cssEnvelope = document.getElementById('css-envelope');
+            const bigHeartBg = document.getElementById('big-heart-bg');
+            const textHint = document.getElementById('open-hint-text');
+            
+            textHint.style.opacity = '0';
+            bigHeartBg.classList.remove('heartbeat');
+            cssEnvelope.classList.add('is-open');
+            
+            setTimeout(() => {
+                envelopeWrapper.classList.add('zoom-in-fade');
+                setTimeout(() => {
+                    envelopeWrapper.classList.add('hidden');
+                    envelopeWrapper.classList.remove('zoom-in-fade');
+                    const letter = document.getElementById('letter-content');
+                    letter.classList.remove('hidden');
+                    letter.classList.add('fade-in');
+                    startTyping();
+                }, 800);
+            }, 1200); 
+        }
+
+        function hideLetterContent() {
+            typingTimeouts.forEach(clearTimeout);
+            typingTimeouts = [];
+            document.getElementById('letter-content').classList.add('hidden');
+            document.getElementById('letter-content').classList.remove('fade-in');
+            
+            const envelopeWrapper = document.getElementById('envelope-wrapper');
+            envelopeWrapper.classList.remove('hidden');
+            envelopeWrapper.classList.add('fade-in');
+            document.getElementById('css-envelope').classList.remove('is-open');
+            document.getElementById('big-heart-bg').classList.add('heartbeat'); 
+            document.getElementById('open-hint-text').style.opacity = '1';
+        }
+
+        const letterLines = [
+            { text: "Gửi Hồng Thương,", tag: "h2", classes: "text-4xl text-pink-500 mb-6 text-center" },
+            { text: "Chúc mừng ngày 8/3 nhé! Tớ vẫn luôn âm thầm quan sát và thực sự khâm phục cách cậu nỗ lực cho những mục tiêu của mình. Ở cậu luôn toát ra một nguồn năng lượng khiến những người xung quanh, trong đó có tớ, cảm thấy rất dễ chịu và có thêm động lực.", tag: "p", classes: "mb-4" },
+            { text: "Ngày hôm nay, tớ không chỉ mong cậu nhận được nhiều hoa và quà, mà còn mong cậu hãy tạm gác lại những lo toan, cho phép mình được nghỉ ngơi và tận hưởng sự chiều chuộng mà cậu xứng đáng có được. Cảm ơn cậu vì đã xuất hiện và làm cho thế giới của tớ trở nên thú vị hơn một chút. Cứ tự tin là chính mình thôi nhé, vì phiên bản ấy là phiên bản tuyệt vời nhất rồi!", tag: "p", classes: "mb-4" },
+            { text: "Giao diện này tớ làm riêng cho Thương đấy, mong là Thương sẽ thích không gian nhỏ màu hồng này. Có thể nghe nhạc, ngắm những trái tim rơi và đọc bức thư này.", tag: "p", classes: "mb-8" },
+            { text: "Nguyễn Hải Khoa ❤️", tag: "p", classes: "text-right text-pink-600 font-bold mt-12" }
+        ];
+
+        function startTyping() {
+            const container = document.getElementById('letter-body');
+            container.innerHTML = '';
+            let currentLineIndex = 0;
+            
+            function typeLine() {
+                if (currentLineIndex >= letterLines.length) return;
+                const lineData = letterLines[currentLineIndex];
+                const el = document.createElement(lineData.tag);
+                el.className = lineData.classes + ' typing-cursor';
+                container.appendChild(el);
+                
+                let charIndex = 0;
+                function typeChar() {
+                    if (charIndex < lineData.text.length) {
+                        el.textContent += lineData.text.charAt(charIndex);
+                        charIndex++;
+                        let timeout = setTimeout(typeChar, 40);
+                        typingTimeouts.push(timeout);
+                        const letterContainer = document.getElementById('letter-content');
+                        letterContainer.scrollTop = letterContainer.scrollHeight;
+                    } else {
+                        el.classList.remove('typing-cursor');
+                        currentLineIndex++;
+                        let timeout = setTimeout(typeLine, 500);
+                        typingTimeouts.push(timeout);
+                    }
+                }
+                typeChar();
+            }
+            typeLine();
+        }
+
+        // --- NHẠC TRONG TRÌNH PHÁT (MUSIC PLAYER) ---
+        const playlist = [
+            {
+                title: "Ai Ngoài Anh",
+                artist: "VSTRA",
+                src: "link_nhac_1.m4a", // <-- SỬA LINK m4a TẠI ĐÂY
+                cover: "anh_1.jpg"
+            },
+            {
+                title: "KHÔNG BUÔNG",
+                artist: "Hngle ft. Ari",
+                src: "link_nhac_2.m4a", // <-- SỬA LINK m4a TẠI ĐÂY
+                cover: "anh_2.jpg"
+            },
+            {
+                title: "Từng Ngày Yêu Em",
+                artist: "buitruonglinh",
+                src: "link_nhac_3.m4a", // <-- SỬA LINK m4a TẠI ĐÂY
+                cover: "anh_3.jpg"
+            },
+            {
+                title: "Tình Yêu Giữa Mùa Đông",
+                artist: "Phan Mạnh Quỳnh",
+                src: "link_nhac_4.m4a", // <-- SỬA LINK m4a TẠI ĐÂY
+                cover: "anh_4.jpg"
+            },
+            {
+                title: "Đắm Chìm",
+                artist: "Trâu Bái Bái / Pank",
+                src: "link_nhac_5.m4a", // <-- SỬA LINK m4a TẠI ĐÂY
+                cover: "anh_5.jpg"
+            },
+            {
+                title: "Nắng Ấm Trong Tim",
+                artist: "Duongg (prod. by Dadeon)",
+                src: "link_nhac_6.m4a", // <-- SỬA LINK m4a TẠI ĐÂY
+                cover: "anh_6.jpg"
+            },
+            {
+                title: "Ai Đưa Em Về",
+                artist: "TIA",
+                src: "link_nhac_7.m4a", // <-- SỬA LINK m4a TẠI ĐÂY
+                cover: "anh_7.jpg"
+            }
+        ];
+
+        let currentSongIndex = 0;
+        let isPlaying = false;
+        const audio = new Audio();
+        audio.volume = 0.7; // Mặc định âm lượng 70%
+
+        function loadSong(index) {
+            const song = playlist[index];
+            audio.src = song.src;
+            document.getElementById('song-title').innerText = song.title;
+            document.getElementById('song-artist').innerText = song.artist;
+            document.getElementById('album-art').src = song.cover;
+        }
+
+        function togglePlay() {
+            const playIcon = document.getElementById('play-icon');
+            const albumArt = document.getElementById('album-art');
+            
+            if (audio.paused) {
+                // Ignore error if dummy src is not valid, just for visual
+                audio.play().catch(e => console.log("Chưa có link m4a thật, nhạc đang chạy mô phỏng giao diện"));
+                isPlaying = true;
+                playIcon.classList.remove('fa-play', 'ml-1'); 
+                playIcon.classList.add('fa-pause');
+                albumArt.classList.remove('spin-paused');
+                
+                // Mở nhạc thì tắt nhạc nền mượt mà
+                fadeBgMusic(0); 
+            } else {
+                audio.pause();
+                isPlaying = false;
+                playIcon.classList.remove('fa-pause'); 
+                playIcon.classList.add('fa-play', 'ml-1');
+                albumArt.classList.add('spin-paused');
+                
+                // Tắt nhạc máy phát thì bật nhạc nền lên lại
+                fadeBgMusic(0.4); 
+            }
+        }
+
+        function nextSong() {
+            currentSongIndex = (currentSongIndex + 1) % playlist.length;
+            loadSong(currentSongIndex);
+            if (isPlaying) audio.play().catch(e => {});
+        }
+
+        function prevSong() {
+            currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
+            loadSong(currentSongIndex);
+            if (isPlaying) audio.play().catch(e => {});
+        }
+
+        // Tự động chuyển bài khi hết
+        audio.addEventListener('ended', nextSong);
+
+        // Cập nhật thanh tiến trình
+        audio.addEventListener('timeupdate', () => {
+            if(isNaN(audio.duration)) return;
+            const bar = document.getElementById('progress-bar');
+            bar.value = (audio.currentTime / audio.duration) * 100;
+            
+            let curMins = Math.floor(audio.currentTime / 60);
+            let curSecs = Math.floor(audio.currentTime % 60);
+            document.getElementById('current-time').innerText = `${curMins}:${curSecs < 10 ? '0' : ''}${curSecs}`;
+
+            let totMins = Math.floor(audio.duration / 60);
+            let totSecs = Math.floor(audio.duration % 60);
+            document.getElementById('total-time').innerText = `${totMins}:${totSecs < 10 ? '0' : ''}${totSecs}`;
+        });
+
+        // Tua nhạc
+        function seekMusic() {
+            const bar = document.getElementById('progress-bar');
+            audio.currentTime = (bar.value / 100) * audio.duration;
+        }
+
+        // Chỉnh âm lượng
+        document.getElementById('volume-bar').addEventListener('input', (e) => {
+            audio.volume = e.target.value / 100;
+        });
+
+        // Khởi tạo bài đầu tiên (nhưng chưa phát)
+        window.addEventListener('load', () => {
+            loadSong(currentSongIndex);
+            
+            // Gắn sự kiện cho vé cào
+            const sc = document.getElementById('scratch-canvas');
+            if (sc) {
+                sc.addEventListener('mousedown', startScratch);
+                sc.addEventListener('mousemove', moveScratch);
+                window.addEventListener('mouseup', endScratch);
+                
+                sc.addEventListener('touchstart', startScratch, {passive: false});
+                sc.addEventListener('touchmove', moveScratch, {passive: false});
+                window.addEventListener('touchend', endScratch);
+            }
+        });
+
+        // --- CANVAS PARTICLES (Hiệu ứng lá thư) ---
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationId;
+
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeCanvas);
+
+        class HeartParticle {
+            constructor() {
+                this.radius = Math.random() * 15 + 10;
+                this.x = Math.random() * (canvas.width - this.radius * 2) + this.radius;
+                this.y = Math.random() * (canvas.height - this.radius * 2) + this.radius;
+                this.dx = (Math.random() - 0.5) * 2; this.dy = (Math.random() - 0.5) * 2;
+                this.color = `rgba(255, ${Math.floor(Math.random() * 100 + 100)}, ${Math.floor(Math.random() * 150 + 100)}, 0.8)`;
+            }
+            draw() {
+                ctx.save(); ctx.translate(this.x, this.y); ctx.scale(this.radius / 15, this.radius / 15); ctx.fillStyle = this.color;
+                ctx.beginPath(); ctx.moveTo(0, -3); ctx.bezierCurveTo(0, -10, -10, -10, -10, -3); ctx.bezierCurveTo(-10, 5, 0, 10, 0, 15);
+                ctx.bezierCurveTo(0, 10, 10, 5, 10, -3); ctx.bezierCurveTo(10, -10, 0, -10, 0, -3); ctx.fill(); ctx.restore();
+            }
+            update(particles) {
+                if (this.x + this.radius > canvas.width || this.x - this.radius < 0) this.dx = -this.dx;
+                if (this.y + this.radius > canvas.height || this.y - this.radius < 0) this.dy = -this.dy;
+                for (let i = 0; i < particles.length; i++) {
+                    if (this === particles[i]) continue;
+                    let dx = particles[i].x - this.x; let dy = particles[i].y - this.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < this.radius + particles[i].radius) {
+                        let tempDx = this.dx; let tempDy = this.dy;
+                        this.dx = particles[i].dx; this.dy = particles[i].dy;
+                        particles[i].dx = tempDx; particles[i].dy = tempDy;
+                        this.x += this.dx; this.y += this.dy;
+                    }
+                }
+                this.x += this.dx; this.y += this.dy; this.draw();
+            }
+        }
+
+        function initParticles() {
+            resizeCanvas(); particles = [];
+            for (let i = 0; i < (window.innerWidth < 768 ? 30 : 60); i++) particles.push(new HeartParticle());
+            animateParticles();
+        }
+
+        function animateParticles() {
+            animationId = requestAnimationFrame(animateParticles);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => p.update(particles));
+        }
+
+        // --- ẨN INTRO SCREEN ---
+        window.addEventListener('load', () => {
+            // Đợi 9.5 giây để chuỗi animation bó hoa 9 bông chạy và phô diễn xong
+            setTimeout(() => {
+                document.getElementById('intro-screen').classList.add('intro-hidden');
+            }, 9500);
+        });
+
+    </script>
+</body>
+</html>

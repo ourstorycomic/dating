@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "guihthuong.github.io-main/**",
+    "Mảng sinh nhật/**",
+    "Valentine/**",
   ]),
 ]);
 

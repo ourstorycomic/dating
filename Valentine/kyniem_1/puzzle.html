@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory For You</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #fff0f5;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden; /* Prevent horizontal scroll */
+      width: 100%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .heart {
+      position: fixed;
+      color: #ff69b4;
+      font-size: 20px;
+      z-index: 10;
+      pointer-events: none;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .heart-small {
+      font-size: 15px;
+      color: #ff1493;
+      animation-duration: 4s;
+    }
+
+    .heart-medium {
+      font-size: 25px;
+      color: #ff69b4;
+      animation-duration: 5s;
+    }
+
+    .heart-large {
+      font-size: 30px;
+      color: #db7093;
+      animation-duration: 6s;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-15px) rotate(5deg);
+      }
+      100% {
+        transform: translateY(0) rotate(0deg);
+      }
+    }
+
+    .content-wrapper {
+      background-color: #fef8fa;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(231, 84, 128, 0.2);
+      margin: 0 auto;
+      max-width: 90%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      z-index: 5;
+    }
+
+    h1 {
+      color: #e75480;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 10px;
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      padding: 0 10px;
+    }
+    
+    .subtitle {
+      color: #e75480;
+      font-size: clamp(0.9rem, 2vw, 1.2rem);
+      margin-bottom: 30px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+      position: relative;
+      z-index: 1;
+      padding: 0 10px;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .memory-game {
+      width: 100%;
+      max-width: 300px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      border: 3px solid #ffb6c1;
+    }
+
+    .memory-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 10px;
+      margin: 0 auto;
+      justify-items: center;
+      align-items: center;
+    }
+
+    .memory-card {
+      width: 80px;
+      height: 80px;
+      aspect-ratio: 1/1;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.5s;
+      cursor: pointer;
+      margin: 0;
+      background-color: white;
+    }
+
+    .memory-card.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .memory-card.matched {
+      transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+      width: 100%;
+      height: 100%;
+      padding: 5px;
+      position: absolute;
+      border-radius: 5px;
+      backface-visibility: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
+    }
+
+    .card-front {
+      background-color: white;
+      border: 3px dashed #f3c1da;
+      transform: rotateY(180deg);
+    }
+
+    .card-back {
+      background-color: #ffd1dc;
+      border: 2px solid #e75480;
+      font-size: 2.5rem;
+      color: #e776ac;
+      box-shadow: 0 4px 8px rgba(231, 84, 128, 0.3);
+    }
+
+    .card-front img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      aspect-ratio: 1/1;
+    }
+
+    .back-button {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background-color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 18px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #e75480;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+      background-color: #ffeef2;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(231, 84, 128, 0.4);
+    }
+
+    /* Congratulations Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, #fff8fa, #ffeaf1);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(231, 84, 128, 0.3);
+      max-width: 80%;
+      width: 350px;
+      text-align: center;
+      position: relative;
+      transform: scale(0.8);
+      transition: transform 0.3s ease;
+      border: 4px solid #ffb6c1;
+    }
+
+    .modal-overlay.active .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-title {
+      color: #e75480;
+      font-size: 28px;
+      margin-bottom: 15px;
+      text-shadow: 1px 1px 3px rgba(231, 84, 128, 0.2);
+    }
+
+    .modal-message {
+      color: #e776ac;
+      font-size: 18px;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    .modal-button {
+      background-color: #e75480;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(231, 84, 128, 0.3);
+    }
+
+    .modal-button:hover {
+      background-color: #d64372;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(231, 84, 128, 0.4);
+    }
+
+    .modal-emoji {
+      font-size: 50px;
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .memory-game {
+        padding: 15px;
+      }
+      
+      .memory-cards {
+        gap: 8px;
+      }
+      
+      .memory-card {
+        width: 70px;
+        height: 70px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .memory-game {
+        padding: 10px;
+      }
+      
+      .memory-cards {
+        gap: 5px;
+      }
+      
+      .memory-card {
+        width: 60px;
+        height: 60px;
+      }
+      
+      .modal-content {
+        padding: 20px;
+        width: 300px;
+      }
+      
+      .modal-title {
+        font-size: 24px;
+      }
+      
+      .modal-message {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="back-button" onclick="location.href='./selecter.html'">
+    ← Back
+  </button>
+
+  <div class="content-wrapper">
+    <h1>Memory For You</h1>
+    <p class="subtitle">Hãy cùng chọn nháaaaaaaa</p>
+    
+    <div class="container">
+      <div class="memory-game">
+        <div class="memory-cards" id="memory-cards"></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Congratulations Modal -->
+  <div class="modal-overlay" id="congratsModal">
+    <div class="modal-content">
+      <span class="modal-emoji">🎉</span>
+      <h2 class="modal-title">Chúc mừng!</h2>
+      <p class="modal-message">Bạn đã hoàn thành trò chơi! Thật tuyệt vời!</p>
+      <button class="modal-button" id="closeModal">Tiếp tục</button>
+    </div>
+  </div>
+
+  <script>
+    // Create a container for hearts to better manage them
+    const heartsContainer = document.createElement('div');
+    heartsContainer.style.position = 'fixed';
+    heartsContainer.style.top = '0';
+    heartsContainer.style.left = '0';
+    heartsContainer.style.width = '100%';
+    heartsContainer.style.height = '100%';
+    heartsContainer.style.pointerEvents = 'none';
+    heartsContainer.style.zIndex = '10';
+    heartsContainer.style.overflow = 'hidden';
+    document.body.appendChild(heartsContainer);
+    
+    // Different heart symbols
+    const heartSymbols = ['❤', '♥', '💕', '💖', '💗', '💓', '💘', '💝'];
+    
+    function createHeart() {
+      const heart = document.createElement('div');
+      // Randomly select a heart symbol
+      heart.innerHTML = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+      heart.classList.add('heart');
+      
+      // Add random size class
+      const sizeClasses = ['heart-small', 'heart-medium', 'heart-large'];
+      heart.classList.add(sizeClasses[Math.floor(Math.random() * sizeClasses.length)]);
+      
+      // Random position
+      heart.style.left = Math.random() * 90 + 5 + 'vw'; // 5-95% of viewport width
+      heart.style.top = Math.random() * 90 + 5 + 'vh'; // 5-95% of viewport height
+      
+      // Random animation delay
+      heart.style.animationDelay = Math.random() * 3 + 's';
+      
+      // Random opacity
+      heart.style.opacity = Math.random() * 0.5 + 0.5; // 0.5-1.0
+      
+      heartsContainer.appendChild(heart);
+      
+      // Remove hearts after some time to prevent memory issues
+      setTimeout(() => {
+        heart.remove();
+      }, 15000); // Remove after 15 seconds
+    }
+
+    // Create initial hearts - lots of them!
+    for (let i = 0; i < 50; i++) {
+      createHeart();
+    }
+    
+    // Add new hearts occasionally
+    setInterval(createHeart, 1000); // Add a new heart every second
+
+    // Memory game logic
+    const memoryCardsContainer = document.getElementById('memory-cards');
+    const congratsModal = document.getElementById('congratsModal');
+    const closeModalBtn = document.getElementById('closeModal');
+    
+    // Define the images for the memory game (6 pairs for 12 cards)
+    const cardImages = [
+      './image/moments/quanghan_nhuocnam (8).jpg',
+      './image/moments/quanghan_nhuocnam (9).jpg  ',
+      './image/moments/quanghan_nhuocnam (10).jpg',
+      './image/moments/quanghan_nhuocnam (11).jpg',
+      './image/moments/quanghan_nhuocnam (13).jpg',
+      './image/moments/quanghan_nhuocnam (4).jpg'
+    ];
+    
+    // Create pairs of cards
+    let cards = [...cardImages, ...cardImages];
+    
+    // Shuffle the cards
+    cards = cards.sort(() => Math.random() - 0.5);
+    
+    let hasFlippedCard = false;
+    let lockBoard = false;
+    let firstCard, secondCard;
+    let matchedPairs = 0;
+    const totalPairs = cardImages.length;
+    
+    function createCards() {
+      cards.forEach((image, index) => {
+        const card = document.createElement('div');
+        card.classList.add('memory-card');
+        card.dataset.image = image;
+        
+        const cardFront = document.createElement('div');
+        cardFront.classList.add('card-front');
+        
+        const img = document.createElement('img');
+        img.src = image;
+        img.alt = 'Memory Card';
+        
+        const cardBack = document.createElement('div');
+        cardBack.classList.add('card-back');
+        cardBack.textContent = '?';
+        
+        cardFront.appendChild(img);
+        card.appendChild(cardFront);
+        card.appendChild(cardBack);
+        
+        card.addEventListener('click', flipCard);
+        
+        memoryCardsContainer.appendChild(card);
+      });
+    }
+    
+    function flipCard() {
+      if (lockBoard) return;
+      if (this === firstCard) return;
+      
+      this.classList.add('flipped');
+      
+      if (!hasFlippedCard) {
+        // First card flipped
+        hasFlippedCard = true;
+        firstCard = this;
+        return;
+      }
+      
+      // Second card flipped
+      secondCard = this;
+      
+      checkForMatch();
+    }
+    
+    function checkForMatch() {
+      // Check if the cards match
+      let isMatch = firstCard.dataset.image === secondCard.dataset.image;
+      
+      if (isMatch) {
+        disableCards();
+        matchedPairs++;
+        
+        // Check if all pairs are matched
+        if (matchedPairs === totalPairs) {
+          setTimeout(() => {
+            showCongratsModal();
+          }, 1000);
+        }
+      } else {
+        unflipCards();
+      }
+    }
+    
+    function disableCards() {
+      // Cards match, remove event listeners
+      firstCard.classList.add('matched');
+      secondCard.classList.add('matched');
+      
+      firstCard.removeEventListener('click', flipCard);
+      secondCard.removeEventListener('click', flipCard);
+      
+      resetBoard();
+    }
+    
+    function unflipCards() {
+      lockBoard = true;
+      
+      // Cards don't match, flip them back
+      setTimeout(() => {
+        firstCard.classList.remove('flipped');
+        secondCard.classList.remove('flipped');
+        
+        resetBoard();
+      }, 1000);
+    }
+    
+    function resetBoard() {
+      [hasFlippedCard, lockBoard] = [false, false];
+      [firstCard, secondCard] = [null, null];
+    }
+    
+    function showCongratsModal() {
+      congratsModal.classList.add('active');
+      
+      // Create extra hearts for celebration
+      for (let i = 0; i < 30; i++) {
+        setTimeout(() => {
+          createHeart();
+        }, i * 100);
+      }
+    }
+    
+    // Close modal when button is clicked
+    closeModalBtn.addEventListener('click', () => {
+      congratsModal.classList.remove('active');
+    });
+    
+    // Initialize the game
+    createCards();
+  </script>
+  
+<iframe src="./music.html" style="display:none;" allow="autoplay"></iframe>
+</body>
+</html>

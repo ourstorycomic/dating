@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Love Puzzle</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #fff0f5;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden; /* Prevent horizontal scroll */
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    .heart {
+      position: fixed; /* Changed from absolute to fixed to prevent page shaking */
+      animation: fall linear forwards;
+      color: #ff69b4;
+      font-size: 20px;
+      top: -20px; /* Start above the viewport */
+      z-index: 10; /* Ensure hearts appear above other content */
+      pointer-events: none; /* Prevent hearts from interfering with clicks */
+    }
+
+    @keyframes fall {
+      from {
+        transform: translateY(0) rotate(0deg);
+      }
+      to {
+        transform: translateY(100vh) rotate(360deg);
+      }
+    }
+
+    h1 {
+      color: #e75480;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      padding: 0 10px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      margin-top: 20px;
+      position: relative;
+      z-index: 1;
+      flex-wrap: wrap;
+      padding: 0 10px;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .puzzle-container, .result-container {
+      border: 3px solid #ffb6c1;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.9);
+      padding: 20px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .puzzle-container:hover, .result-container:hover {
+      transform: translateY(-5px);
+    }
+
+    .puzzle {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(60px, 100px));
+      grid-template-rows: repeat(3, minmax(60px, 100px));
+      gap: 3px;
+      position: relative;
+      border: 2px solid #ffb6c1;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #ffeef2;
+      margin: 0 auto;
+      width: 300px;
+      height: 300px;
+    }
+
+    .piece {
+      width: 100%;
+      height: 100%;
+      background-size: 300px 300px; /* Fixed size to match puzzle dimensions */
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 1px solid #ffd1dc;
+      aspect-ratio: 1;
+    }
+
+    .piece.selected {
+      transform: scale(0.95);
+      box-shadow: 0 0 15px rgba(231,84,128,0.5);
+      border: 2px solid #e75480;
+    }
+
+    .result {
+      width: min(300px, 90vw);
+      height: min(300px, 90vw);
+      background-size: cover;
+      border-radius: 10px;
+      border: 2px solid #ffb6c1;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin: 0 auto;
+    }
+
+    .note {
+      margin-top: 15px;
+      font-size: clamp(14px, 3vw, 16px);
+      color: #e75480;
+      font-style: italic;
+    }
+
+    .back-button {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background-color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 18px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #e75480;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+      background-color: #ffeef2;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(231, 84, 128, 0.4);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        gap: 20px;
+        padding: 0 5px;
+      }
+
+      .puzzle-container, .result-container {
+        width: 100%;
+        max-width: 320px;
+        padding: 10px;
+      }
+      
+      .puzzle {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1;
+      }
+
+      .note {
+        margin: 10px 0;
+      }
+
+      body {
+        padding: 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 5px;
+      }
+
+      .puzzle {
+        gap: 2px;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+      }
+
+      .container {
+        gap: 15px;
+      }
+
+      .puzzle-container, .result-container {
+        padding: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="back-button" onclick="location.href='./selecter.html'">
+    ← Back
+  </button>
+
+  <h1>Complete the Puzzle to See Our Love! ❤️</h1>
+  <div class="container">
+    <div class="puzzle-container">
+      <div class="puzzle" id="puzzle"></div>
+    </div>
+    <div class="result-container">
+      <div class="result"></div>
+      <p class="note">Original photo on the right →</p>
+    </div>
+  </div>
+
+  <script>
+    // Create a container for hearts to better manage them
+    const heartsContainer = document.createElement('div');
+    heartsContainer.style.position = 'fixed';
+    heartsContainer.style.top = '0';
+    heartsContainer.style.left = '0';
+    heartsContainer.style.width = '100%';
+    heartsContainer.style.height = '100%';
+    heartsContainer.style.pointerEvents = 'none';
+    heartsContainer.style.zIndex = '10';
+    heartsContainer.style.overflow = 'hidden';
+    document.body.appendChild(heartsContainer);
+    
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.innerHTML = '❤';
+      heart.classList.add('heart');
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+      heartsContainer.appendChild(heart);
+      
+      // Remove hearts after animation to prevent memory issues
+      setTimeout(() => {
+        heart.remove();
+      }, (parseFloat(heart.style.animationDuration) * 1000) + 100);
+    }
+
+    setInterval(createHeart, 300);
+
+    const puzzle = document.getElementById("puzzle");
+    const imagePath = './image/moments/moment1.jpg';
+    
+    // Preload the image to ensure it's available
+    const preloadImage = new Image();
+    preloadImage.src = imagePath;
+    
+    preloadImage.onload = function() {
+      // Set the background image for the result container
+      document.querySelector('.result').style.backgroundImage = `url('${imagePath}')`;
+      
+      // Get puzzle dimensions
+      const puzzleWidth = puzzle.offsetWidth;
+      const puzzleHeight = puzzle.offsetHeight;
+      
+      // Create array of positions for 9 pieces
+      const positions = [];
+      for (let row = 0; row < 3; row++) {
+        for (let col = 0; col < 3; col++) {
+          positions.push({ 
+            x: -(col * (puzzleWidth / 3)), 
+            y: -(row * (puzzleHeight / 3)) 
+          });
+        }
+      }
+
+      // Shuffle positions randomly
+      const shuffled = positions
+        .map(value => ({ value, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ value }) => value);
+
+      // Create puzzle pieces
+      shuffled.forEach((pos, index) => {
+        const piece = document.createElement("div");
+        piece.classList.add("piece");
+        piece.style.backgroundImage = `url('${imagePath}')`;
+        piece.style.backgroundPosition = `${pos.x}px ${pos.y}px`;
+        piece.setAttribute('data-index', index);
+        puzzle.appendChild(piece);
+
+        // Add click handler for swapping pieces
+        piece.addEventListener("click", () => {
+          piece.classList.toggle("selected");
+          const selected = document.querySelectorAll(".piece.selected");
+          if (selected.length === 2) {
+            const [first, second] = selected;
+            const tempPos = first.style.backgroundPosition;
+            first.style.backgroundPosition = second.style.backgroundPosition;
+            second.style.backgroundPosition = tempPos;
+
+            first.classList.remove("selected");
+            second.classList.remove("selected");
+            
+            // Check if puzzle is solved
+            checkPuzzleSolved();
+          }
+        });
+      });
+    };
+    
+    function checkPuzzleSolved() {
+      // Implementation for checking if puzzle is solved could be added here
+      // This would compare the current positions with the correct positions
+    }
+    
+    preloadImage.onerror = function() {
+      console.error('Error loading image:', imagePath);
+      alert('Could not load puzzle image. Please check the image path.');
+    };
+  </script>
+</body>
+</html>

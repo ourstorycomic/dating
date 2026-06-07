@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Love Story ❤️ Hứa Quang Hán & Chương Nhược Nam</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Câu chuyện tình yêu của chúng mình - Một hành trình đầy yêu thương">
+    <meta name="keywords" content="love story, tình yêu, couple, relationship">
+    <meta name="author" content="Hứa Quang Hán">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Our Love Story ❤️ Hứa Quang Hán & Chương Nhược Nam">
+    <meta property="og:description" content="Hành trình tình yêu của chúng mình">
+    <meta property="og:image" content="assets/images/preview.jpg">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- AOS - Animate On Scroll -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-default/default.css">
+
+    <!-- Fancybox - For Image Gallery -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5/dist/fancybox/fancybox.css">
+    <link rel="stylesheet" href="./style.css">
+
+<body>
+<!-- Preloader -->
+<div class="preloader" id="preloader">
+    <div class="preloader-overlay"></div>
+    <div class="preloader-content">
+        <div class="heart-loader">
+   
+        </div>
+        <div class="loading-text">
+            <h2>Loading Our Love Story...</h2>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <span class="progress-text">0%</span>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- Header -->
+    <header class="header" id="header">
+        <nav class="nav container">
+            <a href="#" class="nav-logo">
+                <i class="fas fa-heart"></i>
+                <span>Hứa Quang Hán & Chương Nhược Nam</span>
+            </a>
+            
+            <div class="nav-links">
+                <a href="#hero" class="nav-link active">
+                    <i class="fas fa-home"></i>
+                    <span>Trang Chủ</span>
+                </a>
+                <a href="#story" class="nav-link">
+                    <i class="fas fa-book-heart"></i>
+                    <span>Câu Chuyện</span>
+                </a>
+                <a href="#gallery" class="nav-link">
+                    <i class="fas fa-images"></i>
+                    <span>Kỷ Niệm</span>
+                </a>
+                <a href="#notes" class="nav-link">
+                    <i class="fas fa-notes-medical"></i>
+                    <span>Lời Nhắn</span>
+                </a>
+            </div>
+
+            <div class="nav-controls">
+                <!-- Theme Toggle -->
+                <button class="control-btn theme-toggle" aria-label="Chuyển đổi giao diện">
+                    <i class="fas fa-moon"></i>
+                </button>
+        
+            
+                <!-- Menu Toggle (Mobile) -->
+                <button class="control-btn menu-toggle" aria-label="Menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+        <!-- Main Content -->
+        <main>
+            <!-- Hero Section -->
+            <section id="hero" class="hero">
+                <div class="hero-background">
+                    <video autoplay muted loop playsinline>
+                        <source src="./video.mp4" type="video/mp4">
+                    </video>
+                    <img src="./images/1.jpg" alt="Love Background" class="fallback-img">
+                    <div class="hero-overlay"></div>
+                </div>
+    
+                <div class="hero-content">
+                    <h1 class="hero-title" data-aos="fade-up">Our Love Story ❤️</h1>
+                    <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="200">
+                        <span class="typing-text"></span>
+                        <span class="cursor">|</span>
+                    </p>
+    
+                    <div class="love-stats" data-aos="fade-up" data-aos-delay="400">
+                        <div class="stat-item">
+                            <span class="stat-number" id="days-together">4</span>
+                            <span class="stat-label">Ngày</span>
+                            <span class="stat-desc">Bên nhau</span>
+                        </div>
+                        <div class="stat-divider">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="hours-together">96</span>
+                            <span class="stat-label">Giờ</span>
+                            <span class="stat-desc">Hạnh phúc</span>
+                        </div>
+                    </div>
+    
+                    <div class="scroll-hint" data-aos="fade-up" data-aos-delay="600">
+                        <span>Cuộn xuống để khám phá</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- Story Timeline Section -->
+            <section id="story" class="story section">
+                <div class="container">
+                    <div class="section-header" data-aos="fade-up">
+                        <h2 class="section-title">Câu Chuyện Của Chúng Mình</h2>
+                        <p class="section-subtitle">Từng khoảnh khắc bên nhau</p>
+                    </div>
+    
+                    <div class="timeline">
+                        <!-- First Meet -->
+                        <div class="timeline-item" data-aos="fade-right">
+                            <div class="timeline-content">
+                                <div class="timeline-icon">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <div class="timeline-date">16 Tháng 3, 2025</div>
+                                <h3 class="timeline-title">Lần Đầu Gặp Gỡ</h3>
+                                <p class="timeline-text">
+                                    Khoảnh khắc đầu tiên anh nhìn thấy em, trái tim anh đã thổn thức. 
+                                    Nụ cười ấy, ánh mắt ấy đã khiến anh không thể nào quên được.
+                                </p>
+                                <div class="timeline-media">
+                                    <a href="./images/1.jpg" data-fancybox="timeline" 
+                                       data-caption="Lần đầu gặp gỡ - 16/03/2025">
+                                        <img src="./images/fm.jpg"  alt="First Meet">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <!-- First Date -->
+                        <div class="timeline-item" data-aos="fade-left">
+                            <div class="timeline-content">
+                                <div class="timeline-icon">
+                                    <i class="fas fa-coffee"></i>
+                                </div>
+                                <div class="timeline-date">17 Tháng 3, 2025</div>
+                                <h3 class="timeline-title">Buổi Hẹn Đầu Tiên</h3>
+                                <p class="timeline-text">
+                                    Buổi cafe đầu tiên của chúng mình, từng lời nói, từng cử chỉ nhỏ 
+                                    đều khiến trái tim rung động.
+                                </p>
+                                <div class="timeline-media">
+                                    <a href="./images/2.jpg" data-fancybox="timeline"
+                                       data-caption="Buổi hẹn đầu tiên - 17/03/2025">
+                                        <img src="./images/fd.jpg" alt="First Date">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <!-- Current Day -->
+                        <div class="timeline-item" data-aos="fade-right">
+                            <div class="timeline-content">
+                                <div class="timeline-icon">
+                                    <i class="fas fa-infinity"></i>
+                                </div>
+                                <div class="timeline-date">20 Tháng 3, 2025</div>
+                                <h3 class="timeline-title">Ngày Hôm Nay</h3>
+                                <p class="timeline-text">
+                                    Mỗi ngày trôi qua bên em là một ngày tràn ngập hạnh phúc. 
+                                    Anh nguyện sẽ luôn bên em, yêu thương và che chở cho em.
+                                </p>
+                                <div class="timeline-media">
+                                    <a href="./images/3.jpg" data-fancybox="timeline"
+                                       data-caption="Hạnh phúc bên nhau - 20/03/2025">
+                                        <img src="./images/td.jpg" alt="Today">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+                    <!-- Gallery Section -->
+        <section id="gallery" class="gallery section">
+            <div class="container">
+                <div class="section-header" data-aos="fade-up">
+                    <h2 class="section-title">Khoảnh Khắc Đẹp</h2>
+                    <p class="section-subtitle">Những kỷ niệm được lưu giữ mãi mãi</p>
+                </div>
+
+                <div class="gallery-filters" data-aos="fade-up">
+                    <button class="filter-btn active" data-filter="all">
+                        <i class="fas fa-border-all"></i> Tất cả
+                    </button>
+                    <button class="filter-btn" data-filter="dates">
+                        <i class="fas fa-heart"></i> Hẹn hò
+                    </button>
+                    <button class="filter-btn" data-filter="moments">
+                        <i class="fas fa-star"></i> Khoảnh khắc
+                    </button>
+                    <button class="filter-btn" data-filter="special">
+                        <i class="fas fa-gift"></i> Đặc biệt
+                    </button>
+                </div>
+
+                <div class="gallery-grid">
+                    <!-- Dates Category -->
+                    <div class="gallery-item" data-category="dates" data-aos="fade-up">
+                        <a href="./images/4.jpg" data-fancybox="gallery" 
+                           data-caption="Buổi hẹn đầu tiên - Highlands Coffee">
+                            <img src="./images/hh.jpg" alt="First Date" class="gallery-image">
+                            <div class="gallery-overlay">
+                                <h3 class="gallery-title">Buổi Hẹn Đầu Tiên</h3>
+                                <p class="gallery-date">17/03/2025</p>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Moments Category -->
+                    <div class="gallery-item" data-category="moments" data-aos="fade-up" data-aos-delay="100">
+                        <a href="./images/2.jpg" data-fancybox="gallery"
+                           data-caption="Khoảnh khắc đáng yêu">
+                            <img src="./images/2.jpg" alt="Sweet Moment" class="gallery-image">
+                            <div class="gallery-overlay">
+                                <h3 class="gallery-title">Nụ Cười Của Em</h3>
+                                <p class="gallery-date">18/03/2025</p>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Special Category -->
+                    <div class="gallery-item" data-category="special" data-aos="fade-up" data-aos-delay="200">
+                        <a href="./images/3.jpg" data-fancybox="gallery"
+                           data-caption="Kỷ niệm đặc biệt">
+                            <img src="./images/mqdt.jpg" alt="Special Moment" class="gallery-image">
+                            <div class="gallery-overlay">
+                                <h3 class="gallery-title">Món Quà Đầu Tiên</h3>
+                                <p class="gallery-date">19/03/2025</p>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- More gallery items can be added here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Love Notes Section -->
+        <section id="notes" class="notes section">
+            <div class="container">
+                <div class="section-header" data-aos="fade-up">
+                    <h2 class="section-title">Lời Yêu Thương</h2>
+                    <p class="section-subtitle">Những lời nhắn từ trái tim</p>
+                </div>
+
+                <div class="notes-container">
+                    <!-- Note 1 -->
+                    <div class="note" data-aos="fade-up">
+                        <div class="note-content">
+                            "Mỗi ngày thức dậy bên em là một ngày tràn ngập hạnh phúc. Anh yêu em nhiều lắm!"
+                        </div>
+                        <div class="note-footer">
+                            <div class="note-info">
+                                <span class="note-author">@Hứa Quang Hán</span>
+                                <span class="note-date">20 Tháng 3, 2025</span>
+                            </div>
+                            <div class="note-actions">
+                                <button class="note-like" aria-label="Thích">
+                                    <i class="fas fa-heart"></i>
+                                    <span>23</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Note 2 -->
+                    <div class="note" data-aos="fade-up" data-aos-delay="100">
+                        <div class="note-content">
+                            "Em là điều tuyệt vời nhất mà anh từng có. Cảm ơn em đã đến bên anh."
+                        </div>
+                        <div class="note-footer">
+                            <div class="note-info">
+                                <span class="note-author">@Hứa Quang Hán</span>
+                                <span class="note-date">19 Tháng 3, 2025</span>
+                            </div>
+                            <div class="note-actions">
+                                <button class="note-like" aria-label="Thích">
+                                    <i class="fas fa-heart"></i>
+                                    <span>15</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- More notes can be added dynamically -->
+                </div>
+
+                <button class="add-note-btn" data-aos="fade-up" aria-label="Thêm lời nhắn">
+                    <i class="fas fa-plus"></i>
+                    <span class="btn-tooltip">Thêm lời nhắn</span>
+                </button>
+            </div>
+        </section>
+            <!-- Music Player -->
+            <div class="music-player">
+                <button class="minimize-toggle" aria-label="Thu nhỏ">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            
+                <!-- Quick Controls for Minimized State -->
+                <div class="quick-controls">
+                    <button class="play-btn" aria-label="Phát/Dừng">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+            
+                <!-- Main Player Content -->
+                <div class="player-wrapper">
+                    <div class="album-art-container">
+                        <img src="assets/images/music/perfect.jpg" alt="Album Art" id="albumArt" class="album-art">
+                    </div>
+            
+                    <div class="song-info">
+                        <div class="song-title" id="songTitle">Perfect</div>
+                        <div class="song-artist" id="songArtist">Ed Sheeran</div>
+                    </div>
+            
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress"></div>
+                            <div class="progress-handle"></div>
+                        </div>
+                        <div class="time-info">
+                            <span class="current-time">0:00</span>
+                            <span class="duration">0:00</span>
+                        </div>
+                    </div>
+            
+                    <div class="player-controls">
+                        <button class="player-btn shuffle-btn" aria-label="Trộn bài">
+                            <i class="fas fa-random"></i>
+                        </button>
+                        <button class="player-btn prev-btn" aria-label="Bài trước">
+                            <i class="fas fa-step-backward"></i>
+                        </button>
+                        <button class="player-btn play-btn" aria-label="Phát/Dừng">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button class="player-btn next-btn" aria-label="Bài tiếp">
+                            <i class="fas fa-step-forward"></i>
+                        </button>
+                        <button class="player-btn repeat-btn" aria-label="Lặp lại">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                    </div>
+            
+                    <div class="volume-control">
+                        <button class="player-btn volume-icon" aria-label="Âm lượng">
+                            <!-- <i class="fas fa-volume-up"></i> -->
+                        </button>
+                        <div class="volume-slider">
+                            <div class="volume-bar"></div>
+                            <div class="volume-handle"></div>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Playlist -->
+                <div class="playlist-container">
+                    <ul class="playlist" id="playlist">
+                        <!-- Playlist items will be dynamically added here -->
+                    </ul>
+                </div>
+            </div>
+
+
+<!-- Note Modal -->
+<div class="modal" id="noteModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">✨ Thêm lời nhắn mới</h3>
+            <button class="modal-close" aria-label="Đóng">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="noteForm" class="note-form">
+                <div class="form-group">
+                    <textarea 
+                        class="note-textarea" 
+                        placeholder="Viết lời nhắn yêu thương của bạn..." 
+                        required
+                        minlength="10"
+                        maxlength="500"
+                    ></textarea>
+                    <div class="character-count">
+                        <span class="current">0</span>/<span class="maximum">500</span>
+                    </div>
+                </div>
+                <div class="form-footer">
+                    <button type="button" class="cancel-btn">
+                        <i class="fas fa-times"></i> Hủy bỏ
+                    </button>
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i> Gửi lời nhắn
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal" id="deleteModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">🗑️ Xác nhận xóa</h3>
+            <button class="modal-close" aria-label="Đóng">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p>Bạn có chắc chắn muốn xóa lời nhắn này không?</p>
+            <div class="form-footer">
+                <button type="button" class="cancel-btn">
+                    <i class="fas fa-times"></i> Hủy bỏ
+                </button>
+                <button type="button" class="delete-confirm-btn">
+                    <i class="fas fa-trash-alt"></i> Xóa
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal" id="deleteModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">🗑️ Xác nhận xóa</h3>
+            <button class="modal-close" aria-label="Đóng">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p>Bạn có chắc chắn muốn xóa lời nhắn này không?</p>
+            <div class="form-footer">
+                <button type="button" class="cancel-btn">
+                    <i class="fas fa-times"></i> Hủy bỏ
+                </button>
+                <button type="button" class="delete-confirm-btn">
+                    <i class="fas fa-trash-alt"></i> Xóa
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-wave"></div>
+        <div class="footer-content">
+            <div class="footer-heart">❤️</div>
+            <p class="footer-text">
+                Made with love by <a href="" target="_blank">@Hứa Quang Hán</a><br>
+                <span class="love-timer">
+                    Đã yêu được: <span id="loveTimer">...</span>
+                </span>
+                <span class="copyright">© 2025 All Rights Reserved</span>
+            </p>
+            <div class="footer-social">
+                <a href="#" class="social-link" aria-label="Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="social-link" aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="social-link" aria-label="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5/dist/fancybox/fancybox.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="./script.js"></script>
+
+</body>
+</html>
