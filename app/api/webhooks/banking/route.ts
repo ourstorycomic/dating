@@ -99,11 +99,15 @@ function extractPaymentCode(payload: BankingWebhookPayload) {
 }
 
 function normalizePayload(payload: BankingWebhookPayload) {
+  const paymentCode = extractPaymentCode(payload);
+  const receivedAmount = toAmount(payload.transferAmount ?? payload.amount);
+  const provider = payload.gateway || "BANKING_WEBHOOK";
+
   return {
-    paymentCode: extractPaymentCode(payload),
-    provider: payload.gateway || "BANKING_WEBHOOK",
-    providerTransactionId: String(payload.referenceCode || payload.transactionId || payload.id || ""),
-    receivedAmount: toAmount(payload.transferAmount ?? payload.amount),
+    paymentCode,
+    provider,
+    providerTransactionId: String(payload.referenceCode || payload.transactionId || payload.id || `${provider}-${paymentCode}-${receivedAmount}`),
+    receivedAmount,
     transferType: payload.transferType,
   };
 }
@@ -114,7 +118,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "BANK_WEBHOOK_SECRET is not configured" }, { status: 500 });
   }
 
-  if (request.headers.get("x-webhook-secret") !== secret) {
+  const authHeader = request.headers.get("Authorization") || "";
+  const xWebhookSecret = request.headers.get("x-webhook-secret");
+  const isAuthorized = xWebhookSecret === secret || authHeader.replace(/^(Bearer|Apikey|Token)\s+/i, "").trim() === secret;
+
+  if (!isAuthorized) {
     return NextResponse.json({ error: "Unauthorized webhook" }, { status: 401 });
   }
 
@@ -130,6 +138,24 @@ export async function POST(request: Request) {
   }
 
   const supabase = createServerSupabaseClient();
+
+  const { error: eventError } = await supabase.from("webhook_events").insert({
+    amount: receivedAmount,
+    payment_code: paymentCode,
+    provider,
+    provider_transaction_id: providerTransactionId,
+    raw_payload: payload,
+    status: "RECEIVED",
+  });
+
+  if (eventError) {
+    if (eventError.code === "23505") {
+      return NextResponse.json({ duplicate: true, ok: true });
+    }
+
+    console.error("Webhook event insert failed", eventError);
+    return NextResponse.json({ error: "Không lưu được webhook event." }, { status: 500 });
+  }
 
   const { data: payment, error: paymentError } = await supabase
     .from("payments")
@@ -307,6 +333,12 @@ export async function POST(request: Request) {
       order_id: payment.order_id,
     },
   ]);
+
+  await supabase
+    .from("webhook_events")
+    .update({ processed_at: new Date().toISOString(), status: "PROCESSED" })
+    .eq("provider", provider)
+    .eq("provider_transaction_id", providerTransactionId);
 
   return NextResponse.json({
     ok: true,

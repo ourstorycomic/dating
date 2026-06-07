@@ -192,7 +192,7 @@ function Section({
   );
 }
 
-export function OrderBuilderForm({ myOrders, templates }: { myOrders: MyOrderRow[]; templates: TemplateCatalogItem[] }) {
+export function OrderBuilderForm({ currentRole, myOrders, templates }: { currentRole: "ADMIN" | "STAFF" | "EMPLOYEE"; myOrders: MyOrderRow[]; templates: TemplateCatalogItem[] }) {
   const valentineOne = templates.find((template) => template.component_key.includes("constellation")) ?? templates[0];
   const [selectedTemplateId, setSelectedTemplateId] = useState(valentineOne?.id ?? "");
   const [templateSearch, setTemplateSearch] = useState("");
@@ -272,6 +272,7 @@ export function OrderBuilderForm({ myOrders, templates }: { myOrders: MyOrderRow
   const [result, setResult] = useState<{ amount: number; giftLink: string; orderId: string; paymentCode: string; paymentStatus: string; qrCodeUrl: string | null; status: string; trackLink: string; unlocked: boolean } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSavingEdits, setIsSavingEdits] = useState(false);
+  const [isConfirmingPayment, setIsConfirmingPayment] = useState(false);
   const [error, setError] = useState("");
   const [saveMessage, setSaveMessage] = useState("");
   const [copyMessage, setCopyMessage] = useState("");
@@ -476,6 +477,31 @@ export function OrderBuilderForm({ myOrders, templates }: { myOrders: MyOrderRow
     }
 
     setSaveMessage("Đã lưu chỉnh sửa template cho đơn này.");
+  }
+
+  async function confirmPaymentManually() {
+    if (!result || currentRole !== "ADMIN") return;
+
+    setIsConfirmingPayment(true);
+    setError("");
+
+    const response = await fetch(`/api/orders/${result.orderId}/confirm-payment`, {
+      method: "POST",
+    });
+    const data = await response.json().catch(() => ({}));
+    setIsConfirmingPayment(false);
+
+    if (!response.ok) {
+      setError(data.error ?? "Không xác nhận được thanh toán.");
+      return;
+    }
+
+    setResult((current) => current ? {
+      ...current,
+      paymentStatus: "PAID",
+      status: "ACTIVE",
+      unlocked: true,
+    } : current);
   }
 
   const showSetupWorkspace = !result || result.unlocked;
@@ -722,9 +748,19 @@ export function OrderBuilderForm({ myOrders, templates }: { myOrders: MyOrderRow
                         </button>
                       </>
                     ) : null}
-                  </div>
+                    {currentRole === "ADMIN" ? (
+                      <button
+                        className="rounded-full border border-emerald-300/25 bg-emerald-400/12 px-4 py-2 text-xs font-semibold text-emerald-100 disabled:opacity-50"
+                        disabled={isConfirmingPayment}
+                        onClick={confirmPaymentManually}
+                        type="button"
+                      >
+                        {isConfirmingPayment ? "Đang mở khóa..." : "Đã nhận tiền - mở khóa"}
+                      </button>
+                    ) : null}
                   </div>
                 </div>
+              </div>
               ) : null}
               {result.unlocked ? (
                 <>

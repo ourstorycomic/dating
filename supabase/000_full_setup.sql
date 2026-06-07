@@ -203,6 +203,19 @@ create table if not exists public.payments (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.webhook_events (
+  id uuid primary key default gen_random_uuid(),
+  provider text not null,
+  provider_transaction_id text not null,
+  payment_code text,
+  amount numeric(12, 2),
+  status text not null default 'RECEIVED',
+  raw_payload jsonb,
+  processed_at timestamptz,
+  created_at timestamptz not null default now(),
+  unique(provider, provider_transaction_id)
+);
+
 create table if not exists public.commission_rules (
   id uuid primary key default gen_random_uuid(),
   recipient_type public.commission_recipient_type not null unique,
@@ -282,6 +295,8 @@ create index if not exists payments_status_idx on public.payments(status);
 create unique index if not exists payments_provider_transaction_paid_uidx
 on public.payments(provider, provider_transaction_id)
 where provider_transaction_id is not null and status = 'PAID';
+create index if not exists webhook_events_payment_code_idx on public.webhook_events(payment_code);
+create index if not exists webhook_events_created_at_idx on public.webhook_events(created_at);
 create index if not exists commissions_order_id_idx on public.commissions(order_id);
 create index if not exists commissions_user_id_idx on public.commissions(user_id);
 create index if not exists commissions_affiliate_id_idx on public.commissions(affiliate_id);
@@ -462,6 +477,7 @@ alter table public.template_categories enable row level security;
 alter table public.templates enable row level security;
 alter table public.orders enable row level security;
 alter table public.payments enable row level security;
+alter table public.webhook_events enable row level security;
 alter table public.commission_rules enable row level security;
 alter table public.commissions enable row level security;
 alter table public.order_logs enable row level security;

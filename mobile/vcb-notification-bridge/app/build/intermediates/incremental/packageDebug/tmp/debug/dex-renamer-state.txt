@@ -1,0 +1,7 @@
+#Sun Jun 07 16:13:39 ICT 2026
+base.1=D\:\\dating\\mobile\\vcb-notification-bridge\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\6\\classes.dex
+path.1=6/classes.dex
+base.0=D\:\\dating\\mobile\\vcb-notification-bridge\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
+renamed.1=classes2.dex
+renamed.0=classes.dex
+path.0=0/classes.dex

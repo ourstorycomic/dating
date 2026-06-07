@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "vn.yeuweb.vcbbridge.app-mergeDebugResources-2:/values/values.xml",
+            "map": [
+                {
+                    "source": "D:\\dating\\mobile\\vcb-notification-bridge\\app\\src\\main\\res\\values\\styles.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "6",
+                        "endColumns": "12",
+                        "endOffsets": "317"
+                    }
+                }
+            ]
+        }
+    ]
+}

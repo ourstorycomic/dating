@@ -20,8 +20,8 @@ export default async function NewOrderPage() {
           <h2 className="text-2xl font-semibold">Chưa có template khả dụng</h2>
         </div>
       ) : (
-        <OrderBuilderForm myOrders={myOrders as never} templates={templates} />
-      )}
-    </div>
+          <OrderBuilderForm currentRole={session?.role ?? "EMPLOYEE"} myOrders={myOrders as never} templates={templates} />
+        )}
+      </div>
   );
 }
