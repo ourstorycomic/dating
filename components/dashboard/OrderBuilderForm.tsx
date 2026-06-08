@@ -249,6 +249,9 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
   const [stage3Background, setStage3Background] = useState("#05020a");
   const [stage3Accent, setStage3Accent] = useState("#f472b6");
 
+  const [stage4Title, setStage4Title] = useState("Thời gian hẹn");
+  const [stage5Title, setStage5Title] = useState("Món ăn yêu thích");
+
   const [stage4Prompt, setStage4Prompt] = useState("Nhanh tay bắt lấy một vì sao ước nguyện!");
   const [stage4MicInstruction, setStage4MicInstruction] = useState("Và thổi vào Microphone để bay lớp bụi trần...");
   const [stage4FallbackButton, setStage4FallbackButton] = useState("Bấm vào đây nếu Mic lỗi");
@@ -303,6 +306,10 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
     const rawKey = selectedTemplate?.component_key ?? "";
     const templateName = selectedTemplate?.name?.toLowerCase() ?? "";
 
+    if (rawKey.includes("will-you-date-me") || templateName.includes("date me")) {
+      return "will-you-date-me";
+    }
+
     if (
       templateName.includes("valentine #1") ||
       rawKey.includes("constellation") ||
@@ -315,6 +322,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
 
     return rawKey || "val-starry-constellation-01";
   }, [selectedTemplate]);
+
+  const isWillYouDateMe = selectedComponentKey === "will-you-date-me";
 
   const canEditTemplate = result?.unlocked ?? false;
 
@@ -411,6 +420,24 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
       { message: stage3Message3, title: "Tin nhắn 3" },
       { message: stage3Message4, title: "Tin nhắn 4" },
     ],
+    ...(isWillYouDateMe ? {
+      questionTitle: stage1Instruction,
+      questionBody: question,
+      yesButton: giftAcceptButton,
+      noButton: giftDeclineButton,
+      successTitle: stage2Title,
+      successMessage: stage2Subtitle,
+      locationTitle: stage3Title,
+      datetimeTitle: stage4Title,
+      foodTitle: stage5Title,
+      drinkTitle: giftTitle,
+      finalTitle: finalTitle,
+      finalMessage: finalSubtitle,
+      generalAudioUrl: generalAudioUrl,
+      backgroundImage: stage1Background,
+      backgroundColor: stage2Background,
+      accentColor: stage1Accent,
+    } : {})
   };
 
   async function createOrder() {
@@ -637,11 +664,42 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
 
         {canEditTemplate ? (
           <>
-            <Section title="Thiết lập chung của mẫu">
-              <TextInput label="Mật mã mở quà nếu muốn dùng" onChange={setAnniversaryCode} value={anniversaryCode} />
-              <TextInput label="Câu hỏi phản hồi cuối" onChange={setQuestion} value={question} />
-              <MediaInput label="Nhạc nền tổng" onChange={(url) => setGeneralAudioUrl(url)} />
-            </Section>
+            {isWillYouDateMe ? (
+              <>
+                <Section title="Thiết lập chung">
+                  <ColorInput label="Màu nền tổng thể" onCommit={setStage2Background} value={stage2Background} />
+                  <ColorInput label="Màu nhấn (Nút, Tiêu đề)" onCommit={setStage1Accent} value={stage1Accent} />
+                  <MediaInput label="Ảnh nền trang (Tùy chọn)" onChange={setStage1Background} />
+                  <MediaInput label="Nhạc nền chung" onChange={setGeneralAudioUrl} />
+                </Section>
+                <Section title="Bước 1: Lời mời">
+                  <TextInput label="Tiêu đề lời mời" onChange={setStage1Instruction} value={stage1Instruction} />
+                  <TextArea label="Nội dung lời mời" onChange={setQuestion} value={question} />
+                  <TextInput label="Nút đồng ý" onChange={setGiftAcceptButton} value={giftAcceptButton} />
+                  <TextInput label="Nút từ chối" onChange={setGiftDeclineButton} value={giftDeclineButton} />
+                </Section>
+                <Section title="Bước 2: Phản hồi đồng ý">
+                  <TextInput label="Tiêu đề vui sướng" onChange={setStage2Title} value={stage2Title} />
+                  <TextArea label="Lời nhắn vui sướng" onChange={setStage2Subtitle} value={stage2Subtitle} />
+                </Section>
+                <Section title="Bước 3-6: Khảo sát lựa chọn">
+                  <TextInput label="Câu hỏi chọn địa điểm" onChange={setStage3Title} value={stage3Title} />
+                  <TextInput label="Câu hỏi chọn ngày giờ" onChange={setStage4Title} value={stage4Title} />
+                  <TextInput label="Câu hỏi chọn món ăn" onChange={setStage5Title} value={stage5Title} />
+                  <TextInput label="Câu hỏi chọn đồ uống" onChange={setGiftTitle} value={giftTitle} />
+                </Section>
+                <Section title="Bước 7: Chốt đơn">
+                  <TextInput label="Tiêu đề kết thúc" onChange={setFinalTitle} value={finalTitle} />
+                  <TextArea label="Lời nhắn cuối cùng" onChange={setFinalSubtitle} value={finalSubtitle} />
+                </Section>
+              </>
+            ) : (
+              <>
+                <Section title="Thiết lập chung của mẫu">
+                  <TextInput label="Mật mã mở quà nếu muốn dùng" onChange={setAnniversaryCode} value={anniversaryCode} />
+                  <TextInput label="Câu hỏi phản hồi cuối" onChange={setQuestion} value={question} />
+                  <MediaInput label="Nhạc nền tổng" onChange={(url) => setGeneralAudioUrl(url)} />
+                </Section>
 
             <Section title="Đoạn 1 - Ống kính dò chòm sao">
               <TextInput label="Hướng dẫn thao tác" onChange={setStage1Instruction} value={stage1Instruction} />
@@ -725,6 +783,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
               <ColorInput label="Màu nền đoạn cuối" onCommit={setFinalBackground} value={finalBackground} />
               <ColorInput label="Màu nút/nhấn đoạn cuối" onCommit={setFinalAccent} value={finalAccent} />
             </Section>
+              </>
+            )}
           </>
         ) : null}
 
@@ -834,8 +894,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
       {showSetupWorkspace ? (
       <aside className="glass-panel-soft rounded-2xl p-4 xl:sticky xl:top-5 xl:h-fit">
         <div className="px-1 pb-4">
-          <h2 className="text-2xl font-semibold">Preview Valentine #1</h2>
-          <p className="mt-1 text-sm text-white/54">Bấm Lùi/Tiếp để kiểm tra từng đoạn.</p>
+          <h2 className="text-2xl font-semibold">Live Preview</h2>
+          <p className="mt-1 text-sm text-white/54">Xem trước hiển thị ở đây.</p>
         </div>
         <InteractiveTemplatePreview
           componentKey={selectedComponentKey}

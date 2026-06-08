@@ -2,6 +2,7 @@
 
 import type { TemplatePreviewProps } from "./previews/types";
 import { StarryConstellationPreview } from "./previews/StarryConstellationPreview";
+import { WillYouDateMePreview } from "./previews/WillYouDateMePreview";
 
 type InteractiveTemplatePreviewProps = TemplatePreviewProps & {
   componentKey: string;
@@ -14,6 +15,7 @@ const previewRegistry = [
   { match: "valentine #1", Component: StarryConstellationPreview },
   { match: "password", Component: StarryConstellationPreview },
   { match: "timeline", Component: StarryConstellationPreview },
+  { match: "will-you-date-me", Component: WillYouDateMePreview },
 ];
 
 export function InteractiveTemplatePreview({

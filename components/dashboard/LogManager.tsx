@@ -381,6 +381,10 @@ const SECTIONS = [
   {
     title: "Đoạn 5 - Hợp đồng & Quà",
     keys: ["contractTitle", "contractBody", "contractRejectButton", "contractHoldInstruction", "finalTitle", "finalSubtitle", "finalCta", "finalBackground", "finalAccent", "giftTitle", "giftBody", "proposedDate", "giftDeclineButton", "giftAcceptButton", "giftAcceptedTitle", "giftAcceptedBody", "giftDeclinedTitle", "giftDeclinedBody", "giftBackButton", "giftRescheduleButton"],
+  },
+  {
+    title: "Mẫu hẹn hò (Will You Date Me)",
+    keys: ["questionTitle", "questionBody", "yesButton", "noButton", "successTitle", "successMessage", "locationTitle", "datetimeTitle", "foodTitle", "drinkTitle", "backgroundImage", "backgroundColor", "accentColor"],
   }
 ];
 
@@ -447,4 +451,18 @@ const CUSTOM_DATA_LABELS: Record<string, string> = {
   giftDeclinedBody: "Nội dung hẹn ngày khác",
   giftBackButton: "Nút quay lại",
   giftRescheduleButton: "Nút gửi lịch hẹn",
+
+  questionTitle: "Tiêu đề câu hỏi chính",
+  questionBody: "Nội dung câu hỏi chính",
+  yesButton: "Nút Đồng Ý",
+  noButton: "Nút Từ Chối",
+  successTitle: "Tiêu đề khi đồng ý",
+  successMessage: "Lời nhắn khi đồng ý",
+  locationTitle: "Câu hỏi chọn địa điểm",
+  datetimeTitle: "Câu hỏi chọn thời gian",
+  foodTitle: "Câu hỏi chọn món ăn",
+  drinkTitle: "Câu hỏi chọn đồ uống",
+  backgroundImage: "Ảnh nền tổng thể",
+  backgroundColor: "Màu nền",
+  accentColor: "Màu nhấn",
 };
