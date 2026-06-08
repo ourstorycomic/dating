@@ -63,6 +63,9 @@ export function WillYouDateMeExperience({
     food: [],
     drink: [],
   });
+  
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const noBtnResponses = [
     noButton,
@@ -75,10 +78,12 @@ export function WillYouDateMeExperience({
   ];
 
   const handleNoHover = () => {
-    // Generate random position
+    // Generate position using angle/distance so it always jumps far away
+    const angle = Math.random() * Math.PI * 2;
+    const distance = 120 + Math.random() * 100; // Nhảy xa ít nhất 120px, tối đa 220px
     setNoBtnPos({
-      x: (Math.random() - 0.5) * 200,
-      y: (Math.random() - 0.5) * 200,
+      x: Math.cos(angle) * distance,
+      y: Math.sin(angle) * distance,
     });
     setNoHoverCount((c) => c + 1);
   };
@@ -116,15 +121,28 @@ export function WillYouDateMeExperience({
 
   return (
     <div
-      className="relative flex h-full min-h-[600px] w-full flex-col items-center justify-center overflow-hidden font-sans text-white"
-      style={{
-        backgroundColor,
-        backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
+      className={`relative flex flex-col items-center justify-center overflow-hidden font-sans text-white ${compact ? "h-full w-full" : "h-[800px] min-h-[640px] max-h-[85vh] w-full sm:rounded-2xl border border-white/10"}`}
+      style={{ backgroundColor }}
     >
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+      {backgroundImage ? (
+        <>
+          <div 
+            className="absolute inset-0 z-0 bg-cover bg-center" 
+            style={{ backgroundImage: `url(${backgroundImage})` }} 
+          />
+          <div className="absolute inset-0 z-0 bg-black/40 backdrop-blur-sm" />
+        </>
+      ) : (
+        <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-pink-900/40 via-[#05020a] to-[#05020a]" />
+      )}
+
+      {/* Hiệu ứng 3D Trái tim và Bụi sao rực rỡ */}
+      {mounted && (
+        <>
+          <FloatingHearts3D />
+          <GlowingDust />
+        </>
+      )}
 
       <AnimatePresence mode="wait">
         {stage === "question" && (
@@ -140,24 +158,25 @@ export function WillYouDateMeExperience({
             <div className="mx-auto my-6 h-px w-24 bg-gradient-to-r from-transparent via-white/50 to-transparent" />
             <p className="mb-8 text-lg">{questionBody}</p>
             
-            <div className="relative flex items-center justify-center gap-4">
+            <div className="flex items-center justify-center gap-4">
               <button
                 onClick={handleYes}
                 className="rounded-full px-8 py-3 font-bold transition-transform hover:scale-105 active:scale-95"
-                style={{ backgroundColor: accentColor, color: "#fff" }}
+                style={{ backgroundColor: accentColor, color: "#fff", zIndex: 10 }}
               >
                 {yesButton}
               </button>
-              <motion.button
-                onHoverStart={compact ? undefined : handleNoHover}
-                onClick={handleNoHover}
-                animate={{ x: noBtnPos.x, y: noBtnPos.y }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="absolute z-50 rounded-full bg-white/10 px-8 py-3 font-bold text-white transition-colors hover:bg-white/20"
-                style={{ left: "50%", marginLeft: "20px" }}
-              >
-                {noBtnResponses[noHoverCount % noBtnResponses.length]}
-              </motion.button>
+              <div className="relative h-[48px] w-[140px] shrink-0">
+                <motion.button
+                  onPointerEnter={compact ? undefined : handleNoHover}
+                  onClick={handleNoHover}
+                  animate={{ x: noBtnPos.x, y: noBtnPos.y }}
+                  transition={{ type: "spring", stiffness: 500, damping: 15 }}
+                  className="absolute left-0 top-0 z-50 flex h-full min-w-full items-center justify-center whitespace-nowrap rounded-full bg-white/10 px-8 font-bold text-white hover:bg-white/20"
+                >
+                  {noBtnResponses[noHoverCount % noBtnResponses.length]}
+                </motion.button>
+              </div>
             </div>
           </motion.div>
         )}
@@ -364,6 +383,79 @@ export function WillYouDateMeExperience({
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  );
+}
+
+// Hiệu ứng Trái tim 3D bay bổng
+function FloatingHearts3D({ count = 25 }: { count?: number }) {
+  return (
+    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden" style={{ perspective: "800px" }}>
+      {Array.from({ length: count }).map((_, i) => {
+        const size = 15 + Math.random() * 35;
+        const left = Math.random() * 100;
+        const duration = 12 + Math.random() * 20;
+        const delay = Math.random() * 15;
+        const depth = Math.random(); // 0 to 1
+        const blur = depth > 0.8 ? "blur-[3px]" : depth < 0.2 ? "blur-[1px]" : "";
+        
+        return (
+          <motion.div
+            key={`heart-${i}`}
+            className={`absolute bottom-[-100px] text-pink-500/50 drop-shadow-[0_0_15px_rgba(236,72,153,0.6)] ${blur}`}
+            style={{
+              left: `${left}%`,
+              fontSize: size,
+            }}
+            initial={{ y: 0, x: 0, rotateZ: 0, rotateX: 0, rotateY: 0, opacity: 0 }}
+            animate={{
+              y: -1200 - Math.random() * 500,
+              x: (Math.random() - 0.5) * 300,
+              rotateZ: (Math.random() - 0.5) * 360,
+              rotateX: (Math.random() - 0.5) * 720, // Xoay 3D
+              rotateY: (Math.random() - 0.5) * 720, // Xoay 3D
+              opacity: [0, 0.8, 0.8, 0],
+            }}
+            transition={{
+              duration,
+              delay,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+          >
+            ❤
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+}
+
+// Hiệu ứng Bụi sao lấp lánh (Glowing Dust)
+function GlowingDust() {
+  return (
+    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden mix-blend-screen">
+      {Array.from({ length: 40 }).map((_, i) => (
+        <motion.div
+          key={`dust-${i}`}
+          className="absolute w-[2px] h-[2px] bg-white rounded-full shadow-[0_0_8px_#fff]"
+          style={{
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+          }}
+          animate={{
+            opacity: [0.1, 1, 0.1],
+            scale: [0.5, 2, 0.5],
+            y: [0, -40, 0]
+          }}
+          transition={{
+            duration: 3 + Math.random() * 5,
+            repeat: Infinity,
+            delay: Math.random() * 5,
+            ease: "easeInOut"
+          }}
+        />
+      ))}
     </div>
   );
 }

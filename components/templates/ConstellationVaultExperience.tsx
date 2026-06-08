@@ -648,10 +648,9 @@ function Stage2Orbit({
                 drag={evasiveJumps >= 3} 
                 dragConstraints={containerRef} dragElastic={0.1} 
                 onDragEnd={(e, info) => handleDragEnd(e, info, 2)} 
-                onHoverStart={handleEvasiveHover}
-                onPointerDown={handleEvasiveHover} // Cho mobile
+                onPointerEnter={handleEvasiveHover} // Sửa giật lag: Dùng pointer enter nhạy hơn hover
                 animate={evasiveJumps < 3 ? { x: evasivePos.x, y: evasivePos.y } : undefined}
-                className={`absolute bottom-10 left-1/2 -ml-6 w-12 h-12 flex items-center justify-center cursor-grab active:cursor-grabbing z-50 ${evasiveJumps < 3 ? 'transition-transform duration-300' : ''}`}
+                className={`absolute bottom-10 left-1/2 -ml-6 w-12 h-12 flex items-center justify-center cursor-grab active:cursor-grabbing z-50`}
               >
                 <IconStar className={`w-8 h-8 ${evasiveJumps < 3 ? 'text-red-400 drop-shadow-[0_0_15px_#f87171] animate-pulse' : 'text-blue-300 drop-shadow-[0_0_15px_#93c5fd]'}`} />
                 {evasiveJumps < 3 && <span className="absolute -top-6 text-xs text-red-300 whitespace-nowrap">Bướng bỉnh!</span>}

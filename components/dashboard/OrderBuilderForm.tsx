@@ -325,6 +325,38 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
 
   const isWillYouDateMe = selectedComponentKey === "will-you-date-me";
 
+  useEffect(() => {
+    if (isWillYouDateMe) {
+      setStage1Instruction("Xin chào xinh đẹp...");
+      setQuestion("Bạn có muốn đi chơi cùng mình không?");
+      setGiftAcceptButton("CÓ! ♥");
+      setGiftDeclineButton("KHÔNG! ☹");
+      setStage2Title("Yayyy!!! 🌸");
+      setStage2Subtitle("Mình rất háo hức được gặp bạn!");
+      setStage3Title("Bạn muốn đi đâu nè?");
+      setStage4Title("Khi nào thì bạn rảnh nè?");
+      setStage5Title("Bạn muốn ăn gì nè 😋");
+      setGiftTitle("Bạn muốn uống gì?");
+      setFinalTitle("Đã xong! 💕");
+      setFinalSubtitle("Mình rất mong được gặp bạn! Buổi hẹn của chúng ta sẽ thật hoàn hảo.");
+      setStage1Accent("#ec4899");
+    } else {
+      setStage1Instruction("Nối các ngôi sao");
+      setQuestion("Em có đồng ý cùng anh viết tiếp câu chuyện này không?");
+      setGiftAcceptButton("Lên đồ thôi!");
+      setGiftDeclineButton("Để khi khác");
+      setStage2Title("Quỹ Đạo Hỗn Loạn");
+      setStage2Subtitle("Từ trường đang nhiễu loạn. Hãy kéo các vì sao về đúng quỹ đạo.");
+      setStage3Title("Chòm Sao Thanh Âm");
+      setStage4Title("Thời gian hẹn");
+      setStage5Title("Món ăn yêu thích");
+      setGiftTitle("Thư Mời Hẹn Hò");
+      setFinalTitle("Happy Valentine's Day!");
+      setFinalSubtitle("Cảm ơn vì đã là ngoại lệ tuyệt vời nhất của nhau.");
+      setStage1Accent("#ec4899");
+    }
+  }, [isWillYouDateMe]);
+
   const canEditTemplate = result?.unlocked ?? false;
 
   useEffect(() => {

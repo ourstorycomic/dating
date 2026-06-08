@@ -28,6 +28,12 @@ export function WillYouDateMePreview(props: TemplatePreviewProps) {
       successMessage={parsedConfig.successMessage as string | undefined}
       successTitle={parsedConfig.successTitle as string | undefined}
       yesButton={parsedConfig.yesButton as string | undefined}
+      onComplete={(selections) => {
+        props.onResponse?.({
+          answer: "YES",
+          message: `Địa điểm: ${selections.location.join(", ")}\nNgày: ${selections.date}\nGiờ: ${selections.time}\nĐồ ăn: ${selections.food.join(", ")}\nNước uống: ${selections.drink.join(", ")}`,
+        });
+      }}
     />
   );
 }

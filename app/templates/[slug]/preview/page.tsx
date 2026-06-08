@@ -36,8 +36,8 @@ export default async function TemplatePreviewPage({
       </div>
       <main className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.86fr_1.14fr] pt-10 md:pt-0">
         <section className="glass-panel rounded-2xl p-5 sm:p-6">
-          <Link className="hidden md:inline-block text-sm font-semibold text-white/58 hover:text-white" href="/#mau-web">
-            Quay lại danh sách mẫu
+          <Link className="inline-block text-sm font-semibold text-white/58 hover:text-white" href="/">
+            &larr; Quay lại trang chủ
           </Link>
           <p className="mt-6 text-sm font-semibold text-pink-100/80">
             {template.template_categories?.name}
