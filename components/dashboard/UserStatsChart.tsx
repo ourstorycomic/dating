@@ -87,7 +87,7 @@ export function UserStatsChart({ data }: { data: ChartData[] }) {
               <YAxis stroke="rgba(255,255,255,0.5)" fontSize={12} tickFormatter={(val) => `${val / 1000}k`} />
               <Tooltip 
                 contentStyle={{ backgroundColor: "#1e1e2d", borderColor: "rgba(255,255,255,0.1)", borderRadius: "12px" }}
-                formatter={(value: number) => [`${value.toLocaleString("vi-VN")}đ`, "Hoa hồng"]}
+                formatter={(value: any) => [`${Number(value || 0).toLocaleString("vi-VN")}đ`, "Hoa hồng"]}
               />
               <Bar dataKey="commission" fill="#38bdf8" radius={[4, 4, 0, 0]} name="Hoa hồng" />
             </BarChart>

@@ -23,7 +23,6 @@ type Order = {
   public_id: string;
   recipient_name: string | null;
   status: string;
-  status: string;
   templates: { component_key: string; name: string; visual_label?: string | null } | null;
   creator?: { name: string | null; email: string | null } | { name: string | null; email: string | null }[] | null;
 };

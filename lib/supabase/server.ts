@@ -485,7 +485,7 @@ export async function getCommissionSummary() {
   const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
     .from("commissions")
-    .select("id, amount, percentage, recipient_type, status, created_at, users(name, email), affiliates(name, ref_code), orders(public_id)")
+    .select("id, user_id, amount, percentage, recipient_type, status, created_at, users(name, email), affiliates(name, ref_code), orders(public_id)")
     .order("created_at", { ascending: false })
     .limit(50);
 
