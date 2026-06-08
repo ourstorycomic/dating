@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { CommissionRulesForm } from "@/components/dashboard/CommissionRulesForm";
 import { EmployeeStatsPanel } from "@/components/dashboard/EmployeeStatsPanel";
 import { GlassCard } from "@/components/ui/GlassCard";
@@ -80,7 +81,13 @@ export default async function AnalyticsPage() {
             return (
               <div className="grid gap-2 rounded-2xl border border-white/10 bg-white/[0.05] p-4 md:grid-cols-[1fr_150px_150px]" key={commission.id}>
                 <div>
-                  <p className="font-semibold">{user?.name ?? affiliate?.name ?? "Không rõ"}</p>
+                  {commission.user_id ? (
+                    <Link href={`/dashboard/users/${commission.user_id}`} className="font-semibold transition-colors hover:text-pink-300 hover:underline">
+                      {user?.name ?? "Không rõ"}
+                    </Link>
+                  ) : (
+                    <p className="font-semibold">{affiliate?.name ?? "Không rõ"}</p>
+                  )}
                   <p className="text-xs text-white/48">Đơn {order?.public_id ?? "N/A"} - {commission.recipient_type}</p>
                 </div>
                 <p className="text-sm text-white/68">{Number(commission.percentage).toLocaleString("vi-VN")}%</p>

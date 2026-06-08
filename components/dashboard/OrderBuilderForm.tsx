@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { TemplateCatalogItem } from "@/lib/supabase/server";
 import { InteractiveTemplatePreview } from "@/components/templates/InteractiveTemplatePreview";
 
@@ -195,7 +195,19 @@ function Section({
 export function OrderBuilderForm({ currentRole, myOrders, templates }: { currentRole: "ADMIN" | "STAFF" | "EMPLOYEE"; myOrders: MyOrderRow[]; templates: TemplateCatalogItem[] }) {
   const valentineOne = templates.find((template) => template.component_key.includes("constellation")) ?? templates[0];
   const [selectedTemplateId, setSelectedTemplateId] = useState(valentineOne?.id ?? "");
-  const [templateSearch, setTemplateSearch] = useState("");
+  const [templateSearch, setTemplateSearch] = useState(valentineOne?.name ?? "");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   const [buyerName, setBuyerName] = useState("");
   const [buyerContact, setBuyerContact] = useState("");
   const [senderName, setSenderName] = useState("Anh");
@@ -283,17 +295,10 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
   );
   const filteredTemplates = useMemo(() => {
     const keyword = templateSearch.trim().toLowerCase();
-    const result = keyword
+    return keyword
       ? templates.filter((template) => `${template.name} ${template.tagline ?? ""} ${template.description ?? ""}`.toLowerCase().includes(keyword))
       : templates;
-
-    if (selectedTemplateId && !result.some((template) => template.id === selectedTemplateId)) {
-      const selected = templates.find((template) => template.id === selectedTemplateId);
-      return selected ? [selected, ...result] : result;
-    }
-
-    return result;
-  }, [selectedTemplateId, templateSearch, templates]);
+  }, [templateSearch, templates]);
   const selectedComponentKey = useMemo(() => {
     const rawKey = selectedTemplate?.component_key ?? "";
     const templateName = selectedTemplate?.name?.toLowerCase() ?? "";
@@ -512,21 +517,52 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
         <Section title="Thông tin đơn">
           <TextInput label="Tên khách mua" onChange={setBuyerName} value={buyerName} />
           <TextInput label="TikTok / SĐT khách" onChange={setBuyerContact} value={buyerContact} />
-          <div className="grid gap-2 text-sm md:col-span-2">
-            <span className="text-white/64">Mẫu</span>
+          <div className="relative grid gap-2 text-sm md:col-span-2" ref={dropdownRef}>
+            <span className="text-white/64">Mẫu giao diện</span>
             <input
               className="rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3 outline-none transition focus:border-pink-300/50"
-              onChange={(event) => setTemplateSearch(event.target.value)}
+              onChange={(event) => {
+                setTemplateSearch(event.target.value);
+                setIsDropdownOpen(true);
+              }}
+              onFocus={() => {
+                setIsDropdownOpen(true);
+                // Nếu click vào mà tên template đang khớp, bôi đen để tiện gõ đè (search)
+                if (templateSearch === templates.find(t => t.id === selectedTemplateId)?.name) {
+                  setTemplateSearch("");
+                }
+              }}
               placeholder="Tìm nhanh theo tên mẫu, dịp hoặc mô tả..."
               value={templateSearch}
             />
-            <select className="rounded-xl border border-white/10 bg-[#170d24] px-4 py-3 outline-none" onChange={(event) => setSelectedTemplateId(event.target.value)} value={selectedTemplateId}>
-              {filteredTemplates.map((template) => (
-                <option key={template.id} value={template.id}>
-                  {template.name} - {Math.round(template.base_price / 1000)}K
-                </option>
-              ))}
-            </select>
+            {isDropdownOpen && (
+              <ul className="absolute left-0 top-[76px] z-50 max-h-60 w-full overflow-y-auto rounded-xl border border-white/10 bg-[#170d24] p-2 shadow-[0_10px_40px_rgba(0,0,0,0.8)]">
+                {filteredTemplates.length === 0 ? (
+                  <li className="px-4 py-3 text-white/50">Không tìm thấy mẫu nào phù hợp.</li>
+                ) : (
+                  filteredTemplates.map((template) => {
+                    const isSelected = template.id === selectedTemplateId;
+                    return (
+                      <li
+                        key={template.id}
+                        className={`cursor-pointer rounded-lg px-4 py-3 transition hover:bg-white/[0.08] ${isSelected ? "bg-pink-500/20 text-pink-200" : ""}`}
+                        onClick={() => {
+                          setSelectedTemplateId(template.id);
+                          setTemplateSearch(template.name);
+                          setIsDropdownOpen(false);
+                        }}
+                      >
+                        <div className="flex items-center justify-between">
+                          <p className="font-semibold">{template.name}</p>
+                          <p className="text-xs font-bold text-pink-300">{Math.round(template.base_price / 1000)}K</p>
+                        </div>
+                        {template.description && <p className="mt-1 text-xs text-white/50">{template.description}</p>}
+                      </li>
+                    );
+                  })
+                )}
+              </ul>
+            )}
           </div>
           <TextInput label="Người gửi" onChange={setSenderName} value={senderName} />
           <TextInput label="Người nhận" onChange={setRecipientName} value={recipientName} />

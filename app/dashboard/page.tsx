@@ -1,8 +1,10 @@
 import { GlassCard } from "@/components/ui/GlassCard";
 import { getDashboardCounts, getRecentOrders } from "@/lib/supabase/server";
+import { OrderFilters } from "@/components/dashboard/OrderFilters";
 
-export default async function DashboardPage() {
-  const [counts, recentOrders] = await Promise.all([getDashboardCounts(), getRecentOrders()]);
+export default async function DashboardPage(props: { searchParams?: Promise<{ query?: string; status?: string; startDate?: string; endDate?: string }> }) {
+  const searchParams = await props.searchParams;
+  const [counts, recentOrders] = await Promise.all([getDashboardCounts(), getRecentOrders(searchParams)]);
 
   const stats = [
     { label: "Đơn", value: counts.orders },
@@ -36,7 +38,8 @@ export default async function DashboardPage() {
 
       <GlassCard hover={false} className="p-0">
         <div className="border-b border-white/10 px-5 py-4">
-          <h2 className="text-2xl font-semibold">Đơn gần đây</h2>
+          <h2 className="text-2xl font-semibold mb-4">Đơn gần đây</h2>
+          <OrderFilters />
         </div>
 
         {recentOrders.length === 0 ? (

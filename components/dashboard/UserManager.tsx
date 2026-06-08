@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { GlassCard } from "@/components/ui/GlassCard";
 
 type BaseRole = "ADMIN" | "STAFF" | "EMPLOYEE";
@@ -187,7 +188,11 @@ export function UserManager({
                 const customRole = getCustomRole(user);
                 return (
                   <tr className="border-b border-white/8 last:border-0" key={user.id}>
-                    <td className="px-5 py-4 font-semibold">{user.name}</td>
+                    <td className="px-5 py-4 font-semibold">
+                      <Link href={`/dashboard/users/${user.id}`} className="hover:text-pink-400 hover:underline">
+                        {user.name}
+                      </Link>
+                    </td>
                     <td className="px-5 py-4 text-white/70">{user.email}</td>
                     <td className="px-5 py-4">
                       {currentRole === "ADMIN" ? (

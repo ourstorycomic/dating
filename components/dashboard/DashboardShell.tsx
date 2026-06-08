@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { getRoleLabel, getSession, type UserRole } from "@/lib/auth/session";
+import { SidebarNav } from "@/components/dashboard/SidebarNav";
 
 const navItems = [
   { href: "/dashboard", label: "Tổng quan", roles: ["ADMIN", "STAFF", "EMPLOYEE"] },
@@ -43,17 +44,7 @@ export async function DashboardShell({ children }: { children: ReactNode }) {
             <p className="mt-3 text-xs uppercase tracking-[0.18em] text-white/42">Vai trò</p>
             <p className="mt-1 text-sm font-semibold">{getRoleLabel(role)}</p>
           </div>
-          <nav className="mt-5 grid grid-cols-2 gap-2 lg:grid-cols-1">
-            {visibleNav.map((item) => (
-              <Link
-                className="rounded-xl px-3 py-3 text-sm font-medium text-white/68 transition hover:bg-white/[0.08] hover:text-white"
-                href={item.href}
-                key={item.href}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
+          <SidebarNav items={visibleNav} />
           <form action="/api/auth/logout" className="mt-4">
             <button className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-3 text-sm font-semibold text-white/70 transition hover:bg-white/[0.08] hover:text-white">
               Đăng xuất

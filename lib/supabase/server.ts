@@ -105,15 +105,33 @@ export async function getDashboardCounts() {
   };
 }
 
-export async function getRecentOrders() {
+export async function getRecentOrders(filters?: { query?: string; status?: string; startDate?: string; endDate?: string }) {
   const supabase = createServerSupabaseClient();
-  const { data, error } = await supabase
+  let query = supabase
     .from("orders")
     .select(
       "id, public_id, buyer_name, buyer_contact, recipient_name, amount, status, created_at, templates(name), users(name)",
     )
-    .order("created_at", { ascending: false })
-    .limit(8);
+    .order("created_at", { ascending: false });
+
+  if (filters?.query) {
+    query = query.or(`public_id.ilike.%${filters.query}%,buyer_name.ilike.%${filters.query}%,buyer_contact.ilike.%${filters.query}%`);
+  }
+  if (filters?.status && filters.status !== "ALL") {
+    query = query.eq("status", filters.status);
+  }
+  if (filters?.startDate) {
+    query = query.gte("created_at", filters.startDate);
+  }
+  if (filters?.endDate) {
+    query = query.lte("created_at", filters.endDate);
+  }
+
+  // Allow up to 50 items if filtering, else default 8
+  const hasFilters = filters?.query || (filters?.status && filters.status !== "ALL") || filters?.startDate || filters?.endDate;
+  query = query.limit(hasFilters ? 50 : 8);
+
+  const { data, error } = await query;
 
   if (error) {
     console.error("Failed to load recent orders", error);
@@ -183,7 +201,7 @@ export async function getOrderLogs() {
   const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
     .from("order_logs")
-    .select("id, action, metadata, created_at, users(name, email), orders(id, public_id, buyer_name, buyer_contact, recipient_name, amount, status, custom_data, created_at, templates(name, component_key, visual_label), payments(payment_code, amount, status, qr_code_url, paid_at))")
+    .select("id, action, metadata, created_at, users(name, email), orders(id, public_id, buyer_name, buyer_contact, recipient_name, amount, status, custom_data, created_at, templates(name, component_key, visual_label), payments(payment_code, amount, status, qr_code_url, paid_at), creator:users!orders_created_by_id_fkey(name, email))")
     .order("created_at", { ascending: false })
     .limit(50);
 
@@ -477,4 +495,35 @@ export async function getCommissionSummary() {
   }
 
   return data ?? [];
+}
+
+export async function getUserDetails(userId: string) {
+  const supabase = createServerSupabaseClient();
+  
+  const { data: user, error: userError } = await supabase
+    .from("users")
+    .select("id, name, email, role, is_active, created_at")
+    .eq("id", userId)
+    .single();
+
+  if (userError || !user) return null;
+
+  const [ordersResponse, commissionsResponse] = await Promise.all([
+    supabase
+      .from("orders")
+      .select("id, public_id, amount, status, created_at")
+      .eq("created_by_id", userId)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("commissions")
+      .select("id, amount, percentage, status, created_at, order_id, orders(public_id, status)")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+  ]);
+
+  return {
+    user,
+    orders: ordersResponse.data ?? [],
+    commissions: commissionsResponse.data ?? [],
+  };
 }

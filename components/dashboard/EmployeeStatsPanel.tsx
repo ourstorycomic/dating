@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { GlassCard } from "@/components/ui/GlassCard";
 
 type StatRow = {
@@ -30,6 +31,8 @@ export function EmployeeStatsPanel({
 }) {
   const [mode, setMode] = useState<"day" | "month">("day");
   const [employeeFilter, setEmployeeFilter] = useState("all");
+  const [periodFilter, setPeriodFilter] = useState("all");
+
   const employeeOptions = useMemo(() => {
     const map = new Map<string, { email: string; name: string }>();
     [...dailyStats, ...monthlyStats].forEach((row) => {
@@ -39,34 +42,76 @@ export function EmployeeStatsPanel({
     });
     return Array.from(map, ([id, value]) => ({ id, ...value })).sort((a, b) => a.name.localeCompare(b.name, "vi"));
   }, [dailyStats, monthlyStats]);
+
   const sourceRows = mode === "day" ? dailyStats : monthlyStats;
-  const rows = employeeFilter === "all" ? sourceRows : sourceRows.filter((row) => row.employeeId === employeeFilter);
+
+  const periodOptions = useMemo(() => {
+    const set = new Set<string>();
+    sourceRows.forEach((row) => set.add("date" in row ? row.date : row.month));
+    return Array.from(set).sort().reverse();
+  }, [sourceRows]);
+
+  const rows = sourceRows.filter((row) => {
+    if (employeeFilter !== "all" && row.employeeId !== employeeFilter) return false;
+    const periodValue = "date" in row ? row.date : row.month;
+    if (periodFilter !== "all" && periodValue !== periodFilter) return false;
+    return true;
+  });
+
+  const totals = useMemo(() => {
+    return rows.reduce(
+      (acc, row) => {
+        acc.createdOrders += row.createdOrders;
+        acc.activeOrders += row.activeOrders;
+        acc.pendingOrders += row.pendingOrders;
+        acc.revenue += row.revenue;
+        acc.commissionEarned += row.commissionEarned;
+        return acc;
+      },
+      { createdOrders: 0, activeOrders: 0, pendingOrders: 0, revenue: 0, commissionEarned: 0 }
+    );
+  }, [rows]);
 
   return (
     <GlassCard hover={false}>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-2xl font-semibold">Đơn theo nhân viên</h2>
         <div className="flex flex-wrap gap-2">
-        <select
-          className="rounded-full border border-white/10 bg-white/[0.08] px-4 py-2 text-sm font-semibold outline-none"
-          onChange={(event) => setMode(event.target.value as "day" | "month")}
-          value={mode}
-        >
-          <option value="day">Theo ngày</option>
-          <option value="month">Theo tháng</option>
-        </select>
-        <select
-          className="rounded-full border border-white/10 bg-white/[0.08] px-4 py-2 text-sm font-semibold outline-none"
-          onChange={(event) => setEmployeeFilter(event.target.value)}
-          value={employeeFilter}
-        >
-          <option value="all">Tất cả nhân viên</option>
-          {employeeOptions.map((employee) => (
-            <option key={employee.id} value={employee.id}>
-              {employee.name}
-            </option>
-          ))}
-        </select>
+          <select
+            className="rounded-full border border-white/10 bg-white/[0.08] px-4 py-2 text-sm font-semibold outline-none"
+            onChange={(event) => {
+              setMode(event.target.value as "day" | "month");
+              setPeriodFilter("all");
+            }}
+            value={mode}
+          >
+            <option value="day">Theo ngày</option>
+            <option value="month">Theo tháng</option>
+          </select>
+          <select
+            className="rounded-full border border-white/10 bg-white/[0.08] px-4 py-2 text-sm font-semibold outline-none"
+            onChange={(event) => setPeriodFilter(event.target.value)}
+            value={periodFilter}
+          >
+            <option value="all">Tất cả {mode === "day" ? "ngày" : "tháng"}</option>
+            {periodOptions.map((period) => (
+              <option key={period} value={period}>
+                {period}
+              </option>
+            ))}
+          </select>
+          <select
+            className="rounded-full border border-white/10 bg-white/[0.08] px-4 py-2 text-sm font-semibold outline-none"
+            onChange={(event) => setEmployeeFilter(event.target.value)}
+            value={employeeFilter}
+          >
+            <option value="all">Tất cả nhân viên</option>
+            {employeeOptions.map((employee) => (
+              <option key={employee.id} value={employee.id}>
+                {employee.name}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -88,7 +133,9 @@ export function EmployeeStatsPanel({
               <tr className="border-b border-white/8" key={`${"date" in row ? row.date : row.month}-${row.employeeId}`}>
                 <td className="py-3 pr-4 font-semibold">{"date" in row ? row.date : row.month}</td>
                 <td className="py-3 pr-4">
-                  <p className="font-semibold text-pink-100">{row.employeeName}</p>
+                  <Link href={`/dashboard/users/${row.employeeId}`} className="font-semibold text-pink-100 transition-colors hover:text-pink-300 hover:underline">
+                    {row.employeeName}
+                  </Link>
                   <p className="text-xs text-white/42">{row.employeeEmail}</p>
                 </td>
                 <td className="py-3 pr-4">{row.createdOrders}</td>
@@ -100,11 +147,25 @@ export function EmployeeStatsPanel({
             )) : (
               <tr>
                 <td className="py-5 text-white/54" colSpan={7}>
-                  Chưa có đơn trong khoảng này.
+                  Chưa có đơn hoặc hoa hồng trong khoảng này.
                 </td>
               </tr>
             )}
           </tbody>
+          {rows.length > 0 && (
+            <tfoot className="border-t border-white/20 bg-white/[0.03] text-sm font-bold">
+              <tr>
+                <td className="py-4 pr-4" colSpan={2}>
+                  Tổng cộng {periodFilter !== "all" ? `trong ${periodFilter}` : ""}
+                </td>
+                <td className="py-4 pr-4">{totals.createdOrders}</td>
+                <td className="py-4 pr-4">{totals.activeOrders}</td>
+                <td className="py-4 pr-4">{totals.pendingOrders}</td>
+                <td className="py-4 pr-4">{money(totals.revenue)}</td>
+                <td className="py-4 pr-4 text-pink-300">{money(totals.commissionEarned)}</td>
+              </tr>
+            </tfoot>
+          )}
         </table>
       </div>
     </GlassCard>
