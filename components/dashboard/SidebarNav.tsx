@@ -9,8 +9,6 @@ export function SidebarNav({ items }: { items: Array<{ href: string; label: stri
   return (
     <nav className="mt-5 grid grid-cols-2 gap-2 lg:grid-cols-1">
       {items.map((item) => {
-        // A link is active if the pathname exactly matches or starts with the link's href (for subpages).
-        // Except for "/" or "/dashboard", which should only be active if exact match.
         const isActive =
           item.href === "/dashboard"
             ? pathname === "/dashboard"
@@ -18,13 +16,13 @@ export function SidebarNav({ items }: { items: Array<{ href: string; label: stri
 
         return (
           <Link
-            key={item.href}
-            href={item.href}
-            className={`rounded-xl px-3 py-3 text-sm font-medium transition ${
+            className={`rounded-xl border px-3 py-3 text-sm font-bold transition ${
               isActive
-                ? "bg-pink-500/10 text-pink-400 border border-pink-500/20 shadow-[0_0_15px_rgba(236,72,153,0.15)]"
-                : "text-white/68 hover:bg-white/[0.08] hover:text-white border border-transparent"
+                ? "border-[#ff9fbe] bg-[#ffe0ef] text-[#b83276] shadow-[0_10px_24px_rgba(255,126,184,0.16)]"
+                : "border-transparent text-[#76556d] hover:border-[#f4bdd8] hover:bg-white/72 hover:text-[#c04b86]"
             }`}
+            href={item.href}
+            key={item.href}
           >
             {item.label}
           </Link>

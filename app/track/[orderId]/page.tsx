@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { getOrderByPublicId } from "@/lib/supabase/server";
-import { AudioPlayer } from "@/components/ui/AudioPlayer";
+import { TrackResponsePanel } from "./TrackResponsePanel";
 
 export const dynamic = "force-dynamic";
 
@@ -48,8 +48,6 @@ export default async function TrackPage({
 
   if (!order) notFound();
 
-  const response = parseResponse(order.response_text);
-
   return (
     <div className="min-h-screen px-4 py-8 text-white sm:px-6 lg:px-10">
       <main className="mx-auto grid max-w-5xl gap-6">
@@ -74,39 +72,13 @@ export default async function TrackPage({
           ))}
         </section>
 
-        <GlassCard hover={false}>
-          <h2 className="text-2xl font-semibold">Phản hồi của người nhận</h2>
-          {response ? (
-            <div className="mt-5 grid gap-4">
-              <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-4">
-                <p className="text-sm text-white/54">Thời điểm trả lời</p>
-                <p className="mt-2 text-lg font-semibold text-pink-100">
-                  {formatTime(order.responded_at ?? response.submittedAt ?? null)}
-                </p>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-4">
-                <p className="text-sm text-white/54">Lời nhắn</p>
-                <p className="mt-2 whitespace-pre-wrap text-base leading-7 text-white/82">
-                  {response.message || "Người nhận không nhập lời nhắn thêm."}
-                </p>
-              </div>
-              {response.audioDataUrl ? (
-                <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-4">
-                  <p className="mb-3 text-sm text-white/54">Ghi âm người nhận gửi</p>
-                  <AudioPlayer src={response.audioDataUrl} />
-                </div>
-              ) : (
-                <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-4 text-sm text-white/60">
-                  Chưa có ghi âm.
-                </div>
-              )}
-            </div>
-          ) : (
-            <p className="mt-5 rounded-2xl border border-white/10 bg-white/[0.05] p-4 text-sm text-white/62">
-              Chưa có phản hồi. Khi người nhận bấm trả lời ở gift link, nội dung sẽ hiện ở đây.
-            </p>
-          )}
-        </GlassCard>
+        <TrackResponsePanel
+          orderId={order.public_id}
+          initialResponseText={order.response_text}
+          senderName={(order.custom_data && typeof order.custom_data === "object" && "senderName" in order.custom_data)
+            ? (order.custom_data.senderName as string)
+            : "Host"}
+        />
       </main>
     </div>
   );

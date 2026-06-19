@@ -41,12 +41,15 @@ export function GiftFullscreenView({ order }: { order: GiftOrder }) {
       if (!res.ok) {
         const data = await res.json();
         setError(data.error ?? "Không gửi được phản hồi.");
+        setTimeout(() => setError(""), 4000);
         return;
       }
 
       setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
     } catch {
       setError("Có lỗi xảy ra khi gửi phản hồi.");
+      setTimeout(() => setError(""), 4000);
     }
   }
 
@@ -63,6 +66,7 @@ export function GiftFullscreenView({ order }: { order: GiftOrder }) {
         hideNavigation
         fullScreen
         onResponse={handleResponse}
+        roomId={order.public_id}
       />
       {error ? (
         <div className="absolute left-1/2 top-4 z-[200] -translate-x-1/2 rounded-full bg-red-500 px-4 py-2 font-bold text-white shadow-lg">

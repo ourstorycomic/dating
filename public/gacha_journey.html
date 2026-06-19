@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hành Trình Gacha & Chốt Deal - Premium Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+            margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh;
+        }
+
+        .letter-font { font-family: 'Dancing Script', cursive; }
+
+        /* Premium CSS Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+        .anim-float { animation: float 3s ease-in-out infinite; }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(236, 72, 153, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(236, 72, 153, 1); }
+        }
+        .anim-pulse-glow { animation: pulse-glow 1.5s infinite; }
+
+        @keyframes spring-up {
+            0% { transform: scale(0.8) translateY(50px); opacity: 0; }
+            60% { transform: scale(1.05) translateY(-10px); opacity: 1; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        .anim-spring-up { animation: spring-up 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; opacity: 0; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0) rotate(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-6px) rotate(-3deg); }
+            20%, 40%, 60%, 80% { transform: translateX(6px) rotate(3deg); }
+        }
+        .anim-shake { animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both; }
+
+        @keyframes pop-in {
+            0% { transform: scale(0); opacity: 0; }
+            80% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .anim-pop-in { animation: pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; opacity: 0; }
+
+        @keyframes egg-bounce {
+            0% { transform: translateY(-150px) scale(0.8) rotate(-15deg); opacity: 0; }
+            50% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+            65% { transform: translateY(-30px) scale(0.95); }
+            80% { transform: translateY(0) scale(1); }
+            90% { transform: translateY(-10px); }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .anim-egg-bounce { animation: egg-bounce 1.2s cubic-bezier(0.28, 0.84, 0.42, 1) forwards; }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+        }
+        .anim-wiggle { animation: wiggle 1s ease-in-out infinite; }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.1); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.1); }
+        }
+        .anim-heartbeat { animation: heartbeat 1.5s ease-in-out infinite; }
+
+        /* Liquid Click */
+        .liquid-btn { transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s, box-shadow 0.3s; }
+        .liquid-btn:active { transform: scale(0.9) !important; }
+        .liquid-btn.selected { background-color: #ec4899; color: white; border-color: #be185d; box-shadow: 0 8px 25px rgba(236, 72, 153, 0.5); transform: scale(1.05); }
+
+        /* Ray explosion */
+        .ray-explosion {
+            box-shadow: 0 0 0 0 rgba(255, 255, 255, 1);
+            animation: explode-light 1s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+        }
+        @keyframes explode-light {
+            0% { box-shadow: 0 0 0 0 rgba(255,255,255,1), 0 0 40px 20px rgba(255,255,255,0.8); background: white; }
+            100% { box-shadow: 0 0 0 1000px rgba(255,255,255,0), 0 0 100px 50px rgba(255,255,255,0); background: transparent; }
+        }
+
+        /* Typewriter Cursor */
+        .typing-cursor::after { content: '|'; animation: blink 1s step-end infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* Envelope 3D */
+        .envelope-flap {
+            transform-origin: top;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .envelope-open .envelope-flap { transform: rotateX(180deg); z-index: 10; }
+        .envelope-paper {
+            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
+        }
+        .envelope-open .envelope-paper { transform: translateY(-100px); }
+
+        /* Stardust */
+        .stardust {
+            position: absolute; border-radius: 50%; background: white;
+            box-shadow: 0 0 8px 2px rgba(255,255,255,0.8);
+            animation: drift 4s infinite linear;
+        }
+        @keyframes drift {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(-100px) translateX(20px); opacity: 0; }
+        }
+
+        /* Glassmorphism 3D Ticket */
+        .holo-ticket {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.4));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.6);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.5);
+            animation: holo-rotate 6s infinite ease-in-out alternate;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        @keyframes holo-rotate {
+            0% { transform: perspective(1000px) rotateY(-10deg) rotateX(5deg); }
+            100% { transform: perspective(1000px) rotateY(10deg) rotateX(-5deg); }
+        }
+
+        /* Scanline on machine */
+        .scanline {
+            position: absolute; width: 150%; height: 10px; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.8), transparent);
+            transform: rotate(-30deg) translateY(-200px);
+            animation: scan 3s infinite linear;
+        }
+        @keyframes scan { 100% { transform: rotate(-30deg) translateY(400px); } }
+
+        /* Delay utilities */
+        .delay-100 { animation-delay: 0.1s; } .delay-200 { animation-delay: 0.2s; } .delay-300 { animation-delay: 0.3s; }
+
+    </style>
+</head>
+<body>
+
+    <div id="preview-container" class="relative w-full max-w-[400px] h-[800px] max-h-[90vh] bg-gradient-to-b from-[#e0c3fc] to-[#8ec5fc] overflow-hidden rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] mx-auto border-[12px] border-white touch-none select-none">
+        
+        <!-- ================= STEP 1 & 2: MÁY GACHA ================= -->
+        <div id="step-1" class="step-panel absolute inset-0 z-10 transition-opacity duration-500">
+            <div id="main-text" class="absolute top-10 left-0 w-full text-center z-20 px-6 transition-opacity duration-500">
+                <h2 class="text-white text-2xl font-extrabold drop-shadow-md anim-spring-up">Cậu có 1 lượt quay!</h2>
+                <p class="text-white/90 mt-2 font-medium drop-shadow anim-spring-up delay-100">Hãy kéo xu vào máy nhé 👇</p>
+            </div>
+
+            <!-- Gacha Machine -->
+            <div id="gacha-machine" class="absolute top-36 left-1/2 -translate-x-1/2 flex flex-col items-center z-10 transition-transform duration-500">
+                <!-- Globe -->
+                <div id="glass-globe" class="w-64 h-64 rounded-full bg-white/20 backdrop-blur-md border-4 border-white/60 shadow-[inset_0_-20px_40px_rgba(0,0,0,0.1),_0_20px_40px_rgba(0,0,0,0.2)] relative overflow-hidden z-20">
+                    <div class="scanline z-50"></div>
+                    <div class="absolute top-4 left-6 w-24 h-10 bg-white/50 rounded-full rotate-[-30deg] blur-[4px]"></div>
+                    
+                    <!-- Eggs in globe -->
+                    <div class="absolute bottom-2 left-10 w-16 h-16 bg-gradient-to-br from-pink-400 to-pink-600 rounded-full border-2 border-pink-300 shadow-lg"></div>
+                    <div class="absolute bottom-4 left-24 w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full border-2 border-blue-300 shadow-lg"></div>
+                    <div class="absolute bottom-1 right-12 w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full border-2 border-yellow-300 shadow-lg"></div>
+                    <div class="absolute bottom-12 left-16 w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full border-2 border-green-300 shadow-lg"></div>
+                    <div class="absolute bottom-20 left-1/2 -translate-x-1/2 w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-full border-2 border-red-300 shadow-lg"></div>
+                </div>
+
+                <!-- Body -->
+                <div class="w-[300px] h-72 bg-gradient-to-b from-white to-gray-100 rounded-[2.5rem] shadow-[0_30px_60px_rgba(0,0,0,0.3)] -mt-8 relative z-30 flex flex-col items-center border-t border-white overflow-hidden">
+                    <div class="w-full h-10 bg-gradient-to-r from-pink-200 via-pink-100 to-pink-200 border-b border-pink-300 shadow-sm"></div>
+                    
+                    <!-- Coin Slot -->
+                    <div id="coin-slot-hitbox" class="absolute top-14 right-10 w-14 h-20 flex items-center justify-center">
+                        <div id="tooltip-drag" class="absolute -top-12 left-1/2 -translate-x-1/2 text-[11px] font-bold text-white bg-pink-500 anim-float px-3 py-1.5 rounded-full shadow-lg whitespace-nowrap z-[100] border border-pink-400">
+                            Nhét xu đây nè 👇
+                        </div>
+                        <div id="coin-slot" class="w-4 h-12 bg-gray-900 rounded-full border-[3px] border-gray-400 shadow-[inset_0_0_8px_rgba(0,0,0,1)] transition-all duration-300"></div>
+                    </div>
+                    
+                    <!-- Knob -->
+                    <div id="knob" class="absolute top-14 left-10 w-[72px] h-[72px] bg-gradient-to-br from-pink-400 to-pink-600 rounded-full shadow-[0_10px_20px_rgba(236,72,153,0.4),_inset_0_5px_10px_rgba(255,255,255,0.5)] border-4 border-pink-200 flex items-center justify-center cursor-pointer transition-transform opacity-50 pointer-events-none">
+                        <div class="w-12 h-3 bg-white/90 rounded-full shadow-sm"></div>
+                    </div>
+
+                    <!-- Dispenser Area -->
+                    <div class="absolute bottom-6 w-28 h-28 bg-gray-900 rounded-b-3xl rounded-t-lg border-t-8 border-gray-700 shadow-[inset_0_15px_25px_rgba(0,0,0,0.8)] flex items-end justify-center pb-2 overflow-hidden">
+                        <div class="absolute top-0 w-full h-6 bg-black/60 z-10"></div>
+                        
+                        <!-- Dropped Egg -->
+                        <div id="dropped-capsule" class="w-16 h-16 relative hidden z-0">
+                            <div class="absolute inset-0 bg-gradient-to-b from-red-400 to-red-600 h-1/2 rounded-t-full border-t border-x border-red-300 shadow-[inset_0_-5px_10px_rgba(0,0,0,0.2)]"></div>
+                            <div class="absolute inset-0 top-1/2 bg-gradient-to-b from-gray-100 to-gray-300 h-1/2 rounded-b-full border-b border-x border-gray-400 shadow-[inset_0_5px_10px_rgba(0,0,0,0.1)]"></div>
+                            <div class="absolute top-1/2 left-0 right-0 h-[3px] bg-gray-800 -translate-y-1/2 shadow-sm"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Draggable Coin -->
+            <div id="coin" class="absolute bottom-12 left-1/2 transform -translate-x-1/2 w-20 h-20 bg-gradient-to-br from-yellow-300 via-yellow-400 to-yellow-600 rounded-full border-[5px] border-yellow-100 flex items-center justify-center cursor-grab active:cursor-grabbing z-50 shadow-[0_10px_25px_rgba(250,204,21,0.5),_inset_0_0_15px_rgba(255,255,255,0.8)] touch-none anim-float">
+                <div class="absolute inset-0 rounded-full border border-yellow-500 opacity-50"></div>
+                <i class="fas fa-heart text-yellow-100 text-3xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]"></i>
+            </div>
+        </div>
+
+        <!-- ================= STEP 3: MỞ TRỨNG ================= -->
+        <div id="step-3" class="step-panel absolute inset-0 bg-black/70 backdrop-blur-md z-40 opacity-0 pointer-events-none flex-col items-center justify-center transition-opacity duration-500">
+            <h3 id="step3-title" class="text-2xl font-bold text-white mb-12 drop-shadow-lg text-center px-4 anim-spring-up">Chạm vào trứng để xé vỏ nha! ✨</h3>
+            
+            <div id="big-capsule" class="relative w-56 h-56 cursor-pointer anim-float">
+                <div class="capsule-top absolute top-0 w-full h-28 bg-gradient-to-b from-red-400 to-red-600 rounded-t-full shadow-[0_10px_30px_rgba(220,38,38,0.5),_inset_0_-5px_15px_rgba(0,0,0,0.2)] border-2 border-red-300 z-20 flex items-end justify-center pb-1">
+                    <div class="w-full h-3 bg-black/30"></div>
+                </div>
+                <div class="capsule-bottom absolute bottom-0 w-full h-28 bg-gradient-to-b from-gray-100 to-gray-300 rounded-b-full shadow-[0_10px_30px_rgba(0,0,0,0.2)] border-2 border-white z-10"></div>
+                
+                <div id="ray-burst" class="absolute inset-0 rounded-full z-[25] pointer-events-none"></div>
+                
+                <!-- Ticket chui ra -->
+                <div id="ticket-reveal" class="absolute inset-0 flex items-center justify-center opacity-0 pointer-events-none z-30">
+                    <div class="bg-gradient-to-br from-yellow-100 to-yellow-300 border-4 border-yellow-400 p-5 rounded-2xl shadow-[0_20px_50px_rgba(250,204,21,0.4)] w-64 text-center transform -rotate-3">
+                        <i class="fas fa-ticket-alt text-4xl text-yellow-600 mb-2 drop-shadow-sm"></i>
+                        <h4 class="font-black text-yellow-800 text-xl uppercase tracking-wider">Vé VIP Date</h4>
+                        <p class="text-sm text-yellow-700 font-semibold mt-1 mb-4">Lượt chốt kèo siêu cấp vô địch</p>
+                        <button id="btn-goto-wheel" class="bg-gradient-to-r from-pink-500 to-rose-500 text-white w-full py-3 rounded-full font-bold shadow-[0_10px_20px_rgba(236,72,153,0.4)] anim-pulse-glow hover:scale-105 transition-transform">
+                            Tiếp tục 👉
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= STEP 4: VÒNG QUAY ================= -->
+        <div id="step-4" class="step-panel absolute inset-0 bg-gradient-to-br from-[#ffecd2] to-[#fcb69f] z-50 opacity-0 pointer-events-none flex flex-col items-center justify-center p-6 transition-opacity duration-500">
+            <h2 class="text-4xl font-extrabold text-pink-600 mb-2 text-center drop-shadow-sm anim-spring-up">Vòng Quay Vũ Trụ</h2>
+            <p class="text-pink-800/80 font-medium mb-10 text-center anim-spring-up delay-100">Trạm dừng chân tiếp theo là...</p>
+            
+            <div class="relative w-[300px] h-[300px] anim-spring-up delay-200">
+                <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-10 h-10 bg-gradient-to-b from-red-500 to-red-700 rounded-full z-20 border-4 border-white shadow-[0_5px_15px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                    <div class="w-0 h-0 border-l-[10px] border-r-[10px] border-t-[20px] border-l-transparent border-r-transparent border-t-red-600 absolute -bottom-4 drop-shadow-sm"></div>
+                </div>
+                
+                <div id="wheel" class="wheel-container border-[10px] bg-white w-full h-full">
+                    <div class="wheel-slice bg-gradient-to-br from-[#ff9a9e] to-[#fecfef]" style="transform: rotate(0deg) skew(0deg);"><span class="wheel-text text-white drop-shadow-md text-base">Xem Phim 🍿</span></div>
+                    <div class="wheel-slice bg-gradient-to-br from-[#fecfef] to-[#a1c4fd]" style="transform: rotate(90deg) skew(0deg);"><span class="wheel-text text-pink-600 drop-shadow-sm text-base">Cà Phê ☕</span></div>
+                    <div class="wheel-slice bg-gradient-to-br from-[#a1c4fd] to-[#c2e9fb]" style="transform: rotate(180deg) skew(0deg);"><span class="wheel-text text-blue-700 drop-shadow-sm text-base">Lượn Phố 🛵</span></div>
+                    <div class="wheel-slice bg-gradient-to-br from-[#fbc2eb] to-[#a6c1ee]" style="transform: rotate(270deg) skew(0deg);"><span class="wheel-text text-purple-700 drop-shadow-sm text-base">Ăn Ngon 🍝</span></div>
+                </div>
+            </div>
+            
+            <div id="wheel-result-area" class="h-28 flex flex-col items-center justify-center mt-8 w-full">
+                <button id="btn-spin" class="bg-gradient-to-r from-pink-500 to-rose-500 text-white text-xl px-10 py-4 rounded-full font-black shadow-[0_15px_30px_rgba(236,72,153,0.4)] anim-pulse-glow hover:scale-110 active:scale-95 transition-transform w-56">
+                    BẤM QUAY!
+                </button>
+                <div id="wheel-result-text" class="hidden text-center flex-col items-center">
+                    <p class="text-pink-800 font-semibold text-sm mb-1 opacity-80">Kết quả nè:</p>
+                    <p id="wheel-winner" class="text-3xl font-black text-pink-600 uppercase bg-white/50 px-6 py-2 rounded-2xl shadow-inner border border-white/60 backdrop-blur-sm"></p>
+                </div>
+            </div>
+            
+            <button id="btn-goto-datetime" class="mt-2 bg-white text-pink-600 border-2 border-pink-300 px-8 py-3 rounded-full font-bold shadow-lg opacity-0 pointer-events-none transition-opacity duration-500 hover:bg-pink-50 anim-wiggle">
+                Chốt Ngày Giờ Nào 👉
+            </button>
+        </div>
+
+        <!-- ================= STEP 5: CHỌN NGÀY GIỜ ================= -->
+        <div id="step-5" class="step-panel absolute inset-0 bg-[#f8fafc] z-50 opacity-0 pointer-events-none flex flex-col items-center p-6 transition-opacity duration-500 overflow-y-auto">
+            <h2 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-500 mt-6 mb-2 text-center anim-spring-up">Thiết Lập Cuộc Hẹn</h2>
+            <p class="text-gray-500 font-medium text-sm mb-10 text-center anim-spring-up delay-100">Chọn thời gian chuẩn xác nhất nhé!</p>
+            
+            <div class="w-full max-w-[320px] space-y-8">
+                <div>
+                    <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2 anim-spring-up delay-100"><i class="far fa-calendar-check text-pink-500 text-xl"></i> Ngày Nào Đẹp?</h3>
+                    <div class="grid grid-cols-2 gap-3" id="date-buttons">
+                        <button class="liquid-btn date-btn anim-pop-in delay-100 bg-white border-2 border-gray-200 rounded-2xl py-4 text-sm font-bold text-gray-600 shadow-sm" data-val="Tối Nay">Tối Nay</button>
+                        <button class="liquid-btn date-btn anim-pop-in delay-200 bg-white border-2 border-gray-200 rounded-2xl py-4 text-sm font-bold text-gray-600 shadow-sm" data-val="Ngày Mai">Ngày Mai</button>
+                        <button class="liquid-btn date-btn anim-pop-in delay-300 bg-white border-2 border-gray-200 rounded-2xl py-4 text-sm font-bold text-gray-600 shadow-sm" data-val="Cuối Tuần">Cuối Tuần</button>
+                        <button class="liquid-btn date-btn anim-pop-in delay-300 bg-white border-2 border-gray-200 rounded-2xl py-4 text-sm font-bold text-gray-600 shadow-sm" data-val="Tuần Sau">Tuần Sau</button>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2 anim-spring-up delay-200"><i class="far fa-clock text-blue-500 text-xl"></i> Lúc Mấy Giờ?</h3>
+                    <div class="grid grid-cols-3 gap-3" id="time-buttons">
+                        <button class="liquid-btn time-btn anim-pop-in delay-200 bg-white border-2 border-gray-200 rounded-xl py-3 text-sm font-bold text-gray-600 shadow-sm" data-val="Sáng">Sáng</button>
+                        <button class="liquid-btn time-btn anim-pop-in delay-300 bg-white border-2 border-gray-200 rounded-xl py-3 text-sm font-bold text-gray-600 shadow-sm" data-val="Chiều">Chiều</button>
+                        <button class="liquid-btn time-btn anim-pop-in delay-300 bg-white border-2 border-gray-200 rounded-xl py-3 text-sm font-bold text-gray-600 shadow-sm" data-val="Tối">Tối</button>
+                    </div>
+                </div>
+            </div>
+
+            <button id="btn-confirm-datetime" class="mt-auto mb-10 bg-gray-300 text-gray-500 w-[280px] py-4 rounded-full font-extrabold text-lg transition-all duration-500 pointer-events-none">
+                Xác Nhận Lịch Trình
+            </button>
+        </div>
+
+        <!-- ================= STEP 6: BỨC THƯ TÌNH ================= -->
+        <div id="step-6" class="step-panel absolute inset-0 bg-black/60 backdrop-blur-md z-[60] opacity-0 pointer-events-none flex flex-col items-center justify-center p-6 transition-opacity duration-700 overflow-hidden">
+            <!-- Stardust -->
+            <div class="stardust w-2 h-2 left-10 top-1/4"></div>
+            <div class="stardust w-3 h-3 right-12 top-1/3" style="animation-delay: 1s"></div>
+            <div class="stardust w-1 h-1 left-20 bottom-1/4" style="animation-delay: 2s"></div>
+            
+            <div id="envelope" class="relative w-full max-w-[320px] h-[200px] mt-24">
+                <!-- Envelope Back -->
+                <div class="absolute inset-0 bg-pink-300 rounded-xl shadow-lg border border-pink-400"></div>
+                
+                <!-- Paper -->
+                <div class="envelope-paper absolute inset-x-4 top-2 bottom-2 bg-white/95 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-pink-100 flex flex-col items-center">
+                    <i class="fas fa-heart text-pink-400 text-2xl mb-4"></i>
+                    <div class="text-gray-800 text-xl leading-relaxed letter-font w-full h-full text-center">
+                        <span id="typewriter-text"></span><span id="typewriter-cursor" class="typing-cursor font-bold text-pink-500"></span>
+                    </div>
+                </div>
+
+                <!-- Envelope Front Flaps -->
+                <div class="absolute inset-0 w-full h-full pointer-events-none overflow-hidden rounded-xl z-20">
+                    <!-- Left & Right -->
+                    <div class="absolute top-0 left-0 w-0 h-0 border-t-[100px] border-b-[100px] border-l-[160px] border-l-pink-400 border-t-transparent border-b-transparent"></div>
+                    <div class="absolute top-0 right-0 w-0 h-0 border-t-[100px] border-b-[100px] border-r-[160px] border-r-pink-400 border-t-transparent border-b-transparent"></div>
+                    <!-- Bottom -->
+                    <div class="absolute bottom-0 left-0 w-0 h-0 border-l-[160px] border-r-[160px] border-b-[120px] border-b-pink-500 border-l-transparent border-r-transparent drop-shadow-md"></div>
+                </div>
+
+                <!-- Envelope Top Flap (Animated) -->
+                <div class="envelope-flap absolute top-0 left-0 w-0 h-0 border-l-[160px] border-r-[160px] border-t-[110px] border-t-pink-200 border-l-transparent border-r-transparent drop-shadow-[0_5px_5px_rgba(0,0,0,0.2)] z-30 flex justify-center">
+                    <div class="absolute -top-[100px] w-10 h-10 bg-red-500 rounded-full shadow-md border-2 border-white flex items-center justify-center">
+                        <i class="fas fa-stamp text-white text-xs"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="btn-read-done" class="mt-20 bg-white text-pink-600 px-8 py-3 rounded-full font-bold shadow-[0_10px_30px_rgba(255,255,255,0.3)] anim-heartbeat opacity-0 pointer-events-none transition-opacity duration-500 z-50">
+                Đóng Dấu Xác Nhận 🔏
+            </button>
+        </div>
+
+        <!-- ================= STEP 7: XÁC MINH CUỐI CÙNG ================= -->
+        <div id="step-7" class="step-panel absolute inset-0 bg-pink-100 z-[70] opacity-0 pointer-events-none flex flex-col items-center justify-center p-6 transition-opacity duration-500">
+            <div class="w-full max-w-[340px] bg-white rounded-[2rem] shadow-2xl p-8 text-center border-[6px] border-pink-200 relative overflow-hidden anim-spring-up">
+                <div class="absolute top-0 left-0 w-full bg-pink-500 text-white font-black py-1.5 text-xs tracking-[0.3em]">FINAL VERIFICATION</div>
+                
+                <div class="w-24 h-24 bg-pink-100 rounded-full flex items-center justify-center mx-auto mt-6 mb-4 anim-heartbeat shadow-inner">
+                    <i class="fas fa-shield-heart text-5xl text-pink-500 drop-shadow-md"></i>
+                </div>
+                
+                <h3 class="text-2xl font-extrabold text-gray-800 mb-3">Chốt Deal Nhé?</h3>
+                <p class="text-base text-gray-600 mb-8 leading-relaxed font-medium" id="final-summary-text">
+                    Đồng ý đi chơi với tớ không?
+                </p>
+
+                <div class="relative w-full h-[120px] rounded-xl bg-gray-50 border border-gray-100" id="dodge-container">
+                    <button id="btn-no" class="absolute bg-gray-200 text-gray-500 border border-gray-300 px-6 py-2.5 rounded-full font-bold shadow-sm z-20 whitespace-nowrap transition-all duration-300 ease-out">
+                        HỦY BỎ ☹
+                    </button>
+                    <button id="btn-yes" class="absolute bg-gradient-to-r from-pink-500 to-rose-500 text-white px-8 py-3 rounded-full font-extrabold shadow-[0_10px_20px_rgba(236,72,153,0.4)] anim-heartbeat z-10 whitespace-nowrap left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 hover:scale-110 active:scale-95 transition-transform">
+                        CHẮC CHẮN RỒI 🥰
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= STEP 8: THÀNH CÔNG ================= -->
+        <div id="step-8" class="step-panel absolute inset-0 bg-black/85 backdrop-blur-xl z-[80] opacity-0 pointer-events-none flex flex-col items-center justify-center p-6 transition-opacity duration-1000">
+            
+            <h1 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500 mb-10 drop-shadow-[0_0_20px_rgba(250,204,21,0.5)] anim-spring-up text-center uppercase tracking-widest">Success!</h1>
+
+            <!-- Hologram Boarding Pass -->
+            <div class="holo-ticket w-full max-w-[340px] rounded-3xl overflow-hidden relative anim-spring-up delay-100">
+                <div class="bg-gradient-to-r from-pink-500 to-rose-500 p-5 flex justify-between items-center text-white shadow-md">
+                    <span class="font-black tracking-[0.2em] text-sm"><i class="fas fa-plane-departure mr-3"></i>LOVE AIRLINES</span>
+                    <i class="fas fa-heart text-xl animate-pulse"></i>
+                </div>
+                <div class="p-8 bg-white/90">
+                    <div class="flex justify-between border-b-2 border-dashed border-gray-300 pb-5 mb-5">
+                        <div>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Passenger</p>
+                            <p class="text-xl font-black text-gray-800">CẬU & TỚ</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Class</p>
+                            <p class="text-xl font-black text-pink-600 bg-pink-100 px-2 py-0.5 rounded text-center">VIP DATE</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Date & Time</p>
+                            <p class="font-bold text-gray-800 text-lg" id="ticket-datetime">Ngày Mai - Tối</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Destination</p>
+                            <p class="font-bold text-gray-800 text-lg" id="ticket-location">Xem Phim</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-pink-50 to-rose-50 p-4 rounded-xl text-center border border-pink-100">
+                        <p class="text-sm font-semibold text-pink-600">Lên đồ lộng lẫy chờ tớ đón nhé! 🛵💨</p>
+                    </div>
+
+                    <!-- Barcode fake -->
+                    <div class="mt-6 flex justify-center opacity-40">
+                        <div class="w-full h-8 bg-[repeating-linear-gradient(90deg,#000,#000_2px,transparent_2px,transparent_4px,#000_4px,#000_8px,transparent_8px,transparent_10px)]"></div>
+                    </div>
+                </div>
+                <!-- Cutouts -->
+                <div class="absolute top-[60px] -left-4 w-8 h-8 bg-black/85 rounded-full shadow-inner"></div>
+                <div class="absolute top-[60px] -right-4 w-8 h-8 bg-black/85 rounded-full shadow-inner"></div>
+            </div>
+            
+            <p class="text-white/60 text-xs mt-8 anim-pop-in delay-300">Chụp màn hình lại để làm bằng chứng nha!</p>
+        </div>
+
+        <canvas id="confetti-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-[100]"></canvas>
+    </div>
+
+    <script>
+        // --- STATE ---
+        let currentStep = 1;
+        let selectedLocation = "";
+        let selectedDate = "";
+        let selectedTime = "";
+
+        const DOM = {
+            1: document.getElementById('step-1'),
+            3: document.getElementById('step-3'),
+            4: document.getElementById('step-4'),
+            5: document.getElementById('step-5'),
+            6: document.getElementById('step-6'),
+            7: document.getElementById('step-7'),
+            8: document.getElementById('step-8'),
+        };
+
+        function nextStep(stepNumber) {
+            Object.values(DOM).forEach(el => {
+                if(el) {
+                    el.classList.add('opacity-0', 'pointer-events-none');
+                }
+            });
+            currentStep = stepNumber;
+            const target = DOM[stepNumber];
+            if (target) {
+                target.classList.remove('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        // --- STEP 1 & 2: MÁY GACHA ---
+        const coin = document.getElementById('coin');
+        const coinSlotHitbox = document.getElementById('coin-slot-hitbox');
+        const coinSlot = document.getElementById('coin-slot');
+        const knob = document.getElementById('knob');
+        const tooltipDrag = document.getElementById('tooltip-drag');
+        const glassGlobe = document.getElementById('glass-globe');
+        const droppedCapsule = document.getElementById('dropped-capsule');
+        const mainText = document.getElementById('main-text');
+
+        let isDragging = false;
+        let startX, startY;
+
+        const getPos = (e) => e.touches ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : { x: e.clientX, y: e.clientY };
+
+        const startDrag = (e) => {
+            if (currentStep !== 1) return;
+            isDragging = true;
+            coin.style.transition = 'none';
+            coin.classList.remove('anim-float');
+            tooltipDrag.style.opacity = '0';
+            const pos = getPos(e);
+            startX = pos.x; startY = pos.y;
+            e.preventDefault();
+        };
+
+        const onDrag = (e) => {
+            if (!isDragging) return;
+            const pos = getPos(e);
+            const dx = pos.x - startX; const dy = pos.y - startY;
+            coin.style.transform = `translate(calc(-50% + ${dx}px), ${dy}px)`;
+
+            const coinRect = coin.getBoundingClientRect();
+            const slotRect = coinSlotHitbox.getBoundingClientRect();
+            const dist = Math.hypot((coinRect.left + coinRect.width/2) - (slotRect.left + slotRect.width/2), (coinRect.top + coinRect.height/2) - (slotRect.top + slotRect.height/2));
+            
+            if (dist < 120) {
+                coinSlot.classList.add('anim-pulse-glow');
+                coinSlot.style.borderColor = '#fde047';
+            } else {
+                coinSlot.classList.remove('anim-pulse-glow');
+                coinSlot.style.borderColor = '#9ca3af';
+            }
+            e.preventDefault();
+        };
+
+        const stopDrag = () => {
+            if (!isDragging) return;
+            isDragging = false;
+            
+            const coinRect = coin.getBoundingClientRect();
+            const slotRect = coinSlotHitbox.getBoundingClientRect();
+            const slotCX = slotRect.left + slotRect.width/2;
+            const slotCY = slotRect.top + slotRect.height/2;
+            const coinCX = coinRect.left + coinRect.width/2;
+            const coinCY = coinRect.top + coinRect.height/2;
+
+            const dist = Math.hypot(coinCX - slotCX, coinCY - slotCY);
+
+            if (dist < 120) {
+                // DROP SUCCESS
+                coin.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                coin.style.transform = `translate(calc(-50% + ${slotCX - coinCX}px), ${slotCY - coinCY}px) scale(0)`;
+                coin.style.opacity = '0';
+                coinSlot.classList.add('anim-pulse-glow');
+                
+                setTimeout(() => {
+                    coin.style.display = 'none';
+                    mainText.innerHTML = '<h2 class="text-white text-2xl font-extrabold drop-shadow-md anim-spring-up text-pink-200">Đã nhận xu!</h2><p class="text-white/90 mt-2 font-medium drop-shadow anim-spring-up delay-100">Bấm vặn núm để quay thưởng 👉</p>';
+                    knob.classList.remove('opacity-50', 'pointer-events-none');
+                    knob.classList.add('anim-pulse-glow');
+                    currentStep = 1.5;
+                }, 400);
+            } else {
+                // SNAP BACK
+                coin.style.transition = 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                coin.style.transform = `translate(-50%, 0)`;
+                setTimeout(() => { coin.classList.add('anim-float'); tooltipDrag.style.opacity = '1'; }, 600);
+            }
+        };
+
+        coin.addEventListener('mousedown', startDrag); document.addEventListener('mousemove', onDrag); document.addEventListener('mouseup', stopDrag);
+        coin.addEventListener('touchstart', startDrag, {passive: false}); document.addEventListener('touchmove', onDrag, {passive: false}); document.addEventListener('touchend', stopDrag);
+
+        knob.addEventListener('click', () => {
+            if (currentStep !== 1.5) return;
+            currentStep = 2;
+            knob.classList.remove('anim-pulse-glow');
+            knob.style.transform = 'rotate(360deg)';
+            knob.style.transition = 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
+            mainText.style.opacity = '0';
+            
+            setTimeout(() => {
+                glassGlobe.classList.add('anim-shake');
+                setTimeout(() => {
+                    glassGlobe.classList.remove('anim-shake');
+                    droppedCapsule.classList.remove('hidden');
+                    droppedCapsule.classList.add('anim-egg-bounce');
+                    setTimeout(() => { nextStep(3); }, 1500);
+                }, 600);
+            }, 400);
+        });
+
+        // --- STEP 3: MỞ TRỨNG ---
+        const bigCapsule = document.getElementById('big-capsule');
+        const rayBurst = document.getElementById('ray-burst');
+        const ticketReveal = document.getElementById('ticket-reveal');
+        const btnGotoWheel = document.getElementById('btn-goto-wheel');
+        const step3Title = document.getElementById('step3-title');
+
+        bigCapsule.addEventListener('click', () => {
+            if (currentStep !== 3) return;
+            currentStep = 3.5;
+            bigCapsule.classList.remove('anim-float');
+            bigCapsule.classList.add('capsule-open');
+            bigCapsule.style.pointerEvents = 'none';
+            step3Title.style.opacity = '0';
+            
+            // Ray explosion
+            rayBurst.classList.add('ray-explosion');
+            
+            setTimeout(() => {
+                ticketReveal.classList.remove('opacity-0', 'pointer-events-none');
+                ticketReveal.classList.add('anim-spring-up');
+            }, 600);
+        });
+
+        btnGotoWheel.addEventListener('click', () => nextStep(4));
+
+        // --- STEP 4: VÒNG QUAY ---
+        const wheel = document.getElementById('wheel');
+        const btnSpin = document.getElementById('btn-spin');
+        const wheelResultText = document.getElementById('wheel-result-text');
+        const wheelWinner = document.getElementById('wheel-winner');
+        const btnGotoDatetime = document.getElementById('btn-goto-datetime');
+        const locations = ["Xem Phim 🍿", "Cà Phê ☕", "Lượn Phố 🛵", "Ăn Ngon 🍝"];
+        const pureLoc = ["Xem Phim", "Cà Phê", "Lượn Phố", "Ăn Ngon"];
+
+        btnSpin.addEventListener('click', () => {
+            btnSpin.style.display = 'none';
+            const randomSpin = 3600 + Math.floor(Math.random() * 360);
+            
+            // smooth cubic bezier for realistic wheel
+            wheel.style.transition = 'transform 4s cubic-bezier(0.12, 0.8, 0.25, 1)';
+            wheel.style.transform = `rotate(${randomSpin}deg)`;
+            
+            setTimeout(() => {
+                const finalDeg = randomSpin % 360;
+                // mapping logic depending on rendering slices
+                let winnerIndex = Math.floor((360 - finalDeg + 45) % 360 / 90);
+                if(winnerIndex >= 4) winnerIndex = 0;
+                
+                selectedLocation = pureLoc[winnerIndex];
+                
+                wheelResultText.classList.remove('hidden');
+                wheelResultText.classList.add('flex', 'anim-pop-in');
+                wheelWinner.innerText = locations[winnerIndex];
+                
+                setTimeout(() => {
+                    btnGotoDatetime.classList.remove('opacity-0', 'pointer-events-none');
+                }, 800);
+
+            }, 4000);
+        });
+
+        btnGotoDatetime.addEventListener('click', () => nextStep(5));
+
+        // --- STEP 5: LIQUID DATE TIME ---
+        const dateBtns = document.querySelectorAll('.date-btn');
+        const timeBtns = document.querySelectorAll('.time-btn');
+        const btnConfirmDt = document.getElementById('btn-confirm-datetime');
+
+        const checkDtComplete = () => {
+            if(selectedDate && selectedTime) {
+                btnConfirmDt.classList.remove('bg-gray-300', 'text-gray-500', 'pointer-events-none');
+                btnConfirmDt.classList.add('bg-gradient-to-r', 'from-pink-500', 'to-rose-500', 'text-white', 'hover:scale-105', 'active:scale-95', 'anim-pulse-glow');
+            }
+        };
+
+        dateBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                dateBtns.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedDate = btn.getAttribute('data-val');
+                checkDtComplete();
+            });
+        });
+
+        timeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                timeBtns.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedTime = btn.getAttribute('data-val');
+                checkDtComplete();
+            });
+        });
+
+        btnConfirmDt.addEventListener('click', () => {
+            nextStep(6);
+            setTimeout(() => {
+                document.getElementById('envelope').classList.add('envelope-open');
+                setTimeout(startTypewriter, 1500);
+            }, 800);
+        });
+
+        // --- STEP 6: LETTER REVEAL ---
+        const typewriterText = document.getElementById('typewriter-text');
+        const typewriterCursor = document.getElementById('typewriter-cursor');
+        const btnReadDone = document.getElementById('btn-read-done');
+        const letterContent = "Thật ra... tớ đã đợi ngày này lâu lắm rồi. Cậu làm tớ vui lắm. Đừng bùng kèo với tớ nhé...";
+
+        function startTypewriter() {
+            let i = 0;
+            typewriterText.innerHTML = "";
+            typewriterCursor.style.display = "inline";
+            const typeInt = setInterval(() => {
+                typewriterText.innerHTML += letterContent.charAt(i);
+                i++;
+                if (i >= letterContent.length) {
+                    clearInterval(typeInt);
+                    typewriterCursor.style.animation = "none";
+                    typewriterCursor.style.opacity = "0";
+                    setTimeout(() => {
+                        btnReadDone.classList.remove('opacity-0', 'pointer-events-none');
+                        btnReadDone.classList.add('anim-spring-up');
+                    }, 500);
+                }
+            }, 50);
+        }
+
+        btnReadDone.addEventListener('click', () => {
+            document.getElementById('final-summary-text').innerHTML = `Đồng ý đi chơi với tớ vào <br/><b class="text-pink-600 text-lg">${selectedTime} - ${selectedDate}</b><br/> đi <b class="text-pink-600 text-lg">${selectedLocation}</b> không?`;
+            nextStep(7);
+            
+            // Setup Dodge bounds
+            btnNo.style.left = `10px`;
+            btnNo.style.top = `10px`;
+        });
+
+        // --- STEP 7: THE DODGE ---
+        const btnNo = document.getElementById('btn-no');
+        const btnYes = document.getElementById('btn-yes');
+        const dodgeContainer = document.getElementById('dodge-container');
+
+        const dodgeNo = () => {
+            const containerW = dodgeContainer.clientWidth;
+            const containerH = dodgeContainer.clientHeight;
+            const btnW = btnNo.clientWidth;
+            const btnH = btnNo.clientHeight;
+            
+            // keep inside bounds
+            const maxX = containerW - btnW - 20;
+            const maxY = containerH - btnH - 20;
+            
+            // Random position away from center
+            let newX = Math.random() * maxX;
+            let newY = Math.random() * maxY;
+            
+            // Check collision with YES button to avoid overlapping it
+            // Yes is at center
+            if(newX > (containerW/2 - btnW) && newX < (containerW/2 + btnW)) {
+                newX = newX < containerW/2 ? 10 : maxX - 10;
+            }
+
+            btnNo.style.left = `${newX}px`;
+            btnNo.style.top = `${newY}px`;
+        };
+
+        btnNo.addEventListener('mouseover', dodgeNo);
+        btnNo.addEventListener('touchstart', (e) => { e.preventDefault(); dodgeNo(); }, {passive: false});
+
+        btnYes.addEventListener('click', () => {
+            document.getElementById('ticket-datetime').innerText = `${selectedDate} - ${selectedTime}`;
+            document.getElementById('ticket-location').innerText = selectedLocation;
+            nextStep(8);
+            
+            setTimeout(() => {
+                const myConfetti = confetti.create(document.getElementById('confetti-canvas'), { resize: true });
+                myConfetti({ particleCount: 250, spread: 180, origin: { y: 0.6 }, zIndex: 100, colors: ['#ec4899', '#f43f5e', '#facc15', '#60a5fa'] });
+            }, 800);
+        });
+
+    </script>
+</body>
+</html>

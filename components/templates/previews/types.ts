@@ -9,8 +9,12 @@ export type TemplatePreviewProps = {
   compact?: boolean;
   fullScreen?: boolean;
   hideNavigation?: boolean;
+  isBuilderPreview?: boolean;
+  autoPlay?: boolean;
+  roomId?: string;
   onResponse?: (response: { answer: string; message?: string; audioDataUrl?: string; date?: string }) => void;
   customData?: {
+    forceStage?: string | number;
     anniversaryCode?: string;
     generalAudioUrl?: string;
     introTitle?: string;

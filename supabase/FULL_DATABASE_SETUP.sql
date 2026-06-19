@@ -372,9 +372,9 @@ do update set
 
 insert into public.template_categories (slug, name, description, sort_order)
 values
-  ('valentine', 'Valentine', 'Template qua tang tinh yeu va ky niem ngay yeu.', 1),
-  ('confession', 'To tinh', 'Template to tinh se duoc them lai tung mau rieng sau.', 2),
-  ('birthday', 'Sinh nhat', 'Template sinh nhat se duoc them lai tung mau rieng sau.', 3)
+  ('valentine', 'Valentine', 'Template quà tặng tình yêu và kỷ niệm ngày yêu.', 1),
+  ('confession', 'Tỏ tình', 'Template tỏ tình cực kỳ dễ thương và bất ngờ.', 2),
+  ('birthday', 'Sinh nhật', 'Template sinh nhật dành riêng cho người thương.', 3)
 on conflict (slug)
 do update set
   name = excluded.name,
@@ -402,12 +402,29 @@ insert into public.templates (
   status_label,
   sort_order
 )
-values (
-  (select id from category_map where slug = 'valentine'),
-  'val-starry-constellation-01',
+select
+  c.id,
+  t.slug,
+  t.name,
+  t.description,
+  t.tagline,
+  t.component_key,
+  t.visual_label,
+  t.gradient,
+  t.base_price,
+  t.data_schema,
+  t.sample_data,
+  t.is_published,
+  t.status_label,
+  t.sort_order
+from (
+  values
+  (
+    'valentine',
+    'val-starry-constellation-01',
   'Valentine #1',
-  'Ban do sao tinh yeu voi mat ma ngay ky niem, kinh vien vong, cac chang ky uc, cau tra loi va ghi am.',
-  'Nguoi nhan mo bau troi sao, di qua tung chang ky uc, tra loi va gui ghi am cho nguoi mua xem lai.',
+  'Bản đồ sao tình yêu với mật mã ngày kỷ niệm, kính viễn vọng, các chặng ký ức, câu trả lời và ghi âm.',
+  'Người nhận mở bầu trời sao, đi qua từng chặng ký ức, trả lời và gửi ghi âm cho người mua xem lại.',
   'val-starry-constellation',
   'Sao',
   'from-[#05020d] via-fuchsia-950 to-pink-500',
@@ -448,7 +465,57 @@ values (
   true,
   'Dang ban',
   1
-)
+  ),
+  (
+    'valentine',
+    'valentine-2',
+    'Valentine #2',
+    'Cuốn nhật ký lật mở từng trang ký ức và rạp chiếu phim xem chung theo thời gian thực.',
+    'Nhập mật mã mở khóa nhật ký, xem thư và cùng nhau xem phim online.',
+    'valentine-2',
+    'Watch Party',
+    'from-rose-400 to-pink-500',
+    2000,
+    '{}'::jsonb,
+    '{}'::jsonb,
+    true,
+    'New',
+    2
+  ),
+  (
+    'confession',
+    'dating-1',
+  'Dating #1',
+  'Template dễ thương để rủ người ấy đi chơi',
+  'Gửi lời mời dễ thương nhất',
+  'will-you-date-me',
+  'Dating Form',
+  'from-pink-400 to-rose-400',
+  2000,
+  '{}'::jsonb,
+  '{}'::jsonb,
+    true,
+    'Hot',
+    2
+  ),
+  (
+    'birthday',
+    'birthday-1',
+    'Birthday #1',
+    'Không gian 3D tương tác thắp nến và thổi bánh sinh nhật cực kỳ ảo diệu.',
+    'Bật lửa, thắp nến, và xem pháo hoa chúc mừng sinh nhật 3D.',
+    'birthday-magic',
+    '3D Cake',
+    'from-indigo-900 via-purple-900 to-black',
+    2000,
+    '{}'::jsonb,
+    '{}'::jsonb,
+    true,
+    'New 3D',
+    3
+  )
+) as t(category_slug, slug, name, description, tagline, component_key, visual_label, gradient, base_price, data_schema, sample_data, is_published, status_label, sort_order)
+join category_map c on c.slug = t.category_slug
 on conflict (slug)
 do update set
   category_id = excluded.category_id,
@@ -465,11 +532,6 @@ do update set
   status_label = excluded.status_label,
   sort_order = excluded.sort_order,
   updated_at = now();
-
-update public.templates
-set is_published = false,
-    updated_at = now()
-where slug <> 'val-starry-constellation-01';
 
 alter table public.users enable row level security;
 alter table public.affiliates enable row level security;

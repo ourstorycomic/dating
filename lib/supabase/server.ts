@@ -37,6 +37,30 @@ export type TemplateCatalogItem = {
   } | null;
 };
 
+const allowedTemplateMatches = [
+  "valentine-1",
+  "valentine #1",
+  "valentine-2",
+  "valentine #2",
+  "val-starry-constellation",
+  "dating-1",
+  "dating #1",
+  "will-you-date-me",
+  "dating-2",
+  "dating #2",
+  "dating-3",
+  "dating #3",
+  "gacha",
+  "birthday-1",
+  "birthday #1",
+  "birthday-magic",
+];
+
+function isSupportedTemplate(template: Pick<TemplateCatalogItem, "component_key" | "name" | "slug">) {
+  const searchable = `${template.component_key} ${template.name} ${template.slug}`.toLowerCase();
+  return allowedTemplateMatches.some((match) => searchable.includes(match));
+}
+
 function normalizeTemplateRelations(item: unknown) {
   const template = item as TemplateCatalogItem & {
     template_categories: TemplateCatalogItem["template_categories"] | TemplateCatalogItem["template_categories"][];
@@ -65,7 +89,7 @@ export async function getPublishedTemplates() {
     return [];
   }
 
-  return (data ?? []).map(normalizeTemplateRelations);
+  return (data ?? []).map(normalizeTemplateRelations).filter(isSupportedTemplate);
 }
 
 export async function getTemplateBySlug(slug: string) {
@@ -84,7 +108,8 @@ export async function getTemplateBySlug(slug: string) {
     return null;
   }
 
-  return normalizeTemplateRelations(data);
+  const template = normalizeTemplateRelations(data);
+  return isSupportedTemplate(template) ? template : null;
 }
 
 export async function getDashboardCounts() {
@@ -145,7 +170,7 @@ export async function getOrdersByCreator(userId: string) {
   const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
     .from("orders")
-    .select("id, public_id, buyer_name, buyer_contact, recipient_name, amount, status, created_at, templates(name), payments(payment_code, status, paid_at)")
+    .select("id, public_id, template_id, buyer_name, buyer_contact, recipient_name, custom_data, amount, status, created_at, templates(id, name, component_key), payments(payment_code, status, paid_at)")
     .eq("created_by_id", userId)
     .order("created_at", { ascending: false })
     .limit(30);

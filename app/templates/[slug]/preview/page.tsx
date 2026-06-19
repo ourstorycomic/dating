@@ -58,19 +58,13 @@ export default async function TemplatePreviewPage({
             </div>
           </div>
 
-          <div className="mt-8 grid gap-3 sm:grid-cols-2">
+          <div className="mt-10 flex flex-col sm:flex-row gap-3 w-full">
             <a
-              className="rounded-full bg-gradient-to-r from-pink-500 to-purple-500 px-6 py-3 text-center text-sm font-bold"
+              className="rounded-full bg-gradient-to-r from-pink-500 to-purple-500 px-8 py-4 text-center text-lg font-black w-full shadow-lg hover:scale-105 active:scale-95 transition-transform uppercase tracking-wider"
               href={tiktokLink(template.slug)}
             >
-              Chọn mẫu này
+              Nhắn TikTok chọn mẫu này
             </a>
-            <Link
-              className="rounded-full border border-white/14 bg-white/[0.06] px-6 py-3 text-center text-sm font-bold"
-              href={`/track/${template.slug}`}
-            >
-              Xem track link
-            </Link>
           </div>
         </section>
 
@@ -96,6 +90,7 @@ export default async function TemplatePreviewPage({
               recipientName="Người ấy"
               senderName="Bạn"
               visualLabel={template.visual_label}
+              hideNavigation
             />
           </div>
         </section>

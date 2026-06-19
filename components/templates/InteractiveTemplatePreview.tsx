@@ -1,25 +1,41 @@
 "use client";
 
 import type { TemplatePreviewProps } from "./previews/types";
-import { StarryConstellationPreview } from "./previews/StarryConstellationPreview";
-import { WillYouDateMePreview } from "./previews/WillYouDateMePreview";
+import { StarryConstellationPreview } from "./valentine-1/preview";
+import { Valentine2Preview } from "./valentine-2/preview";
+import { WillYouDateMePreview } from "./dating-1/preview";
+import { BirthdayMagicPreview } from "./birthday-1/preview";
+import { DatingTwoPreview } from "./dating-2/preview";
+import { DatingThreePreview } from "./dating-3/preview";
 
 type InteractiveTemplatePreviewProps = TemplatePreviewProps & {
   componentKey: string;
+  roomId?: string;
 };
 
 const previewRegistry = [
+  { match: "val-starry-constellation", Component: StarryConstellationPreview },
   { match: "constellation", Component: StarryConstellationPreview },
   { match: "starry", Component: StarryConstellationPreview },
   { match: "valentine-1", Component: StarryConstellationPreview },
   { match: "valentine #1", Component: StarryConstellationPreview },
-  { match: "password", Component: StarryConstellationPreview },
-  { match: "timeline", Component: StarryConstellationPreview },
+  { match: "valentine-2", Component: Valentine2Preview },
+  { match: "valentine #2", Component: Valentine2Preview },
   { match: "will-you-date-me", Component: WillYouDateMePreview },
+  { match: "dating-1", Component: WillYouDateMePreview },
+  { match: "dating #1", Component: WillYouDateMePreview },
+  { match: "dating-2", Component: DatingTwoPreview },
+  { match: "dating #2", Component: DatingTwoPreview },
+  { match: "dating-3", Component: DatingThreePreview },
+  { match: "dating #3", Component: DatingThreePreview },
+  { match: "birthday-magic", Component: BirthdayMagicPreview },
+  { match: "birthday-1", Component: BirthdayMagicPreview },
+  { match: "birthday #1", Component: BirthdayMagicPreview },
 ];
 
 export function InteractiveTemplatePreview({
   componentKey,
+  roomId,
   ...props
 }: InteractiveTemplatePreviewProps) {
   const normalizedKey = componentKey.toLowerCase();
@@ -27,7 +43,22 @@ export function InteractiveTemplatePreview({
 
   if (preview) {
     const Component = preview.Component;
-    return <Component {...props} />;
+    if (props.compact) {
+      if (!props.isBuilderPreview) {
+        return (
+          <div className="mx-auto flex aspect-[9/19] w-[340px] max-w-full shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative pointer-events-none">
+            <Component {...props} roomId={roomId} autoPlay={true} />
+          </div>
+        );
+      } else {
+        return (
+          <div className="mx-auto flex aspect-[9/19] w-[340px] max-w-full shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative">
+            <Component {...props} roomId={roomId} autoPlay={true} />
+          </div>
+        );
+      }
+    }
+    return <Component {...props} roomId={roomId} />;
   }
 
   return <FallbackPreview componentKey={componentKey} {...props} />;

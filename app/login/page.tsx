@@ -31,7 +31,7 @@ export default async function LoginPage({
             <input
               className="rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3 outline-none transition focus:border-pink-300/50"
               name="email"
-              placeholder="admin@yeuweb.vn"
+              placeholder="admin@lovora.vn"
               type="email"
             />
           </label>

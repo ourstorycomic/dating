@@ -1,9 +1,48 @@
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
+function parseResponseText(raw: string | null) {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as Record<string, unknown>;
+  } catch {
+    return { message: raw };
+  }
+}
+
 function normalizeAnswer(answer: string) {
   if (answer === "YES" || answer === "NO" || answer === "MAYBE") return answer;
   return "CUSTOM";
+}
+
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ orderId: string }> },
+) {
+  const { orderId } = await params;
+  const supabase = createServerSupabaseClient();
+
+  const { data: order, error } = await supabase
+    .from("orders")
+    .select("public_id, status, recipient_response, response_text, responded_at, gift_opened_at")
+    .eq("public_id", orderId)
+    .maybeSingle();
+
+  if (error || !order) {
+    return NextResponse.json({ error: "Không tìm thấy đơn." }, { status: 404 });
+  }
+
+  const response = parseResponseText(order.response_text);
+
+  return NextResponse.json({
+    orderId: order.public_id,
+    status: order.status,
+    recipientResponse: order.recipient_response,
+    responseText: order.response_text,
+    respondedAt: order.responded_at,
+    giftOpenedAt: order.gift_opened_at,
+    response,
+  });
 }
 
 export async function POST(

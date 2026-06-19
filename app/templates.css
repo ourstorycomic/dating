@@ -1,0 +1,34 @@
+.template-nav-container {
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  background-color: rgba(0, 0, 0, 0.45) !important;
+}
+
+.template-nav-btn-back {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.template-nav-btn-next {
+  background: linear-gradient(to right, #ec4899, #a855f7) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+.template-btn-ghost {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+.template-text-white {
+  color: #ffffff !important;
+}
+
+.template-text-white-muted {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.template-preview-surface .birthday-message-bubble {
+  color: #63265d !important;
+}
