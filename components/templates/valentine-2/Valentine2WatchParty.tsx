@@ -83,14 +83,18 @@ export function Valentine2WatchParty({
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    if (step >= 7) {
-      audio.pause();
-      return;
-    }
-    if (data.musicUrl && audio.src !== data.musicUrl) {
+    if (data.musicUrl && !audio.src.endsWith(data.musicUrl)) {
       audio.src = data.musicUrl;
     }
-  }, [data.musicUrl, step]);
+  }, [data.musicUrl]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (step >= 7) {
+      audio.pause();
+    }
+  }, [step]);
 
   let containerClass = "relative w-full overflow-hidden transition-colors duration-[2000ms] mx-auto text-gray-800 touch-none [perspective:1500px] ";
 
