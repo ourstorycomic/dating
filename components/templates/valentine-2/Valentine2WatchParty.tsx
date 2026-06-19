@@ -91,7 +91,7 @@ export function Valentine2WatchParty({
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    if (step >= 7) {
+    if (step >= 9) {
       audio.pause();
     }
   }, [step]);
@@ -150,6 +150,7 @@ export function Valentine2WatchParty({
           <Step7Lobby
             key="step7"
             compact={compact}
+            fullScreen={fullScreen}
             onSelectMovie={(movie) => {
               setSelectedMovie(movie);
               onResponse?.({ answer: "YES", message: JSON.stringify(movie) });

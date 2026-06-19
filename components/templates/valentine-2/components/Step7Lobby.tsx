@@ -5,7 +5,8 @@ import type { MovieData } from "../Valentine2WatchParty";
 
 const ITEMS_PER_PAGE = 24;
 
-export function Step7Lobby({ onSelectMovie, compact }: { onSelectMovie: (m: MovieData) => void; compact?: boolean }) {
+export function Step7Lobby({ onSelectMovie, compact: propCompact, fullScreen }: { onSelectMovie: (m: MovieData) => void; compact?: boolean; fullScreen?: boolean }) {
+  const compact = propCompact || !fullScreen;
   const [movies, setMovies] = useState<MovieData[]>([]);
   const [loading, setLoading] = useState(true);
   const [keyword, setKeyword] = useState("");
