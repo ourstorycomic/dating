@@ -142,6 +142,7 @@ export function GachaTemplate({ compact, fullScreen, hideNavigation, onComplete,
   const audioRef = useRef<HTMLAudioElement>(null as any);
 
   useEffect(() => {
+    if (compact) return;
     const handleFirstInteraction = () => {
       if (audioRef.current) {
         audioRef.current.volume = 0.4;
@@ -151,7 +152,7 @@ export function GachaTemplate({ compact, fullScreen, hideNavigation, onComplete,
     };
     document.addEventListener("click", handleFirstInteraction);
     return () => document.removeEventListener("click", handleFirstInteraction);
-  }, []);
+  }, [compact]);
 
   useEffect(() => { setMounted(true); }, []);
 
