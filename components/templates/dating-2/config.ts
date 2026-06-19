@@ -6,7 +6,7 @@ export const TPL_DATA = {
   loginErrorText: "Sai mật khẩu rồi!",
   
   // Step 1.5: Radio
-  audioSrc: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+  audioSrc: "/dating-2-music.m4a",
   radioHint: "Chạm để dò đúng tần số của tớ nhé 📻",
 
   // Step 2: Vibe Check
