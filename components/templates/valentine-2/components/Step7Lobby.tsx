@@ -5,7 +5,7 @@ import type { MovieData } from "../Valentine2WatchParty";
 
 const ITEMS_PER_PAGE = 24;
 
-export function Step7Lobby({ onSelectMovie }: { onSelectMovie: (m: MovieData) => void }) {
+export function Step7Lobby({ onSelectMovie, compact }: { onSelectMovie: (m: MovieData) => void; compact?: boolean }) {
   const [movies, setMovies] = useState<MovieData[]>([]);
   const [loading, setLoading] = useState(true);
   const [keyword, setKeyword] = useState("");
@@ -104,7 +104,7 @@ export function Step7Lobby({ onSelectMovie }: { onSelectMovie: (m: MovieData) =>
       >
         {/* Professional Header Area */}
         <div className="flex-shrink-0 px-4 md:px-8 pt-6 pb-4">
-          <div className="w-full max-w-[1400px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className={`w-full max-w-[1400px] mx-auto flex flex-col ${compact ? "gap-2" : "md:flex-row md:items-center justify-between gap-4"}`}>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-500 to-pink-500 flex items-center justify-center shadow-lg shadow-rose-200/50">
                 <Film className="text-white" size={20} />
@@ -118,7 +118,7 @@ export function Step7Lobby({ onSelectMovie }: { onSelectMovie: (m: MovieData) =>
             </div>
 
             {/* Search bar + Filter icon */}
-            <div className="relative flex gap-2 w-full md:w-auto md:min-w-[320px]">
+            <div className={`relative flex gap-2 w-full ${compact ? "" : "md:w-auto md:min-w-[320px]"}`}>
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-rose-300" size={17} />
                 <input
@@ -141,14 +141,14 @@ export function Step7Lobby({ onSelectMovie }: { onSelectMovie: (m: MovieData) =>
           
           {/* Advanced Filter Bar */}
           {!isSearchMode && (
-            <div className="w-full max-w-[1400px] mx-auto mt-4 flex flex-wrap items-center gap-3">
-              <select value={typeList} onChange={(e) => { setTypeList(e.target.value); setPage(1); }} className="bg-white/85 border border-pink-200 text-rose-950 px-3 py-1.5 rounded-lg text-sm font-semibold outline-none focus:border-rose-400 cursor-pointer shadow-inner">
+            <div className={`w-full max-w-[1400px] mx-auto flex flex-wrap items-center ${compact ? "gap-2 mt-3" : "gap-3 mt-4"}`}>
+              <select value={typeList} onChange={(e) => { setTypeList(e.target.value); setPage(1); }} className={`bg-white/85 border border-pink-200 text-rose-950 px-3 py-1.5 rounded-lg text-sm font-semibold outline-none focus:border-rose-400 cursor-pointer shadow-inner ${compact ? "flex-1 min-w-[130px]" : ""}`}>
                 <option value="phim-le">Phim Lẻ</option>
                 <option value="phim-bo">Phim Bộ</option>
                 <option value="hoat-hinh">Hoạt Hình</option>
                 <option value="tv-shows">TV Shows</option>
               </select>
-              <select value={category} onChange={(e) => { setCategory(e.target.value); setPage(1); }} className="bg-white/85 border border-pink-200 text-rose-950 px-3 py-1.5 rounded-lg text-sm font-semibold outline-none focus:border-rose-400 cursor-pointer shadow-inner">
+              <select value={category} onChange={(e) => { setCategory(e.target.value); setPage(1); }} className={`bg-white/85 border border-pink-200 text-rose-950 px-3 py-1.5 rounded-lg text-sm font-semibold outline-none focus:border-rose-400 cursor-pointer shadow-inner ${compact ? "flex-1 min-w-[130px]" : ""}`}>
                 <option value="">Mọi thể loại</option>
                 <option value="hanh-dong">Hành động</option>
                 <option value="tinh-cam">Tình cảm</option>
@@ -157,7 +157,7 @@ export function Step7Lobby({ onSelectMovie }: { onSelectMovie: (m: MovieData) =>
                 <option value="tam-ly">Tâm lý</option>
                 <option value="co-trang">Cổ trang</option>
               </select>
-              <select value={country} onChange={(e) => { setCountry(e.target.value); setPage(1); }} className="bg-white/85 border border-pink-200 text-rose-950 px-3 py-1.5 rounded-lg text-sm font-semibold outline-none focus:border-rose-400 cursor-pointer shadow-inner">
+              <select value={country} onChange={(e) => { setCountry(e.target.value); setPage(1); }} className={`bg-white/85 border border-pink-200 text-rose-950 px-3 py-1.5 rounded-lg text-sm font-semibold outline-none focus:border-rose-400 cursor-pointer shadow-inner ${compact ? "flex-1 min-w-[130px]" : ""}`}>
                 <option value="">Mọi quốc gia</option>
                 <option value="han-quoc">Hàn Quốc</option>
                 <option value="trung-quoc">Trung Quốc</option>
@@ -165,7 +165,7 @@ export function Step7Lobby({ onSelectMovie }: { onSelectMovie: (m: MovieData) =>
                 <option value="au-my">Âu Mỹ</option>
                 <option value="thai-lan">Thái Lan</option>
               </select>
-              <select value={year} onChange={(e) => { setYear(e.target.value); setPage(1); }} className="bg-white/85 border border-pink-200 text-rose-950 px-3 py-1.5 rounded-lg text-sm font-semibold outline-none focus:border-rose-400 cursor-pointer shadow-inner">
+              <select value={year} onChange={(e) => { setYear(e.target.value); setPage(1); }} className={`bg-white/85 border border-pink-200 text-rose-950 px-3 py-1.5 rounded-lg text-sm font-semibold outline-none focus:border-rose-400 cursor-pointer shadow-inner ${compact ? "flex-1 min-w-[130px]" : ""}`}>
                 <option value="">Mọi năm</option>
                 {Array.from({ length: 15 }, (_, i) => new Date().getFullYear() - i).map(y => (
                   <option key={y} value={y}>{y}</option>
@@ -188,7 +188,7 @@ export function Step7Lobby({ onSelectMovie }: { onSelectMovie: (m: MovieData) =>
               <p className="text-sm">Không tìm thấy phim nào</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-5 pb-8">
+            <div className={compact ? "grid grid-cols-2 gap-2 pb-8" : "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-5 pb-8"}>
               {movies.map((movie) => (
                 <motion.div
                   key={movie._id}

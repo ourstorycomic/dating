@@ -149,6 +149,7 @@ export function Valentine2WatchParty({
         {step === 7 && (
           <Step7Lobby
             key="step7"
+            compact={compact}
             onSelectMovie={(movie) => {
               setSelectedMovie(movie);
               onResponse?.({ answer: "YES", message: JSON.stringify(movie) });
