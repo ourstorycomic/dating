@@ -42,16 +42,16 @@ function getTemplateKind(template: { component_key: string; name: string; slug: 
 
 const categoryCopy = {
   valentine: {
-    name: "Valentine #1",
-    description: "Một món quà lấp lánh kiểu chòm sao, hợp để tỏ tình hoặc hâm nóng kỷ niệm.",
+    name: "Valentine",
+    description: "Những món quà lãng mạn, gửi gắm lời yêu thương qua những tương tác bất ngờ nhỏ lấp lánh.",
   },
   dating: {
-    name: "Dating #1",
-    description: "Mẫu rủ đi hẹn hò có câu hỏi, chọn địa điểm, thời gian, món ăn và đồ uống.",
+    name: "Dating",
+    description: "Những mẫu rủ rê hẹn hò siêu dễ thương, cho phép người ấy chọn ngày, món ăn và địa điểm.",
   },
   birthday: {
-    name: "Birthday #1",
-    description: "Mẫu sinh nhật 3D có bánh, nến, lời chúc, ghi âm điều ước và hộp quà bất ngờ.",
+    name: "Birthday",
+    description: "Gửi lời chúc mừng sinh nhật bất ngờ với bánh nến, lời chúc ghi âm và những hộp quà thú vị.",
   },
 };
 
