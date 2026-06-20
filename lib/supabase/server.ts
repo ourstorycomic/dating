@@ -42,6 +42,8 @@ const allowedTemplateMatches = [
   "valentine #1",
   "valentine-2",
   "valentine #2",
+  "valentine-3",
+  "valentine #3",
   "val-starry-constellation",
   "dating-1",
   "dating #1",

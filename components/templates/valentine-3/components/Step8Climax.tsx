@@ -1,0 +1,118 @@
+import { motion } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
+import confetti from "canvas-confetti";
+
+export function Step8Climax({ onResponse }: { onResponse?: (res: { answer: string; message: string }) => void }) {
+  const [noPos, setNoPos] = useState({ top: 0, left: 0 });
+  const [isMoved, setIsMoved] = useState(false);
+  const [isAccepted, setIsAccepted] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const moveNoButton = () => {
+    if (!containerRef.current) return;
+    const container = containerRef.current.getBoundingClientRect();
+    
+    // We want to keep it within the container bounds
+    const btnWidth = 140;
+    const btnHeight = 50;
+    
+    const maxLeft = container.width - btnWidth - 40; // 20px padding
+    const maxTop = container.height - btnHeight - 40;
+    
+    const newLeft = Math.random() * maxLeft + 20;
+    const newTop = Math.random() * maxTop + 20;
+    
+    setNoPos({ top: newTop, left: newLeft });
+    setIsMoved(true);
+  };
+
+  const handleAccept = () => {
+    setIsAccepted(true);
+    
+    // Fire confetti
+    const duration = 3000;
+    const end = Date.now() + duration;
+
+    const frame = () => {
+      confetti({
+        particleCount: 5,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: ['#ff0000', '#ff69b4', '#ff1493']
+      });
+      confetti({
+        particleCount: 5,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: ['#ff0000', '#ff69b4', '#ff1493']
+      });
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    };
+    frame();
+
+    if (onResponse) {
+      onResponse({ answer: "YES", message: "Đồng ý" });
+    }
+  };
+
+  return (
+    <motion.div
+      ref={containerRef}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="absolute inset-0 z-20 flex flex-col items-center p-6"
+    >
+      {!isAccepted ? (
+        <>
+          <div className="mt-20 text-center">
+            <h2 className="text-3xl font-black text-rose-600 mb-4 drop-shadow-sm">Thế tóm lại là...</h2>
+            <p className="text-rose-500 font-semibold text-lg">Cậu có chịu làm người yêu tớ không? 🥺</p>
+          </div>
+
+          {/* Absolute container for buttons to allow positioning */}
+          <div className="relative flex-1 w-full mt-12">
+            <button
+              onClick={handleAccept}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-full max-w-[200px] py-4 bg-gradient-to-r from-rose-500 to-pink-600 text-white font-bold text-lg rounded-full shadow-[0_10px_25px_rgba(225,29,72,0.4)] hover:scale-110 active:scale-95 transition-transform"
+            >
+              ĐỒNG Ý LUÔN 💖
+            </button>
+
+            <button
+              onMouseEnter={moveNoButton}
+              onTouchStart={moveNoButton}
+              onClick={moveNoButton}
+              style={{
+                position: isMoved ? "absolute" : "absolute",
+                top: isMoved ? noPos.top : "65%",
+                left: isMoved ? noPos.left : "50%",
+                transform: isMoved ? "none" : "translate(-50%, -50%)",
+              }}
+              className="z-20 px-6 py-3 bg-white text-slate-500 font-bold rounded-full shadow-md border border-slate-200 transition-all duration-200 ease-out select-none"
+            >
+              TỪ CHỐI 💔
+            </button>
+          </div>
+        </>
+      ) : (
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring" }}
+          className="m-auto w-full max-w-sm bg-white p-8 rounded-3xl shadow-2xl text-center border-4 border-rose-200"
+        >
+          <div className="text-6xl mb-6">🎉</div>
+          <h2 className="text-3xl font-black text-rose-600 mb-4">Chốt Đơn!</h2>
+          <p className="text-slate-600 font-medium text-lg">
+            Lên đồ lẹ lênnnn!<br />Tớ qua đón đi chơi ngay và luôn! 🛵💨
+          </p>
+        </motion.div>
+      )}
+    </motion.div>
+  );
+}

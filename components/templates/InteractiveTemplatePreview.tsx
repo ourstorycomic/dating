@@ -3,6 +3,7 @@
 import type { TemplatePreviewProps } from "./previews/types";
 import { StarryConstellationPreview } from "./valentine-1/preview";
 import { Valentine2Preview } from "./valentine-2/preview";
+import { Valentine3Preview } from "./valentine-3/preview";
 import { WillYouDateMePreview } from "./dating-1/preview";
 import { BirthdayMagicPreview } from "./birthday-1/preview";
 import { DatingTwoPreview } from "./dating-2/preview";
@@ -21,6 +22,8 @@ const previewRegistry = [
   { match: "valentine #1", Component: StarryConstellationPreview },
   { match: "valentine-2", Component: Valentine2Preview },
   { match: "valentine #2", Component: Valentine2Preview },
+  { match: "valentine-3", Component: Valentine3Preview },
+  { match: "valentine #3", Component: Valentine3Preview },
   { match: "will-you-date-me", Component: WillYouDateMePreview },
   { match: "dating-1", Component: WillYouDateMePreview },
   { match: "dating #1", Component: WillYouDateMePreview },
