@@ -85,6 +85,7 @@ export default async function TemplatePreviewPage({
           <div className="mx-auto max-w-[520px]">
             <InteractiveTemplatePreview
               compact
+              isBuilderPreview
               componentKey={template.component_key}
               gradient={template.gradient}
               message="Đây là nội dung shop sẽ cá nhân hóa theo ảnh, tên và lời nhắn của khách."
