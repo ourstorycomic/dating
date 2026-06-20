@@ -1,4 +1,5 @@
 // Force recompile to clear stale Next.js cache
+export const revalidate = 60;
 import Link from "next/link";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { HomePageCatalog } from "@/components/HomePageCatalog";

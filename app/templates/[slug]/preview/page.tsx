@@ -15,6 +15,8 @@ function getScreens(sampleData: unknown) {
   return data?.screens ?? ["Mở đầu", "Tương tác", "Kỷ niệm", "Lá thư", "Phản hồi"];
 }
 
+export const revalidate = 60; // cache for 60 seconds
+
 export default async function TemplatePreviewPage({
   params,
 }: {
@@ -82,6 +84,7 @@ export default async function TemplatePreviewPage({
           </div>
           <div className="mx-auto max-w-[520px]">
             <InteractiveTemplatePreview
+              compact
               componentKey={template.component_key}
               gradient={template.gradient}
               message="Đây là nội dung shop sẽ cá nhân hóa theo ảnh, tên và lời nhắn của khách."
