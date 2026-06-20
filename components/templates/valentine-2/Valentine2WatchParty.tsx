@@ -96,7 +96,7 @@ export function Valentine2WatchParty({
     }
   }, [step]);
 
-  let containerClass = "relative w-full overflow-hidden transition-colors duration-[2000ms] mx-auto text-gray-800 touch-none [perspective:1500px] ";
+  let containerClass = "w-full overflow-hidden transition-colors duration-[2000ms] mx-auto text-gray-800 touch-none [perspective:1500px] ";
 
   const isCinemaMode = step >= 7;
   const bgClass = isCinemaMode
@@ -104,13 +104,13 @@ export function Valentine2WatchParty({
     : "bg-gradient-to-br from-[#fffafc] via-[#ffe6f0] to-[#ffd9e7] text-rose-950";
 
   if (compact) {
-    containerClass += `h-full max-w-[400px] border-[12px] border-[#f4c5d6] rounded-[2.5rem] shadow-2xl ${bgClass}`;
+    containerClass += `absolute inset-0 border-[6px] border-[#f4c5d6] rounded-[2.5rem] shadow-2xl ${bgClass}`;
   } else if (fullScreen) {
-    containerClass += `min-h-screen ${bgClass}`;
+    containerClass += `relative min-h-screen ${bgClass}`;
   } else {
     containerClass += isCinemaMode
-      ? `max-w-[1200px] w-[95vw] h-[85vh] min-h-[600px] rounded-3xl shadow-[0_0_50px_rgba(244,63,94,0.3)] border-2 border-[#f4c5d6]/50 ${bgClass}`
-      : `max-w-[400px] h-[800px] max-h-[90vh] rounded-[2.5rem] shadow-2xl border-[12px] border-[#f4c5d6] ${bgClass}`;
+      ? `relative max-w-[1200px] w-[95vw] h-[85vh] min-h-[600px] rounded-3xl shadow-[0_0_50px_rgba(244,63,94,0.3)] border-2 border-[#f4c5d6]/50 ${bgClass}`
+      : `relative max-w-[400px] h-[800px] max-h-[90vh] rounded-[2.5rem] shadow-2xl border-[12px] border-[#f4c5d6] ${bgClass}`;
   }
 
   return (
