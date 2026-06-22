@@ -8,6 +8,7 @@ import { WillYouDateMePreview } from "./dating-1/preview";
 import { BirthdayMagicPreview } from "./birthday-1/preview";
 import { DatingTwoPreview } from "./dating-2/preview";
 import { DatingThreePreview } from "./dating-3/preview";
+import Birthday2Preview from "./birthday-2/preview";
 
 type InteractiveTemplatePreviewProps = TemplatePreviewProps & {
   componentKey: string;
@@ -34,6 +35,8 @@ const previewRegistry = [
   { match: "birthday-magic", Component: BirthdayMagicPreview },
   { match: "birthday-1", Component: BirthdayMagicPreview },
   { match: "birthday #1", Component: BirthdayMagicPreview },
+  { match: "birthday-2", Component: Birthday2Preview },
+  { match: "birthday #2", Component: Birthday2Preview },
 ];
 
 export function InteractiveTemplatePreview({
