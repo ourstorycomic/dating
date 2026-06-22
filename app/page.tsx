@@ -17,7 +17,7 @@ function tiktokLink(templateSlug?: string) {
   return `${TIKTOK_INBOX_URL}&text=${encodeURIComponent(text)}`;
 }
 
-const categoryOrder = ["valentine", "dating", "birthday"];
+const categoryOrder = ["valentine", "dating", "birthday", "sorry"];
 
 function getTemplateKind(template: { component_key: string; name: string; slug: string }) {
   const searchable = `${template.component_key} ${template.name} ${template.slug}`.toLowerCase();
@@ -45,6 +45,13 @@ function getTemplateKind(template: { component_key: string; name: string; slug: 
   ) {
     return "birthday";
   }
+  if (
+    searchable.includes("sorry") ||
+    searchable.includes("xin loi") ||
+    searchable.includes("xin lỗi")
+  ) {
+    return "sorry";
+  }
   return "valentine";
 }
 
@@ -61,6 +68,10 @@ const categoryCopy = {
     name: "Birthday",
     description: "Gửi lời chúc mừng sinh nhật bất ngờ với bánh nến, lời chúc ghi âm và những hộp quà thú vị.",
   },
+  sorry: {
+    name: "Xin lỗi",
+    description: "Mẫu làm hòa đáng yêu, giúp xoa dịu cơn giận và hàn gắn tình cảm một cách chân thành nhất.",
+  },
 };
 
 const steps = [
@@ -72,6 +83,23 @@ const steps = [
 export default async function Home() {
   const templates = await getPublishedTemplates();
   
+  // Inject Sorry 1 for demo since it's not in DB yet
+  templates.push({
+    id: "sorry-1-mock",
+    slug: "sorry-1",
+    name: "Lời Thú Tội Kẻ Tội Đồ",
+    component_key: "sorry-1",
+    description: "Trải nghiệm 6 bước xoa dịu cơn giận từ việc đập tan lớp băng giá đến bản hiệp ước hòa bình hồng rực rỡ.",
+    tagline: "Làm Hòa",
+    base_price: 349000,
+    visual_label: "HOT",
+    gradient: "from-slate-400 to-rose-400",
+    status_label: "Mới",
+    sort_order: 20,
+    data_schema: {},
+    sample_data: { screens: ["Đập băng", "Thú tội", "Vòng quay", "Kỷ niệm", "Ký tên"] },
+    template_categories: { slug: "sorry", name: "Sorry", description: null }
+  } as any);
 
   const grouped = categoryOrder
     .map((slug) => ({
