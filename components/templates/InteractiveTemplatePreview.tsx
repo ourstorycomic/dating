@@ -169,7 +169,7 @@ export function InteractiveTemplatePreview({
       } else {
         return (
           <div ref={containerRef} className="mx-auto flex aspect-[9/19] w-[340px] max-w-full shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative">
-            <Component {...props} roomId={roomId} autoPlay={true} />
+            <Component {...props} roomId={roomId} autoPlay={false} />
           </div>
         );
       }
