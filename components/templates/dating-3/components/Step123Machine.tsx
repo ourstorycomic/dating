@@ -21,13 +21,17 @@ export function Step123Machine({ onEggDropped, autoPlay, data }: { onEggDropped:
     if (!autoPlay) return;
     let timer: any;
     if (step === 1) {
-      timer = setTimeout(() => {
-        setStep(1.5);
-        coinControls.start({
-          scale: 0.2, opacity: 0, y: -200, transition: { duration: 0.5 }
+      timer = setTimeout(async () => {
+        // Mô phỏng kéo đồng xu lên khe nhét xu
+        await coinControls.start({
+          x: 103, y: -248, transition: { duration: 1.2, ease: "easeInOut" }
         });
-        setTimeout(() => setStep(2), 500);
-      }, 2000);
+        setStep(1.5);
+        await coinControls.start({
+          scale: 0.2, opacity: 0, transition: { duration: 0.3 }
+        });
+        setTimeout(() => setStep(2), 300);
+      }, 1000);
     } else if (step === 2) {
       timer = setTimeout(() => spinKnob(), 1000);
     }

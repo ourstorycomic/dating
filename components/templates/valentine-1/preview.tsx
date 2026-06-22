@@ -11,6 +11,7 @@ export function StarryConstellationPreview({
   hideNavigation = false,
   onResponse,
   customData,
+  autoPlay = false,
 }: TemplatePreviewProps) {
   const messages = customData?.memories?.length
     ? customData.memories.map((memory) => memory.message || memory.title)
@@ -18,6 +19,7 @@ export function StarryConstellationPreview({
 
   return (
     <ConstellationVaultExperience
+      autoPlay={autoPlay}
       forceStage={typeof customData?.forceStage === 'number' ? customData.forceStage : (customData?.forceStage ? parseInt(customData.forceStage as string) : undefined)}
       anniversaryCode={customData?.anniversaryCode ?? "1402"}
       connectInstruction={customData?.connectInstruction ?? "Giữ và di chuyển ống kính để dò tìm chòm sao"}

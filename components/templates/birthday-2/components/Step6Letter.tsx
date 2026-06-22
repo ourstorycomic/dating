@@ -37,7 +37,7 @@ export function Step6Letter({ letter, onNext, autoPlay = false }: { letter: stri
       transition={{ duration: 1.5 }}
       className="absolute inset-0 flex flex-col items-center justify-center bg-[#050505] p-6 z-50"
     >
-      <audio autoPlay loop src="https://assets.mixkit.co/sfx/preview/mixkit-soft-piano-melody-2972.mp3" />
+      <audio autoPlay loop src="https://assets.mixkit.co/sfx/preview/mixkit-soft-piano-melody-2972.mp3" muted={compact && !autoPlay} />
 
       <motion.div
         initial={{ y: -50, opacity: 0 }}

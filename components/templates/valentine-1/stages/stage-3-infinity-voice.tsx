@@ -17,6 +17,7 @@ export function Stage3InfinityVoice({
   messages,
   subtitle,
   title,
+  autoPlay = false,
 }: {
   accent: string;
   mediaType?: string;
@@ -28,6 +29,7 @@ export function Stage3InfinityVoice({
   messages: string[];
   subtitle: string;
   title: string;
+  autoPlay?: boolean;
 }) {
   const [activePoints, setActivePoints] = useState<number[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -60,6 +62,27 @@ export function Stage3InfinityVoice({
       handlePointerMove(e);
     }
   };
+
+  useEffect(() => {
+    if (autoPlay) {
+      if (activePoints.length < points.length) {
+        const t = setTimeout(() => {
+          const newArr = [...activePoints, activePoints.length];
+          setActivePoints(newArr);
+          if (newArr.length === points.length) {
+            setTimeout(() => setShowVideo(true), 1500);
+          }
+        }, 1200);
+        return () => clearTimeout(t);
+      } else if (showVideo) {
+        const t = setTimeout(() => {
+          onNext();
+        }, 3000);
+        return () => clearTimeout(t);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoPlay, activePoints, showVideo]);
 
   return (
     <motion.div className="absolute inset-0 flex flex-col items-center justify-center z-10"

@@ -16,6 +16,7 @@ export function Stage2Orbit({
   quote,
   subtitle,
   title,
+  autoPlay = false,
 }: {
   accent: string;
   imageCaption: string;
@@ -26,6 +27,7 @@ export function Stage2Orbit({
   quote: string;
   subtitle: string;
   title: string;
+  autoPlay?: boolean;
 }) {
   const [placed, setPlaced] = useState<number[]>([]);
   const [evasiveJumps, setEvasiveJumps] = useState(0);
@@ -40,6 +42,23 @@ export function Stage2Orbit({
       }
     }
   };
+
+  useEffect(() => {
+    if (autoPlay) {
+      if (placed.length < 3) {
+        const t = setTimeout(() => {
+          setPlaced([0, 1, 2]);
+        }, 1500);
+        return () => clearTimeout(t);
+      } else {
+        const t = setTimeout(() => {
+          onNext();
+        }, 3000);
+        return () => clearTimeout(t);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoPlay, placed]);
 
   const handleEvasiveHover = () => {
     if (evasiveJumps < 3 && !placed.includes(2)) {

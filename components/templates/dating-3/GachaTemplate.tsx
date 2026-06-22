@@ -123,11 +123,14 @@ const GachaStyles = `
   }
 
   .scanline {
-      position: absolute; width: 150%; height: 10px; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.8), transparent);
-      transform: rotate(-30deg) translateY(-200px);
-      animation: scan 3s infinite linear;
+      position: absolute; left: -50%; width: 200%; height: 20px; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.9), transparent);
+      transform: rotate(-30deg);
+      animation: scan 2.5s infinite linear;
   }
-  @keyframes scan { 100% { transform: rotate(-30deg) translateY(400px); } }
+  @keyframes scan { 
+      0% { top: -50%; }
+      100% { top: 150%; } 
+  }
 `;
 
 import { GACHA_DATA } from "./config";
@@ -194,7 +197,7 @@ export function GachaTemplate({ compact, fullScreen, hideNavigation, onComplete,
       <div className={`w-full flex items-center justify-center ${compact ? 'h-full' : 'min-h-screen'} ${fullScreen || compact ? '' : 'p-4 bg-gray-100'}`}>
         <div id="preview-container" className={containerClass}>
           
-          <audio ref={audioRef} loop>
+          <audio ref={audioRef} loop muted={compact && !autoPlay}>
             <source src={data.audioSrc} type="audio/mpeg" />
           </audio>
 

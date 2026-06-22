@@ -17,6 +17,7 @@ export function Stage1Telescope({
   revealBody,
   revealButton,
   revealTitle,
+  autoPlay = false,
 }: {
   accent: string;
   connectInstruction: string;
@@ -28,6 +29,7 @@ export function Stage1Telescope({
   revealBody: string;
   revealButton: string;
   revealTitle: string;
+  autoPlay?: boolean;
 }) {
   const [found, setFound] = useState(false);
   const [drawing, setDrawing] = useState(false);
@@ -54,8 +56,20 @@ export function Stage1Telescope({
       y: zone.y + (Math.random() - 0.5) * 0.08,
     });
     const timer = window.setTimeout(() => setCanScan(true), 600);
+    
+    if (autoPlay) {
+      const autoTimer = window.setTimeout(() => {
+        revealTarget();
+      }, 2000);
+      return () => {
+        window.clearTimeout(timer);
+        window.clearTimeout(autoTimer);
+      };
+    }
+    
     return () => window.clearTimeout(timer);
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoPlay]);
 
   const revealTarget = (point?: { x: number; y: number }) => {
     if (found || !canScan) return;

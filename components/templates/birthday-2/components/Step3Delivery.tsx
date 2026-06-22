@@ -2,7 +2,26 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Package } from "lucide-react";
+import { Package, MessageCircle, Phone, Compass, Camera, Settings, Map, Calendar, Mail, Music, Video, Cloud, Calculator, Clock, Store, Book, Heart } from "lucide-react";
+
+const APPS = [
+  { icon: MessageCircle, color: "bg-green-500", name: "Messages" },
+  { icon: Calendar, color: "bg-white text-red-500", name: "Calendar" },
+  { icon: Camera, color: "bg-gray-100 text-gray-800", name: "Camera" },
+  { icon: Settings, color: "bg-gray-400", name: "Settings" },
+  { icon: Phone, color: "bg-green-400", name: "Phone" },
+  { icon: Compass, color: "bg-blue-400", name: "Safari" },
+  { icon: Mail, color: "bg-blue-500", name: "Mail" },
+  { icon: Map, color: "bg-green-600", name: "Maps" },
+  { icon: Music, color: "bg-rose-500", name: "Music" },
+  { icon: Video, color: "bg-purple-500", name: "Videos" },
+  { icon: Cloud, color: "bg-blue-300", name: "Weather" },
+  { icon: Calculator, color: "bg-orange-500", name: "Calculator" },
+  { icon: Clock, color: "bg-black", name: "Clock" },
+  { icon: Store, color: "bg-blue-600", name: "App Store" },
+  { icon: Book, color: "bg-orange-400", name: "Books" },
+  { icon: Heart, color: "bg-white text-rose-500", name: "Health" }
+];
 
 export function Step3Delivery({ onNext, autoPlay = false, photos = [] }: { onNext: () => void; autoPlay?: boolean; photos?: { url: string }[] }) {
   const [showPopup, setShowPopup] = useState(false);
@@ -100,9 +119,11 @@ export function Step3Delivery({ onNext, autoPlay = false, photos = [] }: { onNex
 
         {/* Fake App Grid */}
         <div className="grid grid-cols-4 gap-x-4 gap-y-6 mt-4">
-          {[...Array(16)].map((_, i) => (
+          {APPS.map((app, i) => (
             <div key={i} className="flex flex-col items-center gap-1">
-              <div className={`w-14 h-14 rounded-[1.2rem] ${i % 4 === 0 ? 'bg-pink-400' : i % 4 === 1 ? 'bg-blue-400' : i % 4 === 2 ? 'bg-green-400' : 'bg-yellow-400'} shadow-sm opacity-90`} />
+              <div className={`w-14 h-14 rounded-[1.2rem] ${app.color} shadow-sm flex items-center justify-center`}>
+                <app.icon className={`w-7 h-7 ${app.color.includes('text-') ? '' : 'text-white'}`} strokeWidth={1.5} />
+              </div>
             </div>
           ))}
         </div>

@@ -246,11 +246,11 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
 
       {/* Background Elements */}
       {generalAudioUrl && (
-        <audio ref={audioRef} src={generalAudioUrl} loop preload="auto" />
+        <audio ref={audioRef} src={generalAudioUrl} loop preload="auto" muted={compact && !autoPlay} />
       )}
-      {clickSfxUrl && <audio ref={clickAudioRef} src={clickSfxUrl} preload="auto" />}
-      {swooshSfxUrl && <audio ref={swooshAudioRef} src={swooshSfxUrl} preload="auto" />}
-      {yaySfxUrl && <audio ref={yayAudioRef} src={yaySfxUrl} preload="auto" />}
+      {clickSfxUrl && <audio ref={clickAudioRef} src={clickSfxUrl} preload="auto" muted={compact && !autoPlay} />}
+      {swooshSfxUrl && <audio ref={swooshAudioRef} src={swooshSfxUrl} preload="auto" muted={compact && !autoPlay} />}
+      {yaySfxUrl && <audio ref={yayAudioRef} src={yaySfxUrl} preload="auto" muted={compact && !autoPlay} />}
       {!compact && (
         <>
           <FloatingClouds />

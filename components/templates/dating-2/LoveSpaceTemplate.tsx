@@ -83,7 +83,7 @@ const JourneyStyles = `
   }
 `;
 
-export function LoveSpaceTemplate({ compact, fullScreen, hideNavigation, onComplete, customData = {} }: any) {
+export function LoveSpaceTemplate({ compact, fullScreen, hideNavigation, onComplete, autoPlay, customData = {} }: any) {
   const [step, setStep] = useState(1);
   const [wheelResult, setWheelResult] = useState("");
   const [dateTime, setDateTime] = useState({ date: "", time: "" });
@@ -119,7 +119,7 @@ export function LoveSpaceTemplate({ compact, fullScreen, hideNavigation, onCompl
       <div className={`w-full flex items-center justify-center ${compact ? 'h-full' : 'min-h-screen'} ${fullScreen || compact ? '' : 'p-4 bg-gray-100'}`}>
         <div id="preview-container" className={containerClass} style={bgStyle}>
           
-          <audio ref={audioRef} loop>
+          <audio ref={audioRef} loop muted={compact && !autoPlay}>
             <source src={customData.audioSrc || TPL_DATA.audioSrc} type="audio/mpeg" />
           </audio>
 

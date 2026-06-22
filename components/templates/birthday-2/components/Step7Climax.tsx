@@ -79,7 +79,6 @@ export function Step7Climax({ autoPlay = false, onNext }: { autoPlay?: boolean; 
           className="w-full py-4 rounded-xl bg-indigo-900 text-amber-300 font-black text-xl uppercase tracking-wider hover:bg-indigo-800 transition-colors"
           onClick={() => {
             // Usually we'd handle the final action here
-            alert("Đã chốt kèo!");
           }}
         >
           Lên đồ thôi! 🛵

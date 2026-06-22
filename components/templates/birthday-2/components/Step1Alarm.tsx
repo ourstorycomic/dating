@@ -10,7 +10,8 @@ export function Step1Alarm({ onNext, autoPlay = false }: { onNext: () => void; a
   const x = useMotionValue(0);
   const opacity = useTransform(x, [0, 150], [1, 0]);
   const bgOpacity = useTransform(x, [0, 200], [0, 0.4]);
-  const controls = useAnimation();
+  const pageControls = useAnimation();
+  const handleControls = useAnimation();
 
   useEffect(() => {
     // We would play an alarm sound here.
@@ -33,9 +34,9 @@ export function Step1Alarm({ onNext, autoPlay = false }: { onNext: () => void; a
       const t = setTimeout(async () => {
         if (!isMounted) return;
         if (audioRef.current) audioRef.current.pause();
-        await controls.start({ x: 200, transition: { duration: 0.6 } });
+        await handleControls.start({ x: 200, transition: { duration: 0.6 } });
         if (!isMounted) return;
-        await controls.start({ opacity: 0, scale: 1.1 });
+        await pageControls.start({ opacity: 0, scale: 1.1 });
         if (!isMounted) return;
         onNext();
       }, 3000);
@@ -45,16 +46,16 @@ export function Step1Alarm({ onNext, autoPlay = false }: { onNext: () => void; a
       };
     }
     return () => { isMounted = false; };
-  }, [autoPlay, controls, onNext]);
+  }, [autoPlay, handleControls, pageControls, onNext]);
 
   const handleDragEnd = (e: any, info: any) => {
     if (info.offset.x > 150) {
       if (audioRef.current) audioRef.current.pause();
-      controls.start({ opacity: 0, scale: 1.1 }).then(() => {
+      pageControls.start({ opacity: 0, scale: 1.1 }).then(() => {
         onNext();
       });
     } else {
-      controls.start({ x: 0 });
+      handleControls.start({ x: 0 });
     }
   };
 
@@ -69,21 +70,29 @@ export function Step1Alarm({ onNext, autoPlay = false }: { onNext: () => void; a
       <div className="absolute inset-0 bg-pink-900/20 backdrop-blur-[2px] z-0" />
       <motion.div className="absolute inset-0 bg-white z-0 pointer-events-none" style={{ opacity: bgOpacity }} />
       
-      <audio ref={audioRef} src="https://assets.mixkit.co/sfx/preview/mixkit-classic-alarm-995.mp3" loop />
+      <audio ref={audioRef} src="https://assets.mixkit.co/sfx/preview/mixkit-classic-alarm-995.mp3" loop muted={compact && !autoPlay} />
 
-      <div className="relative z-10 text-center mt-10">
-        <h1 className="text-7xl font-extrabold tracking-tight mb-2 drop-shadow-lg text-white">{currentTime}</h1>
-        <p className="text-lg font-bold text-white/90 tracking-wide drop-shadow-md">Thứ 2, ngày 14 tháng 2</p>
-      </div>
+      {/* Clock Text */}
+      <motion.div 
+        animate={pageControls}
+        className="mt-20 text-center flex flex-col items-center gap-1 drop-shadow-lg z-10"
+      >
+        <h1 className="text-8xl font-black tracking-tighter text-pink-50 drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]">{currentTime}</h1>
+        <p className="text-xl text-pink-200 font-bold drop-shadow-md">Thứ 2, ngày 14 tháng 2</p>
+      </motion.div>
 
       <div className="relative z-10 flex flex-col items-center gap-6 w-full px-8">
-        <div className="flex flex-col items-center animate-pulse mb-8">
+        {/* Báo thức Header */}
+        <motion.div 
+          animate={pageControls}
+          className="text-center mt-6 flex flex-col items-center gap-2 drop-shadow-md"
+        >
           <div className="bg-pink-500/80 p-4 rounded-full backdrop-blur-md mb-3 shadow-[0_0_30px_rgba(236,72,153,0.6)]">
             <Bell className="w-10 h-10 text-white" />
           </div>
-          <h2 className="text-3xl font-black text-white drop-shadow-md">Báo thức</h2>
-          <p className="text-pink-100 font-medium text-lg mt-1 drop-shadow-md">Dậy thôi lợn con ơi! 🐷</p>
-        </div>
+          <h2 className="text-4xl font-extrabold tracking-tight text-pink-50 drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]">Báo thức</h2>
+          <p className="text-pink-200 font-bold text-lg drop-shadow-md">Dậy thôi lợn con ơi! 🐷</p>
+        </motion.div>
 
         <div className="relative w-full h-16 bg-pink-500/30 backdrop-blur-md rounded-full border border-pink-200/50 flex items-center overflow-hidden shadow-[0_8px_32px_rgba(236,72,153,0.3)]">
           <motion.div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ opacity }}>
@@ -94,7 +103,7 @@ export function Step1Alarm({ onNext, autoPlay = false }: { onNext: () => void; a
             dragConstraints={{ left: 0, right: 200 }}
             dragElastic={0.1}
             onDragEnd={handleDragEnd}
-            animate={controls}
+            animate={handleControls}
             style={{ x }}
             className="w-14 h-14 bg-white rounded-full ml-1 flex items-center justify-center shadow-lg cursor-grab active:cursor-grabbing z-20 border-2 border-pink-100"
           >

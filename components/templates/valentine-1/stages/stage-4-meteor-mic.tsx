@@ -18,6 +18,7 @@ export function Stage4MeteorMic({
   revealButton,
   revealTitle,
   onRecord,
+  autoPlay = false,
 }: {
   accent: string;
   fallbackButton: string;
@@ -30,6 +31,7 @@ export function Stage4MeteorMic({
   revealButton: string;
   revealTitle: string;
   onRecord?: (audioDataUrl: string) => void;
+  autoPlay?: boolean;
 }) {
   const [caught, setCaught] = useState(false);
   const [blown, setBlown] = useState(false);
@@ -102,15 +104,40 @@ export function Stage4MeteorMic({
         }
       };
       checkVolume();
-    } catch (err) {
-      console.warn("Mic access denied.", err);
+    } catch (e) {
+      console.warn("Mic auth failed, falling back.");
     }
   };
+
+  useEffect(() => {
+    if (autoPlay) {
+      if (!caught) {
+        const t = setTimeout(() => {
+          setCaught(true);
+        }, 1500);
+        return () => clearTimeout(t);
+      } else if (!blown) {
+        const t = setTimeout(() => {
+          setBlown(true);
+        }, 1500);
+        return () => clearTimeout(t);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoPlay, caught, blown]);
+
+  useEffect(() => {
+    if (caught && !blown && !autoPlay) {
+      startMicListener();
+    }
+  }, [caught, blown, autoPlay]);
 
   const handleCatch = () => {
     setCaught(true);
     if (navigator.vibrate) navigator.vibrate(50);
-    startMicListener();
+    if (!autoPlay) {
+      startMicListener();
+    }
   };
 
   return (

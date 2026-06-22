@@ -10,6 +10,7 @@ import { BirthdayMagicPreview } from "./birthday-1/preview";
 import { DatingTwoPreview } from "./dating-2/preview";
 import { DatingThreePreview } from "./dating-3/preview";
 import Birthday2Preview from "./birthday-2/preview";
+import { Birthday3Preview } from "./birthday-3/preview";
 
 type InteractiveTemplatePreviewProps = TemplatePreviewProps & {
   componentKey: string;
@@ -38,6 +39,8 @@ const previewRegistry = [
   { match: "birthday #1", Component: BirthdayMagicPreview },
   { match: "birthday-2", Component: Birthday2Preview },
   { match: "birthday #2", Component: Birthday2Preview },
+  { match: "birthday-3", Component: Birthday3Preview },
+  { match: "birthday #3", Component: Birthday3Preview },
 ];
 
 // This bot automatically plays through ANY template by clicking buttons intelligently
@@ -56,11 +59,44 @@ function BotAutoPlayer({ children, enabled }: { children: React.ReactNode; enabl
       
       let clicked = false;
       
+      // Visual click effect
+      const showClick = (btn: HTMLElement) => {
+        const rect = btn.getBoundingClientRect();
+        const parentRect = containerRef.current!.getBoundingClientRect();
+        const x = rect.left - parentRect.left + rect.width / 2;
+        const y = rect.top - parentRect.top + rect.height / 2;
+
+        const ripple = document.createElement("div");
+        ripple.style.position = "absolute";
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
+        ripple.style.width = "40px";
+        ripple.style.height = "40px";
+        ripple.style.marginLeft = "-20px";
+        ripple.style.marginTop = "-20px";
+        ripple.style.borderRadius = "50%";
+        ripple.style.backgroundColor = "rgba(255, 255, 255, 0.7)";
+        ripple.style.transform = "scale(0)";
+        ripple.style.transition = "transform 0.4s ease-out, opacity 0.4s ease-out";
+        ripple.style.pointerEvents = "none";
+        ripple.style.zIndex = "9999";
+        
+        containerRef.current!.appendChild(ripple);
+        
+        requestAnimationFrame(() => {
+          ripple.style.transform = "scale(1.5)";
+          ripple.style.opacity = "0";
+        });
+
+        setTimeout(() => ripple.remove(), 400);
+      };
+
       // 1. Try to find a primary 'next' or 'yes' button
       for (const btn of buttons) {
         const text = btn.textContent || "";
         if (clickableTexts.some(t => text.toLowerCase().includes(t.toLowerCase()))) {
            if (btn.disabled) continue;
+           showClick(btn);
            btn.click();
            clicked = true;
            break;
@@ -72,6 +108,7 @@ function BotAutoPlayer({ children, enabled }: { children: React.ReactNode; enabl
         const enabledButtons = buttons.filter(b => !b.disabled);
         if (enabledButtons.length > 0) {
           const randomBtn = enabledButtons[Math.floor(Math.random() * enabledButtons.length)];
+          showClick(randomBtn);
           randomBtn.click();
         }
       }
@@ -112,7 +149,8 @@ export function InteractiveTemplatePreview({
         return (
           <div 
             ref={containerRef} 
-            className="mx-auto flex aspect-[9/19] w-[340px] max-w-full shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative"
+            className="mx-auto flex aspect-[9/19] w-[340px] max-w-full shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative isolate z-0 ring-1 ring-inset ring-black/10"
+            style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)' }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onTouchStart={() => setIsHovered(true)}
@@ -123,7 +161,7 @@ export function InteractiveTemplatePreview({
             
             <div className="absolute inset-0 pointer-events-none">
               <BotAutoPlayer enabled={isHovered} key={isHovered ? "active" : "idle"}>
-                <Component {...props} roomId={roomId} autoPlay={isHovered} />
+                <Component {...props} roomId={roomId} autoPlay={isHovered} compact={true} />
               </BotAutoPlayer>
             </div>
           </div>

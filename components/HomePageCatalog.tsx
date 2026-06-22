@@ -47,7 +47,7 @@ function tiktokLink(templateSlug?: string) {
 }
 
 export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
-  const [activeTab, setActiveTab] = useState(grouped[0]?.slug);
+  const [activeTab, setActiveTab] = useState("all");
   const router = useRouter();
 
   if (grouped.length === 0) {
@@ -61,6 +61,17 @@ export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
   return (
     <div className="grid gap-8">
       <div className="sticky top-3 z-20 -mx-1 flex gap-2 overflow-x-auto rounded-full border border-white/72 bg-white/72 p-2 shadow-[0_16px_38px_rgba(215,112,158,0.14)] backdrop-blur-xl">
+        <button
+          className={`shrink-0 rounded-full px-5 py-2.5 text-sm font-extrabold transition-all ${
+            activeTab === "all"
+              ? "bg-[#ff7eb8] text-white shadow-[0_10px_24px_rgba(255,126,184,0.34)]"
+              : "bg-white/58 text-[#7b536b] hover:bg-white hover:text-[#c04b86]"
+          }`}
+          onClick={() => setActiveTab("all")}
+          type="button"
+        >
+          Tất cả
+        </button>
         {grouped.map((group) => (
           <button
             className={`shrink-0 rounded-full px-5 py-2.5 text-sm font-extrabold transition-all ${
@@ -71,11 +82,6 @@ export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
             key={group.slug}
             onClick={() => {
               setActiveTab(group.slug);
-              const el = document.getElementById(`category-${group.slug}`);
-              if (el) {
-                const y = el.getBoundingClientRect().top + window.scrollY - 112;
-                window.scrollTo({ top: y, behavior: "smooth" });
-              }
             }}
             type="button"
           >
@@ -85,7 +91,7 @@ export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
       </div>
 
       <div className="grid gap-14">
-        {grouped.map((group) => (
+        {grouped.filter(group => activeTab === "all" || group.slug === activeTab).map((group) => (
           <section className="grid gap-5" id={`category-${group.slug}`} key={group.slug}>
             <div className="rounded-[28px] border border-white/70 bg-white/52 p-5 shadow-[0_14px_34px_rgba(215,112,158,0.1)] backdrop-blur-xl">
               <h3 className="text-2xl font-extrabold text-[#321a32]">{group.category?.name}</h3>

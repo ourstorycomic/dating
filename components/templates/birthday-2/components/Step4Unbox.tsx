@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { PackageOpen } from "lucide-react";
 
 export function Step4Unbox({ photos, onNext, autoPlay = false }: { photos: { url: string; note: string }[]; onNext: () => void; autoPlay?: boolean }) {
@@ -16,7 +16,7 @@ export function Step4Unbox({ photos, onNext, autoPlay = false }: { photos: { url
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { y: 300, scale: 0, opacity: 0, rotate: -20 },
     show: (i: number) => ({
       y: 0,

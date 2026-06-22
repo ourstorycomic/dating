@@ -64,7 +64,7 @@ export function Valentine3Diary({
 
   return (
     <div className={containerClass}>
-      {mergedData.musicUrl && <audio ref={audioRef} src={mergedData.musicUrl} loop preload="auto" />}
+      {mergedData.musicUrl && <audio ref={audioRef} src={mergedData.musicUrl} loop preload="auto" muted={compact && !autoPlay} />}
 
       {!compact && <FloatingParticles />}
 

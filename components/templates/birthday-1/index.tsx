@@ -43,6 +43,7 @@ function BirthdayScene({
   messages,
   musicUrl,
   age,
+  compact = false,
 }: {
   recipientName: string;
   finalMessage: string;
@@ -50,6 +51,7 @@ function BirthdayScene({
   messages: string[];
   musicUrl?: string;
   age: number;
+  compact?: boolean;
 }) {
   const [phase, setPhase] = useState<BirthdayPhase>("dark");
   const [musicActive, setMusicActive] = useState(false);
@@ -338,13 +340,13 @@ function BirthdayScene({
         )}
       </AnimatePresence>
 
-      <audio loop preload="auto" ref={audioRef}>
+      <audio loop preload="auto" ref={audioRef} muted={compact && !autoPlay}>
         <source src={musicUrl || DEFAULT_BIRTHDAY_MUSIC} type="audio/mp4" />
       </audio>
-      <audio preload="auto" ref={touchAudioRef} src={TOUCH_SOUND} />
-      <audio preload="auto" ref={magicAudioRef} src={MAGIC_WAND_SOUND} />
-      <audio preload="auto" ref={meowAudioRef} src="/birthday-1/vfx/meow.mp3" />
-      <audio preload="auto" ref={patAudioRef} src="/birthday-1/vfx/lopi.ogg" />
+      <audio preload="auto" ref={touchAudioRef} src={TOUCH_SOUND} muted={compact && !autoPlay} />
+      <audio preload="auto" ref={magicAudioRef} src={MAGIC_WAND_SOUND} muted={compact && !autoPlay} />
+      <audio preload="auto" ref={meowAudioRef} src="/birthday-1/vfx/meow.mp3" muted={compact && !autoPlay} />
+      <audio preload="auto" ref={patAudioRef} src="/birthday-1/vfx/lopi.ogg" muted={compact && !autoPlay} />
 
       <div className="absolute inset-0 z-10">
         <Canvas
@@ -538,6 +540,7 @@ export function BirthdayMagicExperience(props: BirthdayMagicExperienceProps) {
         ]}
         musicUrl={props.musicUrl}
         recipientName={props.recipientName || "Bạn"}
+        compact={props.compact}
       />
     </div>
   );

@@ -31,6 +31,7 @@ export function Stage5Supernova({
   proposedDate,
   onNext,
   onResponse,
+  autoPlay = false,
 }: {
   contractBody?: string;
   contractHoldInstruction?: string;
@@ -55,6 +56,7 @@ export function Stage5Supernova({
   proposedDate?: string;
   onNext?: () => void;
   onResponse?: (answer: string, date?: string) => void;
+  autoPlay?: boolean;
 }) {
   const [rejectFallen, setRejectFallen] = useState(false);
   const [holding, setHolding] = useState(false);
@@ -95,6 +97,30 @@ export function Stage5Supernova({
     if (navigator.vibrate) navigator.vibrate([300, 100, 500]);
     setExploded(true);
   };
+
+  useEffect(() => {
+    if (autoPlay) {
+      if (!exploded) {
+        const t = setTimeout(() => {
+          setHoldProgress(100);
+          triggerExplosion();
+        }, 1500);
+        return () => clearTimeout(t);
+      } else if (!showGift) {
+        const t = setTimeout(() => {
+          setShowGift(true);
+        }, 3000);
+        return () => clearTimeout(t);
+      } else if (!giftAccepted && !giftDeclined) {
+        const t = setTimeout(() => {
+          setGiftAccepted(true);
+          onResponse?.("YES", proposedDate);
+        }, 1500);
+        return () => clearTimeout(t);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoPlay, exploded, showGift, giftAccepted, giftDeclined]);
 
   return (
     <div className="absolute inset-0 flex items-center justify-center z-20">

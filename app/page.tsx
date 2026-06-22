@@ -5,6 +5,7 @@ import Link from "next/link";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { HomePageCatalog } from "@/components/HomePageCatalog";
 import { TiltPhonePreview } from "@/components/TiltPhonePreview";
+import { Footer } from "@/components/Footer";
 import { TIKTOK_INBOX_URL } from "@/lib/constants";
 import { getPublishedTemplates } from "@/lib/supabase/server";
 
@@ -40,7 +41,9 @@ function getTemplateKind(template: { component_key: string; name: string; slug: 
     searchable.includes("birthday 2") ||
     searchable.includes("birthday2") ||
     searchable.includes("birthday_2") ||
-    searchable.includes("birthday-magic")
+    searchable.includes("birthday-magic") ||
+    searchable.includes("birthday-3") ||
+    searchable.includes("birthday #3")
   ) {
     return "birthday";
   }
@@ -70,6 +73,24 @@ const steps = [
 
 export default async function Home() {
   const templates = await getPublishedTemplates();
+  
+  // Inject Birthday 3 for demo since it's not in DB yet
+  templates.push({
+    id: "birthday-3-mock",
+    slug: "birthday-3",
+    name: "Bảo Tàng Ký Ức & Chòm Sao",
+    component_key: "birthday-3",
+    description: "Khám phá viện bảo tàng ký ức ảo ảnh 3D và thắp sáng chòm sao định mệnh để nhận quà.",
+    tagline: "Bảo tàng Ký ức",
+    base_price: 399000,
+    visual_label: "MỚI",
+    gradient: "from-indigo-500 to-purple-500",
+    status_label: "Hot",
+    sort_order: 10,
+    data_schema: {},
+    sample_data: { screens: ["Bức thư", "Flashlight", "Bảo tàng", "Ghép pha lê", "Vì sao rơi"] },
+    template_categories: { slug: "birthday", name: "Birthday", description: null }
+  } as any);
 
   const grouped = categoryOrder
     .map((slug) => ({
@@ -180,6 +201,8 @@ export default async function Home() {
           <HomePageCatalog grouped={grouped} />
         </section>
       </main>
+
+      <Footer />
 
       <div className="phone-safe-bottom fixed inset-x-3 bottom-0 z-30 sm:hidden">
         <a
