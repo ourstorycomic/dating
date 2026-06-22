@@ -5,7 +5,7 @@ import type { MovieData } from "../Valentine2WatchParty";
 
 const ITEMS_PER_PAGE = 24;
 
-export function Step7Lobby({ onSelectMovie, compact: propCompact, fullScreen }: { onSelectMovie: (m: MovieData) => void; compact?: boolean; fullScreen?: boolean }) {
+export function Step7Lobby({ onSelectMovie, compact: propCompact, fullScreen, autoPlay = false }: { onSelectMovie: (m: MovieData) => void; compact?: boolean; fullScreen?: boolean; autoPlay?: boolean }) {
   const compact = propCompact || !fullScreen;
   const [movies, setMovies] = useState<MovieData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -83,7 +83,16 @@ export function Step7Lobby({ onSelectMovie, compact: propCompact, fullScreen }: 
     if (!isSearchMode) {
       fetchMovies({ tl: typeList, cat: category, ctr: country, yr: year, pg: page });
     }
-  }, [typeList, category, country, year, page, isSearchMode]);
+  }, [typeList, category, country, year, page, isSearchMode, fetchMovies]);
+
+  useEffect(() => {
+    if (autoPlay && movies.length > 0) {
+      const t = setTimeout(() => {
+        onSelectMovie(movies[0]);
+      }, 3000);
+      return () => clearTimeout(t);
+    }
+  }, [autoPlay, movies, onSelectMovie]);
 
   // Build visible page numbers (max 5 around current)
   const visiblePages = () => {

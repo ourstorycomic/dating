@@ -20,11 +20,13 @@ const WASHI_TAPE = "absolute w-12 h-5 bg-white/40 backdrop-blur-sm border-x bord
 export function Scrapbook({ 
   data, 
   onExtractLetter,
-  onFirstInteraction 
+  onFirstInteraction,
+  autoPlay = false
 }: { 
   data: any; 
   onExtractLetter: () => void;
   onFirstInteraction?: () => void;
+  autoPlay?: boolean;
 }) {
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -77,6 +79,29 @@ export function Scrapbook({
       return () => clearInterval(interval);
     }
   }, [currentPage, data.page2Text]);
+
+  useEffect(() => {
+    if (!autoPlay) return;
+    
+    if (currentPage === 0) {
+      const t = setTimeout(() => setCurrentPage(1), 3000);
+      return () => clearTimeout(t);
+    } else if (currentPage === 1 && page1ShowNext) {
+      const t = setTimeout(() => setCurrentPage(2), 2000);
+      return () => clearTimeout(t);
+    } else if (currentPage === 2 && page2ShowNext) {
+      const t = setTimeout(() => setCurrentPage(3), 2000);
+      return () => clearTimeout(t);
+    } else if (currentPage === 3) {
+      const t = setTimeout(() => {
+        setDragY({ y: -150, extracted: true });
+        setTimeout(() => {
+          onExtractLetter();
+        }, 1500);
+      }, 2500);
+      return () => clearTimeout(t);
+    }
+  }, [autoPlay, currentPage, page1ShowNext, page2ShowNext, onExtractLetter]);
 
   const nextPage = () => {
     onFirstInteraction?.();

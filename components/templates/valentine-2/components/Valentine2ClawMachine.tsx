@@ -49,7 +49,7 @@ function playSuccessSound() {
   } catch (_) {}
 }
 
-export function Valentine2ClawMachine({ onEggGrabbed }: { onEggGrabbed: () => void }) {
+export function Valentine2ClawMachine({ onEggGrabbed, autoPlay = false }: { onEggGrabbed: () => void; autoPlay?: boolean }) {
   const [step,          setStep]          = useState<GameStep>("insert");
   const [clawX,         setClawX]         = useState(50);
   const [showMiss,      setShowMiss]      = useState(false);
@@ -79,6 +79,24 @@ export function Valentine2ClawMachine({ onEggGrabbed }: { onEggGrabbed: () => vo
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clawX, step]);
+
+  useEffect(() => {
+    if (!autoPlay) return;
+    
+    if (step === "insert") {
+      const t = setTimeout(() => {
+        coinControls.start({ scale: 0, opacity: 0, transition: { duration: 0.15 } });
+        setStep("play");
+      }, 1500);
+      return () => clearTimeout(t);
+    } else if (step === "play") {
+      const t = setTimeout(() => {
+        setClawX(25);
+        setTimeout(() => grabEgg(), 800);
+      }, 1000);
+      return () => clearTimeout(t);
+    }
+  }, [autoPlay, step, coinControls]);
 
   // ── Coin insert ──
   const handleDragEnd = useCallback(async () => {

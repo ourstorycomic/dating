@@ -98,17 +98,8 @@ export function Valentine2WatchParty({
     }
   }, [step]);
 
-  useEffect(() => {
-    if (!autoPlay) return;
-    const sequence = [2, 5, 6, 7];
-    const t = setInterval(() => {
-      setStep((s) => {
-        const idx = sequence.indexOf(s);
-        return idx !== -1 && idx < sequence.length - 1 ? sequence[idx + 1] : 2;
-      });
-    }, 4500); // Auto progress every 4.5s
-    return () => clearInterval(t);
-  }, [autoPlay]);
+  // Remove the blind autoPlay interval. The children components will advance automatically using their callbacks when autoPlay is true.
+  // We keep the container class.
 
   let containerClass = "w-full overflow-hidden transition-colors duration-[2000ms] mx-auto text-gray-800 touch-none [perspective:1500px] ";
 
@@ -141,6 +132,7 @@ export function Valentine2WatchParty({
             data={data}
             onExtractLetter={() => setStep(5)}
             onFirstInteraction={playMusic}
+            autoPlay={autoPlay}
           />
         )}
 
@@ -148,6 +140,7 @@ export function Valentine2WatchParty({
           <Valentine2ClawMachine
             key="clawMachine"
             onEggGrabbed={() => setStep(6)}
+            autoPlay={autoPlay}
           />
         )}
 
@@ -157,6 +150,7 @@ export function Valentine2WatchParty({
             confession={data.confessionText}
             onComplete={() => setStep(7)}
             compact={compact}
+            autoPlay={autoPlay}
           />
         )}
 
@@ -165,6 +159,7 @@ export function Valentine2WatchParty({
             key="step7"
             compact={compact}
             fullScreen={fullScreen}
+            autoPlay={autoPlay}
             onSelectMovie={(movie) => {
               setSelectedMovie(movie);
               onResponse?.({ answer: "YES", message: JSON.stringify(movie) });

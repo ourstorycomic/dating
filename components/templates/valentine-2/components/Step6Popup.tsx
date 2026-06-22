@@ -4,7 +4,7 @@ import confetti from "canvas-confetti";
 import { Ticket } from "lucide-react";
 import { FloatingParticles } from "./FloatingParticles";
 
-export function Step6Popup({ confession, onComplete, compact }: { confession: string; onComplete: () => void; compact?: boolean }) {
+export function Step6Popup({ confession, onComplete, compact, autoPlay = false }: { confession: string; onComplete: () => void; compact?: boolean; autoPlay?: boolean }) {
   const [noHoverCount, setNoHoverCount] = useState(0);
   const [noBtnPos, setNoBtnPos] = useState({ x: 0, y: 0 });
   
@@ -40,6 +40,14 @@ export function Step6Popup({ confession, onComplete, compact }: { confession: st
       return () => clearInterval(interval);
     }
   }, [phase, confession]);
+
+  useEffect(() => {
+    if (autoPlay && buttonsVisible) {
+      const t = setTimeout(() => handleAccept(), 2000);
+      return () => clearTimeout(t);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoPlay, buttonsVisible]);
 
   const handleNoHover = () => {
     if (isMoving.current) return;
