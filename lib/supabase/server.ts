@@ -56,6 +56,8 @@ const allowedTemplateMatches = [
   "birthday-1",
   "birthday #1",
   "birthday-magic",
+  "birthday-2",
+  "birthday #2",
 ];
 
 function isSupportedTemplate(template: Pick<TemplateCatalogItem, "component_key" | "name" | "slug">) {
