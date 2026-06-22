@@ -11,28 +11,24 @@ function Step1Ice({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean 
   const [cracks, setCracks] = useState(0);
 
   useEffect(() => {
-    if (autoPlay) {
+    if (autoPlay && cracks < 3) {
       const t = setInterval(() => {
-        setCracks(c => {
-          if (c >= 3) {
-            clearInterval(t);
-            onNext();
-            return c;
-          }
-          return c + 1;
-        });
+        setCracks(c => Math.min(c + 1, 3));
       }, 300);
       return () => clearInterval(t);
     }
-  }, [autoPlay, onNext]);
+  }, [autoPlay, cracks]);
+
+  useEffect(() => {
+    if (cracks >= 3) {
+      const t = setTimeout(onNext, autoPlay ? 100 : 500);
+      return () => clearTimeout(t);
+    }
+  }, [cracks, autoPlay, onNext]);
 
   const handleTap = () => {
     if (cracks < 3) {
-      const nextCracks = cracks + 1;
-      setCracks(nextCracks);
-      if (nextCracks >= 3) {
-        setTimeout(onNext, 500);
-      }
+      setCracks(c => Math.min(c + 1, 3));
     }
   };
 
