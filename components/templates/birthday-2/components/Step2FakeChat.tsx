@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect as import_react_useEffect } from "react";
+
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, Info, Phone, Video } from "lucide-react";
+import { ChevronLeft, Info, Phone, Video, MousePointer2, ArrowDown } from "lucide-react";
 
 export function Step2FakeChat({ messages, onNext, autoPlay = false }: { messages: string[]; onNext: () => void; autoPlay?: boolean }) {
   const [visibleCount, setVisibleCount] = useState(0);
@@ -75,9 +76,16 @@ export function Step2FakeChat({ messages, onNext, autoPlay = false }: { messages
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-center text-xs text-gray-400 mt-auto mb-10 animate-pulse"
+            className="mt-auto mb-10 flex flex-col items-center justify-center gap-2 pointer-events-none"
           >
-            Chạm vào màn hình để xem tin nhắn...
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ repeat: Infinity, duration: 1.5 }}
+              className="bg-blue-500/10 text-blue-600 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2"
+            >
+              <MousePointer2 className="w-4 h-4" />
+              Chạm màn hình để đọc tiếp
+            </motion.div>
           </motion.div>
         )}
 
@@ -87,11 +95,17 @@ export function Step2FakeChat({ messages, onNext, autoPlay = false }: { messages
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="mt-auto flex justify-end"
+              className="mt-auto flex flex-col items-end gap-2"
             >
+              <motion.div 
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}
+                className="flex items-center gap-2 text-pink-500 text-sm font-bold animate-bounce mr-4"
+              >
+                Bấm gửi ngay! <ArrowDown className="w-4 h-4" />
+              </motion.div>
               <button
                 onClick={(e) => { e.stopPropagation(); onNext(); }}
-                className="max-w-[80%] px-4 py-2.5 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-medium text-[15px] rounded-2xl rounded-tr-sm transition-colors shadow-sm"
+                className="max-w-[80%] px-5 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 active:scale-95 text-white font-bold text-[15px] rounded-2xl rounded-tr-sm transition-all shadow-[0_4px_15px_rgba(59,130,246,0.4)]"
               >
                 Hôm nay sinh nhật tớ mà 🥺
               </button>

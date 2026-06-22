@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Package } from "lucide-react";
 
-export function Step3Delivery({ onNext, autoPlay = false }: { onNext: () => void; autoPlay?: boolean }) {
+export function Step3Delivery({ onNext, autoPlay = false, photos = [] }: { onNext: () => void; autoPlay?: boolean; photos?: { url: string }[] }) {
   const [showPopup, setShowPopup] = useState(false);
   const [showSignPad, setShowSignPad] = useState(false);
   const [isSigned, setIsSigned] = useState(false);
@@ -78,15 +78,41 @@ export function Step3Delivery({ onNext, autoPlay = false }: { onNext: () => void
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm z-30"
+      className="absolute inset-0 flex flex-col items-center justify-center bg-slate-100 z-30 overflow-hidden"
     >
+      {/* Fake Phone Home Screen Background */}
+      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1618588507085-c79565432917?q=80&w=600&auto=format&fit=crop')" }} />
+      <div className="absolute inset-0 bg-white/20 backdrop-blur-md z-0" />
+      
+      {/* Fake Widgets and Apps */}
+      <div className="absolute inset-0 z-10 w-full h-full p-6 pt-16 flex flex-col gap-6 pointer-events-none">
+        {/* Photo Widget */}
+        <div className="w-full h-48 bg-white rounded-3xl shadow-lg overflow-hidden border-2 border-white/50">
+           {photos.length > 0 ? (
+             {/* eslint-disable-next-line @next/next/no-img-element */}
+             <img src={photos[0].url} className="w-full h-full object-cover" alt="Widget" />
+           ) : (
+             <div className="w-full h-full bg-slate-200" />
+           )}
+        </div>
+
+        {/* Fake App Grid */}
+        <div className="grid grid-cols-4 gap-x-4 gap-y-6 mt-4">
+          {[...Array(16)].map((_, i) => (
+            <div key={i} className="flex flex-col items-center gap-1">
+              <div className={`w-14 h-14 rounded-[1.2rem] ${i % 4 === 0 ? 'bg-pink-400' : i % 4 === 1 ? 'bg-blue-400' : i % 4 === 2 ? 'bg-green-400' : 'bg-yellow-400'} shadow-sm opacity-90`} />
+            </div>
+          ))}
+        </div>
+      </div>
+
       <AnimatePresence>
         {showPopup && !showSignPad && (
           <motion.div
             initial={{ y: -100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -50, opacity: 0 }}
-            className="absolute top-20 w-[90%] bg-white/90 backdrop-blur-xl rounded-2xl p-4 shadow-2xl flex items-start gap-4 cursor-pointer"
+            className="absolute top-16 w-[90%] bg-white/95 backdrop-blur-xl rounded-2xl p-4 shadow-2xl flex items-start gap-4 cursor-pointer z-50 border border-gray-100"
             onClick={() => setShowSignPad(true)}
           >
             <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center shrink-0">
@@ -111,7 +137,7 @@ export function Step3Delivery({ onNext, autoPlay = false }: { onNext: () => void
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
-            className="w-[85%] bg-white rounded-3xl p-6 shadow-2xl flex flex-col"
+            className="w-[85%] bg-white rounded-3xl p-6 shadow-2xl flex flex-col z-50"
           >
             <h2 className="text-xl font-bold text-gray-800 text-center mb-2">Ký Nhận Điện Tử</h2>
             <p className="text-sm text-gray-500 text-center mb-6">Vui lòng ký vào khung bên dưới</p>
@@ -140,9 +166,10 @@ export function Step3Delivery({ onNext, autoPlay = false }: { onNext: () => void
             <button
               onClick={onNext}
               disabled={!isSigned}
-              className={`w-full py-4 rounded-xl font-bold text-white transition-all ${isSigned ? 'bg-orange-500 hover:bg-orange-600 shadow-[0_10px_20px_rgba(249,115,22,0.3)]' : 'bg-gray-300 cursor-not-allowed'}`}
+              className={`relative overflow-hidden w-full py-4 rounded-xl font-bold text-white transition-all duration-300 ${isSigned ? 'bg-gradient-to-r from-blue-500 to-indigo-600 shadow-[0_10px_20px_rgba(79,70,229,0.4)] scale-105' : 'bg-gray-300 cursor-not-allowed'}`}
             >
-              Mở Kiện Hàng
+              <span className="relative z-10 text-lg">Mở Kiện Hàng ✨</span>
+              {isSigned && <div className="absolute inset-0 bg-white/20 animate-pulse" />}
             </button>
           </motion.div>
         )}
