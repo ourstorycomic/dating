@@ -119,17 +119,17 @@ export function Stage4MeteorMic({
     >
       <style>{`
         @keyframes main-meteor-fall {
-          0% { transform: translate(50vw, -50vh); opacity: 0; }
+          0% { transform: translate(800px, -800px) rotate(135deg); opacity: 0; }
           5% { opacity: 1; }
-          75% { transform: translate(-100vw, 100vh); opacity: 1; }
-          76% { transform: translate(-100vw, 100vh); opacity: 0; }
-          100% { transform: translate(-100vw, 100vh); opacity: 0; }
+          75% { transform: translate(-1600px, 1600px) rotate(135deg); opacity: 1; }
+          76% { transform: translate(-1600px, 1600px) rotate(135deg); opacity: 0; }
+          100% { transform: translate(-1600px, 1600px) rotate(135deg); opacity: 0; }
         }
         @keyframes bg-meteor-fall {
-          0% { transform: translate(0, 0); opacity: 0; }
+          0% { transform: translate(0px, 0px) rotate(135deg); opacity: 0; }
           10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { transform: translate(-100vw, 100vw); opacity: 0; }
+          90% { transform: translate(-2000px, 2000px) rotate(135deg); opacity: 1; }
+          100% { transform: translate(-2000px, 2000px) rotate(135deg); opacity: 0; }
         }
       `}</style>
       {/* Background Meteors (Luôn hiện để tạo không khí) */}
@@ -138,12 +138,11 @@ export function Stage4MeteorMic({
           const isBlue = i % 5 === 0;
           return (
             <div key={`bg-meteor-${i}`}
-              className={`absolute w-32 h-[2px] rounded-full ${isBlue ? 'bg-gradient-to-r from-transparent to-cyan-300 shadow-[0_0_15px_#22d3ee]' : 'bg-gradient-to-r from-transparent to-white/60'}`}
+              className={`absolute w-40 h-[2px] rounded-full ${isBlue ? 'bg-gradient-to-r from-transparent to-cyan-300 shadow-[0_0_15px_#22d3ee]' : 'bg-gradient-to-r from-transparent to-white/60'}`}
               style={{ 
-                rotate: "135deg", 
-                left: `${Math.random() * 150}%`, 
-                top: `${Math.random() * 150 - 50}%`,
-                animation: `bg-meteor-fall ${2 + Math.random() * 3}s linear infinite`,
+                left: `${Math.random() * 200 - 50}%`, 
+                top: `${Math.random() * 200 - 100}%`,
+                animation: `bg-meteor-fall ${3 + Math.random() * 4}s linear infinite`,
                 animationDelay: `${Math.random() * 5}s`,
                 opacity: 0
               }}
@@ -159,13 +158,12 @@ export function Stage4MeteorMic({
           </motion.p>
           <div
             className="absolute top-0 right-0 z-30 pointer-events-none"
-            style={{ animation: 'main-meteor-fall 5s linear infinite' }}
+            style={{ animation: 'main-meteor-fall 6s linear infinite' }}
           >
             <motion.button 
               onClick={handleCatch}
               whileHover={{ scale: 1.3 }}
               className="w-64 h-16 flex items-center justify-center outline-none pointer-events-auto"
-              style={{ rotate: "135deg" }}
             >
               <div className="w-56 h-[4px] bg-gradient-to-r from-transparent to-cyan-300" />
               <div className="w-16 h-16 bg-cyan-300 rounded-full shadow-[0_0_60px_#22d3ee] flex-shrink-0 animate-pulse" />
