@@ -1,5 +1,6 @@
 // Force recompile to clear stale Next.js cache
-export const revalidate = 60;
+export const revalidate = 0;
+export const dynamic = "force-dynamic";
 import Link from "next/link";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { HomePageCatalog } from "@/components/HomePageCatalog";
@@ -36,6 +37,9 @@ function getTemplateKind(template: { component_key: string; name: string; slug: 
     searchable.includes("birthday #1") ||
     searchable.includes("birthday-2") ||
     searchable.includes("birthday #2") ||
+    searchable.includes("birthday 2") ||
+    searchable.includes("birthday2") ||
+    searchable.includes("birthday_2") ||
     searchable.includes("birthday-magic")
   ) {
     return "birthday";

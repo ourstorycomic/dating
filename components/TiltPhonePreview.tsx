@@ -62,7 +62,7 @@ export function TiltPhonePreview() {
           </div>
         </div>
 
-        <div className="relative m-4 rounded-[24px] border border-white/80 bg-white/76 p-4 shadow-[0_16px_38px_rgba(215,112,158,0.14)] backdrop-blur-xl" style={{ transform: "translateZ(40px)" }}>
+        <div className="relative m-4 rounded-[24px] border border-white/80 bg-white/76 p-4 shadow-[0_16px_38px_rgba(215,112,158,0.14)]" style={{ transform: "translateZ(40px)" }}>
           <p className="text-center text-sm font-semibold text-[#76556d]">
             Em có muốn đi hẹn hò với anh không?
           </p>

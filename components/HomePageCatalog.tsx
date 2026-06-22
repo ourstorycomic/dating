@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { InteractiveTemplatePreview } from "@/components/templates/InteractiveTemplatePreview";
 import { TIKTOK_INBOX_URL } from "@/lib/constants";
@@ -101,10 +102,17 @@ export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
                 ).slice(0, 4);
 
                 return (
-                  <GlassCard
-                    className="shine-card flex h-full min-h-[590px] flex-col p-4 sm:p-5"
+                  <motion.div
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-40px" }}
+                    transition={{ duration: 0.5, type: "spring", bounce: 0.3 }}
                     key={template.id}
+                    className="h-full"
                   >
+                    <GlassCard
+                      className="shine-card flex h-full min-h-[590px] flex-col p-4 sm:p-5"
+                    >
                     <Link className="mb-5 block" href={`/templates/${template.slug}/preview`}>
                       <InteractiveTemplatePreview
                         compact
@@ -164,7 +172,8 @@ export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
                         Chọn mẫu
                       </a>
                     </div>
-                  </GlassCard>
+                    </GlassCard>
+                  </motion.div>
                 );
               })}
             </div>
