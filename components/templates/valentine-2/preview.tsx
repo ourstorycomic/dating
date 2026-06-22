@@ -16,6 +16,7 @@ export function Valentine2Preview({
       hideNavigation={compact || hideNavigation}
       data={props.customData || (props as any)}
       roomId={roomId}
+      autoPlay={props.autoPlay}
       onResponse={props.onResponse}
     />
   );

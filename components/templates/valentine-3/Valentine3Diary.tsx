@@ -24,6 +24,7 @@ export function Valentine3Diary({
   hideNavigation?: boolean;
   data?: any;
   roomId?: string;
+  autoPlay?: boolean;
   onResponse?: (res: { answer: string; message: string }) => void;
 }) {
   const [step, setStep] = useState(1);
@@ -34,6 +35,14 @@ export function Valentine3Diary({
       audioRef.current.play().catch((e) => console.log("Audio play prevented:", e));
     }
   };
+
+  useEffect(() => {
+    if (!autoPlay) return;
+    const t = setInterval(() => {
+      setStep((s) => (s < 8 ? s + 1 : 1));
+    }, 4500); // Auto progress every 4.5 seconds
+    return () => clearInterval(t);
+  }, [autoPlay]);
 
   let containerClass = "w-full overflow-hidden transition-colors duration-[2000ms] mx-auto text-gray-800 touch-none select-none ";
   
@@ -62,7 +71,7 @@ export function Valentine3Diary({
     <div className={containerClass}>
       {mergedData.musicUrl && <audio ref={audioRef} src={mergedData.musicUrl} loop preload="auto" />}
 
-      <FloatingParticles />
+      {!compact && <FloatingParticles />}
 
       <AnimatePresence mode="wait">
         {step === 1 && (

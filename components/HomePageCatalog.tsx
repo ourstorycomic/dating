@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { InteractiveTemplatePreview } from "@/components/templates/InteractiveTemplatePreview";
@@ -47,6 +48,7 @@ function tiktokLink(templateSlug?: string) {
 
 export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
   const [activeTab, setActiveTab] = useState(grouped[0]?.slug);
+  const router = useRouter();
 
   if (grouped.length === 0) {
     return (
@@ -113,14 +115,21 @@ export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
                     <GlassCard
                       className="shine-card flex h-full min-h-[590px] flex-col p-4 sm:p-5"
                     >
-                    <Link className="mb-5 block" href={`/templates/${template.slug}/preview`}>
+                    <div 
+                      className="mb-5 block cursor-pointer" 
+                      onClick={(e) => {
+                        if (e.nativeEvent.isTrusted) {
+                          router.push(`/templates/${template.slug}/preview`);
+                        }
+                      }}
+                    >
                       <InteractiveTemplatePreview
                         compact
                         componentKey={template.component_key}
                         gradient={template.gradient}
                         visualLabel={template.visual_label}
                       />
-                    </Link>
+                    </div>
 
                     <div className="flex items-start justify-between gap-3">
                       <div>

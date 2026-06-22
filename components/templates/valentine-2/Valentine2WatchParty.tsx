@@ -65,6 +65,7 @@ export function Valentine2WatchParty({
   data?: Valentine2Data;
   roomId?: string;
   isHost?: boolean;
+  autoPlay?: boolean;
   onResponse?: (response: { answer: string; message?: string }) => void;
 }) {
   const data = { ...DEFAULT_MEMORY_DATA, ...inputData };
@@ -96,6 +97,14 @@ export function Valentine2WatchParty({
     }
   }, [step]);
 
+  useEffect(() => {
+    if (!autoPlay) return;
+    const t = setInterval(() => {
+      setStep((s) => (s < 9 ? s + 1 : 2));
+    }, 4500); // Auto progress every 4.5s
+    return () => clearInterval(t);
+  }, [autoPlay]);
+
   let containerClass = "w-full overflow-hidden transition-colors duration-[2000ms] mx-auto text-gray-800 touch-none [perspective:1500px] ";
 
   const isCinemaMode = step >= 7;
@@ -118,7 +127,7 @@ export function Valentine2WatchParty({
       {data.musicUrl ? <audio ref={audioRef} src={data.musicUrl} loop preload="auto" /> : null}
 
       {/* Particles: romantic in scrapbook, subtle cinematic in movie steps */}
-      {!isCinemaMode && <FloatingParticles fullWidth={fullScreen} cinema={false} />}
+      {!compact && !isCinemaMode && <FloatingParticles fullWidth={fullScreen} cinema={false} />}
 
       <AnimatePresence mode="wait">
         {step === 2 && (

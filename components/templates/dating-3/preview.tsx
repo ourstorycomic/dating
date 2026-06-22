@@ -15,6 +15,8 @@ export function DatingThreePreview(props: TemplatePreviewProps) {
       senderName={props.senderName}
       fullScreen={props.fullScreen}
       hideNavigation={props.compact || props.hideNavigation}
+      autoPlay={props.autoPlay}
+      data={parsedConfig}
       onComplete={() => {
         props.onResponse?.({
           answer: "YES",

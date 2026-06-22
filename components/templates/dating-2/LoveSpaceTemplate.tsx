@@ -123,7 +123,7 @@ export function LoveSpaceTemplate({ compact, fullScreen, hideNavigation, onCompl
             <source src={customData.audioSrc || TPL_DATA.audioSrc} type="audio/mpeg" />
           </audio>
 
-          <BackgroundDecorations />
+          {!compact && <BackgroundDecorations />}
 
           <canvas id="confetti-canvas" className="absolute inset-0 w-full h-full pointer-events-none z-50"></canvas>
 
