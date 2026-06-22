@@ -117,25 +117,35 @@ export function Stage4MeteorMic({
     <motion.div className="absolute inset-0 flex items-center justify-center z-10 overflow-hidden"
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 1.5 } }}
     >
+      <style>{`
+        @keyframes main-meteor-fall {
+          0% { transform: translate(50vw, -50vh); opacity: 0; }
+          5% { opacity: 1; }
+          75% { transform: translate(-100vw, 100vh); opacity: 1; }
+          76% { transform: translate(-100vw, 100vh); opacity: 0; }
+          100% { transform: translate(-100vw, 100vh); opacity: 0; }
+        }
+        @keyframes bg-meteor-fall {
+          0% { transform: translate(0, 0); opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { transform: translate(-100vw, 100vw); opacity: 0; }
+        }
+      `}</style>
       {/* Background Meteors (Luôn hiện để tạo không khí) */}
       <div className="absolute inset-0 pointer-events-none">
         {Array.from({ length: 40 }).map((_, i) => {
-          const isBlue = i % 5 === 0; // Những cái chỉ định thì màu xanh nước sáng
+          const isBlue = i % 5 === 0;
           return (
-            <motion.div key={`bg-meteor-${i}`}
+            <div key={`bg-meteor-${i}`}
               className={`absolute w-32 h-[2px] rounded-full ${isBlue ? 'bg-gradient-to-r from-transparent to-cyan-300 shadow-[0_0_15px_#22d3ee]' : 'bg-gradient-to-r from-transparent to-white/60'}`}
-              style={{ rotate: 135, left: `${Math.random() * 200}%`, top: -300 }}
-              animate={{ 
-                x: [0, -2000, 0], 
-                y: [0, 2000, 0], 
-                opacity: [0, 1, 0, 0] 
-              }}
-              transition={{ 
-                duration: 1.5 + Math.random() * 2, 
-                times: [0, 0.99, 1],
-                repeat: Infinity, 
-                delay: Math.random() * 5, 
-                ease: "linear" 
+              style={{ 
+                rotate: "135deg", 
+                left: `${Math.random() * 150}%`, 
+                top: `${Math.random() * 150 - 50}%`,
+                animation: `bg-meteor-fall ${2 + Math.random() * 3}s linear infinite`,
+                animationDelay: `${Math.random() * 5}s`,
+                opacity: 0
               }}
             />
           );
@@ -147,31 +157,20 @@ export function Stage4MeteorMic({
           <motion.p className="absolute top-32 w-full text-center text-cyan-200 font-bold text-lg drop-shadow-md z-20" animate={{ opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 2 }}>
             {prompt}
           </motion.p>
-          <motion.div
+          <div
             className="absolute top-0 right-0 z-30 pointer-events-none"
-            animate={{ 
-              x: [800, -1200, 800], 
-              y: [-800, 1200, -800],
-              opacity: [0, 1, 1, 0, 0]
-            }}
-            transition={{ 
-              duration: 3, 
-              times: [0, 0.1, 0.9, 0.99, 1],
-              ease: "linear", 
-              repeat: Infinity, 
-              repeatDelay: 1.5 
-            }}
+            style={{ animation: 'main-meteor-fall 5s linear infinite' }}
           >
             <motion.button 
               onClick={handleCatch}
-              whileHover={{ scale: 1.2 }}
-              className="w-48 h-10 flex items-center justify-center outline-none pointer-events-auto"
-              style={{ rotate: 135 }}
+              whileHover={{ scale: 1.3 }}
+              className="w-64 h-16 flex items-center justify-center outline-none pointer-events-auto"
+              style={{ rotate: "135deg" }}
             >
-              <div className="w-40 h-[3px] bg-gradient-to-r from-transparent to-cyan-300" />
-              <div className="w-10 h-10 bg-cyan-300 rounded-full shadow-[0_0_50px_#22d3ee] flex-shrink-0" />
+              <div className="w-56 h-[4px] bg-gradient-to-r from-transparent to-cyan-300" />
+              <div className="w-16 h-16 bg-cyan-300 rounded-full shadow-[0_0_60px_#22d3ee] flex-shrink-0 animate-pulse" />
             </motion.button>
-          </motion.div>
+          </div>
         </div>
       ) : (
         <motion.div className="flex flex-col items-center w-full px-6" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 1.5, type: "spring", bounce: 0.5 }}>
