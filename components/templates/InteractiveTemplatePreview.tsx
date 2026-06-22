@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import { useInView } from "framer-motion";
+import React, { useEffect, useRef, useState } from "react";
 import type { TemplatePreviewProps } from "./previews/types";
 import { StarryConstellationPreview } from "./valentine-1/preview";
 import { Valentine2Preview } from "./valentine-2/preview";
@@ -102,7 +101,7 @@ export function InteractiveTemplatePreview({
   ...props
 }: InteractiveTemplatePreviewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(containerRef, { amount: 0.1 });
+  const [isHovered, setIsHovered] = useState(false);
   const normalizedKey = componentKey.toLowerCase();
   const preview = previewRegistry.find((item) => normalizedKey.includes(item.match));
 
@@ -111,16 +110,28 @@ export function InteractiveTemplatePreview({
     if (props.compact) {
       if (!props.isBuilderPreview) {
         return (
-          <div ref={containerRef} className="mx-auto flex aspect-[9/19] w-[340px] max-w-full shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative pointer-events-none">
-            <BotAutoPlayer enabled={isInView}>
-              <Component {...props} roomId={roomId} autoPlay={isInView} />
-            </BotAutoPlayer>
+          <div 
+            ref={containerRef} 
+            className="mx-auto flex aspect-[9/19] w-[340px] max-w-full shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            onTouchStart={() => setIsHovered(true)}
+            onTouchEnd={() => setIsHovered(false)}
+          >
+            {/* Overlay to catch hover/touch events but block user clicks. BotAutoPlayer still works! */}
+            <div className="absolute inset-0 z-50" />
+            
+            <div className="absolute inset-0 pointer-events-none">
+              <BotAutoPlayer enabled={isHovered}>
+                <Component {...props} roomId={roomId} autoPlay={isHovered} />
+              </BotAutoPlayer>
+            </div>
           </div>
         );
       } else {
         return (
           <div ref={containerRef} className="mx-auto flex aspect-[9/19] w-[340px] max-w-full shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative">
-            <Component {...props} roomId={roomId} autoPlay={isInView} />
+            <Component {...props} roomId={roomId} autoPlay={true} />
           </div>
         );
       }
