@@ -57,6 +57,7 @@ export function Valentine2WatchParty({
   data: inputData,
   roomId,
   isHost = false,
+  autoPlay = false,
   onResponse
 }: {
   compact?: boolean;

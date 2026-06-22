@@ -17,6 +17,7 @@ export function Valentine3Diary({
   compact = false,
   fullScreen = false,
   data = DEFAULT_APP_DATA,
+  autoPlay = false,
   onResponse,
 }: {
   compact?: boolean;
