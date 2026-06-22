@@ -35,6 +35,14 @@ export function CuteDatePicker({ selected, onSelect, accentColor }: { selected: 
     return Number(sy) === year && Number(sm) === month + 1 && Number(sd) === day;
   };
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const isPast = (day: number) => {
+    const d = new Date(year, month, day);
+    return d < today;
+  };
+
   const monthNames = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
   const weekDays = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 
@@ -52,16 +60,20 @@ export function CuteDatePicker({ selected, onSelect, accentColor }: { selected: 
       </div>
       <div className="grid grid-cols-7 gap-1">
         {blanks.map(b => <div key={`blank-${b}`} />)}
-        {days.map(d => (
-          <button
-            key={d}
-            onClick={() => handleSelect(d)}
-            className={`h-9 w-9 mx-auto flex justify-center items-center rounded-full text-sm font-bold transition-all ${isSelected(d) ? 'text-white shadow-md scale-110' : 'hover:bg-pink-100 hover:scale-110'}`}
-            style={{ backgroundColor: isSelected(d) ? accentColor : undefined }}
-          >
-            {d}
-          </button>
-        ))}
+        {days.map(d => {
+          const past = isPast(d);
+          return (
+            <button
+              key={d}
+              onClick={() => !past && handleSelect(d)}
+              disabled={past}
+              className={`h-9 w-9 mx-auto flex justify-center items-center rounded-full text-sm font-bold transition-all ${past ? 'text-gray-300 opacity-50 cursor-not-allowed' : isSelected(d) ? 'text-white shadow-md scale-110' : 'hover:bg-pink-100 hover:scale-110'}`}
+              style={{ backgroundColor: isSelected(d) ? accentColor : undefined }}
+            >
+              {d}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
