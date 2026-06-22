@@ -100,8 +100,12 @@ export function Valentine2WatchParty({
 
   useEffect(() => {
     if (!autoPlay) return;
+    const sequence = [2, 5, 6, 7];
     const t = setInterval(() => {
-      setStep((s) => (s < 9 ? s + 1 : 2));
+      setStep((s) => {
+        const idx = sequence.indexOf(s);
+        return idx !== -1 && idx < sequence.length - 1 ? sequence[idx + 1] : 2;
+      });
     }, 4500); // Auto progress every 4.5s
     return () => clearInterval(t);
   }, [autoPlay]);

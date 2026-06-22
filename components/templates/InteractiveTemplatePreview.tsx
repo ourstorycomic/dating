@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import { useInView } from "framer-motion";
 import type { TemplatePreviewProps } from "./previews/types";
 import { StarryConstellationPreview } from "./valentine-1/preview";
 import { Valentine2Preview } from "./valentine-2/preview";
@@ -100,6 +101,8 @@ export function InteractiveTemplatePreview({
   roomId,
   ...props
 }: InteractiveTemplatePreviewProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { amount: 0.1 });
   const normalizedKey = componentKey.toLowerCase();
   const preview = previewRegistry.find((item) => normalizedKey.includes(item.match));
 
@@ -108,16 +111,16 @@ export function InteractiveTemplatePreview({
     if (props.compact) {
       if (!props.isBuilderPreview) {
         return (
-          <div className="mx-auto flex aspect-[9/19] w-[340px] max-w-full shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative pointer-events-none">
-            <BotAutoPlayer enabled={true}>
-              <Component {...props} roomId={roomId} autoPlay={true} />
+          <div ref={containerRef} className="mx-auto flex aspect-[9/19] w-[340px] max-w-full shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative pointer-events-none">
+            <BotAutoPlayer enabled={isInView}>
+              <Component {...props} roomId={roomId} autoPlay={isInView} />
             </BotAutoPlayer>
           </div>
         );
       } else {
         return (
-          <div className="mx-auto flex aspect-[9/19] w-[340px] max-w-full shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative">
-            <Component {...props} roomId={roomId} autoPlay={true} />
+          <div ref={containerRef} className="mx-auto flex aspect-[9/19] w-[340px] max-w-full shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative">
+            <Component {...props} roomId={roomId} autoPlay={isInView} />
           </div>
         );
       }
