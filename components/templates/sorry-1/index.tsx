@@ -385,9 +385,16 @@ function Step6Treaty({ onNext, autoPlay }: { onNext: () => void; autoPlay: boole
 
   const moveNo = () => {
     if (autoPlay) return;
-    const randomX = (Math.random() - 0.5) * 150;
-    const randomY = (Math.random() - 0.5) * 150;
-    setNoPos({ x: randomX, y: randomY });
+    const spreadX = 260;
+    const spreadY = 260;
+    let newX = (Math.random() - 0.5) * spreadX;
+    let newY = (Math.random() - 0.5) * spreadY;
+    
+    // Force distance from current position so it doesn't jump into the cursor
+    if (Math.abs(newX - noPos.x) < 80) newX = newX > noPos.x ? newX + 80 : newX - 80;
+    if (Math.abs(newY - noPos.y) < 80) newY = newY > noPos.y ? newY + 80 : newY - 80;
+    
+    setNoPos({ x: newX, y: newY });
   };
 
   const forceNoClick = () => {
@@ -428,7 +435,9 @@ function Step6Treaty({ onNext, autoPlay }: { onNext: () => void; autoPlay: boole
 
         <motion.button
           animate={noPos}
+          transition={{ type: "spring", stiffness: 1200, damping: 14, mass: 0.2 }}
           onHoverStart={moveNo}
+          onPointerEnter={moveNo}
           onTouchStart={moveNo}
           onClick={forceNoClick}
           className="px-6 py-4 bg-slate-200 text-slate-500 rounded-full font-bold border-2 border-slate-300 flex items-center justify-center gap-2 z-10 transition-colors hover:bg-slate-300"
