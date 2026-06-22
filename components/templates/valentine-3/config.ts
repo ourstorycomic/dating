@@ -24,7 +24,7 @@ export const DEFAULT_APP_DATA = {
       wrongText: "Ủa ủa chọn lại đi má =)))",
     },
   ],
-  puzzleImage: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=1000&auto=format&fit=crop",
+  puzzleImage: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=1000&auto=format&fit=crop",
   fakeChat: [
     { sender: "me", text: "Trời hôm nay đẹp ghê ☁️" },
     { sender: "you", text: "Nhưng không đẹp bằng cậu đâu =)))" },

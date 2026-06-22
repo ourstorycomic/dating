@@ -73,10 +73,11 @@ export function Step4Puzzle({ image, onComplete }: { image: string; onComplete: 
             
             return (
               <motion.div
-                key={index}
+                key={pieceVal}
                 layout
+                transition={{ type: "spring", stiffness: 300, damping: 25 }}
                 onClick={() => handlePieceClick(index)}
-                className={`w-full h-full rounded-lg cursor-pointer overflow-hidden ${isSelected ? 'ring-4 ring-rose-500 z-10 scale-95' : 'hover:scale-[0.98]'} transition-transform`}
+                className={`w-full h-full rounded-lg cursor-pointer overflow-hidden relative ${isSelected ? 'ring-4 ring-rose-500 z-10 scale-95' : 'hover:scale-[0.98]'} transition-transform`}
               >
                 {/* We use a div with background image to map the piece */}
                 <div 
@@ -87,6 +88,14 @@ export function Step4Puzzle({ image, onComplete }: { image: string; onComplete: 
                     backgroundSize: '300% 300%'
                   }}
                 />
+                {/* Faint number to help solve */}
+                {!isSolved && (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <span className="text-white/60 font-black text-2xl drop-shadow-md bg-black/10 w-8 h-8 rounded-full flex items-center justify-center">
+                      {pieceVal + 1}
+                    </span>
+                  </div>
+                )}
               </motion.div>
             );
           })}
