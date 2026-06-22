@@ -15,6 +15,7 @@ export function WillYouDateMePreview(props: TemplatePreviewProps) {
       backgroundColor={parsedConfig.backgroundColor as string | undefined}
       backgroundImage={parsedConfig.backgroundImage as string | undefined}
       compact={props.compact}
+      autoPlay={props.autoPlay}
       datetimeTitle={parsedConfig.datetimeTitle as string | undefined}
       drinkTitle={parsedConfig.drinkTitle as string | undefined}
       drinkOptions={parsedConfig.drinkOptions as string[] | undefined}

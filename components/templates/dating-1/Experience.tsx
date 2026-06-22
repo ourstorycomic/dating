@@ -16,6 +16,7 @@ import { TemplateNavigator } from "../TemplateNavigator";
 
 export function WillYouDateMeExperience({
   compact = false,
+  autoPlay = false,
   recipientName = "Em",
   senderName = "Anh",
   questionTitle = "Xin chào {recipientName} xinh đẹp...",
@@ -52,6 +53,7 @@ export function WillYouDateMeExperience({
   onComplete,
 }: {
   compact?: boolean;
+  autoPlay?: boolean;
   recipientName?: string;
   senderName?: string;
   questionTitle?: string;
