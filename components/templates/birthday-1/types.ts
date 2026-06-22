@@ -22,6 +22,7 @@ export interface BirthdayMagicExperienceProps {
   musicUrl?: string;
   fullScreen?: boolean;
   compact?: boolean;
+  autoPlay?: boolean;
   age?: number;
   imageUrl?: string;
   hideNavigation?: boolean;

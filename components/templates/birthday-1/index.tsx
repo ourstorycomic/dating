@@ -44,6 +44,7 @@ function BirthdayScene({
   musicUrl,
   age,
   compact = false,
+  autoPlay = false,
 }: {
   recipientName: string;
   finalMessage: string;
@@ -52,6 +53,7 @@ function BirthdayScene({
   musicUrl?: string;
   age: number;
   compact?: boolean;
+  autoPlay?: boolean;
 }) {
   const [phase, setPhase] = useState<BirthdayPhase>("dark");
   const [musicActive, setMusicActive] = useState(false);
@@ -541,6 +543,7 @@ export function BirthdayMagicExperience(props: BirthdayMagicExperienceProps) {
         musicUrl={props.musicUrl}
         recipientName={props.recipientName || "Bạn"}
         compact={props.compact}
+        autoPlay={props.autoPlay}
       />
     </div>
   );
