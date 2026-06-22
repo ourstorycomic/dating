@@ -7,7 +7,9 @@ export type ChatMessage = {
   text: string;
 };
 
-export function Step5FakeChat({ chat, onComplete }: { chat: ChatMessage[]; onComplete: () => void }) {
+import { useEffect } from "react";
+
+export function Step5FakeChat({ chat, onComplete, autoPlay = false }: { chat: ChatMessage[]; onComplete: () => void; autoPlay?: boolean }) {
   const [visibleCount, setVisibleCount] = useState(1);
 
   const handleScreenClick = () => {
@@ -17,6 +19,20 @@ export function Step5FakeChat({ chat, onComplete }: { chat: ChatMessage[]; onCom
   };
 
   const isDone = visibleCount >= chat.length;
+
+  useEffect(() => {
+    if (autoPlay) {
+      if (!isDone) {
+        const t = setTimeout(() => {
+          setVisibleCount(c => c + 1);
+        }, 1500);
+        return () => clearTimeout(t);
+      } else {
+        const t = setTimeout(() => onComplete(), 2000);
+        return () => clearTimeout(t);
+      }
+    }
+  }, [autoPlay, isDone, visibleCount, onComplete]);
 
   return (
     <motion.div
@@ -50,7 +66,7 @@ export function Step5FakeChat({ chat, onComplete }: { chat: ChatMessage[]; onCom
           );
         })}
 
-        {!isDone && (
+        {!isDone && !autoPlay && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: [0, 1, 0] }}

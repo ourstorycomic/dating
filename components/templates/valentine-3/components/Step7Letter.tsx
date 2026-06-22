@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Mail, ChevronRight } from "lucide-react";
 
-export function Step7Letter({ title, content, onComplete }: { title: string; content: string; onComplete: () => void }) {
+export function Step7Letter({ title, content, onComplete, autoPlay = false }: { title: string; content: string; onComplete: () => void; autoPlay?: boolean }) {
   const [status, setStatus] = useState<"closed" | "opening" | "open">("closed");
   const [typedContent, setTypedContent] = useState("");
   const [isTypingComplete, setIsTypingComplete] = useState(false);
@@ -22,6 +22,23 @@ export function Step7Letter({ title, content, onComplete }: { title: string; con
 
     return () => clearInterval(interval);
   }, [status, content]);
+
+  useEffect(() => {
+    if (autoPlay) {
+      if (status === "closed") {
+        const t = setTimeout(() => {
+          handleOpen();
+        }, 1500);
+        return () => clearTimeout(t);
+      } else if (status === "open" && isTypingComplete) {
+        const t = setTimeout(() => {
+          onComplete();
+        }, 3000);
+        return () => clearTimeout(t);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoPlay, status, isTypingComplete]);
 
   const handleOpen = () => {
     if (status !== "closed") return;

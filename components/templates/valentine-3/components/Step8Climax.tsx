@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import confetti from "canvas-confetti";
 
-export function Step8Climax({ onResponse }: { onResponse?: (res: { answer: string; message: string }) => void }) {
+export function Step8Climax({ onResponse, autoPlay = false }: { onResponse?: (res: { answer: string; message: string }) => void; autoPlay?: boolean }) {
   const [noPos, setNoPos] = useState({ top: "65%", left: "50%" });
   const [isAccepted, setIsAccepted] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -64,6 +64,16 @@ export function Step8Climax({ onResponse }: { onResponse?: (res: { answer: strin
       onResponse({ answer: "YES", message: "Đồng ý" });
     }
   };
+
+  useEffect(() => {
+    if (autoPlay && !isAccepted) {
+      const t = setTimeout(() => {
+        handleAccept();
+      }, 2000);
+      return () => clearTimeout(t);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoPlay, isAccepted]);
 
   return (
     <motion.div

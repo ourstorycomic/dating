@@ -101,7 +101,7 @@ export function Step123Machine({ onEggDropped, autoPlay, data }: { onEggDropped:
             <div className="w-full h-10 bg-gradient-to-r from-pink-200 via-pink-100 to-pink-200 border-b border-pink-300 shadow-sm"></div>
             
             <div ref={slotRef} className="absolute top-14 right-10 w-14 h-20 flex items-center justify-center">
-                {step === 1 && !autoPlay && (
+                {step === 1 && (
                     <div className="absolute -top-12 left-1/2 -translate-x-1/2 text-[11px] font-bold text-white bg-pink-500 anim-float px-3 py-1.5 rounded-full shadow-lg whitespace-nowrap z-[100] border border-pink-400">
                         {data?.step1Tooltip1}
                     </div>
@@ -114,7 +114,7 @@ export function Step123Machine({ onEggDropped, autoPlay, data }: { onEggDropped:
                 className={`absolute top-14 left-10 w-[72px] h-[72px] bg-gradient-to-br from-pink-400 to-pink-600 rounded-full border-4 border-pink-200 flex items-center justify-center transition-all duration-700 ${step >= 2 ? 'shadow-[0_10px_20px_rgba(236,72,153,0.4),_inset_0_5px_10px_rgba(255,255,255,0.5)] cursor-pointer' : 'opacity-50 pointer-events-none shadow-none'} ${step === 2 ? 'anim-pulse-glow hover:scale-105' : ''} ${step === 3 ? 'pointer-events-none' : ''}`}
                 style={{ transform: step === 3 ? 'rotate(360deg)' : 'rotate(0deg)' }}
             >
-                {step === 2 && !autoPlay && (
+                {step === 2 && (
                     <div className="absolute -top-12 left-1/2 -translate-x-1/2 text-[11px] font-bold text-white bg-pink-500 anim-float px-3 py-1.5 rounded-full shadow-lg whitespace-nowrap z-[100] border border-pink-400">
                         {data?.step1Tooltip2}
                     </div>

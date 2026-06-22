@@ -2,16 +2,21 @@ import { motion, useAnimation } from "framer-motion";
 import { useEffect, useState } from "react";
 import { ChevronRight } from "lucide-react";
 
-export function Step2TimeMachine({ startDate, onNext }: { startDate: string; onNext: () => void }) {
+export function Step2TimeMachine({ startDate, onNext, autoPlay = false }: { startDate: string; onNext: () => void; autoPlay?: boolean }) {
   const [days, setDays] = useState(0);
   const [time, setTime] = useState({ hours: 0, minutes: 0, seconds: 0 });
   const [showNext, setShowNext] = useState(false);
 
   useEffect(() => {
     // Show next button after 3 seconds
-    const timer = setTimeout(() => setShowNext(true), 3000);
+    const timer = setTimeout(() => {
+      setShowNext(true);
+      if (autoPlay) {
+        setTimeout(onNext, 1500);
+      }
+    }, 3000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [autoPlay, onNext]);
 
   useEffect(() => {
     const targetDate = new Date(startDate).getTime();

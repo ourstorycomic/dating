@@ -10,7 +10,7 @@ export type QuizItem = {
   wrongText: string;
 };
 
-export function Step3Quiz({ quiz, onComplete }: { quiz: QuizItem[]; onComplete: () => void }) {
+export function Step3Quiz({ quiz, onComplete, autoPlay = false }: { quiz: QuizItem[]; onComplete: () => void; autoPlay?: boolean }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOpt, setSelectedOpt] = useState<number | null>(null);
   const [status, setStatus] = useState<"idle" | "correct" | "wrong">("idle");
@@ -42,6 +42,16 @@ export function Step3Quiz({ quiz, onComplete }: { quiz: QuizItem[]; onComplete: 
       }, 1500);
     }
   };
+
+  useEffect(() => {
+    if (autoPlay && status === "idle") {
+      const t = setTimeout(() => {
+        handleSelect(currentQ.correctIndex);
+      }, 2000);
+      return () => clearTimeout(t);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoPlay, currentIndex, status]);
 
   return (
     <motion.div

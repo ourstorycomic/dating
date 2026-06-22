@@ -2,7 +2,7 @@ import { motion, useAnimation } from "framer-motion";
 import { Fingerprint } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-export function Step1Fingerprint({ onComplete }: { onComplete: () => void }) {
+export function Step1Fingerprint({ onComplete, autoPlay = false }: { onComplete: () => void; autoPlay?: boolean }) {
   const [progress, setProgress] = useState(0);
   const isHolding = useRef(false);
   const holdTimer = useRef<NodeJS.Timeout | null>(null);
@@ -54,6 +54,15 @@ export function Step1Fingerprint({ onComplete }: { onComplete: () => void }) {
       if (holdTimer.current) clearInterval(holdTimer.current);
     };
   }, []);
+
+  useEffect(() => {
+    if (autoPlay) {
+      const t = setTimeout(() => {
+        startHold();
+      }, 500);
+      return () => clearTimeout(t);
+    }
+  }, [autoPlay]);
 
   return (
     <motion.div

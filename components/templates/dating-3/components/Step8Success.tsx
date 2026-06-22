@@ -60,14 +60,12 @@ export function Step8Success({ location, date, time, onComplete, autoPlay, data 
           Chụp màn hình lại để làm bằng chứng nha!
       </p>
 
-      {!autoPlay && (
-          <button 
-              onClick={onComplete}
-              className="mt-4 text-white/80 underline text-sm hover:text-white"
-          >
-              {data?.step8Btn}
-          </button>
-      )}
+      <button 
+          onClick={onComplete}
+          className="mt-4 text-white/80 underline text-sm hover:text-white"
+      >
+          {data?.step8Btn}
+      </button>
     </div>
   );
 }

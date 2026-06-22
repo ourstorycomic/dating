@@ -37,13 +37,7 @@ export function Valentine3Diary({
     }
   };
 
-  useEffect(() => {
-    if (!autoPlay) return;
-    const t = setInterval(() => {
-      setStep((s) => (s < 8 ? s + 1 : 1));
-    }, 4500); // Auto progress every 4.5 seconds
-    return () => clearInterval(t);
-  }, [autoPlay]);
+  // No blind interval here. Children handle their own autoPlay.
 
   let containerClass = "w-full overflow-hidden transition-colors duration-[2000ms] mx-auto text-gray-800 touch-none select-none ";
   
@@ -78,6 +72,7 @@ export function Valentine3Diary({
         {step === 1 && (
           <Step1Fingerprint
             key="step1"
+            autoPlay={autoPlay}
             onComplete={() => {
               playMusic();
               setStep(2);
@@ -90,6 +85,7 @@ export function Valentine3Diary({
             key="step2"
             startDate={mergedData.startDate}
             onNext={() => setStep(3)}
+            autoPlay={autoPlay}
           />
         )}
 
@@ -98,6 +94,7 @@ export function Valentine3Diary({
             key="step3"
             quiz={mergedData.quiz}
             onComplete={() => setStep(4)}
+            autoPlay={autoPlay}
           />
         )}
 
@@ -106,6 +103,7 @@ export function Valentine3Diary({
             key="step4"
             image={mergedData.puzzleImage}
             onComplete={() => setStep(5)}
+            autoPlay={autoPlay}
           />
         )}
 
@@ -114,6 +112,7 @@ export function Valentine3Diary({
             key="step5"
             chat={mergedData.fakeChat}
             onComplete={() => setStep(6)}
+            autoPlay={autoPlay}
           />
         )}
 
@@ -122,6 +121,7 @@ export function Valentine3Diary({
             key="step6"
             photos={mergedData.photos}
             onComplete={() => setStep(7)}
+            autoPlay={autoPlay}
           />
         )}
 
@@ -131,6 +131,7 @@ export function Valentine3Diary({
             title={mergedData.letterTitle}
             content={mergedData.letterContent}
             onComplete={() => setStep(8)}
+            autoPlay={autoPlay}
           />
         )}
 
@@ -138,6 +139,7 @@ export function Valentine3Diary({
           <Step8Climax
             key="step8"
             onResponse={onResponse}
+            autoPlay={autoPlay}
           />
         )}
       </AnimatePresence>

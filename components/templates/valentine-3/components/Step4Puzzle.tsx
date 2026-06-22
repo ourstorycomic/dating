@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
-export function Step4Puzzle({ image, onComplete }: { image: string; onComplete: () => void }) {
+export function Step4Puzzle({ image, onComplete, autoPlay = false }: { image: string; onComplete: () => void; autoPlay?: boolean }) {
   const [pieces, setPieces] = useState<number[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
   const [isSolved, setIsSolved] = useState(false);
@@ -21,6 +21,21 @@ export function Step4Puzzle({ image, onComplete }: { image: string; onComplete: 
     }
     setPieces(arr);
   }, []);
+
+  useEffect(() => {
+    if (autoPlay && !isSolved) {
+      const t = setTimeout(() => {
+        setPieces([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+        setIsSolved(true);
+        setTimeout(() => {
+          setIsFlying(true);
+          setTimeout(onComplete, 1200);
+        }, 800);
+      }, 2500);
+      return () => clearTimeout(t);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoPlay, isSolved]);
 
   const handlePieceClick = (index: number) => {
     if (isSolved) return;

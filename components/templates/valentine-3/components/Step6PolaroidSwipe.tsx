@@ -2,7 +2,9 @@ import { motion, useAnimation, PanInfo } from "framer-motion";
 import { useState } from "react";
 import { ChevronRight } from "lucide-react";
 
-export function Step6PolaroidSwipe({ photos, onComplete }: { photos: string[]; onComplete: () => void }) {
+import { useEffect } from "react";
+
+export function Step6PolaroidSwipe({ photos, onComplete, autoPlay = false }: { photos: string[]; onComplete: () => void; autoPlay?: boolean }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [leaveX, setLeaveX] = useState(0);
 
@@ -24,6 +26,22 @@ export function Step6PolaroidSwipe({ photos, onComplete }: { photos: string[]; o
   };
 
   const isDone = currentIndex >= photos.length;
+
+  useEffect(() => {
+    if (autoPlay) {
+      if (!isDone) {
+        const t = setTimeout(() => {
+          setLeaveX(-1000);
+          nextPhoto();
+        }, 1500);
+        return () => clearTimeout(t);
+      } else {
+        const t = setTimeout(() => onComplete(), 2000);
+        return () => clearTimeout(t);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoPlay, isDone, currentIndex]);
 
   return (
     <motion.div
