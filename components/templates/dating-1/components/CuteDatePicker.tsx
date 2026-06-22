@@ -53,12 +53,12 @@ export function CuteDatePicker({ selected, onSelect, accentColor }: { selected: 
         <div className="font-extrabold">{monthNames[month]} {year}</div>
         <button onClick={nextMonth} className="w-8 h-8 flex justify-center items-center rounded-full hover:bg-pink-100 font-bold text-pink-500 transition-colors">&gt;</button>
       </div>
-      <div className="grid grid-cols-7 gap-1 mb-2">
+      <div className="grid grid-cols-7 gap-1 mb-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: '0.25rem' }}>
         {weekDays.map(d => (
           <div key={d} className="text-center text-xs font-bold text-gray-400">{d}</div>
         ))}
       </div>
-      <div className="grid grid-cols-7 gap-1">
+      <div className="grid grid-cols-7 gap-1" style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: '0.25rem' }}>
         {blanks.map(b => <div key={`blank-${b}`} />)}
         {days.map(d => {
           const past = isPast(d);

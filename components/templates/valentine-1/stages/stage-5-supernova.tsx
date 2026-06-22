@@ -103,10 +103,10 @@ export function Stage5Supernova({
           initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1 }}
         >
           {/* Scroll Hợp đồng */}
-          <div className="w-full bg-amber-50 text-stone-800 p-8 rounded-b-3xl rounded-t-sm shadow-2xl relative border-t-8 border-amber-200">
+          <div className="w-full bg-orange-50 p-8 rounded-b-3xl rounded-t-sm shadow-2xl relative border-t-8 border-orange-200" style={{ color: "#1f2937" }}>
             <div className="absolute top-0 inset-x-0 h-full bg-[url('https://www.transparenttextures.com/patterns/aged-paper.png')] opacity-50 pointer-events-none" />
-            <h2 className="text-2xl font-black text-center mb-6 uppercase tracking-widest text-amber-800 drop-shadow-sm">{contractTitle}</h2>
-            <p className="font-serif text-lg leading-relaxed text-center mb-8 font-medium">
+            <h2 className="text-2xl font-black text-center mb-6 uppercase tracking-widest drop-shadow-sm" style={{ color: "#78350f" }}>{contractTitle}</h2>
+            <p className="font-serif text-lg leading-relaxed text-center mb-8 font-medium" style={{ color: "#1f2937" }}>
               {contractBody}
             </p>
 
@@ -133,7 +133,7 @@ export function Stage5Supernova({
                   {/* Quét radar line */}
                   {holding && <motion.div className="absolute inset-x-0 h-1 bg-red-500 shadow-[0_0_10px_red]" animate={{ y: [-40, 40, -40] }} transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }} />}
                 </div>
-                <p className="text-center text-xs font-bold text-red-400 mt-4 uppercase tracking-widest">{contractHoldInstruction}</p>
+                <p className="text-center text-xs font-bold mt-4 uppercase tracking-widest" style={{ color: "#ef4444" }}>{contractHoldInstruction}</p>
                 
                 {/* Progress Circle (around the fingerprint) */}
                 <svg className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-24 pointer-events-none transform -rotate-90">
@@ -196,7 +196,7 @@ export function Stage5Supernova({
                   </button>
                 </motion.div>
               ) : (
-                <motion.div key="gift" className="bg-white p-8 rounded-3xl shadow-2xl text-pink-600 relative overflow-hidden"
+                <motion.div key="gift" className="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl text-pink-600 relative overflow-hidden w-full max-w-sm mx-auto"
                   initial={{ opacity: 0, scale: 0.8, rotate: -5 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} transition={{ type: "spring", bounce: 0.6 }}
                 >
                   {!giftAccepted && !giftDeclined && (
@@ -261,7 +261,7 @@ export function Stage5Supernova({
                       <p className="text-gray-600 font-medium mb-6">
                         {giftDeclinedBody}
                       </p>
-                      <div className="mt-4 relative z-50">
+                      <div className="mt-4 relative z-50 w-[105%] -ml-[2.5%] sm:w-full sm:ml-0 text-gray-800">
                         <CuteDatePicker
                           selected={rescheduleDate}
                           onSelect={(d) => {
