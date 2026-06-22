@@ -70,10 +70,11 @@ export function Step5FakeChat({ chat, onComplete }: { chat: ChatMessage[]; onCom
         >
           <button
             onClick={(e) => { e.stopPropagation(); onComplete(); }}
-            className="pointer-events-auto flex items-center gap-2 px-8 py-3.5 bg-slate-900 text-white font-bold rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all"
+            className="group pointer-events-auto relative inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-gradient-to-r from-rose-500 to-pink-600 text-white font-bold rounded-full shadow-[0_10px_25px_rgba(244,63,94,0.4)] hover:scale-105 active:scale-95 transition-all overflow-hidden"
           >
-            Ngắm nhìn lại nhé 📸
-            <ChevronRight size={18} />
+            <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-500 ease-out" />
+            <span className="relative z-10 text-white drop-shadow-sm">Ngắm nhìn lại nhé 📸</span>
+            <ChevronRight size={18} className="relative z-10 text-white drop-shadow-sm group-hover:translate-x-1 transition-transform" />
           </button>
         </motion.div>
       )}
