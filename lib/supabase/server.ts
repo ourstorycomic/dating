@@ -106,11 +106,11 @@ export async function getTemplateBySlug(slug: string) {
     return {
       id: "sorry-1-mock",
       slug: "sorry-1",
-      name: "Lời Thú Tội Kẻ Tội Đồ",
+      name: "Sorry #1",
       component_key: "sorry-1",
       description: "Trải nghiệm 6 bước xoa dịu cơn giận từ việc đập tan lớp băng giá đến bản hiệp ước hòa bình hồng rực rỡ.",
       tagline: "Làm Hòa",
-      base_price: 349000,
+      base_price: 2000,
       visual_label: "HOT",
       gradient: "from-slate-400 to-rose-400",
       status_label: "Mới",
