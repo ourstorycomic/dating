@@ -3,6 +3,7 @@ export const revalidate = 60;
 import Link from "next/link";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { HomePageCatalog } from "@/components/HomePageCatalog";
+import { TiltPhonePreview } from "@/components/TiltPhonePreview";
 import { TIKTOK_INBOX_URL } from "@/lib/constants";
 import { getPublishedTemplates } from "@/lib/supabase/server";
 
@@ -146,41 +147,9 @@ export default async function Home() {
           </div>
 
           <GlassCard glow className="float-slow mx-auto w-full max-w-[520px] p-4 sm:p-5">
-            <div className="relative overflow-hidden rounded-[30px] border border-white/70 bg-[#fff9fc] p-4 shadow-inner">
+            <div className="relative overflow-hidden rounded-[30px] border border-white/70 bg-[#fff9fc] p-4 shadow-inner" style={{ perspective: 1200 }}>
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_24%_16%,rgba(255,142,199,0.34),transparent_28%),radial-gradient(circle_at_82%_34%,rgba(166,222,255,0.42),transparent_30%),radial-gradient(circle_at_50%_92%,rgba(255,221,132,0.38),transparent_32%)]" />
-              <div className="relative mx-auto flex aspect-[9/16] max-h-[620px] min-h-[520px] w-full max-w-[340px] flex-col overflow-hidden rounded-[2.2rem] border-[8px] border-[#3a233a] bg-[#fff5fb] shadow-[0_24px_60px_rgba(96,54,91,0.22)]">
-                <div className="absolute inset-0 bg-[linear-gradient(180deg,#fff7fb_0%,#ffe8f3_46%,#e8f7ff_100%)]" />
-                <div className="relative flex items-center justify-between px-5 pt-5 text-xs font-bold text-[#7f5872]">
-                  <span>Preview quà</span>
-                  <span className="rounded-full bg-white/70 px-3 py-1 text-[#c04b86]">Món quà bí mật</span>
-                </div>
-                <div className="relative grid flex-1 place-items-center px-5 text-center">
-                  <div>
-                    <div className="float-delay mx-auto grid h-28 w-28 place-items-center rounded-full bg-white/78 text-4xl shadow-[0_20px_50px_rgba(255,126,184,0.26)]">
-                      <span aria-hidden>♡</span>
-                    </div>
-                    <h2 className="mt-6 text-3xl font-extrabold leading-tight text-[#321a32]">
-                      Mở khóa món quà nhỏ
-                    </h2>
-                    <p className="mx-auto mt-3 max-w-[240px] text-sm leading-6 text-[#74536a]">
-                      Nhập ngày đặc biệt, xem thư, ảnh và chọn câu trả lời cuối.
-                    </p>
-                  </div>
-                </div>
-                <div className="relative m-4 rounded-[24px] border border-white/80 bg-white/76 p-4 shadow-[0_16px_38px_rgba(215,112,158,0.14)] backdrop-blur-xl">
-                  <p className="text-center text-sm font-semibold text-[#76556d]">
-                    Em có muốn đi hẹn hò với anh không?
-                  </p>
-                  <div className="mt-4 grid grid-cols-2 gap-3">
-                    <button className="rounded-full bg-[#ff7eb8] px-4 py-3 text-sm font-extrabold text-[#fff]">
-                      Có chứ
-                    </button>
-                    <button className="rounded-full border border-[#f4bdd8] bg-white px-4 py-3 text-sm font-extrabold text-[#b83276]">
-                      Để em nghĩ
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <TiltPhonePreview />
             </div>
           </GlassCard>
         </section>
