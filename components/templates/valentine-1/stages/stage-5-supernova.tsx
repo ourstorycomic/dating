@@ -5,6 +5,7 @@
 import { useState, useEffect, useRef, type PointerEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IconStar, MediaFrame } from "../shared";
+import { CuteDatePicker } from "../../dating-1/components/CuteDatePicker";
 
 export function Stage5Supernova({
   contractBody = "\"Thời hạn dùng thử trái tim tớ đã hết.\n\nCậu có muốn gia hạn gói Premium (yêu thương trọn đời) không?\"",
@@ -102,9 +103,9 @@ export function Stage5Supernova({
           initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1 }}
         >
           {/* Scroll Hợp đồng */}
-          <div className="w-full bg-[#fdf5e6] text-[#4a3b32] p-8 rounded-b-3xl rounded-t-sm shadow-2xl relative border-t-8 border-[#d4bca4]">
+          <div className="w-full bg-amber-50 text-stone-800 p-8 rounded-b-3xl rounded-t-sm shadow-2xl relative border-t-8 border-amber-200">
             <div className="absolute top-0 inset-x-0 h-full bg-[url('https://www.transparenttextures.com/patterns/aged-paper.png')] opacity-50 pointer-events-none" />
-            <h2 className="text-2xl font-black text-center mb-6 uppercase tracking-widest text-[#8b5a2b]">{contractTitle}</h2>
+            <h2 className="text-2xl font-black text-center mb-6 uppercase tracking-widest text-amber-800 drop-shadow-sm">{contractTitle}</h2>
             <p className="font-serif text-lg leading-relaxed text-center mb-8 font-medium">
               {contractBody}
             </p>
@@ -223,11 +224,11 @@ export function Stage5Supernova({
                           })()}
                         </div>
                       )}
-                      <div className="flex gap-4 justify-center">
-                        <motion.button onClick={() => { setGiftDeclined(true); }} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="px-6 py-3 rounded-xl border-2 border-pink-100 text-pink-400 font-bold hover:bg-pink-50 hover:border-pink-200 transition whitespace-nowrap">
+                      <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                        <motion.button onClick={() => { setGiftDeclined(true); }} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto px-6 py-3 rounded-xl border-2 border-pink-100 text-pink-400 font-bold hover:bg-pink-50 hover:border-pink-200 transition">
                           {giftDeclineButton}
                         </motion.button>
-                        <motion.button onClick={() => { setGiftAccepted(true); onResponse?.("YES"); }} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="px-8 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold shadow-[0_10px_20px_rgba(244,114,182,0.4)] whitespace-nowrap">
+                        <motion.button onClick={() => { setGiftAccepted(true); onResponse?.("YES"); }} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto px-8 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold shadow-[0_10px_20px_rgba(244,114,182,0.4)]">
                           {giftAcceptButton}
                         </motion.button>
                       </div>
@@ -260,18 +261,19 @@ export function Stage5Supernova({
                       <p className="text-gray-600 font-medium mb-6">
                         {giftDeclinedBody}
                       </p>
-                      <input
-                        type="date"
-                        className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 text-gray-700 mb-2 font-bold outline-none focus:border-pink-400 transition"
-                        onChange={(event) => {
-                          setRescheduleDate(event.target.value);
-                          setRescheduleError("");
-                        }}
-                        value={rescheduleDate}
-                      />
-                      {rescheduleError ? <p className="mb-4 text-sm font-bold text-red-500">{rescheduleError}</p> : <div className="mb-4" />}
-                      <div className="flex gap-4 justify-center">
-                        <motion.button onClick={() => { setGiftDeclined(false); setShowGift(false); }} whileHover={{ scale: 1.05 }} className="px-6 py-3 rounded-full border border-gray-300 text-gray-500 font-bold hover:bg-gray-50">
+                      <div className="mt-4 relative z-50">
+                        <CuteDatePicker
+                          selected={rescheduleDate}
+                          onSelect={(d) => {
+                            setRescheduleDate(d);
+                            setRescheduleError("");
+                          }}
+                          accentColor="#ec4899"
+                        />
+                      </div>
+                      {rescheduleError ? <p className="mt-4 mb-4 text-sm font-bold text-red-500">{rescheduleError}</p> : <div className="mb-4 mt-4" />}
+                      <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                        <motion.button onClick={() => { setGiftDeclined(false); setShowGift(false); }} whileHover={{ scale: 1.05 }} className="w-full sm:w-auto px-6 py-3 rounded-full border border-gray-300 text-gray-500 font-bold hover:bg-gray-50">
                           {giftBackButton}
                         </motion.button>
                         <motion.button onClick={() => {
@@ -282,7 +284,7 @@ export function Stage5Supernova({
                           setGiftDeclined(false);
                           setGiftAccepted(true);
                           onResponse?.("RESCHEDULE", rescheduleDate);
-                        }} whileHover={{ scale: 1.05 }} className="px-8 py-3 rounded-full bg-pink-500 text-white font-bold shadow-lg hover:bg-pink-600">
+                        }} whileHover={{ scale: 1.05 }} className="w-full sm:w-auto px-8 py-3 rounded-full bg-pink-500 text-white font-bold shadow-lg hover:bg-pink-600">
                           {giftRescheduleButton}
                         </motion.button>
                       </div>

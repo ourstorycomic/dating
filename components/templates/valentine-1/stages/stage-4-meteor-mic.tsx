@@ -141,8 +141,9 @@ export function Stage4MeteorMic({
             onClick={handleCatch}
             whileHover={{ scale: 1.2 }}
             className="absolute top-0 right-0 w-48 h-10 flex items-center justify-center outline-none z-30 pointer-events-auto"
-            animate={{ x: [500, -1000], y: [-500, 1000] }}
-            transition={{ duration: 2.5, ease: "linear", repeat: Infinity, repeatDelay: 1.5 }}
+            initial={{ x: 800, y: -800 }}
+            animate={{ x: -1200, y: 1200 }}
+            transition={{ duration: 2.5, ease: "linear", repeat: Infinity, repeatDelay: 1.5, repeatType: "loop" }}
             style={{ rotate: 135 }}
           >
             <div className="w-40 h-[3px] bg-gradient-to-r from-transparent to-cyan-300" />
