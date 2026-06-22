@@ -45,11 +45,22 @@ export function Valentine3Diary({
     containerClass += `relative max-w-[400px] h-[800px] max-h-[90vh] rounded-[2.5rem] shadow-[0_20px_50px_rgba(255,105,180,0.3)] mx-auto border-[10px] border-white bg-gradient-to-br from-[#fff0f5] via-[#ffe4e1] to-[#ffb6c1]`;
   }
 
+  const mergedData = {
+    startDate: data?.startDate || DEFAULT_APP_DATA.startDate,
+    musicUrl: data?.musicUrl || DEFAULT_APP_DATA.musicUrl,
+    quiz: data?.quiz?.length ? data.quiz : DEFAULT_APP_DATA.quiz,
+    puzzleImage: data?.puzzleImage || DEFAULT_APP_DATA.puzzleImage,
+    fakeChat: data?.fakeChat?.length ? data.fakeChat : DEFAULT_APP_DATA.fakeChat,
+    photos: data?.photos?.length ? data.photos : DEFAULT_APP_DATA.photos,
+    letterTitle: data?.letterTitle || DEFAULT_APP_DATA.letterTitle,
+    letterContent: data?.letterContent || DEFAULT_APP_DATA.letterContent,
+  };
+
   // Auto play music logic could be placed here if needed, but Step 1 handles user interaction
 
   return (
     <div className={containerClass}>
-      {data.musicUrl && <audio ref={audioRef} src={data.musicUrl} loop preload="auto" />}
+      {mergedData.musicUrl && <audio ref={audioRef} src={mergedData.musicUrl} loop preload="auto" />}
 
       <FloatingParticles />
 
@@ -67,7 +78,7 @@ export function Valentine3Diary({
         {step === 2 && (
           <Step2TimeMachine
             key="step2"
-            startDate={data.startDate}
+            startDate={mergedData.startDate}
             onNext={() => setStep(3)}
           />
         )}
@@ -75,7 +86,7 @@ export function Valentine3Diary({
         {step === 3 && (
           <Step3Quiz
             key="step3"
-            quiz={data.quiz}
+            quiz={mergedData.quiz}
             onComplete={() => setStep(4)}
           />
         )}
@@ -83,7 +94,7 @@ export function Valentine3Diary({
         {step === 4 && (
           <Step4Puzzle
             key="step4"
-            image={data.puzzleImage}
+            image={mergedData.puzzleImage}
             onComplete={() => setStep(5)}
           />
         )}
@@ -91,7 +102,7 @@ export function Valentine3Diary({
         {step === 5 && (
           <Step5FakeChat
             key="step5"
-            chat={data.fakeChat}
+            chat={mergedData.fakeChat}
             onComplete={() => setStep(6)}
           />
         )}
@@ -99,7 +110,7 @@ export function Valentine3Diary({
         {step === 6 && (
           <Step6PolaroidSwipe
             key="step6"
-            photos={data.photos}
+            photos={mergedData.photos}
             onComplete={() => setStep(7)}
           />
         )}
@@ -107,8 +118,8 @@ export function Valentine3Diary({
         {step === 7 && (
           <Step7Letter
             key="step7"
-            title={data.letterTitle}
-            content={data.letterContent}
+            title={mergedData.letterTitle}
+            content={mergedData.letterContent}
             onComplete={() => setStep(8)}
           />
         )}
