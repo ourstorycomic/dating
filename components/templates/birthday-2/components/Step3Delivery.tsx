@@ -89,8 +89,10 @@ export function Step3Delivery({ onNext, autoPlay = false, photos = [] }: { onNex
         {/* Photo Widget */}
         <div className="w-full h-48 bg-white rounded-3xl shadow-lg overflow-hidden border-2 border-white/50">
            {photos.length > 0 ? (
-             {/* eslint-disable-next-line @next/next/no-img-element */}
-             <img src={photos[0].url} className="w-full h-full object-cover" alt="Widget" />
+             <>
+               {/* eslint-disable-next-line @next/next/no-img-element */}
+               <img src={photos[0].url} className="w-full h-full object-cover" alt="Widget" />
+             </>
            ) : (
              <div className="w-full h-full bg-slate-200" />
            )}

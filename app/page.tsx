@@ -70,6 +70,9 @@ const steps = [
 
 export default async function Home() {
   const templates = await getPublishedTemplates();
+  console.log("=== DEBUG TEMPLATES ===");
+  console.log(templates.map(t => ({ slug: t.slug, component_key: t.component_key, isSupported: getTemplateKind(t) })));
+  console.log("=======================");
   const grouped = categoryOrder
     .map((slug) => ({
       slug,

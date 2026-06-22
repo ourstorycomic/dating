@@ -116,7 +116,7 @@ export function LoveSpaceTemplate({ compact, fullScreen, hideNavigation, onCompl
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: JourneyStyles }} />
-      <div className={`w-full flex items-center justify-center min-h-screen ${fullScreen || compact ? '' : 'p-4 bg-gray-100'}`}>
+      <div className={`w-full flex items-center justify-center ${compact ? 'h-full' : 'min-h-screen'} ${fullScreen || compact ? '' : 'p-4 bg-gray-100'}`}>
         <div id="preview-container" className={containerClass} style={bgStyle}>
           
           <audio ref={audioRef} loop>

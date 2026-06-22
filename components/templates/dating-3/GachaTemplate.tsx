@@ -191,7 +191,7 @@ export function GachaTemplate({ compact, fullScreen, hideNavigation, onComplete,
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: GachaStyles }} />
-      <div className={`w-full flex items-center justify-center min-h-screen ${fullScreen || compact ? '' : 'p-4 bg-gray-100'}`}>
+      <div className={`w-full flex items-center justify-center ${compact ? 'h-full' : 'min-h-screen'} ${fullScreen || compact ? '' : 'p-4 bg-gray-100'}`}>
         <div id="preview-container" className={containerClass}>
           
           <audio ref={audioRef} loop>

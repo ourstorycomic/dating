@@ -28,15 +28,23 @@ export function Step1Alarm({ onNext, autoPlay = false }: { onNext: () => void; a
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
     if (autoPlay) {
-      const t = setTimeout(() => {
+      const t = setTimeout(async () => {
+        if (!isMounted) return;
         if (audioRef.current) audioRef.current.pause();
-        controls.start({ x: 200, transition: { duration: 0.6 } }).then(() => {
-          controls.start({ opacity: 0, scale: 1.1 }).then(() => onNext());
-        });
+        await controls.start({ x: 200, transition: { duration: 0.6 } });
+        if (!isMounted) return;
+        await controls.start({ opacity: 0, scale: 1.1 });
+        if (!isMounted) return;
+        onNext();
       }, 3000);
-      return () => clearTimeout(t);
+      return () => {
+        isMounted = false;
+        clearTimeout(t);
+      };
     }
+    return () => { isMounted = false; };
   }, [autoPlay, controls, onNext]);
 
   const handleDragEnd = (e: any, info: any) => {
