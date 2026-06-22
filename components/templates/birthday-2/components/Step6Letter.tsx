@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export function Step6Letter({ letter, onNext }: { letter: string; onNext: () => void }) {
+export function Step6Letter({ letter, onNext, autoPlay = false }: { letter: string; onNext: () => void; autoPlay?: boolean }) {
   const [displayedText, setDisplayedText] = useState("");
   const [isTypingFinished, setIsTypingFinished] = useState(false);
 
@@ -21,6 +21,13 @@ export function Step6Letter({ letter, onNext }: { letter: string; onNext: () => 
 
     return () => clearInterval(typingInterval);
   }, [letter]);
+
+  useEffect(() => {
+    if (autoPlay && isTypingFinished) {
+      const t = setTimeout(() => onNext(), 3000);
+      return () => clearTimeout(t);
+    }
+  }, [autoPlay, isTypingFinished, onNext]);
 
   return (
     <motion.div

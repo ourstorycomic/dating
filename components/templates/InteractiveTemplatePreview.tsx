@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useEffect, useRef } from "react";
 import type { TemplatePreviewProps } from "./previews/types";
 import { StarryConstellationPreview } from "./valentine-1/preview";
 import { Valentine2Preview } from "./valentine-2/preview";
@@ -39,6 +40,53 @@ const previewRegistry = [
   { match: "birthday #2", Component: Birthday2Preview },
 ];
 
+// This bot automatically plays through ANY template by clicking buttons intelligently
+function BotAutoPlayer({ children, enabled }: { children: React.ReactNode; enabled: boolean }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!enabled) return;
+
+    let isActive = true;
+    const interval = setInterval(() => {
+      if (!isActive || !containerRef.current) return;
+      
+      const buttons = Array.from(containerRef.current.querySelectorAll('button'));
+      const clickableTexts = ["CÓ", "YES", "Tiếp tục", "Chọn", "Mở", "Xem Tiếp", "Lên đồ", "Hoàn thành", "Bắt đầu", "Click", "Tiếp", "Next"];
+      
+      let clicked = false;
+      
+      // 1. Try to find a primary 'next' or 'yes' button
+      for (const btn of buttons) {
+        const text = btn.textContent || "";
+        if (clickableTexts.some(t => text.toLowerCase().includes(t.toLowerCase()))) {
+           if (btn.disabled) continue;
+           btn.click();
+           clicked = true;
+           break;
+        }
+      }
+      
+      // 2. If no clear 'next' button, just click a random option (useful for selecting food/movie/etc)
+      if (!clicked && buttons.length > 0) {
+        const enabledButtons = buttons.filter(b => !b.disabled);
+        if (enabledButtons.length > 0) {
+          const randomBtn = enabledButtons[Math.floor(Math.random() * enabledButtons.length)];
+          randomBtn.click();
+        }
+      }
+      
+    }, 2500);
+
+    return () => {
+      isActive = false;
+      clearInterval(interval);
+    };
+  }, [enabled]);
+
+  return <div ref={containerRef} className="w-full h-full relative">{children}</div>;
+}
+
 export function InteractiveTemplatePreview({
   componentKey,
   roomId,
@@ -53,7 +101,9 @@ export function InteractiveTemplatePreview({
       if (!props.isBuilderPreview) {
         return (
           <div className="mx-auto flex aspect-[9/19] w-[340px] max-w-full shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative pointer-events-none">
-            <Component {...props} roomId={roomId} autoPlay={true} />
+            <BotAutoPlayer enabled={true}>
+              <Component {...props} roomId={roomId} autoPlay={true} />
+            </BotAutoPlayer>
           </div>
         );
       } else {

@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Package } from "lucide-react";
 
-export function Step3Delivery({ onNext }: { onNext: () => void }) {
+export function Step3Delivery({ onNext, autoPlay = false }: { onNext: () => void; autoPlay?: boolean }) {
   const [showPopup, setShowPopup] = useState(false);
   const [showSignPad, setShowSignPad] = useState(false);
   const [isSigned, setIsSigned] = useState(false);
@@ -17,6 +17,15 @@ export function Step3Delivery({ onNext }: { onNext: () => void }) {
     const t = setTimeout(() => setShowPopup(true), 800);
     return () => clearTimeout(t);
   }, []);
+
+  useEffect(() => {
+    if (autoPlay) {
+      const t1 = setTimeout(() => setShowSignPad(true), 2000);
+      const t2 = setTimeout(() => setIsSigned(true), 3500);
+      const t3 = setTimeout(() => onNext(), 5000);
+      return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+    }
+  }, [autoPlay, onNext]);
 
   const handleStartDraw = (e: any) => {
     isDrawing.current = true;

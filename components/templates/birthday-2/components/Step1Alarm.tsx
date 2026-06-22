@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useAnimation, useMotionValue, useTransform } from "framer-motion";
 import { Bell, ChevronRight } from "lucide-react";
 
-export function Step1Alarm({ onNext }: { onNext: () => void }) {
+export function Step1Alarm({ onNext, autoPlay = false }: { onNext: () => void; autoPlay?: boolean }) {
   const [currentTime, setCurrentTime] = useState("07:00");
   const audioRef = useRef<HTMLAudioElement>(null);
   const x = useMotionValue(0);
@@ -26,6 +26,18 @@ export function Step1Alarm({ onNext }: { onNext: () => void }) {
     }, 60000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (autoPlay) {
+      const t = setTimeout(() => {
+        if (audioRef.current) audioRef.current.pause();
+        controls.start({ x: 200, transition: { duration: 0.6 } }).then(() => {
+          controls.start({ opacity: 0, scale: 1.1 }).then(() => onNext());
+        });
+      }, 3000);
+      return () => clearTimeout(t);
+    }
+  }, [autoPlay, controls, onNext]);
 
   const handleDragEnd = (e: any, info: any) => {
     if (info.offset.x > 150) {

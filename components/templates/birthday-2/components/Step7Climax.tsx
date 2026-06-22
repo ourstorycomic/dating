@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { Ticket } from "lucide-react";
 
-export function Step7Climax() {
+export function Step7Climax({ autoPlay = false, onNext }: { autoPlay?: boolean; onNext?: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -39,7 +39,12 @@ export function Step7Climax() {
       }
     };
     frame();
-  }, []);
+
+    if (autoPlay && onNext) {
+      const t = setTimeout(() => onNext(), 7000); // Wait for confetti and then loop
+      return () => clearTimeout(t);
+    }
+  }, [autoPlay, onNext]);
 
   return (
     <motion.div

@@ -1,9 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { PackageOpen } from "lucide-react";
 
-export function Step4Unbox({ photos, onNext }: { photos: { url: string; note: string }[]; onNext: () => void }) {
+export function Step4Unbox({ photos, onNext, autoPlay = false }: { photos: { url: string; note: string }[]; onNext: () => void; autoPlay?: boolean }) {
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -25,6 +26,13 @@ export function Step4Unbox({ photos, onNext }: { photos: { url: string; note: st
       transition: { type: "spring", bounce: 0.5, duration: 1.5 }
     })
   };
+
+  useEffect(() => {
+    if (autoPlay) {
+      const t = setTimeout(() => onNext(), 6000); // Wait for photos to appear
+      return () => clearTimeout(t);
+    }
+  }, [autoPlay, onNext]);
 
   return (
     <motion.div

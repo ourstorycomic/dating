@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export function Step5Cake({ onNext }: { onNext: () => void }) {
+export function Step5Cake({ onNext, autoPlay = false }: { onNext: () => void; autoPlay?: boolean }) {
   const [holding, setHolding] = useState(false);
   const [progress, setProgress] = useState(0);
   const [blown, setBlown] = useState(false);
@@ -43,10 +43,17 @@ export function Step5Cake({ onNext }: { onNext: () => void }) {
   };
 
   useEffect(() => {
+    if (autoPlay) {
+      const t = setTimeout(() => startHold(), 2000);
+      return () => {
+        clearTimeout(t);
+        if (intervalRef.current) clearInterval(intervalRef.current);
+      };
+    }
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, []);
+  }, [autoPlay]);
 
   return (
     <motion.div

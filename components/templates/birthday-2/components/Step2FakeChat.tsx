@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect as import_react_useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, Info, Phone, Video } from "lucide-react";
 
-export function Step2FakeChat({ messages, onNext }: { messages: string[]; onNext: () => void }) {
+export function Step2FakeChat({ messages, onNext, autoPlay = false }: { messages: string[]; onNext: () => void; autoPlay?: boolean }) {
   const [visibleCount, setVisibleCount] = useState(0);
 
   const handleClick = () => {
@@ -12,6 +12,18 @@ export function Step2FakeChat({ messages, onNext }: { messages: string[]; onNext
       setVisibleCount(c => c + 1);
     }
   };
+
+  import_react_useEffect(() => {
+    if (autoPlay) {
+      if (visibleCount < messages.length) {
+        const t = setTimeout(() => setVisibleCount(c => c + 1), 1500);
+        return () => clearTimeout(t);
+      } else {
+        const t = setTimeout(() => onNext(), 2000);
+        return () => clearTimeout(t);
+      }
+    }
+  }, [autoPlay, visibleCount, messages.length, onNext]);
 
   return (
     <motion.div
