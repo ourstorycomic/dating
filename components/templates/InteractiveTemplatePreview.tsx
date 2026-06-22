@@ -122,7 +122,7 @@ export function InteractiveTemplatePreview({
             <div className="absolute inset-0 z-50" />
             
             <div className="absolute inset-0 pointer-events-none">
-              <BotAutoPlayer enabled={isHovered}>
+              <BotAutoPlayer enabled={isHovered} key={isHovered ? "active" : "idle"}>
                 <Component {...props} roomId={roomId} autoPlay={isHovered} />
               </BotAutoPlayer>
             </div>
