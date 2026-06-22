@@ -3,7 +3,7 @@
 import { useState, useEffect as import_react_useEffect } from "react";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, Info, Phone, Video, MousePointer2, ArrowDown } from "lucide-react";
+import { ChevronLeft, Info, Phone, Video, Pointer, ArrowDown } from "lucide-react";
 
 export function Step2FakeChat({ messages, onNext, autoPlay = false }: { messages: string[]; onNext: () => void; autoPlay?: boolean }) {
   const [visibleCount, setVisibleCount] = useState(0);
@@ -83,7 +83,7 @@ export function Step2FakeChat({ messages, onNext, autoPlay = false }: { messages
               transition={{ repeat: Infinity, duration: 1.5 }}
               className="bg-blue-500/10 text-blue-600 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2"
             >
-              <MousePointer2 className="w-4 h-4" />
+              <Pointer className="w-4 h-4" />
               Chạm màn hình để đọc tiếp
             </motion.div>
           </motion.div>
