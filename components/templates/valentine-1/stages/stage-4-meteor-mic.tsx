@@ -125,8 +125,18 @@ export function Stage4MeteorMic({
             <motion.div key={`bg-meteor-${i}`}
               className={`absolute w-32 h-[2px] rounded-full ${isBlue ? 'bg-gradient-to-r from-transparent to-cyan-300 shadow-[0_0_15px_#22d3ee]' : 'bg-gradient-to-r from-transparent to-white/60'}`}
               style={{ rotate: 135, left: `${Math.random() * 200}%`, top: -300 }}
-              animate={{ x: -2000, y: 2000, opacity: [0, 1, 0] }}
-              transition={{ duration: 1.5 + Math.random() * 2, repeat: Infinity, delay: Math.random() * 5, ease: "linear" }}
+              animate={{ 
+                x: [0, -2000, 0], 
+                y: [0, 2000, 0], 
+                opacity: [0, 1, 0, 0] 
+              }}
+              transition={{ 
+                duration: 1.5 + Math.random() * 2, 
+                times: [0, 0.99, 1],
+                repeat: Infinity, 
+                delay: Math.random() * 5, 
+                ease: "linear" 
+              }}
             />
           );
         })}
@@ -137,18 +147,31 @@ export function Stage4MeteorMic({
           <motion.p className="absolute top-32 w-full text-center text-cyan-200 font-bold text-lg drop-shadow-md z-20" animate={{ opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 2 }}>
             {prompt}
           </motion.p>
-          <motion.button 
-            onClick={handleCatch}
-            whileHover={{ scale: 1.2 }}
-            className="absolute top-0 right-0 w-48 h-10 flex items-center justify-center outline-none z-30 pointer-events-auto"
-            initial={{ x: 800, y: -800 }}
-            animate={{ x: -1200, y: 1200 }}
-            transition={{ duration: 2.5, ease: "linear", repeat: Infinity, repeatDelay: 1.5, repeatType: "loop" }}
-            style={{ rotate: 135 }}
+          <motion.div
+            className="absolute top-0 right-0 z-30 pointer-events-none"
+            animate={{ 
+              x: [800, -1200, 800], 
+              y: [-800, 1200, -800],
+              opacity: [0, 1, 1, 0, 0]
+            }}
+            transition={{ 
+              duration: 3, 
+              times: [0, 0.1, 0.9, 0.99, 1],
+              ease: "linear", 
+              repeat: Infinity, 
+              repeatDelay: 1.5 
+            }}
           >
-            <div className="w-40 h-[3px] bg-gradient-to-r from-transparent to-cyan-300" />
-            <div className="w-10 h-10 bg-cyan-300 rounded-full shadow-[0_0_50px_#22d3ee] flex-shrink-0" />
-          </motion.button>
+            <motion.button 
+              onClick={handleCatch}
+              whileHover={{ scale: 1.2 }}
+              className="w-48 h-10 flex items-center justify-center outline-none pointer-events-auto"
+              style={{ rotate: 135 }}
+            >
+              <div className="w-40 h-[3px] bg-gradient-to-r from-transparent to-cyan-300" />
+              <div className="w-10 h-10 bg-cyan-300 rounded-full shadow-[0_0_50px_#22d3ee] flex-shrink-0" />
+            </motion.button>
+          </motion.div>
         </div>
       ) : (
         <motion.div className="flex flex-col items-center w-full px-6" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 1.5, type: "spring", bounce: 0.5 }}>
