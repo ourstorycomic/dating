@@ -465,6 +465,7 @@ function Step6Treaty({ onNext, autoPlay }: { onNext: () => void; autoPlay: boole
 // --- MAIN TEMPLATE COMPONENT ---
 export default function Sorry1Template({ compact = false, autoPlay = false }: { compact?: boolean; autoPlay?: boolean }) {
   const [step, setStep] = useState(1);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Background color mapping
   const bgColors = [
@@ -480,22 +481,25 @@ export default function Sorry1Template({ compact = false, autoPlay = false }: { 
   const currentBg = bgColors[step - 1] || bgColors[bgColors.length - 1];
 
   const triggerConfetti = () => {
+    if (!canvasRef.current) return;
+    const myConfetti = confetti.create(canvasRef.current, { resize: true, useWorker: true });
+
     const duration = 3000;
     const end = Date.now() + duration;
 
     const frame = () => {
-      confetti({
+      myConfetti({
         particleCount: 5,
         angle: 60,
         spread: 55,
-        origin: { x: 0 },
+        origin: { x: 0, y: 0.8 },
         colors: ['#f43f5e', '#ec4899', '#d946ef']
       });
-      confetti({
+      myConfetti({
         particleCount: 5,
         angle: 120,
         spread: 55,
-        origin: { x: 1 },
+        origin: { x: 1, y: 0.8 },
         colors: ['#f43f5e', '#ec4899', '#d946ef']
       });
 
@@ -520,6 +524,7 @@ export default function Sorry1Template({ compact = false, autoPlay = false }: { 
 
   return (
     <div className={`relative w-full overflow-hidden transition-colors duration-1000 bg-gradient-to-b ${currentBg} text-slate-800 touch-none mx-auto ${compact ? 'h-full' : 'max-w-[400px] h-[800px] max-h-[90vh] rounded-[3rem] shadow-2xl border-[10px] border-[#ffffff]'}`}>
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-50" />
       <FloatingParticles />
       <AnimatePresence mode="wait">
         {step === 1 && <Step1Ice key="s1" onNext={handleNext} autoPlay={autoPlay} />}
