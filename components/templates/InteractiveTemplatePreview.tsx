@@ -55,7 +55,7 @@ function BotAutoPlayer({ children, enabled }: { children: React.ReactNode; enabl
       if (!isActive || !containerRef.current) return;
       
       const buttons = Array.from(containerRef.current.querySelectorAll('button'));
-      const clickableTexts = ["CÓ", "YES", "Tiếp tục", "Chọn", "Mở", "Xem Tiếp", "Lên đồ", "Hoàn thành", "Bắt đầu", "Click", "Tiếp", "Next"];
+      const clickableTexts = ["CÓ", "YES", "Tiếp tục", "Chọn", "Mở", "Xem Tiếp", "Lên đồ", "Hoàn thành", "Bắt đầu", "Click", "Tiếp", "Next", "Đáng đòn", "Quay", "Bớt giận", "Chốt hạ", "Ký tên"];
       
       let clicked = false;
       

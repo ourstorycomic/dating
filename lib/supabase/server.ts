@@ -61,6 +61,8 @@ const allowedTemplateMatches = [
   "birthday 2",
   "birthday2",
   "birthday_2",
+  "sorry-1",
+  "sorry #1",
 ];
 
 function isSupportedTemplate(template: Pick<TemplateCatalogItem, "component_key" | "name" | "slug">) {
@@ -100,6 +102,25 @@ export async function getPublishedTemplates() {
 }
 
 export async function getTemplateBySlug(slug: string) {
+  if (slug === "sorry-1") {
+    return {
+      id: "sorry-1-mock",
+      slug: "sorry-1",
+      name: "Lời Thú Tội Kẻ Tội Đồ",
+      component_key: "sorry-1",
+      description: "Trải nghiệm 6 bước xoa dịu cơn giận từ việc đập tan lớp băng giá đến bản hiệp ước hòa bình hồng rực rỡ.",
+      tagline: "Làm Hòa",
+      base_price: 349000,
+      visual_label: "HOT",
+      gradient: "from-slate-400 to-rose-400",
+      status_label: "Mới",
+      sort_order: 20,
+      data_schema: {},
+      sample_data: { screens: ["Đập băng", "Thú tội", "Vòng quay", "Kỷ niệm", "Ký tên"] },
+      template_categories: { slug: "sorry", name: "Sorry", description: null }
+    } as any;
+  }
+
   const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
     .from("templates")

@@ -21,7 +21,7 @@ function Step1Ice({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean 
           }
           return c + 1;
         });
-      }, 1000);
+      }, 300);
       return () => clearInterval(t);
     }
   }, [autoPlay, onNext]);
@@ -85,9 +85,9 @@ function Step2Confession({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
         clearInterval(t);
         setDone(true);
       }
-    }, 50); // type speed
+    }, autoPlay ? 5 : 50); // type speed
     return () => clearInterval(t);
-  }, [fullText]);
+  }, [fullText, autoPlay]);
 
   useEffect(() => {
     if (autoPlay && done) {
@@ -239,7 +239,7 @@ function Step3Wheel({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
 function Step4Nostalgia({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
   useEffect(() => {
     if (autoPlay) {
-      const t = setTimeout(onNext, 4000);
+      const t = setTimeout(onNext, 2500);
       return () => clearTimeout(t);
     }
   }, [autoPlay, onNext]);
@@ -302,9 +302,9 @@ function Step5Apology({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
         clearInterval(t);
         setDone(true);
       }
-    }, 80); // slower typewriter
+    }, autoPlay ? 5 : 80); // slower typewriter
     return () => clearInterval(t);
-  }, [fullText]);
+  }, [fullText, autoPlay]);
 
   useEffect(() => {
     if (autoPlay && done) {
