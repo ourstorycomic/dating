@@ -11,7 +11,11 @@ export const TPL_DATA = {
 
   // Step 2: Vibe Check
   vibeTitle: "Xin chào!\nHôm nay của cậu thế nào?",
-  vibeOptions: ["Đang đói 🍕", "Hơi mệt 🥺", "Rất vui ✨"],
+  vibeOptions: [
+    { label: "Đang đói 🍕", response: "Đi ăn món ngon nhất thành phố nhé! 🥘" }, 
+    { label: "Hơi mệt 🥺", response: "Để tớ sạc năng lượng cho cậu nhé! ⚡" }, 
+    { label: "Rất vui ✨", response: "Gặp tớ rồi cậu sẽ còn vui hơn! 🥰" }
+  ],
   vibeTooltip: "Thế thì để tớ sạc năng lượng cho cậu nhé! ⚡",
 
   // Step 3: Scratch
