@@ -6,6 +6,38 @@ import { Frown, HandHeart, RefreshCcw, ScrollText, CheckCircle2, XCircle } from 
 import confetti from "canvas-confetti";
 import { APOLOGY_DATA } from "./config";
 
+// --- BACKGROUND PARTICLES ---
+function FloatingParticles() {
+  const [particles, setParticles] = useState<{ id: number; x: number; y: number; size: number; delay: number }[]>([]);
+  useEffect(() => {
+    const p = Array.from({ length: 30 }).map((_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: Math.random() * 4 + 2,
+      delay: Math.random() * 5,
+    }));
+    setParticles(p);
+  }, []);
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+      {particles.map(p => (
+        <motion.div
+          key={p.id}
+          className="absolute bg-[#ffffff] rounded-full opacity-30"
+          style={{ left: `${p.x}%`, top: `${p.y}%`, width: p.size, height: p.size }}
+          animate={{
+            y: [0, -20, 0],
+            x: [0, 10, 0],
+            opacity: [0.1, 0.4, 0.1],
+          }}
+          transition={{ duration: 4 + Math.random() * 4, repeat: Infinity, delay: p.delay, ease: "easeInOut" }}
+        />
+      ))}
+    </div>
+  );
+}
+
 // --- STEP 1: BREAK THE ICE ---
 function Step1Ice({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
   const [cracks, setCracks] = useState(0);
@@ -119,7 +151,7 @@ function Step2Confession({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             onClick={onNext}
-            className="mt-10 px-8 py-4 bg-slate-800 text-white rounded-full font-bold shadow-xl hover:scale-105 transition-transform"
+            className="mt-10 px-8 py-4 bg-slate-800 text-[#ffffff] rounded-full font-bold shadow-xl hover:scale-105 transition-transform"
           >
             Đúng, cậu rất đáng đòn! 😡
           </motion.button>
@@ -209,7 +241,7 @@ function Step3Wheel({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
         <button
           onClick={spin}
           disabled={spinning}
-          className="px-8 py-4 bg-rose-500 text-white rounded-full font-bold shadow-xl hover:bg-rose-600 transition-colors flex items-center gap-2"
+          className="px-8 py-4 bg-rose-500 text-[#ffffff] rounded-full font-bold shadow-xl hover:bg-rose-600 transition-colors flex items-center gap-2"
         >
           <RefreshCcw className={spinning ? "animate-spin" : ""} /> {spinning ? "Đang quay..." : "QUAY NGAY"}
         </button>
@@ -221,7 +253,7 @@ function Step3Wheel({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
           </div>
           <button
             onClick={onNext}
-            className="px-8 py-3 bg-slate-800 text-white rounded-full font-bold shadow-xl hover:scale-105 transition-transform"
+            className="px-8 py-3 bg-slate-800 text-[#ffffff] rounded-full font-bold shadow-xl hover:scale-105 transition-transform"
           >
             Tạm bớt giận 👉
           </button>
@@ -275,7 +307,7 @@ function Step4Nostalgia({ onNext, autoPlay }: { onNext: () => void; autoPlay: bo
         animate={{ opacity: 1 }}
         transition={{ delay: 2.5 }}
         onClick={onNext}
-        className="px-8 py-3 bg-amber-500 text-white rounded-full font-bold shadow-xl hover:scale-105 transition-transform"
+        className="px-8 py-3 bg-amber-500 text-[#ffffff] rounded-full font-bold shadow-xl hover:scale-105 transition-transform"
       >
         Xem tiếp
       </motion.button>
@@ -335,7 +367,7 @@ function Step5Apology({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             onClick={onNext}
-            className="mt-10 px-8 py-4 bg-rose-500 text-white rounded-full font-bold shadow-xl hover:bg-rose-600 transition-transform flex items-center gap-2"
+            className="mt-10 px-8 py-4 bg-rose-500 text-[#ffffff] rounded-full font-bold shadow-xl hover:bg-rose-600 transition-transform flex items-center gap-2"
           >
             Chốt hạ <ScrollText size={20} />
           </motion.button>
@@ -389,7 +421,7 @@ function Step6Treaty({ onNext, autoPlay }: { onNext: () => void; autoPlay: boole
           onClick={onNext}
           animate={{ scale: [1, 1.05, 1] }}
           transition={{ repeat: Infinity, duration: 1.5 }}
-          className="px-6 py-4 bg-gradient-to-r from-rose-400 to-pink-500 text-white rounded-full font-bold shadow-xl border-2 border-white flex items-center justify-center gap-2 z-20"
+          className="px-6 py-4 bg-gradient-to-r from-rose-400 to-pink-500 text-[#ffffff] rounded-full font-bold shadow-xl border-2 border-white flex items-center justify-center gap-2 z-20"
         >
           <CheckCircle2 size={20} /> KÝ TÊN, THA MẠNG CHÓ 🐾
         </motion.button>
@@ -411,7 +443,7 @@ function Step6Treaty({ onNext, autoPlay }: { onNext: () => void; autoPlay: boole
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute bottom-10 bg-slate-800 text-white px-6 py-3 rounded-2xl shadow-2xl font-bold"
+            className="absolute bottom-10 bg-slate-800 text-[#ffffff] px-6 py-3 rounded-2xl shadow-2xl font-bold"
           >
             Thôi màaaa, xin đấyyyy 😭
           </motion.div>
@@ -478,7 +510,8 @@ export default function Sorry1Template({ compact = false, autoPlay = false }: { 
   };
 
   return (
-    <div className={`relative w-full overflow-hidden transition-colors duration-1000 bg-gradient-to-b ${currentBg} text-slate-800 touch-none mx-auto ${compact ? 'h-full' : 'max-w-[400px] h-[800px] max-h-[90vh] rounded-[3rem] shadow-2xl border-[10px] border-white'}`}>
+    <div className={`relative w-full overflow-hidden transition-colors duration-1000 bg-gradient-to-b ${currentBg} text-slate-800 touch-none mx-auto ${compact ? 'h-full' : 'max-w-[400px] h-[800px] max-h-[90vh] rounded-[3rem] shadow-2xl border-[10px] border-[#ffffff]'}`}>
+      <FloatingParticles />
       <AnimatePresence mode="wait">
         {step === 1 && <Step1Ice key="s1" onNext={handleNext} autoPlay={autoPlay} />}
         {step === 2 && <Step2Confession key="s2" onNext={handleNext} autoPlay={autoPlay} />}
@@ -491,7 +524,7 @@ export default function Sorry1Template({ compact = false, autoPlay = false }: { 
             key="s7"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 text-white"
+            className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 text-[#ffffff]"
           >
             <h2 className="text-4xl font-black mb-4 drop-shadow-md">Cảm ơn cậu! ❤️</h2>
             <p className="text-xl font-medium bg-white/20 p-4 rounded-2xl backdrop-blur-sm border border-white/40">
