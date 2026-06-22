@@ -41,9 +41,7 @@ function getTemplateKind(template: { component_key: string; name: string; slug: 
     searchable.includes("birthday 2") ||
     searchable.includes("birthday2") ||
     searchable.includes("birthday_2") ||
-    searchable.includes("birthday-magic") ||
-    searchable.includes("birthday-3") ||
-    searchable.includes("birthday #3")
+    searchable.includes("birthday-magic")
   ) {
     return "birthday";
   }
@@ -74,23 +72,6 @@ const steps = [
 export default async function Home() {
   const templates = await getPublishedTemplates();
   
-  // Inject Birthday 3 for demo since it's not in DB yet
-  templates.push({
-    id: "birthday-3-mock",
-    slug: "birthday-3",
-    name: "Bảo Tàng Ký Ức & Chòm Sao",
-    component_key: "birthday-3",
-    description: "Khám phá viện bảo tàng ký ức ảo ảnh 3D và thắp sáng chòm sao định mệnh để nhận quà.",
-    tagline: "Bảo tàng Ký ức",
-    base_price: 399000,
-    visual_label: "MỚI",
-    gradient: "from-indigo-500 to-purple-500",
-    status_label: "Hot",
-    sort_order: 10,
-    data_schema: {},
-    sample_data: { screens: ["Bức thư", "Flashlight", "Bảo tàng", "Ghép pha lê", "Vì sao rơi"] },
-    template_categories: { slug: "birthday", name: "Birthday", description: null }
-  } as any);
 
   const grouped = categoryOrder
     .map((slug) => ({
@@ -101,7 +82,8 @@ export default async function Home() {
     .filter((group) => group.templates.length > 0);
 
   return (
-    <div className="min-h-screen overflow-hidden px-4 pb-24 pt-4 text-[#332035] sm:px-6 sm:pb-10 lg:px-10">
+    <div className="min-h-screen flex flex-col overflow-hidden text-[#332035]">
+      <div className="flex-1 px-4 pt-4 pb-16 sm:px-6 sm:pb-20 lg:px-10">
       <header className="mx-auto flex max-w-7xl items-center gap-3 rounded-[28px] border border-white/70 bg-white/72 px-4 py-3 shadow-[0_18px_50px_rgba(215,112,158,0.16)] backdrop-blur-xl sm:px-5">
         <Link className="flex items-center gap-2 text-base font-extrabold tracking-normal sm:text-lg" href="/">
           <img src="/favicon.ico" alt="Lovora Logo" className="h-9 w-9 rounded-[10px] shadow-[0_10px_24px_rgba(255,143,199,0.38)]" />
@@ -201,6 +183,7 @@ export default async function Home() {
           <HomePageCatalog grouped={grouped} />
         </section>
       </main>
+      </div>
 
       <Footer />
 
