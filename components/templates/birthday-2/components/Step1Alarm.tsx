@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useAnimation, useMotionValue, useTransform } from "framer-motion";
 import { Bell, ChevronRight } from "lucide-react";
 
-export function Step1Alarm({ onNext, autoPlay = false }: { onNext: () => void; autoPlay?: boolean }) {
+export function Step1Alarm({ onNext, autoPlay = false, compact = false }: { onNext: () => void; autoPlay?: boolean; compact?: boolean }) {
   const [currentTime, setCurrentTime] = useState("07:00");
   const audioRef = useRef<HTMLAudioElement>(null);
   const x = useMotionValue(0);

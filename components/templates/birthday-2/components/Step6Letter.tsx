@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export function Step6Letter({ letter, onNext, autoPlay = false }: { letter: string; onNext: () => void; autoPlay?: boolean }) {
+export function Step6Letter({ letter, onNext, autoPlay = false, compact = false }: { letter: string; onNext: () => void; autoPlay?: boolean; compact?: boolean }) {
   const [displayedText, setDisplayedText] = useState("");
   const [isTypingFinished, setIsTypingFinished] = useState(false);
 

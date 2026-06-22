@@ -19,12 +19,12 @@ export default function Birthday2Diary({ autoPlay = false, compact = false }: { 
   return (
     <div className={`relative w-full bg-slate-900 overflow-hidden text-white touch-none font-sans mx-auto ${compact ? 'h-full' : 'max-w-[400px] h-[800px] max-h-[90vh] rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-[12px] border-gray-800'}`}>
       <AnimatePresence mode="wait">
-        {step === 1 && <Step1Alarm key="step1" onNext={handleNext} autoPlay={autoPlay} />}
+        {step === 1 && <Step1Alarm key="step1" onNext={handleNext} autoPlay={autoPlay} compact={compact} />}
         {step === 2 && <Step2FakeChat key="step2" messages={BIRTHDAY_DATA.fakeMessages} onNext={handleNext} autoPlay={autoPlay} />}
         {step === 3 && <Step3Delivery key="step3" onNext={handleNext} autoPlay={autoPlay} photos={BIRTHDAY_DATA.photos} />}
         {step === 4 && <Step4Unbox key="step4" photos={BIRTHDAY_DATA.photos} onNext={handleNext} autoPlay={autoPlay} />}
         {step === 5 && <Step5Cake key="step5" onNext={handleNext} autoPlay={autoPlay} />}
-        {step === 6 && <Step6Letter key="step6" letter={BIRTHDAY_DATA.letter} onNext={handleNext} autoPlay={autoPlay} />}
+        {step === 6 && <Step6Letter key="step6" letter={BIRTHDAY_DATA.letter} onNext={handleNext} autoPlay={autoPlay} compact={compact} />}
         {step === 7 && <Step7Climax key="step7" autoPlay={autoPlay} onNext={() => autoPlay && setStep(1)} />}
       </AnimatePresence>
     </div>
