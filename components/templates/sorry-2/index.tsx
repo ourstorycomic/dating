@@ -79,27 +79,42 @@ function Step1Trigger({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
     <motion.div
       key="step1"
       exit={{ opacity: 0, scale: 1.1 }}
-      className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 bg-slate-800 text-white"
+      className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 bg-slate-900 text-white overflow-hidden"
     >
-      <motion.div
-        animate={{ opacity: [0, 0.2, 0, 0.5, 0], backgroundColor: ["transparent", "#ffffff", "transparent", "#ffffff", "transparent"] }}
-        transition={{ duration: 1, repeat: Infinity, repeatDelay: 2 }}
-        className="absolute inset-0 pointer-events-none"
+      {/* Caution tape background */}
+      <motion.div 
+        animate={{ y: [0, -40] }}
+        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+        className="absolute -inset-[100%] pointer-events-none opacity-10" 
+        style={{ backgroundImage: "repeating-linear-gradient(45deg, #000 0, #000 40px, #f59e0b 40px, #f59e0b 80px)", backgroundSize: "200% 200%" }} 
       />
-      <AlertTriangle size={64} className="text-red-500 mb-6 drop-shadow-md animate-pulse" />
-      <div className="bg-white/10 p-6 rounded-2xl shadow-lg backdrop-blur-md border border-white/20 min-h-[200px] flex items-center justify-center w-full relative">
-        <p className="text-lg font-bold leading-relaxed text-red-100">
-          {text}<span className="animate-pulse">|</span>
+      
+      <motion.div
+        animate={{ opacity: [0, 0.3, 0, 0.6, 0], backgroundColor: ["transparent", "#ef4444", "transparent", "#ef4444", "transparent"] }}
+        transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 1 }}
+        className="absolute inset-0 pointer-events-none mix-blend-color-burn"
+      />
+      
+      <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 0.5, repeat: Infinity }}>
+        <AlertTriangle size={80} className="text-red-500 mb-6 drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]" />
+      </motion.div>
+      
+      <div className="bg-slate-800/80 p-8 rounded-3xl shadow-[0_0_30px_rgba(0,0,0,0.5)] backdrop-blur-xl border border-red-500/30 min-h-[220px] flex items-center justify-center w-full relative z-10">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent opacity-50" />
+        <p className="text-lg font-bold leading-relaxed text-red-50">
+          {text}<span className="animate-pulse text-red-500">|</span>
         </p>
       </div>
 
       <AnimatePresence>
         {done && (
           <motion.button
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 30, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(220,38,38,0.6)" }}
+            whileTap={{ scale: 0.95 }}
             onClick={onNext}
-            className="mt-10 px-8 py-4 bg-red-600 text-white rounded-full font-black shadow-xl hover:bg-red-700 hover:scale-105 transition-all flex items-center gap-2"
+            className="mt-12 px-8 py-4 bg-gradient-to-b from-red-500 to-red-700 text-white rounded-full font-black shadow-2xl flex items-center gap-2 border-2 border-red-400 z-10"
           >
             Đưa nó ra đây cho bà! 😡
           </motion.button>
@@ -143,23 +158,31 @@ function Step2Weapon({ onNext, autoPlay, setWeapon }: { onNext: () => void; auto
       exit={{ opacity: 0, x: -50 }}
       className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10"
     >
-      <ShieldAlert size={48} className="text-orange-500 mb-4" />
-      <h2 className="text-2xl font-black text-slate-800 mb-2 uppercase">Chọn Vũ Khí</h2>
-      <p className="text-sm font-medium text-slate-600 mb-8">Hãy chọn một món binh khí thuận tay nhất để xả giận!</p>
+      <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}>
+        <ShieldAlert size={60} className="text-orange-500 mb-4 drop-shadow-lg" />
+      </motion.div>
+      <h2 className="text-3xl font-black text-slate-800 mb-2 uppercase tracking-wide">Chọn Vũ Khí</h2>
+      <p className="text-sm font-medium text-slate-600 mb-10 bg-white/50 px-4 py-2 rounded-full shadow-sm backdrop-blur-sm">Hãy chọn binh khí thuận tay nhất!</p>
 
-      <div className="grid grid-cols-2 gap-4 w-full max-w-[280px]">
-        {weapons.map(w => (
+      <div className="grid grid-cols-2 gap-5 w-full max-w-[300px]">
+        {weapons.map((w, i) => (
           <motion.button
             key={w.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0, boxShadow: selected === w.id ? "0 10px 25px -5px rgba(249,115,22,0.5)" : "0 4px 6px -1px rgba(0,0,0,0.1)" }}
+            transition={{ delay: i * 0.1 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setSelected(w.id)}
-            className={`p-4 rounded-2xl flex flex-col items-center justify-center gap-2 border-4 transition-colors ${
-              selected === w.id ? "bg-orange-100 border-orange-500 shadow-lg" : "bg-white border-transparent shadow"
+            className={`p-5 rounded-3xl flex flex-col items-center justify-center gap-3 border-[4px] transition-colors relative overflow-hidden ${
+              selected === w.id ? "bg-gradient-to-b from-orange-50 to-orange-100 border-orange-500" : "bg-white border-white hover:border-orange-200"
             }`}
           >
-            <span className="text-4xl">{w.emoji}</span>
-            <span className="text-xs font-bold text-slate-700">{w.name}</span>
+            {selected === w.id && (
+              <motion.div layoutId="weapon-outline" className="absolute inset-0 border-4 border-orange-400 rounded-2xl pointer-events-none" />
+            )}
+            <span className="text-5xl drop-shadow-md">{w.emoji}</span>
+            <span className="text-xs font-black text-slate-700 uppercase tracking-wider">{w.name}</span>
           </motion.button>
         ))}
       </div>
@@ -167,10 +190,12 @@ function Step2Weapon({ onNext, autoPlay, setWeapon }: { onNext: () => void; auto
       <AnimatePresence>
         {selected && (
           <motion.button
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 20, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={onNext}
-            className="mt-10 px-8 py-3 bg-slate-800 text-white rounded-full font-bold shadow-xl hover:scale-105 transition-transform flex items-center gap-2"
+            className="mt-12 px-8 py-4 bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-full font-black shadow-[0_10px_30px_rgba(15,23,42,0.5)] flex items-center gap-2 border-2 border-slate-700"
           >
             Bắt đầu xả giận <ChevronRight size={20} />
           </motion.button>
@@ -257,34 +282,42 @@ function Step3Whack({ onNext, autoPlay, weapon }: { onNext: () => void; autoPlay
       onPointerMove={handlePointerMove}
       onPointerDown={handlePointerDown}
     >
-      <h2 className="text-2xl font-black text-slate-800 mt-8 mb-4 uppercase text-center">Đập nó đi!</h2>
+      <motion.h2 
+        animate={{ scale: [1, 1.1, 1] }} 
+        transition={{ repeat: Infinity, duration: 0.8 }}
+        className="text-4xl font-black text-rose-600 mt-8 mb-4 uppercase text-center drop-shadow-[0_2px_2px_rgba(255,255,255,0.8)]"
+      >
+        Đập nó đi!
+      </motion.h2>
       
       {/* Health Bar */}
-      <div className="w-full max-w-[280px] h-6 bg-slate-200 rounded-full mb-10 overflow-hidden border-2 border-slate-300 relative shadow-inner">
+      <div className="w-full max-w-[280px] h-8 bg-slate-800 rounded-full mb-10 overflow-hidden border-4 border-slate-900 relative shadow-[inset_0_5px_10px_rgba(0,0,0,0.5)]">
         <motion.div 
-          className="h-full bg-gradient-to-r from-red-500 to-rose-600"
+          className="h-full bg-gradient-to-r from-rose-500 via-red-500 to-orange-500"
           initial={{ width: 0 }}
           animate={{ width: `${(health / 10) * 100}%` }}
           transition={{ type: "spring", stiffness: 100 }}
         />
-        <div className="absolute inset-0 flex items-center justify-center text-xs font-bold text-white drop-shadow-md">
-          {health}/10
+        {/* Shine overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 flex items-center justify-center text-sm font-black text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
+          {health} / 10
         </div>
       </div>
 
       {/* 3x3 Grid */}
-      <div className="grid grid-cols-3 gap-3 w-full max-w-[300px]">
+      <div className="grid grid-cols-3 gap-4 w-full max-w-[320px] p-4 bg-slate-800/20 rounded-3xl backdrop-blur-sm border border-white/10 shadow-xl">
         {Array.from({ length: 9 }).map((_, i) => (
-          <div key={i} className="relative w-full aspect-square bg-slate-800 rounded-full border-4 border-slate-700 shadow-[inset_0_-10px_20px_rgba(0,0,0,0.5)] overflow-hidden flex items-end justify-center">
+          <div key={i} className="relative w-full aspect-square bg-gradient-to-b from-slate-900 to-black rounded-full border-[6px] border-slate-700 shadow-[inset_0_-15px_25px_rgba(0,0,0,0.8),_0_5px_15px_rgba(0,0,0,0.5)] overflow-hidden flex items-end justify-center">
             {/* The character */}
             <AnimatePresence>
               {activeHole === i && (
                 <motion.div
                   initial={{ y: "100%" }}
-                  animate={{ y: "10%" }}
+                  animate={{ y: "15%" }}
                   exit={{ y: "100%" }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className="w-[80%] h-[80%] origin-bottom absolute bottom-0 cursor-pointer"
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                  className="w-[85%] h-[85%] origin-bottom absolute bottom-0 cursor-pointer"
                   onPointerDown={(e) => {
                     e.stopPropagation();
                     handlePointerDown();
@@ -292,7 +325,7 @@ function Step3Whack({ onNext, autoPlay, weapon }: { onNext: () => void; autoPlay
                     handleHit(i, rect.left + rect.width / 2, rect.top);
                   }}
                 >
-                  <div className="w-full h-full rounded-full bg-orange-200 border-4 border-slate-900 overflow-hidden relative shadow-lg">
+                  <div className="w-full h-full rounded-full bg-gradient-to-br from-orange-100 to-orange-300 border-4 border-slate-900 overflow-hidden relative shadow-[0_-5px_15px_rgba(0,0,0,0.5)]">
                     <img src={WHACK_DATA.avatar} alt="avatar" className="w-full h-full object-cover pointer-events-none" />
                   </div>
                 </motion.div>
@@ -300,7 +333,7 @@ function Step3Whack({ onNext, autoPlay, weapon }: { onNext: () => void; autoPlay
             </AnimatePresence>
             
             {/* Front lip of the hole to cover bottom of character */}
-            <div className="absolute bottom-0 w-full h-[20%] bg-slate-700 rounded-b-full pointer-events-none" />
+            <div className="absolute bottom-[-5%] w-[110%] h-[30%] bg-gradient-to-b from-slate-700 to-slate-800 rounded-t-[50%] rounded-b-full pointer-events-none shadow-[inset_0_2px_5px_rgba(255,255,255,0.1)] border-t border-slate-500" />
           </div>
         ))}
       </div>
@@ -358,41 +391,52 @@ function Step4Bandaged({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
         initial={{ scale: 0 }}
         animate={{ scale: 1, rotate: [0, -5, 5, -5, 5, 0] }}
         transition={{ duration: 1.5, ease: "easeInOut" }}
-        className="relative w-48 h-48 rounded-full border-8 border-white shadow-2xl mb-8 overflow-hidden bg-orange-100"
+        className="relative w-56 h-56 rounded-full border-[10px] border-white shadow-[0_15px_35px_rgba(0,0,0,0.3)] mb-10 overflow-hidden bg-orange-100"
       >
         <img src={WHACK_DATA.avatar} alt="avatar" className="w-full h-full object-cover filter brightness-90 sepia-[0.2]" />
         
         {/* Band-aids */}
-        <div className="absolute top-1/4 left-1/4 w-12 h-4 bg-[#e8ba98] rotate-45 border border-[#d29b74] rounded-full opacity-90 shadow-sm" />
-        <div className="absolute top-1/4 left-1/4 w-12 h-4 bg-[#e8ba98] -rotate-45 border border-[#d29b74] rounded-full opacity-90 shadow-sm" />
+        <div className="absolute top-[20%] left-[20%] w-16 h-5 bg-[#e8ba98] rotate-45 border-2 border-[#d29b74] rounded-full opacity-95 shadow-md flex items-center justify-center overflow-hidden">
+          <div className="w-2 h-2 rounded-full bg-[#d29b74]/50" />
+        </div>
+        <div className="absolute top-[20%] left-[20%] w-16 h-5 bg-[#e8ba98] -rotate-45 border-2 border-[#d29b74] rounded-full opacity-95 shadow-md flex items-center justify-center overflow-hidden">
+          <div className="w-2 h-2 rounded-full bg-[#d29b74]/50" />
+        </div>
         
-        <div className="absolute bottom-1/3 right-1/4 w-10 h-3 bg-[#e8ba98] rotate-12 border border-[#d29b74] rounded-full opacity-90 shadow-sm" />
+        <div className="absolute bottom-[30%] right-[20%] w-12 h-4 bg-[#e8ba98] rotate-[15deg] border-2 border-[#d29b74] rounded-full opacity-95 shadow-md flex items-center justify-center overflow-hidden">
+          <div className="w-1 h-1 rounded-full bg-[#d29b74]/50" />
+        </div>
 
         {/* Tears */}
         <motion.div 
-          animate={{ y: [0, 40], opacity: [1, 0] }}
-          transition={{ repeat: Infinity, duration: 1.5 }}
-          className="absolute top-1/2 left-1/3 text-2xl"
+          animate={{ y: [0, 50], opacity: [1, 0], scale: [1, 0.8] }}
+          transition={{ repeat: Infinity, duration: 1.5, ease: "easeIn" }}
+          className="absolute top-[40%] left-[30%] text-3xl drop-shadow-sm"
         >💧</motion.div>
         <motion.div 
-          animate={{ y: [0, 50], opacity: [1, 0] }}
-          transition={{ repeat: Infinity, duration: 1.2, delay: 0.5 }}
-          className="absolute top-[40%] right-1/3 text-2xl"
+          animate={{ y: [0, 60], opacity: [1, 0], scale: [1, 0.8] }}
+          transition={{ repeat: Infinity, duration: 1.2, delay: 0.6, ease: "easeIn" }}
+          className="absolute top-[45%] right-[30%] text-3xl drop-shadow-sm"
         >💧</motion.div>
       </motion.div>
 
-      <div className="bg-white/80 p-5 rounded-2xl shadow-lg backdrop-blur-sm border border-white/40 mb-8 relative">
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[12px] border-b-white/80" />
-        <p className="text-slate-700 font-medium leading-relaxed">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="bg-white/95 p-6 rounded-[2rem] shadow-[0_10px_30px_rgba(0,0,0,0.15)] backdrop-blur-md border-2 border-white mb-10 relative w-full max-w-[320px]"
+      >
+        <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-b-[20px] border-b-white/95" />
+        <p className="text-slate-800 font-bold leading-relaxed text-[15px]">
           "Ui cha mẹ ơi... Đánh xong rồi, đằng ấy đã xả hết giận chưa? Xót người ta chưa? 🥺 Nếu bớt giận rồi thì cho người ta giải thích nhé?"
         </p>
-      </div>
+      </motion.div>
 
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={onNext}
-        className="px-8 py-3 bg-slate-800 text-white rounded-full font-bold shadow-xl flex items-center gap-2"
+        className="px-8 py-4 bg-slate-800 text-white rounded-full font-black shadow-[0_10px_20px_rgba(15,23,42,0.4)] flex items-center gap-2 border-2 border-slate-700"
       >
         Giải thích đi nghe thử 😒
       </motion.button>
@@ -435,12 +479,12 @@ function Step5Confession({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
       className="absolute inset-0 flex flex-col items-center justify-center p-6 z-10"
     >
       <motion.div
-        className="bg-[#fff7ed] p-8 rounded-lg shadow-2xl w-full max-w-sm relative min-h-[300px]"
-        style={{ backgroundImage: "repeating-linear-gradient(transparent, transparent 31px, #fdba74 31px, #fdba74 32px)", lineHeight: "32px", backgroundAttachment: "local" }}
+        className="bg-[#fffdf8] p-8 rounded-sm shadow-[5px_15px_30px_rgba(0,0,0,0.2)] w-full max-w-sm relative min-h-[350px] border border-[#f5ebd7]"
+        style={{ backgroundImage: "repeating-linear-gradient(transparent, transparent 31px, #e2e8f0 31px, #e2e8f0 32px)", lineHeight: "32px", backgroundAttachment: "local" }}
       >
-        <div className="absolute top-4 left-4 w-4 h-4 bg-red-400 rounded-full shadow-inner opacity-80" /> {/* pin */}
-        <p className="text-slate-800 font-medium text-lg italic font-serif pt-6">
-          {text}<span className="animate-pulse">_</span>
+        <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-32 h-8 bg-white/60 backdrop-blur-md -rotate-3 border border-white/40 shadow-sm rounded-sm" /> {/* Tape */}
+        <p className="text-slate-700 font-medium text-lg italic pt-6 px-2 drop-shadow-sm font-serif">
+          {text}<span className="animate-pulse text-rose-500">_</span>
         </p>
       </motion.div>
 
@@ -449,10 +493,12 @@ function Step5Confession({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
           <motion.button
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={onNext}
-            className="mt-10 px-8 py-3 bg-orange-500 text-white rounded-full font-bold shadow-xl hover:bg-orange-600 transition-transform"
+            className="mt-12 px-8 py-4 bg-gradient-to-r from-orange-400 to-rose-500 text-white rounded-full font-black shadow-[0_10px_20px_rgba(244,63,94,0.4)] transition-transform border-2 border-white flex items-center gap-2"
           >
-            Đọc tiếp <ChevronRight className="inline" size={18} />
+            Đọc tiếp <ChevronRight className="inline" size={20} />
           </motion.button>
         )}
       </AnimatePresence>
@@ -492,17 +538,17 @@ function Step6Promise({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
       initial={{ opacity: 0, rotateY: -90 }}
       animate={{ opacity: 1, rotateY: 0 }}
       exit={{ opacity: 0, x: -100 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.6, type: "spring", damping: 15 }}
       className="absolute inset-0 flex flex-col items-center justify-center p-6 z-10"
-      style={{ perspective: 1000 }}
+      style={{ perspective: 1500 }}
     >
       <motion.div
-        className="bg-[#fff7ed] p-8 rounded-lg shadow-2xl w-full max-w-sm relative min-h-[300px]"
-        style={{ backgroundImage: "repeating-linear-gradient(transparent, transparent 31px, #fdba74 31px, #fdba74 32px)", lineHeight: "32px", backgroundAttachment: "local" }}
+        className="bg-[#fffdf8] p-8 rounded-sm shadow-[5px_15px_30px_rgba(0,0,0,0.2)] w-full max-w-sm relative min-h-[350px] border border-[#f5ebd7]"
+        style={{ backgroundImage: "repeating-linear-gradient(transparent, transparent 31px, #e2e8f0 31px, #e2e8f0 32px)", lineHeight: "32px", backgroundAttachment: "local" }}
       >
-        <div className="absolute top-4 right-4 w-4 h-4 bg-red-400 rounded-full shadow-inner opacity-80" /> {/* pin right */}
-        <p className="text-slate-800 font-medium text-lg italic font-serif pt-6">
-          {text}<span className="animate-pulse">_</span>
+        <div className="absolute -top-4 right-8 w-24 h-8 bg-white/60 backdrop-blur-md rotate-6 border border-white/40 shadow-sm rounded-sm" /> {/* Tape right */}
+        <p className="text-slate-700 font-medium text-lg italic pt-6 px-2 drop-shadow-sm font-serif">
+          {text}<span className="animate-pulse text-rose-500">_</span>
         </p>
       </motion.div>
 
@@ -511,10 +557,12 @@ function Step6Promise({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
           <motion.button
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={onNext}
-            className="mt-10 px-8 py-3 bg-orange-500 text-white rounded-full font-bold shadow-xl hover:bg-orange-600 transition-transform flex items-center gap-2"
+            className="mt-12 px-8 py-4 bg-gradient-to-r from-orange-400 to-rose-500 text-white rounded-full font-black shadow-[0_10px_20px_rgba(244,63,94,0.4)] transition-transform flex items-center gap-2 border-2 border-white"
           >
-            Chốt kèo <HeartHandshake size={20} />
+            Chốt kèo <HeartHandshake size={24} />
           </motion.button>
         )}
       </AnimatePresence>
@@ -559,18 +607,26 @@ function Step7Verdict({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
       animate={{ opacity: 1, scale: 1 }}
       className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10"
     >
-      <div className="text-6xl mb-6">⚖️</div>
-      <h2 className="text-3xl font-black text-slate-800 mb-2 uppercase tracking-wide">Tòa Tuyên Án</h2>
-      <p className="text-slate-600 font-medium mb-12">Bị cáo đã nhận tội, quan tòa phán quyết sao đây?</p>
+      <motion.div 
+        animate={{ rotate: [-5, 5, -5] }} 
+        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+        className="text-7xl mb-8 drop-shadow-[0_5px_15px_rgba(244,63,94,0.4)]"
+      >
+        ⚖️
+      </motion.div>
+      <h2 className="text-4xl font-black text-rose-600 mb-4 uppercase tracking-wider drop-shadow-sm">Tòa Tuyên Án</h2>
+      <p className="text-slate-700 font-bold mb-12 bg-white/60 backdrop-blur-sm px-6 py-3 rounded-full shadow-sm border border-white/50">
+        Bị cáo đã nhận tội, quan tòa phán quyết sao đây?
+      </p>
 
-      <div className="flex flex-col gap-6 w-full max-w-xs relative h-[160px] justify-center">
+      <div className="flex flex-col gap-6 w-full max-w-xs relative h-[180px] justify-center">
         <motion.button
           onClick={onNext}
-          animate={{ scale: [1, 1.05, 1], boxShadow: ["0px 0px 0px rgba(249,115,22,0)", "0px 0px 20px rgba(249,115,22,0.6)", "0px 0px 0px rgba(249,115,22,0)"] }}
+          animate={{ scale: [1, 1.05, 1], boxShadow: ["0px 0px 0px rgba(244,63,94,0)", "0px 0px 30px rgba(244,63,94,0.8)", "0px 0px 0px rgba(244,63,94,0)"] }}
           transition={{ repeat: Infinity, duration: 1.5 }}
-          className="px-6 py-4 bg-gradient-to-r from-orange-400 to-rose-500 text-white rounded-full font-bold shadow-xl border-2 border-white flex items-center justify-center gap-2 z-20"
+          className="px-6 py-5 bg-gradient-to-r from-orange-400 to-rose-500 text-white rounded-full font-black shadow-2xl border-4 border-white flex items-center justify-center gap-2 z-20"
         >
-          <Heart size={20} fill="currentColor" /> THA THỨ (KÈM TRÀ SỮA) 🧋
+          <Heart size={24} fill="currentColor" /> THA THỨ (KÈM TRÀ SỮA) 🧋
         </motion.button>
 
         <motion.button
@@ -580,7 +636,7 @@ function Step7Verdict({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
           onPointerEnter={moveNo}
           onTouchStart={moveNo}
           onClick={forceNoClick}
-          className="px-6 py-4 bg-slate-200 text-slate-500 rounded-full font-bold border-2 border-slate-300 flex items-center justify-center gap-2 z-10 transition-colors hover:bg-slate-300 absolute w-full bottom-0"
+          className="px-6 py-4 bg-slate-800 text-slate-300 rounded-full font-bold border-4 border-slate-700 flex items-center justify-center gap-2 z-10 transition-colors shadow-[0_5px_15px_rgba(0,0,0,0.3)] absolute w-full bottom-0"
         >
           ĐÁNH TIẾP 🔨
         </motion.button>
@@ -589,10 +645,10 @@ function Step7Verdict({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
       <AnimatePresence>
         {pleading && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute bottom-10 bg-slate-800 text-white px-6 py-3 rounded-2xl shadow-2xl font-bold max-w-[80%]"
+            initial={{ opacity: 0, y: 20, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.8 }}
+            className="absolute bottom-10 bg-gradient-to-r from-red-600 to-rose-600 text-white px-6 py-4 rounded-3xl shadow-2xl font-bold max-w-[85%] border-2 border-red-400"
           >
             Máu tụt đáy rồi, đánh nữa là chầu ông bà đó 😭 Tha đi!
           </motion.div>
