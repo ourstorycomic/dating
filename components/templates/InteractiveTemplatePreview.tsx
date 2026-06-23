@@ -11,6 +11,7 @@ import { DatingTwoPreview } from "./dating-2/preview";
 import { DatingThreePreview } from "./dating-3/preview";
 import Birthday2Preview from "./birthday-2/preview";
 import { Sorry1Preview } from "./sorry-1/preview";
+import { Sorry2Preview } from "./sorry-2/preview";
 
 type InteractiveTemplatePreviewProps = TemplatePreviewProps & {
   componentKey: string;
@@ -41,6 +42,8 @@ const previewRegistry = [
   { match: "birthday #2", Component: Birthday2Preview },
   { match: "sorry-1", Component: Sorry1Preview },
   { match: "sorry #1", Component: Sorry1Preview },
+  { match: "sorry-2", Component: Sorry2Preview },
+  { match: "sorry #2", Component: Sorry2Preview },
 ];
 
 // This bot automatically plays through ANY template by clicking buttons intelligently
@@ -55,7 +58,7 @@ function BotAutoPlayer({ children, enabled }: { children: React.ReactNode; enabl
       if (!isActive || !containerRef.current) return;
       
       const buttons = Array.from(containerRef.current.querySelectorAll('button'));
-      const clickableTexts = ["CÓ", "YES", "Tiếp tục", "Chọn", "Mở", "Xem Tiếp", "Lên đồ", "Hoàn thành", "Bắt đầu", "Click", "Tiếp", "Next", "Đáng đòn", "Quay", "Bớt giận", "Chốt hạ", "Ký tên"];
+      const clickableTexts = ["CÓ", "YES", "Tiếp tục", "Chọn", "Mở", "Xem Tiếp", "Lên đồ", "Hoàn thành", "Bắt đầu", "Click", "Tiếp", "Next", "Đáng đòn", "Quay", "Bớt giận", "Chốt hạ", "Ký tên", "Đưa nó ra", "xả giận", "Giải thích", "Đọc tiếp", "Chốt kèo", "THA THỨ"];
       
       let clicked = false;
       

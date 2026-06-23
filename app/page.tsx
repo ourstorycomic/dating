@@ -100,6 +100,22 @@ export default async function Home() {
     sample_data: { screens: ["Đập băng", "Thú tội", "Vòng quay", "Kỷ niệm", "Ký tên"] },
     template_categories: { slug: "sorry", name: "Sorry", description: null }
   } as any);
+  templates.push({
+    id: "sorry-2-mock",
+    slug: "sorry-2",
+    name: "Sorry #2",
+    component_key: "sorry-2",
+    description: "Đập tan cơn tức giận với minigame 'Whack-a-Lover' rồi xoa dịu bằng lời hứa chân thành và trà sữa.",
+    tagline: "Xả Giận",
+    base_price: 2000,
+    visual_label: "FUN",
+    gradient: "from-orange-400 to-rose-400",
+    status_label: "Mới",
+    sort_order: 21,
+    data_schema: {},
+    sample_data: { screens: ["Châm ngòi", "Chọn vũ khí", "Xả giận", "Băng bó", "Xin lỗi", "Tha thứ"] },
+    template_categories: { slug: "sorry", name: "Sorry", description: null }
+  } as any);
 
   const grouped = categoryOrder
     .map((slug) => ({
