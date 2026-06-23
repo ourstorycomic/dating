@@ -109,6 +109,7 @@ function Step1Trigger({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
       <AnimatePresence>
         {done && (
           <motion.button
+            key="btn-step1"
             initial={{ opacity: 0, y: 30, scale: 0.8 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(220,38,38,0.6)" }}
@@ -190,6 +191,7 @@ function Step2Weapon({ onNext, autoPlay, setWeapon }: { onNext: () => void; auto
       <AnimatePresence>
         {selected && (
           <motion.button
+            key="btn-step2"
             initial={{ opacity: 0, y: 20, scale: 0.8 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             whileHover={{ scale: 1.05 }}
@@ -313,6 +315,7 @@ function Step3Whack({ onNext, autoPlay, weapon }: { onNext: () => void; autoPlay
             <AnimatePresence>
               {activeHole === i && (
                 <motion.div
+                  key={`hole-${i}`}
                   initial={{ y: "100%" }}
                   animate={{ y: "15%" }}
                   exit={{ y: "100%" }}
@@ -491,8 +494,9 @@ function Step5Confession({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
       <AnimatePresence>
         {done && (
           <motion.button
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
+            key="btn-step5"
+            initial={{ opacity: 0, y: 20, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onNext}
@@ -555,8 +559,9 @@ function Step6Promise({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
       <AnimatePresence>
         {done && (
           <motion.button
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
+            key="btn-step6"
+            initial={{ opacity: 0, y: 20, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onNext}
@@ -645,6 +650,7 @@ function Step7Verdict({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
       <AnimatePresence>
         {pleading && (
           <motion.div
+            key="pleading-toast"
             initial={{ opacity: 0, y: 20, scale: 0.8 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.8 }}
