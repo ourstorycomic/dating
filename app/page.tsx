@@ -61,11 +61,11 @@ const categoryCopy = {
     description: "Những món quà lãng mạn, gửi gắm lời yêu thương qua những tương tác bất ngờ nhỏ lấp lánh.",
   },
   dating: {
-    name: "Dating",
+    name: "Tỏ tình",
     description: "Những mẫu rủ rê hẹn hò siêu dễ thương, cho phép người ấy chọn ngày, món ăn và địa điểm.",
   },
   birthday: {
-    name: "Birthday",
+    name: "Sinh nhật",
     description: "Gửi lời chúc mừng sinh nhật bất ngờ với bánh nến, lời chúc ghi âm và những hộp quà thú vị.",
   },
   sorry: {
