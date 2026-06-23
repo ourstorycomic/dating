@@ -6,6 +6,49 @@ import confetti from "canvas-confetti";
 import { WHACK_DATA } from "./config";
 import { AlertTriangle, ChevronRight, Heart, HeartHandshake, ShieldAlert } from "lucide-react";
 
+// --- BACKGROUND PARTICLES ---
+function FloatingParticles({ step }: { step: number }) {
+  const [particles, setParticles] = useState<{ id: number; x: number; y: number; size: number; delay: number; emoji: string }[]>([]);
+  
+  useEffect(() => {
+    let emojis = ['✨', '💖', '🌸', '🎀'];
+    if (step === 1) emojis = ['💢', '🌩️', '😡', '🔥'];
+    else if (step === 2 || step === 3) emojis = ['💢', '💥', '💦', '💨'];
+    else if (step === 4) emojis = ['🩹', '💧', '🥺', '💔'];
+
+    const p = Array.from({ length: 15 }).map((_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: Math.random() * 20 + 10,
+      delay: Math.random() * 5,
+      emoji: emojis[Math.floor(Math.random() * emojis.length)]
+    }));
+    setParticles(p);
+  }, [step]);
+
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 opacity-40">
+      {particles.map(p => (
+        <motion.div
+          key={p.id}
+          className="absolute"
+          style={{ left: `${p.x}%`, top: `${p.y}%`, fontSize: p.size }}
+          animate={{
+            y: [0, -50, 0],
+            x: [0, 30, 0],
+            rotate: [0, 15, -15, 0],
+            opacity: [0, 0.8, 0],
+          }}
+          transition={{ duration: 6 + Math.random() * 4, repeat: Infinity, delay: p.delay, ease: "easeInOut" }}
+        >
+          {p.emoji}
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
 // --- STEP 1: TRIGGER ---
 function Step1Trigger({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
   const [text, setText] = useState("");
@@ -313,8 +356,8 @@ function Step4Bandaged({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
     >
       <motion.div 
         initial={{ scale: 0 }}
-        animate={{ scale: 1, rotate: [0, -2, 2, 0] }}
-        transition={{ type: "spring", bounce: 0.5, duration: 1 }}
+        animate={{ scale: 1, rotate: [0, -5, 5, -5, 5, 0] }}
+        transition={{ duration: 1.5, ease: "easeInOut" }}
         className="relative w-48 h-48 rounded-full border-8 border-white shadow-2xl mb-8 overflow-hidden bg-orange-100"
       >
         <img src={WHACK_DATA.avatar} alt="avatar" className="w-full h-full object-cover filter brightness-90 sepia-[0.2]" />
@@ -605,7 +648,9 @@ export default function Sorry2Template({ compact = false, autoPlay = false }: { 
   }, [step, autoPlay, triggerConfetti]);
 
   return (
-    <div className={`relative w-full overflow-hidden transition-colors duration-1000 bg-gradient-to-b ${currentBg} text-slate-800 touch-none mx-auto ${compact ? 'h-full' : 'max-w-[400px] h-[800px] max-h-[90vh] rounded-[3rem] shadow-2xl border-[10px] border-white'}`}>
+    <div className={`relative w-full overflow-hidden transition-colors duration-1000 bg-gradient-to-b ${currentBg} text-slate-800 touch-none mx-auto ${compact ? 'h-full' : 'max-w-[400px] h-[800px] max-h-[90vh] rounded-[3rem] shadow-2xl border-[10px] border-[#ffffff]'}`}>
+      <div className="absolute inset-0 pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay z-0" />
+      <FloatingParticles step={step} />
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-50" />
       
       <AnimatePresence mode="wait">
