@@ -212,15 +212,19 @@ function Step1Knock({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
 function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
   const [isOn, setIsOn] = useState(false);
   const [leverY, setLeverY] = useState(0);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const triggerSurprise = () => {
     setIsOn(true);
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: ['#fb923c', '#fcd34d', '#f472b6', '#60a5fa']
-    });
+    if (canvasRef.current) {
+      const myConfetti = confetti.create(canvasRef.current, { resize: true, useWorker: true });
+      myConfetti({
+        particleCount: 150,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: ['#fb923c', '#fcd34d', '#f472b6', '#60a5fa']
+      });
+    }
   };
 
   const handleDragEnd = (e: any, info: any) => {
@@ -254,6 +258,7 @@ function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
       transition={{ duration: 1 }}
       className="absolute inset-0 flex flex-col items-center justify-center z-10 overflow-hidden"
     >
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-50" />
       {/* Decorative Lights */}
       {isOn && (
         <div className="absolute top-0 w-full h-32 flex justify-around px-4 z-0">
@@ -273,16 +278,31 @@ function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
         {!isOn && (
           <motion.div
             exit={{ opacity: 0, scale: 0.8 }}
-            animate={{ rotate: [-8, 8, -8] }}
-            transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-            className="absolute top-1/2 left-1/2 -translate-x-[160px] -translate-y-[80px] z-10"
+            animate={{ rotate: [-4, 4, -4] }}
+            transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+            className="absolute top-1/2 left-1/2 -translate-x-[160px] -translate-y-[100px] z-10"
           >
-            <div className="px-4 py-2 relative">
-              <p className="text-white font-medium text-sm text-center drop-shadow-md">
-                Kéo công tắc<br/>xuống nhé! ✨
+            <div className="relative px-6 py-4">
+              <p className="text-white font-serif font-bold italic text-3xl text-center drop-shadow-lg whitespace-nowrap">
+                Kéo xuống<br/>nhé!
               </p>
+              
+              {/* Sparks Top-Left */}
+              <div className="absolute top-2 left-2 w-8 h-8 pointer-events-none">
+                <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 1.5 }} className="absolute top-0 left-3 w-1 h-3 bg-yellow-200 rounded-full" />
+                <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.2 }} className="absolute top-3 left-0 w-3 h-1 bg-yellow-200 rounded-full" />
+                <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.4 }} className="absolute top-1 left-1 w-2 h-2 bg-yellow-200 rounded-full rotate-45" />
+              </div>
+
+              {/* Sparks Bottom-Right */}
+              <div className="absolute bottom-2 right-2 w-8 h-8 pointer-events-none">
+                <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 1.5 }} className="absolute bottom-0 right-3 w-1 h-3 bg-yellow-200 rounded-full" />
+                <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.2 }} className="absolute bottom-3 right-0 w-3 h-1 bg-yellow-200 rounded-full" />
+                <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.4 }} className="absolute bottom-1 right-1 w-2 h-2 bg-yellow-200 rounded-full rotate-45" />
+              </div>
+
               {/* Arrow pointing to switch */}
-              <div className="absolute -bottom-6 -right-2 text-white text-2xl rotate-[30deg]">
+              <div className="absolute -bottom-4 -right-4 text-white text-3xl rotate-[40deg]">
                 ⤵️
               </div>
             </div>
@@ -332,6 +352,23 @@ function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
           <h1 className="text-5xl font-black text-orange-500 drop-shadow-md mb-4 text-center">SURPRISE!</h1>
           <p className="text-2xl text-orange-400 font-bold bg-white/50 backdrop-blur-sm px-6 py-2 rounded-full shadow-sm">Happy Birthday {BIRTHDAY_DATA.name}! 🎉</p>
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay" />
+          
+          {/* Balloons floating up */}
+          <div className="absolute inset-0 overflow-hidden">
+            {[...Array(6)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{ y: 800, x: Math.random() * 300, scale: 0.6 + Math.random() * 0.4 }}
+                animate={{ y: -200, x: Math.random() * 300 + (Math.random() > 0.5 ? 50 : -50) }}
+                transition={{ duration: 4 + Math.random() * 2, ease: "easeOut" }}
+                className="absolute w-12 h-16 rounded-[50%] opacity-90 shadow-inner flex items-center justify-center"
+                style={{ backgroundColor: ['#fbcfe8', '#bfdbfe', '#fef08a', '#bbf7d0'][i % 4] }}
+              >
+                <div className="absolute -bottom-1 w-1 h-2 bg-white/50 rounded-sm" />
+                <div className="absolute -bottom-6 w-0.5 h-6 bg-gray-300/50" />
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
       )}
     </motion.div>
@@ -342,6 +379,7 @@ function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
 function Step3Balloons({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
   const [poppedCount, setPoppedCount] = useState(0);
   const [balloons, setBalloons] = useState<{ id: number, x: number, delay: number, color: string, text: string, popped: boolean }[]>([]);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const colors = ["bg-pink-300", "bg-blue-300", "bg-yellow-300", "bg-green-300", "bg-purple-300"];
@@ -360,12 +398,15 @@ function Step3Balloons({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
   const handlePop = (id: number) => {
     setBalloons(prev => prev.map(b => b.id === id ? { ...b, popped: true } : b));
     setPoppedCount(prev => prev + 1);
-    confetti({
-      particleCount: 50,
-      spread: 60,
-      origin: { y: 0.5 },
-      colors: ['#fbcfe8', '#bfdbfe', '#fef08a']
-    });
+    if (canvasRef.current) {
+      const myConfetti = confetti.create(canvasRef.current, { resize: true, useWorker: true });
+      myConfetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { y: 0.5 },
+        colors: ['#fbcfe8', '#bfdbfe', '#fef08a']
+      });
+    }
   };
 
   useEffect(() => {
