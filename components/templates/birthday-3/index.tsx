@@ -19,8 +19,44 @@ const BIRTHDAY_DATA = {
     "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=500&q=80",
     "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=500&q=80"
   ],
+  letter: "Mong mọi điều tốt đẹp nhất sẽ đến với cậu. Tuổi mới thật rực rỡ nhé!",
   giftText: "VOUCHER BAO ĐI ĂN BUFFET & XEM PHIM 🎟️"
 };
+
+function BackgroundSparkles() {
+  const [sparkles, setSparkles] = useState<{ id: number; x: number; y: number; delay: number; duration: number; size: number }[]>([]);
+
+  useEffect(() => {
+    setSparkles(
+      Array.from({ length: 20 }).map((_, i) => ({
+        id: i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        delay: Math.random() * 5,
+        duration: 4 + Math.random() * 6,
+        size: Math.random() * 8 + 4,
+      }))
+    );
+  }, []);
+
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+      {sparkles.map((s) => (
+        <motion.div
+          key={s.id}
+          className="absolute bg-yellow-300 rounded-full blur-[1px] mix-blend-screen"
+          style={{ left: `${s.x}%`, top: `${s.y}%`, width: s.size, height: s.size }}
+          animate={{
+            y: [0, -40, 0],
+            opacity: [0, 0.7, 0],
+            scale: [0.5, 1.5, 0.5],
+          }}
+          transition={{ duration: s.duration, repeat: Infinity, delay: s.delay, ease: "easeInOut" }}
+        />
+      ))}
+    </div>
+  );
+}
 
 export default function Birthday3Template({ autoPlay = false, compact = false }: { autoPlay?: boolean; compact?: boolean }) {
   const [step, setStep] = useState(1);
@@ -30,7 +66,8 @@ export default function Birthday3Template({ autoPlay = false, compact = false }:
   }, []);
 
   return (
-    <div className={`relative w-full overflow-hidden text-gray-800 touch-none font-sans mx-auto ${compact ? 'h-full bg-transparent' : 'max-w-[400px] h-[800px] max-h-[90vh] bg-[#fdfbf7] rounded-[2.5rem] shadow-2xl border-[10px] border-white'}`}>
+    <div className={`relative w-full max-w-[400px] h-[800px] max-h-[90vh] bg-[#fdfbf7] overflow-hidden rounded-[2.5rem] shadow-2xl mx-auto border-[10px] border-white text-gray-800 touch-none ${compact ? 'scale-[0.8] transform-origin-top' : ''}`}>
+      <BackgroundSparkles />
       <FloatingParticles step={step} />
       <AnimatePresence mode="wait">
         {step === 1 && <Step1Knock key="step1" onNext={nextStep} autoPlay={autoPlay} />}
@@ -280,10 +317,13 @@ function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
             exit={{ opacity: 0, scale: 0.8 }}
             animate={{ rotate: [-4, 4, -4] }}
             transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-            className="absolute top-1/2 left-1/2 -translate-x-[160px] -translate-y-[100px] z-10"
+            className="absolute top-20 left-6 z-10"
           >
             <div className="relative px-6 py-4">
-              <p className="text-white font-serif font-bold italic text-3xl text-center drop-shadow-lg whitespace-nowrap">
+              <p 
+                className="font-serif font-bold italic text-4xl text-center whitespace-nowrap" 
+                style={{ color: "#ffffff", textShadow: "0px 4px 10px rgba(0,0,0,0.6)" }}
+              >
                 Kéo xuống<br/>nhé!
               </p>
               
@@ -412,16 +452,23 @@ function Step3Balloons({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
   useEffect(() => {
     if (autoPlay && balloons.length > 0) {
       let count = 0;
-      const interval = setInterval(() => {
-        if (count < 3) {
-          handlePop(count);
-          count++;
-        } else {
-          clearInterval(interval);
-          setTimeout(onNext, 2000);
-        }
-      }, 1000);
-      return () => clearInterval(interval);
+      let interval: any;
+      const timeout = setTimeout(() => {
+        interval = setInterval(() => {
+          if (count < 3) {
+            handlePop(count);
+            count++;
+          } else {
+            clearInterval(interval);
+            setTimeout(onNext, 2000);
+          }
+        }, 1500);
+      }, 4000); // Wait 4s for balloons to float up into view
+      
+      return () => {
+        clearTimeout(timeout);
+        clearInterval(interval);
+      };
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoPlay, balloons.length]);
