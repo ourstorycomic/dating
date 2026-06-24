@@ -47,17 +47,17 @@ function FloatingParticles({ step }: { step: number }) {
   }, [step]);
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 opacity-20">
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-50 opacity-60">
       {particles.map(p => (
         <motion.div
           key={p.id}
-          className="absolute drop-shadow-sm"
+          className="absolute drop-shadow-md"
           style={{ left: `${p.x}%`, top: `${p.y}%`, fontSize: p.size }}
           animate={{
             y: [0, -60, 0],
             x: [0, 20, 0],
             rotate: [0, 10, -10, 0],
-            opacity: [0, 0.6, 0],
+            opacity: [0, 0.8, 0],
           }}
           transition={{ duration: 5 + Math.random() * 5, repeat: Infinity, delay: p.delay, ease: "easeInOut" }}
         >
@@ -70,39 +70,38 @@ function FloatingParticles({ step }: { step: number }) {
 
 function BackgroundEffects() {
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-40">
       <motion.div
         animate={{
           scale: [1, 1.2, 1],
-          opacity: [0.3, 0.5, 0.3],
+          opacity: [0.2, 0.4, 0.2],
           x: [0, 50, 0],
           y: [0, 30, 0],
         }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -top-20 -left-20 w-64 h-64 bg-pink-300/30 rounded-full blur-3xl mix-blend-multiply"
+        className="absolute -top-20 -left-20 w-64 h-64 bg-pink-300/40 rounded-full blur-3xl mix-blend-screen"
       />
       <motion.div
         animate={{
           scale: [1, 1.5, 1],
-          opacity: [0.2, 0.4, 0.2],
+          opacity: [0.1, 0.3, 0.1],
           x: [0, -40, 0],
           y: [0, 50, 0],
         }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="absolute top-1/3 -right-20 w-72 h-72 bg-blue-300/30 rounded-full blur-3xl mix-blend-multiply"
+        className="absolute top-1/3 -right-20 w-72 h-72 bg-blue-300/40 rounded-full blur-3xl mix-blend-screen"
       />
       <motion.div
         animate={{
           scale: [1, 1.3, 1],
-          opacity: [0.3, 0.6, 0.3],
+          opacity: [0.2, 0.5, 0.2],
           x: [0, 30, 0],
           y: [0, -40, 0],
         }}
         transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        className="absolute -bottom-20 left-1/4 w-80 h-80 bg-purple-300/30 rounded-full blur-3xl mix-blend-multiply"
+        className="absolute -bottom-20 left-1/4 w-80 h-80 bg-purple-300/40 rounded-full blur-3xl mix-blend-screen"
       />
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIj4KICA8ZmlsdGVyIGlkPSJub2lzZSI+CiAgICA8ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC45IiBudW1PY3RhdmVzPSIzIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+CiAgPC9maWx0ZXI+CiAgPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI25vaXNlKSIgb3BhY2l0eT0iMC4wOCIvPgo8L3N2Zz4=')] opacity-20 mix-blend-overlay pointer-events-none" />
-      <div className="absolute inset-0 bg-white/10 backdrop-blur-[1px]" />
     </div>
   );
 }
