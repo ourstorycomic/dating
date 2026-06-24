@@ -9,7 +9,7 @@ import { AlertTriangle, ChevronRight, Heart, HeartHandshake, ShieldAlert } from 
 // --- BACKGROUND PARTICLES ---
 function FloatingParticles({ step }: { step: number }) {
   const [particles, setParticles] = useState<{ id: number; x: number; y: number; size: number; delay: number; emoji: string }[]>([]);
-  
+
   useEffect(() => {
     let emojis = ['✨', '💖', '🌸', '🎀'];
     if (step === 1) emojis = ['💢', '🌩️', '😡', '🔥'];
@@ -82,23 +82,23 @@ function Step1Trigger({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
       className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 bg-slate-900 text-[#ffffff] overflow-hidden"
     >
       {/* Caution tape background */}
-      <motion.div 
+      <motion.div
         animate={{ y: [0, -40] }}
         transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-        className="absolute -inset-[100%] pointer-events-none opacity-10" 
-        style={{ backgroundImage: "repeating-linear-gradient(45deg, #000 0, #000 40px, #f59e0b 40px, #f59e0b 80px)", backgroundSize: "200% 200%" }} 
+        className="absolute -inset-[100%] pointer-events-none opacity-10"
+        style={{ backgroundImage: "repeating-linear-gradient(45deg, #000 0, #000 40px, #f59e0b 40px, #f59e0b 80px)", backgroundSize: "200% 200%" }}
       />
-      
+
       <motion.div
         animate={{ opacity: [0, 0.3, 0, 0.6, 0], backgroundColor: ["transparent", "#ef4444", "transparent", "#ef4444", "transparent"] }}
         transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 1 }}
         className="absolute inset-0 pointer-events-none mix-blend-color-burn"
       />
-      
+
       <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 0.5, repeat: Infinity }}>
         <AlertTriangle size={80} className="text-red-500 mb-6 drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]" />
       </motion.div>
-      
+
       <div className="bg-slate-800/80 p-8 rounded-3xl shadow-[0_0_30px_rgba(0,0,0,0.5)] backdrop-blur-xl border border-red-500/30 min-h-[220px] flex items-center justify-center w-full relative z-10">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent opacity-50" />
         <p className="text-lg font-bold leading-relaxed text-red-50">
@@ -133,7 +133,7 @@ function Step2Weapon({ onNext, autoPlay, setWeapon }: { onNext: () => void; auto
     { id: "hammer", name: "Búa Nhựa", emoji: "🔨" },
     { id: "radish", name: "Củ Cải", emoji: "🥖" }, // standard baguette as radish placeholder if missing, or we can use 🥕
   ];
-  
+
   const [selected, setSelected] = useState<string | null>(null);
 
   useEffect(() => {
@@ -175,9 +175,8 @@ function Step2Weapon({ onNext, autoPlay, setWeapon }: { onNext: () => void; auto
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setSelected(w.id)}
-            className={`p-5 rounded-3xl flex flex-col items-center justify-center gap-3 border-[4px] transition-colors relative overflow-hidden ${
-              selected === w.id ? "bg-gradient-to-b from-orange-50 to-orange-100 border-orange-500" : "bg-white border-white hover:border-orange-200"
-            }`}
+            className={`p-5 rounded-3xl flex flex-col items-center justify-center gap-3 border-[4px] transition-colors relative overflow-hidden ${selected === w.id ? "bg-gradient-to-b from-orange-50 to-orange-100 border-orange-500" : "bg-white border-white hover:border-orange-200"
+              }`}
           >
             {selected === w.id && (
               <motion.div layoutId="weapon-outline" className="absolute inset-0 border-4 border-orange-400 rounded-2xl pointer-events-none" />
@@ -211,7 +210,7 @@ function Step2Weapon({ onNext, autoPlay, setWeapon }: { onNext: () => void; auto
 function Step3Whack({ onNext, autoPlay, weapon }: { onNext: () => void; autoPlay: boolean; weapon: string }) {
   const [activeHole, setActiveHole] = useState<number>(-1);
   const [health, setHealth] = useState(0);
-  const [floatingTexts, setFloatingTexts] = useState<{id: number, text: string, x: number, y: number}[]>([]);
+  const [floatingTexts, setFloatingTexts] = useState<{ id: number, text: string, x: number, y: number }[]>([]);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [showCursor, setShowCursor] = useState(false);
   const [whacking, setWhacking] = useState(false);
@@ -238,7 +237,7 @@ function Step3Whack({ onNext, autoPlay, weapon }: { onNext: () => void; autoPlay
       }, 400);
       return () => clearTimeout(t);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoPlay, activeHole, health]);
 
   const handlePointerMove = (e: React.PointerEvent) => {
@@ -253,12 +252,12 @@ function Step3Whack({ onNext, autoPlay, weapon }: { onNext: () => void; autoPlay
 
   const handleHit = (index: number, cx: number, cy: number) => {
     if (index !== activeHole || health >= 10) return;
-    
+
     // Add floating text
     const randomText = WHACK_DATA.hitVoices[Math.floor(Math.random() * WHACK_DATA.hitVoices.length)];
     const newId = Date.now();
     setFloatingTexts(prev => [...prev, { id: newId, text: randomText, x: cx, y: cy }]);
-    
+
     // Clean up floating text
     setTimeout(() => {
       setFloatingTexts(prev => prev.filter(t => t.id !== newId));
@@ -284,17 +283,17 @@ function Step3Whack({ onNext, autoPlay, weapon }: { onNext: () => void; autoPlay
       onPointerMove={handlePointerMove}
       onPointerDown={handlePointerDown}
     >
-      <motion.h2 
-        animate={{ scale: [1, 1.1, 1] }} 
+      <motion.h2
+        animate={{ scale: [1, 1.1, 1] }}
         transition={{ repeat: Infinity, duration: 0.8 }}
         className="text-4xl font-black text-rose-600 mt-8 mb-4 uppercase text-center drop-shadow-[0_2px_2px_rgba(255,255,255,0.8)]"
       >
         Đập nó đi!
       </motion.h2>
-      
+
       {/* Health Bar */}
       <div className="w-full max-w-[280px] h-8 bg-slate-800 rounded-full mb-10 overflow-hidden border-4 border-slate-900 relative shadow-[inset_0_5px_10px_rgba(0,0,0,0.5)]">
-        <motion.div 
+        <motion.div
           className="h-full bg-gradient-to-r from-rose-500 via-red-500 to-orange-500"
           initial={{ width: 0 }}
           animate={{ width: `${(health / 10) * 100}%` }}
@@ -334,7 +333,7 @@ function Step3Whack({ onNext, autoPlay, weapon }: { onNext: () => void; autoPlay
                 </motion.div>
               )}
             </AnimatePresence>
-            
+
             {/* Front lip of the hole to cover bottom of character */}
             <div className="absolute bottom-[-5%] w-[110%] h-[30%] bg-gradient-to-b from-slate-700 to-slate-800 rounded-t-[50%] rounded-b-full pointer-events-none shadow-[inset_0_2px_5px_rgba(255,255,255,0.1)] border-t border-slate-500" />
           </div>
@@ -390,14 +389,14 @@ function Step4Bandaged({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
       exit={{ opacity: 0, scale: 1.1 }}
       className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10"
     >
-      <motion.div 
+      <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1, rotate: [0, -5, 5, -5, 5, 0] }}
         transition={{ duration: 1.5, ease: "easeInOut" }}
         className="relative w-56 h-56 rounded-full border-[10px] border-white shadow-[0_15px_35px_rgba(0,0,0,0.3)] mb-10 overflow-hidden bg-orange-100"
       >
         <img src={WHACK_DATA.avatar} alt="avatar" className="w-full h-full object-cover filter brightness-90 sepia-[0.2]" />
-        
+
         {/* Band-aids */}
         <div className="absolute top-[20%] left-[20%] w-16 h-5 bg-[#e8ba98] rotate-45 border-2 border-[#d29b74] rounded-full opacity-95 shadow-md flex items-center justify-center overflow-hidden">
           <div className="w-2 h-2 rounded-full bg-[#d29b74]/50" />
@@ -405,25 +404,25 @@ function Step4Bandaged({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
         <div className="absolute top-[20%] left-[20%] w-16 h-5 bg-[#e8ba98] -rotate-45 border-2 border-[#d29b74] rounded-full opacity-95 shadow-md flex items-center justify-center overflow-hidden">
           <div className="w-2 h-2 rounded-full bg-[#d29b74]/50" />
         </div>
-        
+
         <div className="absolute bottom-[30%] right-[20%] w-12 h-4 bg-[#e8ba98] rotate-[15deg] border-2 border-[#d29b74] rounded-full opacity-95 shadow-md flex items-center justify-center overflow-hidden">
           <div className="w-1 h-1 rounded-full bg-[#d29b74]/50" />
         </div>
 
         {/* Tears */}
-        <motion.div 
+        <motion.div
           animate={{ y: [0, 50], opacity: [1, 0], scale: [1, 0.8] }}
           transition={{ repeat: Infinity, duration: 1.5, ease: "easeIn" }}
           className="absolute top-[40%] left-[30%] text-3xl drop-shadow-sm"
         >💧</motion.div>
-        <motion.div 
+        <motion.div
           animate={{ y: [0, 60], opacity: [1, 0], scale: [1, 0.8] }}
           transition={{ repeat: Infinity, duration: 1.2, delay: 0.6, ease: "easeIn" }}
           className="absolute top-[45%] right-[30%] text-3xl drop-shadow-sm"
         >💧</motion.div>
       </motion.div>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
@@ -613,8 +612,8 @@ function Step7Verdict({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
       animate={{ opacity: 1, scale: 1 }}
       className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10"
     >
-      <motion.div 
-        animate={{ rotate: [-5, 5, -5] }} 
+      <motion.div
+        animate={{ rotate: [-5, 5, -5] }}
         transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
         className="text-7xl mb-8 drop-shadow-[0_5px_15px_rgba(244,63,94,0.4)]"
       >
@@ -715,7 +714,7 @@ export default function Sorry2Template({ compact = false, autoPlay = false }: { 
       <div className="absolute inset-0 pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay z-0" />
       <FloatingParticles step={step} />
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-50" />
-      
+
       <AnimatePresence mode="wait">
         {step === 1 && <Step1Trigger key="s1" onNext={handleNext} autoPlay={autoPlay} />}
         {step === 2 && <Step2Weapon key="s2" onNext={handleNext} autoPlay={autoPlay} setWeapon={setWeapon} />}

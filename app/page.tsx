@@ -82,7 +82,7 @@ const steps = [
 
 export default async function Home() {
   const templates = await getPublishedTemplates();
-  
+
   // Inject Sorry 1 for demo since it's not in DB yet
   templates.push({
     id: "sorry-1-mock",
@@ -128,105 +128,105 @@ export default async function Home() {
   return (
     <div className="min-h-screen flex flex-col overflow-hidden text-[#332035]">
       <div className="flex-1 px-4 pt-4 pb-16 sm:px-6 sm:pb-20 lg:px-10">
-      <header className="mx-auto flex max-w-7xl items-center gap-3 rounded-[28px] border border-white/70 bg-white/72 px-4 py-3 shadow-[0_18px_50px_rgba(215,112,158,0.16)] backdrop-blur-xl sm:px-5">
-        <Link className="flex items-center gap-2 text-base font-extrabold tracking-normal sm:text-lg" href="/">
-          <img src="/favicon.ico" alt="Lovora Logo" className="h-9 w-9 rounded-[10px] shadow-[0_10px_24px_rgba(255,143,199,0.38)]" />
-          <span>
-            Lovora <span className="hidden font-semibold text-[#c04b86] sm:inline">thay lời muốn nói</span>
-          </span>
-        </Link>
-        <nav className="ml-auto hidden items-center gap-5 text-sm font-semibold text-[#7b536b] md:flex">
-          <a className="transition hover:text-[#d53f8c]" href="#quy-trinh">
-            Quy trình
-          </a>
-          <a className="transition hover:text-[#d53f8c]" href="#mau-web">
-            Mẫu web
-          </a>
-          <Link className="transition hover:text-[#d53f8c]" href="/dashboard">
-            Quản trị
+        <header className="mx-auto flex max-w-7xl items-center gap-3 rounded-[28px] border border-white/70 bg-white/72 px-4 py-3 shadow-[0_18px_50px_rgba(215,112,158,0.16)] backdrop-blur-xl sm:px-5">
+          <Link className="flex items-center gap-2 text-base font-extrabold tracking-normal sm:text-lg" href="/">
+            <img src="/favicon.ico" alt="Lovora Logo" className="h-9 w-9 rounded-[10px] shadow-[0_10px_24px_rgba(255,143,199,0.38)]" />
+            <span>
+              Lovora <span className="hidden font-semibold text-[#c04b86] sm:inline">thay lời muốn nói</span>
+            </span>
           </Link>
-        </nav>
-        <a
-          className="ml-auto rounded-full bg-[#332035] px-4 py-2 text-sm font-bold text-[#fff] shadow-[0_12px_28px_rgba(51,32,53,0.18)] transition hover:bg-[#d53f8c] md:ml-0"
-          href={tiktokLink()}
-        >
-          Nhắn TikTok
-        </a>
-      </header>
+          <nav className="ml-auto hidden items-center gap-5 text-sm font-semibold text-[#7b536b] md:flex">
+            <a className="transition hover:text-[#d53f8c]" href="#quy-trinh">
+              Quy trình
+            </a>
+            <a className="transition hover:text-[#d53f8c]" href="#mau-web">
+              Mẫu web
+            </a>
+            <Link className="transition hover:text-[#d53f8c]" href="/dashboard">
+              Quản trị
+            </Link>
+          </nav>
+          <a
+            className="ml-auto rounded-full bg-[#332035] px-4 py-2 text-sm font-bold text-[#fff] shadow-[0_12px_28px_rgba(51,32,53,0.18)] transition hover:bg-[#d53f8c] md:ml-0"
+            href={tiktokLink()}
+          >
+            Nhắn TikTok
+          </a>
+        </header>
 
-      <main className="mx-auto max-w-7xl">
-        <section className="grid min-h-[calc(100vh-88px)] items-center gap-8 py-8 lg:grid-cols-[1.02fr_0.98fr] lg:py-12">
-          <div className="max-w-3xl">
-            <p className="inline-flex rounded-full border border-[#f4bdd8] bg-white/68 px-4 py-2 text-sm font-bold text-[#b83276] shadow-[0_10px_26px_rgba(216,92,145,0.12)]">
-              Web tặng người yêu, mở ra là thấy thương
-            </p>
-            <h1 className="mt-5 max-w-4xl text-4xl font-extrabold leading-[1.05] tracking-normal text-[#321a32] sm:text-5xl lg:text-6xl">
-              Gói một lời yêu thành chiếc web nhỏ xinh.
-            </h1>
-            <p className="mt-5 max-w-2xl text-base leading-8 text-[#74536a] sm:text-lg">
-              Chọn mẫu, gửi ảnh và lời nhắn qua TikTok. Shop setup thành món quà có ảnh,
-              thư, nhạc và các tương tác siêu cute dành riêng cho hai bạn.
-            </p>
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+        <main className="mx-auto max-w-7xl">
+          <section className="grid min-h-[calc(100vh-88px)] items-center gap-8 py-8 lg:grid-cols-[1.02fr_0.98fr] lg:py-12">
+            <div className="max-w-3xl">
+              <p className="inline-flex rounded-full border border-[#f4bdd8] bg-white/68 px-4 py-2 text-sm font-bold text-[#b83276] shadow-[0_10px_26px_rgba(216,92,145,0.12)]">
+                Web tặng người yêu, mở ra là thấy thương
+              </p>
+              <h1 className="mt-5 max-w-4xl text-4xl font-extrabold leading-[1.05] tracking-normal text-[#321a32] sm:text-5xl lg:text-6xl">
+                Gói một lời yêu thành chiếc web nhỏ xinh.
+              </h1>
+              <p className="mt-5 max-w-2xl text-base leading-8 text-[#74536a] sm:text-lg">
+                Chọn mẫu, gửi ảnh và lời nhắn qua TikTok. Shop setup thành món quà có ảnh,
+                thư, nhạc và các tương tác siêu cute dành riêng cho hai bạn.
+              </p>
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                <a
+                  className="rounded-full bg-gradient-to-r from-[#ff7eb8] via-[#ff9fbe] to-[#ffd36f] px-6 py-3 text-center font-extrabold text-[#fff] shadow-[0_18px_38px_rgba(255,126,184,0.32)] transition hover:scale-[1.02]"
+                  href="#mau-web"
+                >
+                  Xem mẫu ngay
+                </a>
+                <a
+                  className="rounded-full border border-[#f4bdd8] bg-white/72 px-6 py-3 text-center font-extrabold text-[#b83276] shadow-[0_12px_28px_rgba(216,92,145,0.12)] backdrop-blur-xl transition hover:bg-white"
+                  href={tiktokLink()}
+                >
+                  Nhờ shop tư vấn
+                </a>
+              </div>
+
+              <div id="quy-trinh" className="mt-8 grid gap-3 sm:grid-cols-3">
+                {steps.map((step, index) => (
+                  <div
+                    className="rounded-[22px] border border-white/70 bg-white/62 p-4 shadow-[0_14px_34px_rgba(215,112,158,0.12)] backdrop-blur-xl"
+                    key={step.title}
+                  >
+                    <span className="grid h-8 w-8 place-items-center rounded-full bg-[#ffe0ef] text-sm font-black text-[#c04b86]">
+                      {index + 1}
+                    </span>
+                    <h2 className="mt-3 text-base font-extrabold text-[#321a32]">{step.title}</h2>
+                    <p className="mt-2 text-sm leading-6 text-[#76556d]">{step.copy}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <GlassCard glow className="float-slow mx-auto w-full max-w-[520px] p-4 sm:p-5">
+              <div className="relative overflow-hidden rounded-[30px] border border-white/70 bg-[#fff9fc] p-4 shadow-inner" style={{ perspective: 1200 }}>
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_24%_16%,rgba(255,142,199,0.34),transparent_28%),radial-gradient(circle_at_82%_34%,rgba(166,222,255,0.42),transparent_30%),radial-gradient(circle_at_50%_92%,rgba(255,221,132,0.38),transparent_32%)]" />
+                <TiltPhonePreview />
+              </div>
+            </GlassCard>
+          </section>
+
+          <section id="mau-web" className="py-8">
+            <div className="mb-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-sm font-extrabold uppercase tracking-[0.16em] text-[#c04b86]">
+                  Bộ sưu tập
+                </p>
+                <h2 className="mt-2 max-w-3xl text-3xl font-extrabold leading-tight text-[#321a32] sm:text-4xl">
+                  Chọn mẫu theo dịp, mở preview rồi nhắn TikTok
+                </h2>
+              </div>
               <a
-                className="rounded-full bg-gradient-to-r from-[#ff7eb8] via-[#ff9fbe] to-[#ffd36f] px-6 py-3 text-center font-extrabold text-[#fff] shadow-[0_18px_38px_rgba(255,126,184,0.32)] transition hover:scale-[1.02]"
-                href="#mau-web"
-              >
-                Xem mẫu ngay
-              </a>
-              <a
-                className="rounded-full border border-[#f4bdd8] bg-white/72 px-6 py-3 text-center font-extrabold text-[#b83276] shadow-[0_12px_28px_rgba(216,92,145,0.12)] backdrop-blur-xl transition hover:bg-white"
+                className="w-fit rounded-full border border-[#f4bdd8] bg-white/72 px-5 py-3 text-sm font-extrabold text-[#b83276] shadow-[0_12px_28px_rgba(216,92,145,0.12)]"
                 href={tiktokLink()}
               >
-                Nhờ shop tư vấn
+                Tư vấn mẫu hợp nhất
               </a>
             </div>
 
-            <div id="quy-trinh" className="mt-8 grid gap-3 sm:grid-cols-3">
-              {steps.map((step, index) => (
-                <div
-                  className="rounded-[22px] border border-white/70 bg-white/62 p-4 shadow-[0_14px_34px_rgba(215,112,158,0.12)] backdrop-blur-xl"
-                  key={step.title}
-                >
-                  <span className="grid h-8 w-8 place-items-center rounded-full bg-[#ffe0ef] text-sm font-black text-[#c04b86]">
-                    {index + 1}
-                  </span>
-                  <h2 className="mt-3 text-base font-extrabold text-[#321a32]">{step.title}</h2>
-                  <p className="mt-2 text-sm leading-6 text-[#76556d]">{step.copy}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <GlassCard glow className="float-slow mx-auto w-full max-w-[520px] p-4 sm:p-5">
-            <div className="relative overflow-hidden rounded-[30px] border border-white/70 bg-[#fff9fc] p-4 shadow-inner" style={{ perspective: 1200 }}>
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_24%_16%,rgba(255,142,199,0.34),transparent_28%),radial-gradient(circle_at_82%_34%,rgba(166,222,255,0.42),transparent_30%),radial-gradient(circle_at_50%_92%,rgba(255,221,132,0.38),transparent_32%)]" />
-              <TiltPhonePreview />
-            </div>
-          </GlassCard>
-        </section>
-
-        <section id="mau-web" className="py-8">
-          <div className="mb-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-sm font-extrabold uppercase tracking-[0.16em] text-[#c04b86]">
-                Bộ sưu tập
-              </p>
-              <h2 className="mt-2 max-w-3xl text-3xl font-extrabold leading-tight text-[#321a32] sm:text-4xl">
-                Chọn mẫu theo dịp, mở preview rồi nhắn TikTok
-              </h2>
-            </div>
-            <a
-              className="w-fit rounded-full border border-[#f4bdd8] bg-white/72 px-5 py-3 text-sm font-extrabold text-[#b83276] shadow-[0_12px_28px_rgba(216,92,145,0.12)]"
-              href={tiktokLink()}
-            >
-              Tư vấn mẫu hợp nhất
-            </a>
-          </div>
-
-          <HomePageCatalog grouped={grouped} />
-        </section>
-      </main>
+            <HomePageCatalog grouped={grouped} />
+          </section>
+        </main>
       </div>
 
       <Footer />
