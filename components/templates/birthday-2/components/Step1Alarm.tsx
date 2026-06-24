@@ -100,7 +100,9 @@ export function Step1Alarm({ onNext, autoPlay = false, compact = false }: { onNe
 
         <div className="relative w-full h-16 bg-pink-500/30 backdrop-blur-md rounded-full border border-pink-200/50 flex items-center overflow-hidden shadow-[0_8px_32px_rgba(236,72,153,0.3)]">
           <motion.div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ opacity }}>
-            <span className="text-white font-bold tracking-widest pl-10 text-lg">Vuốt để tắt báo thức</span>
+            <span className="text-pink-50 font-bold tracking-widest pl-12 text-[15px] whitespace-nowrap drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+              Vuốt để tắt báo thức
+            </span>
           </motion.div>
           <motion.div
             drag="x"

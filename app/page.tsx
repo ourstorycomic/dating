@@ -134,6 +134,24 @@ export default async function Home() {
     template_categories: { slug: "sorry", name: "Sorry", description: null }
   } as any);
 
+  templates.push({
+    id: "birthday-3-mock",
+    slug: "birthday-3",
+    name: "Birthday #3",
+    component_key: "birthday-3",
+    description: "Lộ trình sinh nhật 8 bước sang trọng, từ gõ cửa, bật đèn, đập bóng bay đến xé quà bất ngờ.",
+    tagline: "Sinh Nhật",
+    base_price: 2000,
+    visual_label: "LUXURY",
+    gradient: "from-amber-200 to-yellow-500",
+    status_label: "Mới",
+    sort_order: 12,
+    data_schema: {},
+    sample_data: { screens: ["Gõ cửa", "Bật đèn", "Bóng bay", "Thổi nến", "Lật thiệp", "Ảnh kỷ niệm", "Xé quà", "Nhận quà"] },
+    template_categories: { slug: "birthday", name: "Birthday", description: null }
+  } as any);
+
+
   const grouped = categoryOrder
     .map((slug) => ({
       slug,

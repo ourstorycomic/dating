@@ -14,6 +14,8 @@ import { Sorry1Preview } from "./sorry-1/preview";
 import { Sorry2Preview } from "./sorry-2/preview";
 import { Sorry3Preview } from "./sorry-3/preview";
 
+import Birthday3Preview from "./birthday-3/preview";
+
 type InteractiveTemplatePreviewProps = TemplatePreviewProps & {
   componentKey: string;
   roomId?: string;
@@ -41,6 +43,8 @@ const previewRegistry = [
   { match: "birthday #1", Component: BirthdayMagicPreview },
   { match: "birthday-2", Component: Birthday2Preview },
   { match: "birthday #2", Component: Birthday2Preview },
+  { match: "birthday-3", Component: Birthday3Preview },
+  { match: "birthday #3", Component: Birthday3Preview },
   { match: "sorry-1", Component: Sorry1Preview },
   { match: "sorry #1", Component: Sorry1Preview },
   { match: "sorry-2", Component: Sorry2Preview },
