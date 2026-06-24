@@ -79,7 +79,7 @@ function Step1Trigger({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
     <motion.div
       key="step1"
       exit={{ opacity: 0, scale: 1.1 }}
-      className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 bg-slate-900 text-white overflow-hidden"
+      className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 bg-slate-900 text-[#ffffff] overflow-hidden"
     >
       {/* Caution tape background */}
       <motion.div 
@@ -115,7 +115,7 @@ function Step1Trigger({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
             whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(220,38,38,0.6)" }}
             whileTap={{ scale: 0.95 }}
             onClick={onNext}
-            className="mt-12 px-8 py-4 bg-gradient-to-b from-red-500 to-red-700 text-white rounded-full font-black shadow-2xl flex items-center gap-2 border-2 border-red-400 z-10"
+            className="mt-12 px-8 py-4 bg-gradient-to-b from-red-500 to-red-700 text-[#ffffff] rounded-full font-black shadow-2xl flex items-center gap-2 border-2 border-red-400 z-10"
           >
             Đưa nó ra đây cho bà! 😡
           </motion.button>
@@ -197,7 +197,7 @@ function Step2Weapon({ onNext, autoPlay, setWeapon }: { onNext: () => void; auto
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onNext}
-            className="mt-12 px-8 py-4 bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-full font-black shadow-[0_10px_30px_rgba(15,23,42,0.5)] flex items-center gap-2 border-2 border-slate-700"
+            className="mt-12 px-8 py-4 bg-gradient-to-r from-slate-800 to-slate-900 text-[#ffffff] rounded-full font-black shadow-[0_10px_30px_rgba(15,23,42,0.5)] flex items-center gap-2 border-2 border-slate-700"
           >
             Bắt đầu xả giận <ChevronRight size={20} />
           </motion.button>
@@ -302,7 +302,7 @@ function Step3Whack({ onNext, autoPlay, weapon }: { onNext: () => void; autoPlay
         />
         {/* Shine overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
-        <div className="absolute inset-0 flex items-center justify-center text-sm font-black text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
+        <div className="absolute inset-0 flex items-center justify-center text-sm font-black text-[#ffffff] drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
           {health} / 10
         </div>
       </div>
@@ -439,7 +439,7 @@ function Step4Bandaged({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={onNext}
-        className="px-8 py-4 bg-slate-800 text-white rounded-full font-black shadow-[0_10px_20px_rgba(15,23,42,0.4)] flex items-center gap-2 border-2 border-slate-700"
+        className="px-8 py-4 bg-slate-800 text-[#ffffff] rounded-full font-black shadow-[0_10px_20px_rgba(15,23,42,0.4)] flex items-center gap-2 border-2 border-slate-700"
       >
         Giải thích đi nghe thử 😒
       </motion.button>
@@ -500,7 +500,7 @@ function Step5Confession({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onNext}
-            className="mt-12 px-8 py-4 bg-gradient-to-r from-orange-400 to-rose-500 text-white rounded-full font-black shadow-[0_10px_20px_rgba(244,63,94,0.4)] transition-transform border-2 border-white flex items-center gap-2"
+            className="mt-12 px-8 py-4 bg-gradient-to-r from-orange-400 to-rose-500 text-[#ffffff] rounded-full font-black shadow-[0_10px_20px_rgba(244,63,94,0.4)] transition-transform border-2 border-white flex items-center gap-2"
           >
             Đọc tiếp <ChevronRight className="inline" size={20} />
           </motion.button>
@@ -565,7 +565,7 @@ function Step6Promise({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onNext}
-            className="mt-12 px-8 py-4 bg-gradient-to-r from-orange-400 to-rose-500 text-white rounded-full font-black shadow-[0_10px_20px_rgba(244,63,94,0.4)] transition-transform flex items-center gap-2 border-2 border-white"
+            className="mt-12 px-8 py-4 bg-gradient-to-r from-orange-400 to-rose-500 text-[#ffffff] rounded-full font-black shadow-[0_10px_20px_rgba(244,63,94,0.4)] transition-transform flex items-center gap-2 border-2 border-white"
           >
             Chốt kèo <HeartHandshake size={24} />
           </motion.button>
@@ -629,7 +629,7 @@ function Step7Verdict({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
           onClick={onNext}
           animate={{ scale: [1, 1.05, 1], boxShadow: ["0px 0px 0px rgba(244,63,94,0)", "0px 0px 30px rgba(244,63,94,0.8)", "0px 0px 0px rgba(244,63,94,0)"] }}
           transition={{ repeat: Infinity, duration: 1.5 }}
-          className="px-6 py-5 bg-gradient-to-r from-orange-400 to-rose-500 text-white rounded-full font-black shadow-2xl border-4 border-white flex items-center justify-center gap-2 z-20"
+          className="px-6 py-5 bg-gradient-to-r from-orange-400 to-rose-500 text-[#ffffff] rounded-full font-black shadow-2xl border-4 border-white flex items-center justify-center gap-2 z-20"
         >
           <Heart size={24} fill="currentColor" /> THA THỨ (KÈM TRÀ SỮA) 🧋
         </motion.button>
@@ -654,7 +654,7 @@ function Step7Verdict({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
             initial={{ opacity: 0, y: 20, scale: 0.8 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.8 }}
-            className="absolute bottom-10 bg-gradient-to-r from-red-600 to-rose-600 text-white px-6 py-4 rounded-3xl shadow-2xl font-bold max-w-[85%] border-2 border-red-400"
+            className="absolute bottom-10 bg-gradient-to-r from-red-600 to-rose-600 text-[#ffffff] px-6 py-4 rounded-3xl shadow-2xl font-bold max-w-[85%] border-2 border-red-400"
           >
             Máu tụt đáy rồi, đánh nữa là chầu ông bà đó 😭 Tha đi!
           </motion.div>
@@ -728,7 +728,7 @@ export default function Sorry2Template({ compact = false, autoPlay = false }: { 
             key="s8"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 text-white"
+            className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 text-[#ffffff]"
           >
             <h2 className="text-4xl font-black mb-6 drop-shadow-lg text-center leading-tight">Yayyy! Cảm ơn cục cưng! 🥰</h2>
             <div className="bg-white/20 p-6 rounded-3xl backdrop-blur-md border border-white/40 shadow-2xl">

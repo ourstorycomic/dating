@@ -35,7 +35,7 @@ export default async function TemplatePreviewPage({
   return (
     <div className="min-h-screen px-4 py-5 text-white sm:px-6 lg:px-10 relative">
       <div className="fixed top-4 left-4 z-50 md:hidden">
-        <Link href="/" className="bg-black/50 backdrop-blur-md text-white px-4 py-2 rounded-full border border-white/20 shadow-lg text-sm font-bold flex items-center gap-2">
+        <Link href="/" className="bg-black/50 backdrop-blur-md text-[#ffffff] px-4 py-2 rounded-full border border-white/20 shadow-lg text-sm font-bold flex items-center gap-2">
           <span>&larr;</span> Trang chủ
         </Link>
       </div>
@@ -65,7 +65,7 @@ export default async function TemplatePreviewPage({
 
           <div className="mt-10 flex flex-col sm:flex-row gap-3 w-full">
             <a
-              className="rounded-full bg-gradient-to-r from-pink-500 to-purple-500 px-8 py-4 text-center text-lg font-black w-full shadow-lg hover:scale-105 active:scale-95 transition-transform uppercase tracking-wider"
+              className="rounded-full bg-gradient-to-r from-pink-500 to-purple-500 px-8 py-4 text-center text-lg font-black w-full shadow-lg hover:scale-105 active:scale-95 transition-transform uppercase tracking-wider text-[#ffffff]"
               href={tiktokLink(template.slug)}
             >
               Nhắn TikTok chọn mẫu này
