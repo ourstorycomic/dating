@@ -16,13 +16,57 @@ const APOLOGY_DATA = {
   letter: "Anh biết lỗi rồi. Anh đã quá vô tâm và trẻ con. Anh hứa sẽ không bao giờ như vậy nữa. Tha lỗi cho anh nha, chiều nay tớ qua đón đi ăn đền tội, chịu không? ❤️"
 };
 
+function FloatingParticles({ step }: { step: number }) {
+  const [particles, setParticles] = useState<{ id: number; x: number; y: number; size: number; delay: number; emoji: string }[]>([]);
+
+  useEffect(() => {
+    let emojis = ['❤️', '✨', '🥺', '💦'];
+    if (step === 1 || step === 2) emojis = ['💻', '💾', '⚠️', '🔌'];
+    else if (step === 3) emojis = ['🦖', '🌵', '💨', '⭐'];
+    else if (step === 5) emojis = ['🗑️', '📁', '💔', '📸'];
+    else if (step === 6) emojis = ['⚙️', '🔄', '🔋', '📡'];
+
+    const p = Array.from({ length: 12 }).map((_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: Math.random() * 15 + 10,
+      delay: Math.random() * 5,
+      emoji: emojis[Math.floor(Math.random() * emojis.length)]
+    }));
+    setParticles(p);
+  }, [step]);
+
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 opacity-20">
+      {particles.map(p => (
+        <motion.div
+          key={p.id}
+          className="absolute drop-shadow-sm"
+          style={{ left: `${p.x}%`, top: `${p.y}%`, fontSize: p.size }}
+          animate={{
+            y: [0, -60, 0],
+            x: [0, 20, 0],
+            rotate: [0, 10, -10, 0],
+            opacity: [0, 0.6, 0],
+          }}
+          transition={{ duration: 5 + Math.random() * 5, repeat: Infinity, delay: p.delay, ease: "easeInOut" }}
+        >
+          {p.emoji}
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
 export default function Sorry3Template({ autoPlay = false, compact = false }: { autoPlay?: boolean; compact?: boolean }) {
   const [step, setStep] = useState(1);
 
   const nextStep = () => setStep((s) => Math.min(s + 1, 8));
 
   return (
-    <div className="relative w-full max-w-[400px] h-[800px] max-h-[90vh] bg-[#f8f9fa] overflow-hidden rounded-[2.5rem] shadow-2xl mx-auto border-[10px] border-gray-200 text-gray-800 touch-none font-sans">
+    <div className={`relative w-full overflow-hidden text-gray-800 touch-none font-sans mx-auto ${compact ? 'h-full bg-transparent' : 'max-w-[400px] h-[800px] max-h-[90vh] bg-[#f8f9fa] rounded-[2.5rem] shadow-2xl border-[10px] border-gray-200'}`}>
+      <FloatingParticles step={step} />
       <AnimatePresence mode="wait">
         {step === 1 && <Step1BSOD key="step1" onNext={nextStep} autoPlay={autoPlay} />}
         {step === 2 && <Step2NoInternet key="step2" onNext={nextStep} autoPlay={autoPlay} />}
@@ -67,8 +111,9 @@ function Step1BSOD({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        onClick={onNext}
-        className="self-start px-6 py-3 bg-white text-[#0052a5] font-bold shadow-lg border-2 border-transparent hover:border-white/50 transition-colors"
+        onClick={autoPlay ? undefined : onNext}
+        disabled={autoPlay}
+        className="self-start px-6 py-3 bg-white text-[#0052a5] font-bold shadow-lg border-2 border-transparent hover:border-white/50 transition-colors disabled:opacity-50"
       >
         [ Tái khởi động ]
       </motion.button>
@@ -90,8 +135,8 @@ function Step2NoInternet({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      onClick={onNext}
-      className="absolute inset-0 bg-white text-[#5f6368] p-8 flex flex-col pt-32 cursor-pointer z-10"
+      onClick={autoPlay ? undefined : onNext}
+      className={`absolute inset-0 bg-white text-[#5f6368] p-8 flex flex-col pt-32 z-10 ${autoPlay ? '' : 'cursor-pointer'}`}
     >
       <div className="w-16 h-16 mb-6 opacity-80">
         <WifiOff size={64} />
@@ -120,9 +165,9 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
   const [score, setScore] = useState(0);
 
   const jump = () => {
-    if (!isJumping) {
+    if (!isJumping && !autoPlay) {
       setIsJumping(true);
-      setTimeout(() => setIsJumping(false), 500);
+      setTimeout(() => setIsJumping(false), 600);
     }
   };
 
@@ -155,18 +200,39 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
       onClick={jump}
       className="absolute inset-0 bg-white text-[#5f6368] overflow-hidden cursor-pointer z-10"
     >
-      <div className="absolute top-10 right-10 text-xl font-mono font-bold tracking-widest">
+      <div className="absolute top-10 right-10 text-xl font-mono font-bold tracking-widest bg-gray-100/50 px-3 py-1 rounded-md backdrop-blur-sm shadow-sm">
         {String(score).padStart(5, '0')}
       </div>
 
-      {/* Ground */}
-      <div className="absolute bottom-32 left-0 w-[200%] h-[1px] bg-[#5f6368] opacity-50" />
+      {/* Moving Clouds */}
+      <motion.div 
+        animate={{ x: [400, -100] }}
+        transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
+        className="absolute top-20 text-4xl opacity-40 drop-shadow-sm"
+      >
+        ☁️
+      </motion.div>
+      <motion.div 
+        animate={{ x: [400, -100] }}
+        transition={{ repeat: Infinity, duration: 6, ease: "linear", delay: 2 }}
+        className="absolute top-32 text-2xl opacity-30 drop-shadow-sm"
+      >
+        ☁️
+      </motion.div>
+
+      {/* Moving Ground */}
+      <motion.div 
+        animate={{ x: ["0%", "-50%"] }}
+        transition={{ repeat: Infinity, duration: 0.5, ease: "linear" }}
+        className="absolute bottom-[128px] left-0 w-[200%] h-[2px] bg-gradient-to-r from-transparent via-[#5f6368] to-transparent opacity-50 border-b border-dashed border-[#5f6368]" 
+      />
 
       {/* Dino */}
       <motion.div
-        animate={{ y: isJumping ? -120 : 0 }}
-        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        className="absolute bottom-[128px] left-10 text-5xl origin-bottom"
+        initial={{ scaleX: -1 }}
+        animate={isJumping ? { y: [0, -130, 0], scaleX: -1, rotate: [0, -5, 5, 0] } : { y: 0, scaleX: -1 }}
+        transition={{ duration: 0.6, ease: "easeInOut" }}
+        className="absolute bottom-[128px] left-10 text-6xl origin-bottom drop-shadow-md z-20"
       >
         🦖
       </motion.div>
@@ -433,8 +499,9 @@ function Step7Inbox({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
             <motion.button
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              onClick={onNext}
-              className="w-full mt-4 bg-blue-500 text-[#ffffff] py-3 rounded-full font-bold shadow-md hover:bg-blue-600 transition-colors"
+              onClick={autoPlay ? undefined : onNext}
+              disabled={autoPlay}
+              className="w-full mt-4 bg-blue-500 text-[#ffffff] py-3 rounded-full font-bold shadow-md hover:bg-blue-600 transition-colors disabled:opacity-50"
             >
               Phản hồi ngay
             </motion.button>
@@ -505,10 +572,11 @@ function Step8FinalChoice({ autoPlay }: { autoPlay: boolean }) {
         
         <div className="flex flex-col gap-4 w-full max-w-xs relative h-[200px] justify-center items-center">
           <motion.button
-            onClick={handleAcceptClick}
+            onClick={autoPlay ? undefined : handleAcceptClick}
+            disabled={autoPlay}
             animate={{ scale: [1, 1.05, 1], boxShadow: ["0px 0px 0px rgba(59,130,246,0)", "0px 0px 20px rgba(59,130,246,0.6)", "0px 0px 0px rgba(59,130,246,0)"] }}
             transition={{ repeat: Infinity, duration: 1.5 }}
-            className="w-full bg-blue-500 text-[#ffffff] py-4 rounded-full font-bold shadow-lg flex items-center justify-center gap-2 z-20 origin-center text-lg"
+            className="w-full bg-blue-500 text-[#ffffff] py-4 rounded-full font-bold shadow-lg flex items-center justify-center gap-2 z-20 origin-center text-lg disabled:opacity-80"
           >
             ĐỒNG Ý (CÓ TRÀ SỮA) 🧋
           </motion.button>
@@ -516,8 +584,9 @@ function Step8FinalChoice({ autoPlay }: { autoPlay: boolean }) {
           {rejectScale > 0 && (
             <motion.button
               animate={{ scale: rejectScale, opacity: rejectScale }}
-              onClick={handleRejectClick}
-              className="w-full bg-gray-200 text-gray-600 py-3 rounded-full font-bold shadow-sm flex items-center justify-center gap-2 z-10 absolute bottom-0 origin-center"
+              onClick={autoPlay ? undefined : handleRejectClick}
+              disabled={autoPlay}
+              className="w-full bg-gray-200 text-gray-600 py-3 rounded-full font-bold shadow-sm flex items-center justify-center gap-2 z-10 absolute bottom-0 origin-center disabled:opacity-50"
             >
               KHÔNG THA 😤
             </motion.button>
