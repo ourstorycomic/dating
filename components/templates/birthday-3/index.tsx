@@ -761,6 +761,8 @@ function Step7Unboxing({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
   const [taps, setTaps] = useState(0);
   const maxTaps = 5;
 
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
   const handleTap = () => {
     if (taps < maxTaps && !autoPlay) {
       setTaps(prev => prev + 1);
@@ -769,12 +771,15 @@ function Step7Unboxing({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
 
   useEffect(() => {
     if (taps >= maxTaps) {
-      confetti({
-        particleCount: 150,
-        spread: 80,
-        origin: { y: 0.6 },
-        colors: ['#f59e0b', '#fbbf24', '#fcd34d', '#ffffff']
-      });
+      if (canvasRef.current) {
+        const myConfetti = confetti.create(canvasRef.current, { resize: true, useWorker: true });
+        myConfetti({
+          particleCount: 150,
+          spread: 80,
+          origin: { y: 0.6 },
+          colors: ['#f59e0b', '#fbbf24', '#fcd34d', '#ffffff']
+        });
+      }
       setTimeout(onNext, 2000);
     }
   }, [taps, onNext]);
@@ -801,7 +806,8 @@ function Step7Unboxing({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
       className="absolute inset-0 bg-amber-50 flex flex-col items-center justify-center z-10 cursor-pointer"
       onClick={handleTap}
     >
-      <div className="text-center mb-12">
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-50" />
+      <div className="text-center mb-12 relative z-20">
         <h2 className="text-3xl font-black text-amber-600 mb-2 uppercase tracking-wide">Quà của cậu này!</h2>
         <p className="text-amber-700/70 font-medium">Chạm liên tục để xé giấy gói nhé!</p>
       </div>
@@ -851,17 +857,24 @@ function Step7Unboxing({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
 // --- STEP 8: THE AFTERPARTY ---
 function Step8Afterparty({ autoPlay }: { autoPlay: boolean }) {
   const [showPopup, setShowPopup] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const handleClaim = () => {
     if (autoPlay) return;
     setShowPopup(true);
-    confetti({
-      particleCount: 200,
-      spread: 100,
-      origin: { y: 0.5 },
-      colors: ['#ff0000', '#ff69b4', '#ff1493', '#ffff00']
-    });
   };
+
+  useEffect(() => {
+    if (showPopup && canvasRef.current) {
+      const myConfetti = confetti.create(canvasRef.current, { resize: true, useWorker: true });
+      myConfetti({
+        particleCount: 200,
+        spread: 100,
+        origin: { y: 0.5 },
+        colors: ['#ff0000', '#ff69b4', '#ff1493', '#ffff00']
+      });
+    }
+  }, [showPopup]);
 
   useEffect(() => {
     if (autoPlay && !showPopup) {
@@ -877,7 +890,8 @@ function Step8Afterparty({ autoPlay }: { autoPlay: boolean }) {
       animate={{ opacity: 1 }}
       className="absolute inset-0 bg-gradient-to-br from-pink-400 via-rose-400 to-amber-400 flex flex-col items-center justify-center p-6 z-10"
     >
-      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-50" />
+      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none" />
       
       <motion.div 
         initial={{ y: 50, opacity: 0 }}

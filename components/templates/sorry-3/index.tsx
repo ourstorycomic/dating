@@ -735,6 +735,7 @@ function Step7Inbox({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
 function Step8FinalChoice({ autoPlay }: { autoPlay: boolean }) {
   const [rejectScale, setRejectScale] = useState(1);
   const [accepted, setAccepted] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const handleRejectClick = () => {
     if (autoPlay) return;
@@ -743,13 +744,19 @@ function Step8FinalChoice({ autoPlay }: { autoPlay: boolean }) {
 
   const handleAcceptClick = () => {
     setAccepted(true);
-    confetti({
-      particleCount: 150,
-      spread: 80,
-      origin: { y: 0.6 },
-      colors: ['#ff0000', '#ff69b4', '#ff1493', '#ffffff']
-    });
   };
+
+  useEffect(() => {
+    if (accepted && canvasRef.current) {
+      const myConfetti = confetti.create(canvasRef.current, { resize: true, useWorker: true });
+      myConfetti({
+        particleCount: 150,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: ['#ff0000', '#ff69b4', '#ff1493', '#ffffff']
+      });
+    }
+  }, [accepted]);
 
   useEffect(() => {
     if (autoPlay && !accepted) {
@@ -765,6 +772,7 @@ function Step8FinalChoice({ autoPlay }: { autoPlay: boolean }) {
         animate={{ opacity: 1, scale: 1 }}
         className="absolute inset-0 bg-pink-500 flex flex-col items-center justify-center p-8 text-center z-10"
       >
+        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-50" />
         <motion.div
           animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
