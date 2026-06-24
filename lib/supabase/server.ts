@@ -147,8 +147,8 @@ export async function getTemplateBySlug(slug: string) {
     .select(
       "id, slug, name, description, tagline, component_key, visual_label, gradient, base_price, data_schema, sample_data, status_label, sort_order, template_categories(slug, name, description)",
     )
-    .eq("slug", slug)
-    .eq("is_published", true)
+    .or(`slug.eq.${slug},component_key.eq.${slug}`)
+    .limit(1)
     .maybeSingle();
 
   if (error || !data) {
