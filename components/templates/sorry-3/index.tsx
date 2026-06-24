@@ -68,6 +68,44 @@ function FloatingParticles({ step }: { step: number }) {
   );
 }
 
+function BackgroundEffects() {
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+      <motion.div
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.3, 0.5, 0.3],
+          x: [0, 50, 0],
+          y: [0, 30, 0],
+        }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute -top-20 -left-20 w-64 h-64 bg-pink-300/30 rounded-full blur-3xl mix-blend-multiply"
+      />
+      <motion.div
+        animate={{
+          scale: [1, 1.5, 1],
+          opacity: [0.2, 0.4, 0.2],
+          x: [0, -40, 0],
+          y: [0, 50, 0],
+        }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        className="absolute top-1/3 -right-20 w-72 h-72 bg-blue-300/30 rounded-full blur-3xl mix-blend-multiply"
+      />
+      <motion.div
+        animate={{
+          scale: [1, 1.3, 1],
+          opacity: [0.3, 0.6, 0.3],
+          x: [0, 30, 0],
+          y: [0, -40, 0],
+        }}
+        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        className="absolute -bottom-20 left-1/4 w-80 h-80 bg-purple-300/30 rounded-full blur-3xl mix-blend-multiply"
+      />
+      <div className="absolute inset-0 bg-white/10 backdrop-blur-[1px]" />
+    </div>
+  );
+}
+
 export default function Sorry3Template({ autoPlay = false, compact = false }: { autoPlay?: boolean; compact?: boolean }) {
   const [step, setStep] = useState(1);
 
@@ -75,6 +113,7 @@ export default function Sorry3Template({ autoPlay = false, compact = false }: { 
 
   return (
     <div className={`relative w-full overflow-hidden text-gray-800 touch-none font-sans mx-auto ${compact ? 'h-full bg-transparent' : 'max-w-[400px] h-[800px] max-h-[90vh] bg-[#f8f9fa] rounded-[2.5rem] shadow-2xl border-[10px] border-gray-200'}`}>
+      <BackgroundEffects />
       <FloatingParticles step={step} />
       <AnimatePresence mode="wait">
         {step === 1 && <Step1BSOD key="step1" onNext={nextStep} autoPlay={autoPlay} />}
