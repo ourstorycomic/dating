@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
-import { ChevronDown, Gift, Image as ImageIcon, Flame, Maximize2, X } from "lucide-react";
+import { ChevronDown, Gift, Image as ImageIcon, Flame, Maximize2, X, Heart } from "lucide-react";
 import confetti from "canvas-confetti";
 
 const BIRTHDAY_DATA = {
@@ -31,6 +31,7 @@ export default function Birthday3Template({ autoPlay = false, compact = false }:
 
   return (
     <div className={`relative w-full overflow-hidden text-gray-800 touch-none font-sans mx-auto ${compact ? 'h-full bg-transparent' : 'max-w-[400px] h-[800px] max-h-[90vh] bg-[#fdfbf7] rounded-[2.5rem] shadow-2xl border-[10px] border-white'}`}>
+      <FloatingParticles step={step} />
       <AnimatePresence mode="wait">
         {step === 1 && <Step1Knock key="step1" onNext={nextStep} autoPlay={autoPlay} />}
         {step === 2 && <Step2Surprise key="step2" onNext={nextStep} autoPlay={autoPlay} />}
@@ -41,6 +42,53 @@ export default function Birthday3Template({ autoPlay = false, compact = false }:
         {step === 7 && <Step7Unboxing key="step7" onNext={nextStep} autoPlay={autoPlay} />}
         {step === 8 && <Step8Afterparty key="step8" autoPlay={autoPlay} />}
       </AnimatePresence>
+    </div>
+  );
+}
+
+// --- DECORATIVE PARTICLES ---
+function FloatingParticles({ step }: { step: number }) {
+  const particles = Array.from({ length: 15 });
+  const getEmoji = () => {
+    if (step === 1) return ["✨", "💌", "💝"];
+    if (step === 2) return ["✨", "⭐", "🌙"];
+    if (step === 3) return ["🎈", "✨", "🎉"];
+    if (step === 4) return ["🎂", "✨", "🔥"];
+    if (step === 5) return ["💌", "💖", "✨"];
+    if (step === 6) return ["📸", "✨", "💫"];
+    if (step === 7) return ["🎁", "✨", "🎊"];
+    return ["🎉", "✨", "🥂"];
+  };
+
+  const emojis = getEmoji();
+
+  return (
+    <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+      {particles.map((_, i) => (
+        <motion.div
+          key={`${step}-${i}`}
+          initial={{
+            x: Math.random() * 400,
+            y: Math.random() * 800 + 800, // start below
+            opacity: 0,
+            scale: Math.random() * 0.5 + 0.5,
+          }}
+          animate={{
+            y: -100, // float up
+            opacity: [0, 0.5, 0],
+            rotate: Math.random() * 360,
+          }}
+          transition={{
+            duration: Math.random() * 5 + 5,
+            repeat: Infinity,
+            delay: Math.random() * 5,
+            ease: "linear"
+          }}
+          className="absolute text-xl filter drop-shadow-md"
+        >
+          {emojis[i % emojis.length]}
+        </motion.div>
+      ))}
     </div>
   );
 }
@@ -57,7 +105,7 @@ function Step1Knock({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
 
   useEffect(() => {
     if (knocks >= 3) {
-      setTimeout(onNext, 800);
+      setTimeout(onNext, 1200);
     }
   }, [knocks, onNext]);
 
@@ -70,7 +118,7 @@ function Step1Knock({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
         if (count >= 3) {
           clearInterval(interval);
         }
-      }, 600);
+      }, 800);
       return () => clearInterval(interval);
     }
   }, [autoPlay]);
@@ -81,52 +129,45 @@ function Step1Knock({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 1.2, filter: "blur(10px)" }}
       transition={{ duration: 0.8 }}
-      className="absolute inset-0 bg-[#3e2723] flex flex-col items-center justify-center cursor-pointer z-10"
+      className="absolute inset-0 bg-gradient-to-br from-pink-100 to-rose-200 flex flex-col items-center justify-center cursor-pointer z-10"
       onClick={handleKnock}
     >
-      {/* Wooden Door Texture */}
-      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/wood-pattern.png')] opacity-40 mix-blend-multiply" />
+      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
       
+      <div className="text-center mb-12 relative z-20">
+        <h2 className="text-3xl font-serif font-bold text-rose-500 mb-2">Thư Mời</h2>
+        <p className="text-rose-400 font-medium tracking-widest">GÕ 3 LẦN ĐỂ MỞ</p>
+      </div>
+
       <motion.div
         animate={{
           x: knocks > 0 ? [-5, 5, -5, 5, 0] : 0,
-          rotate: knocks > 0 ? [-1, 1, -1, 1, 0] : 0,
+          rotate: knocks > 0 ? [-2, 2, -2, 2, 0] : 0,
+          scale: knocks >= 3 ? 1.1 : 1
         }}
         transition={{ duration: 0.4 }}
         className="relative z-10 flex flex-col items-center"
       >
-        <div className="w-64 h-96 border-4 border-[#5d4037] rounded-md bg-[#4e342e] shadow-2xl relative flex flex-col items-center justify-center overflow-hidden">
-          {/* Door panels */}
-          <div className="absolute top-8 w-48 h-32 border-2 border-[#3e2723] rounded-sm opacity-50" />
-          <div className="absolute bottom-8 w-48 h-40 border-2 border-[#3e2723] rounded-sm opacity-50" />
+        <div className="w-72 h-48 bg-white rounded-xl shadow-2xl relative flex items-center justify-center overflow-hidden border-4 border-rose-50">
+          {/* Envelope Flap */}
+          <div className="absolute top-0 left-0 w-0 h-0 border-l-[144px] border-r-[144px] border-t-[100px] border-l-transparent border-r-transparent border-t-rose-100 drop-shadow-md z-10 origin-top" />
           
-          {/* Doorknob */}
-          <div className="absolute right-4 top-1/2 w-6 h-6 rounded-full bg-yellow-600 shadow-md border-2 border-yellow-700" />
+          <div className="absolute bottom-0 left-0 w-0 h-0 border-l-[144px] border-r-[144px] border-b-[100px] border-l-transparent border-r-transparent border-b-rose-50 z-0" />
           
-          {knocks < 3 ? (
-            <motion.p
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ repeat: Infinity, duration: 1.5 }}
-              className="text-yellow-100 font-bold text-center px-4 mt-8 drop-shadow-md text-xl"
-            >
-              Cốc cốc!<br />Có ai ở nhà không?
-            </motion.p>
-          ) : (
-            <motion.p
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              className="text-yellow-300 font-black text-3xl drop-shadow-[0_0_10px_rgba(253,224,71,0.8)]"
-            >
-              MỞ CỬA!
-            </motion.p>
-          )}
+          {/* The Seal */}
+          <motion.div 
+            animate={{ scale: knocks >= 3 ? 0 : 1, opacity: knocks >= 3 ? 0 : 1 }}
+            className="absolute top-[80px] z-20 w-16 h-16 bg-gradient-to-br from-red-500 to-rose-700 rounded-full flex items-center justify-center shadow-lg border-2 border-red-800"
+          >
+            <Heart size={24} className="text-white fill-white" />
+          </motion.div>
         </div>
       </motion.div>
 
       {/* Knock indicators */}
-      <div className="absolute bottom-16 flex gap-3 z-10">
+      <div className="absolute bottom-16 flex gap-4 z-10">
         {[1, 2, 3].map(i => (
-          <div key={i} className={`w-4 h-4 rounded-full border-2 border-yellow-500 transition-colors duration-300 ${knocks >= i ? 'bg-yellow-400 shadow-[0_0_10px_#facc15]' : 'bg-transparent'}`} />
+          <div key={i} className={`w-3 h-3 rounded-full transition-all duration-300 ${knocks >= i ? 'bg-rose-500 scale-150 shadow-[0_0_10px_#f43f5e]' : 'bg-rose-200'}`} />
         ))}
       </div>
     </motion.div>
@@ -140,14 +181,14 @@ function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
   const handleDragEnd = (e: any, info: any) => {
     if (info.offset.y > 50 && !autoPlay) {
       setIsOn(true);
-      setTimeout(onNext, 1500);
+      setTimeout(onNext, 2500);
     }
   };
 
   useEffect(() => {
     if (autoPlay) {
       const t1 = setTimeout(() => setIsOn(true), 1500);
-      const t2 = setTimeout(onNext, 3000);
+      const t2 = setTimeout(onNext, 4000);
       return () => {
         clearTimeout(t1);
         clearTimeout(t2);
@@ -161,8 +202,23 @@ function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
       animate={{ opacity: 1, backgroundColor: isOn ? "#fff7ed" : "#0f172a" }}
       exit={{ opacity: 0 }}
       transition={{ duration: 1 }}
-      className="absolute inset-0 flex flex-col items-center justify-center z-10"
+      className="absolute inset-0 flex flex-col items-center justify-center z-10 overflow-hidden"
     >
+      {/* Decorative Lights */}
+      {isOn && (
+        <div className="absolute top-0 w-full h-32 flex justify-around px-4 z-0">
+          {[1,2,3,4,5].map(i => (
+            <motion.div 
+              key={i} 
+              initial={{ y: -50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: i * 0.1, type: "spring" }}
+              className="w-4 h-12 bg-gradient-to-b from-yellow-300 to-yellow-100 rounded-b-full shadow-[0_10px_30px_#fde047] origin-top"
+            />
+          ))}
+        </div>
+      )}
+
       <AnimatePresence>
         {!isOn && (
           <motion.p
@@ -177,7 +233,7 @@ function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
       <motion.div
         animate={{ y: isOn ? 60 : 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        className="w-16 h-32 bg-slate-800 rounded-full border-4 border-slate-700 shadow-[inset_0_10px_20px_rgba(0,0,0,0.5)] relative overflow-hidden flex items-start justify-center pt-2"
+        className="w-16 h-32 bg-slate-800 rounded-full border-4 border-slate-700 shadow-[inset_0_10px_20px_rgba(0,0,0,0.5)] relative overflow-hidden flex items-start justify-center pt-2 z-20"
       >
         <motion.div
           drag={isOn ? false : "y"}
@@ -185,7 +241,7 @@ function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
           onDragEnd={handleDragEnd}
           animate={{ y: isOn ? 60 : autoPlay ? 0 : [0, 10, 0] }}
           transition={!isOn && !autoPlay ? { repeat: Infinity, duration: 1.5, ease: "easeInOut" } : {}}
-          className={`w-10 h-14 rounded-full shadow-lg flex items-center justify-center ${isOn ? 'bg-orange-400' : 'bg-slate-300'}`}
+          className={`w-10 h-14 rounded-full shadow-lg flex items-center justify-center ${isOn ? 'bg-orange-400 shadow-[0_0_20px_#fb923c]' : 'bg-slate-300'}`}
           style={{ cursor: isOn ? 'default' : 'grab' }}
         >
           <ChevronDown className={isOn ? 'text-orange-100' : 'text-slate-500'} />
@@ -197,11 +253,24 @@ function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8 }}
-          className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center pt-48"
+          className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center pt-48 z-10"
         >
           <h1 className="text-5xl font-black text-orange-500 drop-shadow-md mb-4 text-center">SURPRISE!</h1>
           <p className="text-xl text-orange-400 font-bold">Happy Birthday {BIRTHDAY_DATA.name}! 🎉</p>
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay" />
+          
+          {/* Confetti Elements */}
+          <div className="absolute inset-0 overflow-hidden">
+            {[...Array(20)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{ y: -50, x: Math.random() * 400, rotate: 0 }}
+                animate={{ y: 800, rotate: 360, x: Math.random() * 400 }}
+                transition={{ duration: Math.random() * 2 + 2, repeat: Infinity, ease: "linear" }}
+                className={`absolute w-3 h-3 ${['bg-pink-400', 'bg-blue-400', 'bg-yellow-400'][i % 3]} rounded-sm opacity-60`}
+              />
+            ))}
+          </div>
         </motion.div>
       )}
     </motion.div>
@@ -230,13 +299,7 @@ function Step3Balloons({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
   const handlePop = (id: number) => {
     if (autoPlay) return;
     setBalloons(prev => prev.map(b => b.id === id ? { ...b, popped: true } : b));
-    setPoppedCount(prev => {
-      const next = prev + 1;
-      if (next >= 3) {
-        setTimeout(onNext, 2000);
-      }
-      return next;
-    });
+    setPoppedCount(prev => prev + 1);
     confetti({
       particleCount: 50,
       spread: 60,
@@ -257,6 +320,7 @@ function Step3Balloons({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
           count++;
         } else {
           clearInterval(interval);
+          setTimeout(onNext, 2000);
         }
       }, 1000);
       return () => clearInterval(interval);
@@ -271,10 +335,12 @@ function Step3Balloons({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
       exit={{ opacity: 0 }}
       className="absolute inset-0 bg-[#fdfbf7] flex flex-col items-center pt-16 z-10 overflow-hidden"
     >
-      <h2 className="text-2xl font-bold text-center px-6 text-slate-700 leading-relaxed z-20 bg-white/50 backdrop-blur-sm py-4 rounded-3xl mx-4">
-        Chào mừng <span className="text-pink-500 font-black">{BIRTHDAY_DATA.name}</span> chính thức bước sang tuổi <span className="text-pink-500 font-black">{BIRTHDAY_DATA.age}</span>!
+      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay" />
+      
+      <h2 className="text-2xl font-bold text-center px-6 text-slate-700 leading-relaxed z-20 bg-white/70 backdrop-blur-md py-4 rounded-3xl mx-4 shadow-sm border border-pink-50">
+        Chào mừng <span className="text-pink-500 font-black">{BIRTHDAY_DATA.name}</span> bước sang tuổi <span className="text-pink-500 font-black">{BIRTHDAY_DATA.age}</span>!
       </h2>
-      <p className="text-slate-500 mt-2 z-20 text-sm font-medium">Chạm vào 3 quả bóng bay để xem điều bất ngờ!</p>
+      <p className="text-slate-500 mt-2 z-20 text-sm font-medium bg-white/50 px-4 py-1 rounded-full">Chạm vào 3 quả bóng bay để xem điều bất ngờ!</p>
 
       {/* Balloons */}
       {balloons.map((b) => (
@@ -289,18 +355,19 @@ function Step3Balloons({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
               style={{ left: `${b.x}%` }}
               onClick={() => handlePop(b.id)}
             >
-              <div className={`w-20 h-24 ${b.color} rounded-[50%] shadow-inner flex items-center justify-center relative cursor-pointer hover:brightness-110`}>
+              <div className={`w-20 h-24 ${b.color} rounded-[50%] shadow-inner flex items-center justify-center relative cursor-pointer hover:brightness-110 drop-shadow-lg`}>
                 <div className="absolute -bottom-2 w-2 h-3 bg-white/50 rounded-sm" />
                 <div className="absolute -bottom-16 w-[1px] h-16 bg-white/80" />
+                <div className="absolute top-2 right-4 w-4 h-6 bg-white/40 rounded-[50%] rotate-45" />
               </div>
             </motion.div>
           ) : (
             <motion.div
               initial={{ opacity: 0, scale: 0.5, y: 0 }}
-              animate={{ opacity: [0, 1, 1, 0], scale: 1, y: -50 }}
-              transition={{ duration: 2 }}
-              className="absolute z-20 font-black text-xl text-pink-500 drop-shadow-md whitespace-nowrap"
-              style={{ left: `${b.x}%`, top: '40%' }} // approximate pop position
+              animate={{ opacity: [0, 1, 1, 0.8], scale: 1, y: -50 }}
+              transition={{ duration: 1 }}
+              className="absolute z-20 font-black text-2xl text-pink-500 drop-shadow-lg whitespace-nowrap bg-white/80 px-4 py-2 rounded-full border-2 border-pink-200"
+              style={{ left: `${b.x - 10}%`, top: '40%' }} // approximate pop position
             >
               {b.text}
             </motion.div>
@@ -308,7 +375,25 @@ function Step3Balloons({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
         </AnimatePresence>
       ))}
       
-      <div className="absolute bottom-10 z-20 font-bold text-slate-400">
+      {/* Show Next button after popping 3 balloons */}
+      <AnimatePresence>
+        {poppedCount >= 3 && !autoPlay && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="absolute bottom-20 z-30"
+          >
+            <button 
+              onClick={onNext}
+              className="bg-pink-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-pink-600 hover:scale-105 transition-all"
+            >
+              Tiếp tục thôi! 👉
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="absolute bottom-6 z-20 font-bold text-slate-400 bg-white/80 px-4 py-1 rounded-full">
         Đã vỡ: {poppedCount}/3
       </div>
     </motion.div>

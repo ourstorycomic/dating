@@ -41,6 +41,8 @@ function getTemplateKind(template: { component_key: string; name: string; slug: 
     searchable.includes("birthday 2") ||
     searchable.includes("birthday2") ||
     searchable.includes("birthday_2") ||
+    searchable.includes("birthday-3") ||
+    searchable.includes("birthday #3") ||
     searchable.includes("birthday-magic")
   ) {
     return "birthday";
