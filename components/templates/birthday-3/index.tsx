@@ -48,6 +48,10 @@ export default function Birthday3Template({ autoPlay = false, compact = false }:
 
 // --- DECORATIVE PARTICLES ---
 function FloatingParticles({ step }: { step: number }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
+
   const particles = Array.from({ length: 15 });
   const getEmoji = () => {
     if (step === 1) return ["✨", "💌", "💝"];
@@ -105,7 +109,7 @@ function Step1Knock({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
 
   useEffect(() => {
     if (knocks >= 3) {
-      setTimeout(onNext, 1200);
+      setTimeout(onNext, 1800);
     }
   }, [knocks, onNext]);
 
@@ -127,37 +131,55 @@ function Step1Knock({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0, scale: 1.2, filter: "blur(10px)" }}
+      exit={{ opacity: 0 }}
       transition={{ duration: 0.8 }}
-      className="absolute inset-0 bg-gradient-to-br from-pink-100 to-rose-200 flex flex-col items-center justify-center cursor-pointer z-10"
+      className="absolute inset-0 bg-gradient-to-br from-pink-100 to-rose-200 flex flex-col items-center justify-center cursor-pointer z-10 overflow-hidden"
       onClick={handleKnock}
     >
       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
       
-      <div className="text-center mb-12 relative z-20">
-        <h2 className="text-3xl font-serif font-bold text-rose-500 mb-2">Thư Mời</h2>
-        <p className="text-rose-400 font-medium tracking-widest">GÕ 3 LẦN ĐỂ MỞ</p>
-      </div>
+      <motion.div 
+        animate={{ opacity: knocks >= 3 ? 0 : 1, y: knocks >= 3 ? -50 : 0 }}
+        className="text-center mb-12 relative z-20"
+      >
+        <h2 className="text-3xl font-serif font-bold text-rose-500 mb-2 drop-shadow-sm">Thư Mời</h2>
+        <p className="text-rose-400 font-medium tracking-widest bg-white/50 px-4 py-1 rounded-full shadow-sm">GÕ 3 LẦN ĐỂ MỞ</p>
+      </motion.div>
 
       <motion.div
         animate={{
-          x: knocks > 0 ? [-5, 5, -5, 5, 0] : 0,
-          rotate: knocks > 0 ? [-2, 2, -2, 2, 0] : 0,
-          scale: knocks >= 3 ? 1.1 : 1
+          x: knocks > 0 && knocks < 3 ? [-5, 5, -5, 5, 0] : 0,
+          rotate: knocks > 0 && knocks < 3 ? [-2, 2, -2, 2, 0] : 0,
+          scale: knocks >= 3 ? 15 : 1,
+          opacity: knocks >= 3 ? 0 : 1
         }}
-        transition={{ duration: 0.4 }}
-        className="relative z-10 flex flex-col items-center"
+        transition={{ duration: knocks >= 3 ? 1.5 : 0.4, ease: knocks >= 3 ? "easeInOut" : "linear" }}
+        className="relative z-10 flex flex-col items-center origin-center"
       >
-        <div className="w-72 h-48 bg-white rounded-xl shadow-2xl relative flex items-center justify-center overflow-hidden border-4 border-rose-50">
+        <div className="w-72 h-48 bg-white rounded-xl shadow-xl relative flex items-center justify-center overflow-hidden border-4 border-rose-50">
+          {/* The inside letter that pulls up */}
+          <motion.div 
+            animate={{ y: knocks >= 3 ? -40 : 0, opacity: knocks >= 3 ? 1 : 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="absolute bottom-4 w-64 h-32 bg-pink-50 border border-pink-200 rounded p-4 flex flex-col items-center justify-center z-0"
+          >
+            <Heart size={32} className="text-pink-400 mb-2" />
+            <p className="text-pink-500 font-serif font-bold text-sm">Gửi người thương...</p>
+          </motion.div>
+
           {/* Envelope Flap */}
-          <div className="absolute top-0 left-0 w-0 h-0 border-l-[144px] border-r-[144px] border-t-[100px] border-l-transparent border-r-transparent border-t-rose-100 drop-shadow-md z-10 origin-top" />
+          <motion.div 
+            animate={{ rotateX: knocks >= 3 ? 180 : 0, zIndex: knocks >= 3 ? 0 : 20 }}
+            transition={{ duration: 0.6 }}
+            className="absolute top-0 left-0 w-0 h-0 border-l-[140px] border-r-[140px] border-t-[100px] border-l-transparent border-r-transparent border-t-rose-100 drop-shadow-md origin-top"
+          />
           
-          <div className="absolute bottom-0 left-0 w-0 h-0 border-l-[144px] border-r-[144px] border-b-[100px] border-l-transparent border-r-transparent border-b-rose-50 z-0" />
+          <div className="absolute bottom-0 left-0 w-0 h-0 border-l-[140px] border-r-[140px] border-b-[100px] border-l-transparent border-r-transparent border-b-rose-50 z-10" />
           
           {/* The Seal */}
           <motion.div 
             animate={{ scale: knocks >= 3 ? 0 : 1, opacity: knocks >= 3 ? 0 : 1 }}
-            className="absolute top-[80px] z-20 w-16 h-16 bg-gradient-to-br from-red-500 to-rose-700 rounded-full flex items-center justify-center shadow-lg border-2 border-red-800"
+            className="absolute top-[80px] z-30 w-16 h-16 bg-gradient-to-br from-red-500 to-rose-700 rounded-full flex items-center justify-center shadow-lg border-2 border-red-800"
           >
             <Heart size={24} className="text-white fill-white" />
           </motion.div>
@@ -165,11 +187,26 @@ function Step1Knock({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
       </motion.div>
 
       {/* Knock indicators */}
-      <div className="absolute bottom-16 flex gap-4 z-10">
+      <motion.div 
+        animate={{ opacity: knocks >= 3 ? 0 : 1 }}
+        className="absolute bottom-16 flex gap-4 z-10"
+      >
         {[1, 2, 3].map(i => (
           <div key={i} className={`w-3 h-3 rounded-full transition-all duration-300 ${knocks >= i ? 'bg-rose-500 scale-150 shadow-[0_0_10px_#f43f5e]' : 'bg-rose-200'}`} />
         ))}
-      </div>
+      </motion.div>
+
+      {/* Flash White on open */}
+      <AnimatePresence>
+        {knocks >= 3 && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+            className="absolute inset-0 bg-[#fdfbf7] z-50 pointer-events-none"
+          />
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
@@ -178,22 +215,35 @@ function Step1Knock({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
 function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
   const [isOn, setIsOn] = useState(false);
 
+  const triggerSurprise = () => {
+    setIsOn(true);
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#fb923c', '#fcd34d', '#f472b6', '#60a5fa']
+    });
+  };
+
   const handleDragEnd = (e: any, info: any) => {
-    if (info.offset.y > 50 && !autoPlay) {
-      setIsOn(true);
-      setTimeout(onNext, 2500);
+    if (info.offset.y > 50 && !autoPlay && !isOn) {
+      triggerSurprise();
+      setTimeout(onNext, 3000);
     }
   };
 
   useEffect(() => {
     if (autoPlay) {
-      const t1 = setTimeout(() => setIsOn(true), 1500);
-      const t2 = setTimeout(onNext, 4000);
+      const t1 = setTimeout(() => {
+        triggerSurprise();
+      }, 1500);
+      const t2 = setTimeout(onNext, 4500);
       return () => {
         clearTimeout(t1);
         clearTimeout(t2);
       };
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoPlay, onNext]);
 
   return (
@@ -221,17 +271,27 @@ function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
 
       <AnimatePresence>
         {!isOn && (
-          <motion.p
-            exit={{ opacity: 0 }}
-            className="absolute top-32 text-slate-300 font-medium text-lg tracking-wide animate-pulse"
+          <motion.div
+            exit={{ opacity: 0, scale: 0.8 }}
+            animate={{ rotate: [-8, 8, -8] }}
+            transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+            className="absolute top-1/2 left-1/2 -translate-x-[140px] -translate-y-[80px] z-10"
           >
-            Kéo công tắc xuống để bật đèn nhé!
-          </motion.p>
+            <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/20 shadow-lg relative">
+              <p className="text-orange-200 font-medium text-sm text-center">
+                Kéo công tắc<br/>xuống nhé! ✨
+              </p>
+              {/* Arrow pointing to switch */}
+              <div className="absolute -bottom-6 -right-2 text-orange-300 text-2xl rotate-[30deg]">
+                ⤵️
+              </div>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
 
       <motion.div
-        animate={{ y: isOn ? 60 : 0 }}
+        animate={{ y: isOn ? 200 : 0, opacity: isOn ? 0 : 1 }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
         className="w-16 h-32 bg-slate-800 rounded-full border-4 border-slate-700 shadow-[inset_0_10px_20px_rgba(0,0,0,0.5)] relative overflow-hidden flex items-start justify-center pt-2 z-20"
       >
@@ -250,27 +310,14 @@ function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
 
       {isOn && (
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center pt-48 z-10"
+          initial={{ opacity: 0, scale: 0.5, y: 50 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.8, type: "spring" }}
+          className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center pt-10 z-10"
         >
           <h1 className="text-5xl font-black text-orange-500 drop-shadow-md mb-4 text-center">SURPRISE!</h1>
-          <p className="text-xl text-orange-400 font-bold">Happy Birthday {BIRTHDAY_DATA.name}! 🎉</p>
+          <p className="text-2xl text-orange-400 font-bold bg-white/50 backdrop-blur-sm px-6 py-2 rounded-full shadow-sm">Happy Birthday {BIRTHDAY_DATA.name}! 🎉</p>
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay" />
-          
-          {/* Confetti Elements */}
-          <div className="absolute inset-0 overflow-hidden">
-            {[...Array(20)].map((_, i) => (
-              <motion.div
-                key={i}
-                initial={{ y: -50, x: Math.random() * 400, rotate: 0 }}
-                animate={{ y: 800, rotate: 360, x: Math.random() * 400 }}
-                transition={{ duration: Math.random() * 2 + 2, repeat: Infinity, ease: "linear" }}
-                className={`absolute w-3 h-3 ${['bg-pink-400', 'bg-blue-400', 'bg-yellow-400'][i % 3]} rounded-sm opacity-60`}
-              />
-            ))}
-          </div>
         </motion.div>
       )}
     </motion.div>
@@ -297,7 +344,6 @@ function Step3Balloons({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
   }, []);
 
   const handlePop = (id: number) => {
-    if (autoPlay) return;
     setBalloons(prev => prev.map(b => b.id === id ? { ...b, popped: true } : b));
     setPoppedCount(prev => prev + 1);
     confetti({
@@ -353,7 +399,7 @@ function Step3Balloons({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
               transition={{ duration: 8 + Math.random() * 4, delay: b.delay, repeat: Infinity, ease: "linear" }}
               className="absolute z-10"
               style={{ left: `${b.x}%` }}
-              onClick={() => handlePop(b.id)}
+              onClick={autoPlay ? undefined : () => handlePop(b.id)}
             >
               <div className={`w-20 h-24 ${b.color} rounded-[50%] shadow-inner flex items-center justify-center relative cursor-pointer hover:brightness-110 drop-shadow-lg`}>
                 <div className="absolute -bottom-2 w-2 h-3 bg-white/50 rounded-sm" />
