@@ -588,8 +588,8 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
       {gameState === "lost" && (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[20px] flex flex-col items-center gap-4 z-30 pointer-events-none">
           <img src={GameOverImg.src} alt="Game Over" className="h-8 object-contain drop-shadow-md" />
-          <div className="bg-white/20 p-2 rounded-full backdrop-blur-md animate-pulse mt-2">
-            <img src={ResetImg.src} alt="Reset" className="h-10 object-contain drop-shadow-md" />
+          <div className="animate-pulse mt-2">
+            <img src={ResetImg.src} alt="Reset" className="h-16 object-contain drop-shadow-md" />
           </div>
         </div>
       )}
