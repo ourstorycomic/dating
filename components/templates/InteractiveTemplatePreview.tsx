@@ -12,6 +12,7 @@ import { DatingThreePreview } from "./dating-3/preview";
 import Birthday2Preview from "./birthday-2/preview";
 import { Sorry1Preview } from "./sorry-1/preview";
 import { Sorry2Preview } from "./sorry-2/preview";
+import { Sorry3Preview } from "./sorry-3/preview";
 
 type InteractiveTemplatePreviewProps = TemplatePreviewProps & {
   componentKey: string;
@@ -44,6 +45,8 @@ const previewRegistry = [
   { match: "sorry #1", Component: Sorry1Preview },
   { match: "sorry-2", Component: Sorry2Preview },
   { match: "sorry #2", Component: Sorry2Preview },
+  { match: "sorry-3", Component: Sorry3Preview },
+  { match: "sorry #3", Component: Sorry3Preview },
 ];
 
 // This bot automatically plays through ANY template by clicking buttons intelligently
