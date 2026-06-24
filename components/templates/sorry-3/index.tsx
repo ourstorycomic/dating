@@ -47,23 +47,44 @@ function FloatingParticles({ step }: { step: number }) {
   }, [step]);
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden z-50 opacity-60">
-      {particles.map(p => (
-        <motion.div
-          key={`${step}-${p.id}`}
-          className="absolute drop-shadow-md"
-          style={{ left: `${p.x}%`, top: `${p.y}%`, fontSize: p.size }}
-          animate={{
-            y: [0, -60, 0],
-            x: [0, 20, 0],
-            rotate: [0, 10, -10, 0],
-            opacity: [0, 0.8, 0],
-          }}
-          transition={{ duration: 5 + Math.random() * 5, repeat: Infinity, delay: p.delay, ease: "easeInOut" }}
-        >
-          {p.emoji}
-        </motion.div>
-      ))}
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 opacity-60">
+      {particles.map(p => {
+        if (step === 3) {
+          // Shooting star logic for Dino scene
+          return (
+            <motion.div
+              key={`${step}-${p.id}`}
+              className="absolute drop-shadow-md w-1 h-1 bg-white rounded-full"
+              style={{ left: `${p.x}%`, top: `${p.y}%` }}
+              animate={{
+                x: [-100, 300],
+                y: [-50, 150],
+                opacity: [0, 1, 0],
+                scale: [0, 2, 0],
+              }}
+              transition={{ duration: 1 + Math.random() * 2, repeat: Infinity, delay: p.delay, ease: "linear" }}
+            >
+              <div className="absolute top-0 right-0 w-20 h-px bg-gradient-to-l from-white to-transparent transform -rotate-45 origin-right translate-x-full" />
+            </motion.div>
+          );
+        }
+        return (
+          <motion.div
+            key={`${step}-${p.id}`}
+            className="absolute drop-shadow-md text-2xl"
+            style={{ left: `${p.x}%`, top: `${p.y}%`, fontSize: p.size }}
+            animate={{
+              y: [0, -60, 0],
+              x: [0, 20, 0],
+              rotate: [0, 10, -10, 0],
+              opacity: [0, 0.8, 0],
+            }}
+            transition={{ duration: 5 + Math.random() * 5, repeat: Infinity, delay: p.delay, ease: "easeInOut" }}
+          >
+            {p.emoji}
+          </motion.div>
+        );
+      })}
     </div>
   );
 }
@@ -83,7 +104,7 @@ function BackgroundEffects({ step }: { step: number }) {
   const colors = getColors();
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden z-40 transition-colors duration-1000">
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 transition-colors duration-1000">
       <motion.div
         animate={{
           scale: [1, 1.2, 1],
@@ -124,8 +145,23 @@ export default function Sorry3Template({ autoPlay = false, compact = false }: { 
 
   const nextStep = () => setStep((s) => Math.min(s + 1, 8));
 
+  const getContainerBg = () => {
+    if (compact) return "bg-transparent";
+    switch (step) {
+      case 1: return "bg-[#0052a5]"; // BSOD
+      case 2: return "bg-white"; // No Internet
+      case 3: return "bg-pink-50"; // Dino
+      case 4: return "bg-[#008080]"; // Confession
+      case 5: return "bg-[#008080]"; // Recycle Bin
+      case 6: return "bg-[#f0f2f5]"; // Reinstalling
+      case 7: return "bg-[#f0f2f5]"; // Inbox
+      case 8: return "bg-[#f0f2f5]"; // Final choice
+      default: return "bg-[#f8f9fa]";
+    }
+  };
+
   return (
-    <div className={`relative w-full overflow-hidden text-gray-800 touch-none font-sans mx-auto ${compact ? 'h-full bg-transparent' : 'max-w-[400px] h-[800px] max-h-[90vh] bg-[#f8f9fa] rounded-[2.5rem] shadow-2xl border-[10px] border-gray-200'}`}>
+    <div className={`relative w-full overflow-hidden text-gray-800 touch-none font-sans mx-auto transition-colors duration-1000 ${getContainerBg()} ${compact ? 'h-full' : 'max-w-[400px] h-[800px] max-h-[90vh] rounded-[2.5rem] shadow-2xl border-[10px] border-gray-200'}`}>
       <BackgroundEffects step={step} />
       <FloatingParticles step={step} />
       <AnimatePresence mode="wait">
@@ -156,7 +192,7 @@ function Step1BSOD({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, transition: { duration: 1.5, ease: "easeOut" } }}
-      className="absolute inset-0 bg-[#0052a5] text-white p-8 flex flex-col justify-center font-mono z-10"
+      className="absolute inset-0 bg-transparent text-white p-8 flex flex-col justify-center font-mono z-10"
     >
       <p className="text-8xl mb-6">:(</p>
       <h1 className="text-2xl font-bold mb-6">LỖI HỆ THỐNG</h1>
@@ -197,7 +233,7 @@ function Step2NoInternet({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={autoPlay ? undefined : onNext}
-      className={`absolute inset-0 bg-white text-[#5f6368] p-8 flex flex-col pt-32 z-10 ${autoPlay ? '' : 'cursor-pointer'}`}
+      className={`absolute inset-0 bg-transparent text-[#5f6368] p-8 flex flex-col pt-32 z-10 ${autoPlay ? '' : 'cursor-pointer'}`}
     >
       <div className="w-16 h-16 mb-6 opacity-80">
         <WifiOff size={64} />
@@ -499,7 +535,7 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="absolute inset-0 bg-pink-50 text-[#5f6368] overflow-hidden z-10 select-none"
+      className="absolute inset-0 bg-transparent text-[#5f6368] overflow-hidden z-10 select-none"
       onPointerDown={() => {
         if (!autoPlay) state.current.keys.jump = true;
       }}
@@ -555,7 +591,7 @@ function Step4Confession({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
-      className="absolute inset-0 bg-[#008080] flex items-center justify-center p-4 z-10"
+      className="absolute inset-0 bg-transparent flex items-center justify-center p-4 z-10"
     >
       <div className="bg-[#c0c0c0] w-full max-w-sm border-t-2 border-l-2 border-white border-b-2 border-r-2 border-[#808080] shadow-[2px_2px_0_0_#000]">
         <div className="bg-[#000080] text-white px-2 py-1 flex items-center justify-between font-bold text-sm">
@@ -611,7 +647,7 @@ function Step5RecycleBin({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="absolute inset-0 bg-[#008080] flex flex-col items-center justify-center p-6 text-center z-10"
+      className="absolute inset-0 bg-transparent flex flex-col items-center justify-center p-6 text-center z-10"
     >
       <motion.button
         onClick={() => setOpened(true)}
@@ -691,7 +727,7 @@ function Step6Reinstalling({ onNext, autoPlay }: { onNext: () => void; autoPlay:
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="absolute inset-0 bg-[#008080] flex items-center justify-center p-6 z-10"
+      className="absolute inset-0 bg-transparent flex items-center justify-center p-6 z-10"
     >
       <div className="bg-[#c0c0c0] w-full max-w-sm border-t-2 border-l-2 border-white border-b-2 border-r-2 border-[#808080] p-6 shadow-[2px_2px_0_0_#000]">
         <h3 className="font-bold mb-4 text-black">Cài Đặt Lại Tình Yêu</h3>
@@ -731,7 +767,7 @@ function Step7Inbox({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
-      className="absolute inset-0 bg-white flex flex-col z-10"
+      className="absolute inset-0 bg-transparent flex flex-col z-10"
     >
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center shadow-sm z-20">
@@ -843,7 +879,7 @@ function Step8FinalChoice({ autoPlay }: { autoPlay: boolean }) {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="absolute inset-0 bg-[#f0f2f5] flex flex-col z-10"
+      className="absolute inset-0 bg-transparent flex flex-col z-10"
     >
       <div className="flex-1 p-6 flex flex-col items-center justify-center text-center">
         <MessageCircle size={64} className="text-blue-500 mb-6" />
