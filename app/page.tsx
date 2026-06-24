@@ -117,6 +117,23 @@ export default async function Home() {
     template_categories: { slug: "sorry", name: "Sorry", description: null }
   } as any);
 
+  templates.push({
+    id: "sorry-3-mock",
+    slug: "sorry-3",
+    name: "Sorry #3",
+    component_key: "sorry-3",
+    description: "Hành trình chuộc lỗi đầy tính công nghệ và hài hước, từ màn hình xanh tử thần đến minigame khủng long.",
+    tagline: "Chuộc Lỗi",
+    base_price: 2000,
+    visual_label: "FUN",
+    gradient: "from-blue-400 to-indigo-400",
+    status_label: "Mới",
+    sort_order: 22,
+    data_schema: {},
+    sample_data: { screens: ["Lỗi hệ thống", "Mất kết nối", "Khủng long vượt ải", "Cảnh báo", "Thùng rác", "Cài đặt lại", "Tin nhắn", "Chốt kèo"] },
+    template_categories: { slug: "sorry", name: "Sorry", description: null }
+  } as any);
+
   const grouped = categoryOrder
     .map((slug) => ({
       slug,

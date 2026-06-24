@@ -114,7 +114,8 @@ function Step1Trigger({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
             animate={{ opacity: 1, y: 0, scale: 1 }}
             whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(220,38,38,0.6)" }}
             whileTap={{ scale: 0.95 }}
-            onClick={onNext}
+            onClick={autoPlay ? undefined : onNext}
+            disabled={autoPlay}
             className="mt-12 px-8 py-4 bg-gradient-to-b from-red-500 to-red-700 text-[#ffffff] rounded-full font-black shadow-2xl flex items-center gap-2 border-2 border-red-400 z-10"
           >
             Đưa nó ra đây cho bà! 😡
@@ -195,7 +196,8 @@ function Step2Weapon({ onNext, autoPlay, setWeapon }: { onNext: () => void; auto
             animate={{ opacity: 1, y: 0, scale: 1 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={onNext}
+            onClick={autoPlay ? undefined : onNext}
+            disabled={autoPlay}
             className="mt-12 px-8 py-4 bg-gradient-to-r from-slate-800 to-slate-900 text-[#ffffff] rounded-full font-black shadow-[0_10px_30px_rgba(15,23,42,0.5)] flex items-center gap-2 border-2 border-slate-700"
           >
             Bắt đầu xả giận <ChevronRight size={20} />
@@ -563,7 +565,8 @@ function Step6Promise({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
             animate={{ opacity: 1, y: 0, scale: 1 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={onNext}
+            onClick={autoPlay ? undefined : onNext}
+            disabled={autoPlay}
             className="mt-12 px-8 py-4 bg-gradient-to-r from-orange-400 to-rose-500 text-[#ffffff] rounded-full font-black shadow-[0_10px_20px_rgba(244,63,94,0.4)] transition-transform flex items-center gap-2 border-2 border-white"
           >
             Chốt kèo <HeartHandshake size={24} />
