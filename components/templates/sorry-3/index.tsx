@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertTriangle, WifiOff, Trash2, Heart, MessageCircle, ServerCrash, XCircle, Send, CheckCircle2 } from "lucide-react";
 import confetti from "canvas-confetti";
+import GameOverImg from './textures/map/GameOver.png';
+import ResetImg from './textures/map/Reset.png';
 
 const APOLOGY_DATA = {
   reason: "mải chơi game quên nhắn tin",
@@ -162,7 +164,7 @@ function Step2NoInternet({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
 // --- STEP 3: MINIGAME DINO ---
 function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
   const [score, setScore] = useState(0);
-  const [gameState, setGameState] = useState<"playing" | "won">("playing");
+  const [gameState, setGameState] = useState<"playing" | "won" | "lost">("playing");
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const requestRef = useRef<number>(null);
@@ -172,6 +174,7 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
     score: 0, // Hearts collected
     speed: 5,
     isWon: false,
+    isLost: false,
     dino: { x: 50, y: 0, vy: 0, state: 'run', frame: 0, width: 44, height: 47, ducking: false },
     obstacles: [] as { x: number, y: number, type: 'ground' | 'flying' | 'heart', width: number, height: number, emoji: string, passed: boolean }[],
     clouds: [] as { x: number, y: number, scale: number }[],
@@ -204,6 +207,23 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
       y: 20 + Math.random() * 50,
       scale: 0.5 + Math.random() * 0.5
     }));
+  }, []);
+
+  const resetGame = useCallback(() => {
+    state.current = {
+      score: 0,
+      speed: 5,
+      isWon: false,
+      isLost: false,
+      dino: { x: 50, y: 0, vy: 0, state: 'run', frame: 0, width: 44, height: 47, ducking: false },
+      obstacles: [],
+      clouds: state.current.clouds,
+      trackX: 0,
+      frame: 0,
+      keys: { jump: false, duck: false }
+    };
+    setScore(0);
+    setGameState("playing");
   }, []);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -254,7 +274,7 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
         st.dino.state = 'run';
         st.dino.ducking = false;
         st.dino.y = 0;
-      } else {
+      } else if (!st.isLost) {
         // --- GAME PLAY LOGIC ---
         
         // AutoPlay Bot
@@ -336,8 +356,17 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
                    setTimeout(onNext, 2500);
                 }
               }
-            } else if (obs.x < st.dino.x) {
-              obs.passed = true;
+            } else {
+              // Obstacle collision
+              const dx = (st.dino.x + 22) - (obs.x + 15);
+              const dy = (150 - (st.dino.ducking ? 30 : 47) + st.dino.y + 20) - (150 - obs.y - 15);
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < 35 && !autoPlay) {
+                st.isLost = true;
+                setGameState("lost");
+              } else if (obs.x < st.dino.x) {
+                obs.passed = true;
+              }
             }
           }
           
@@ -440,6 +469,15 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
         height={200} 
         className="absolute top-[30%] w-full h-[200px]"
       />
+
+      {gameState === "lost" && (
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[20px] flex flex-col items-center gap-4 z-30">
+          <img src={GameOverImg.src} alt="Game Over" className="h-8 object-contain drop-shadow-md" />
+          <button onClick={resetGame} className="hover:scale-110 active:scale-95 transition-transform bg-white/20 p-2 rounded-full backdrop-blur-md">
+            <img src={ResetImg.src} alt="Reset" className="h-10 object-contain drop-shadow-md" />
+          </button>
+        </div>
+      )}
     </motion.div>
   );
 }
@@ -538,14 +576,14 @@ function Step5RecycleBin({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
           animate={{ 
             opacity: 1, 
             scale: 1, 
-            y: (Math.random() - 0.5) * 300, 
-            x: (Math.random() - 0.5) * 200,
+            y: (Math.random() - 0.5) * 350, 
+            x: (Math.random() - 0.5) * 250,
             rotate: (Math.random() - 0.5) * 30
           }}
           transition={{ type: "spring", damping: 12, delay: i * 0.2 }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-28 bg-white p-2 shadow-2xl z-10 border border-gray-200"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-40 bg-white p-2 shadow-2xl z-30 border border-gray-200"
         >
-          <img src={img} className="w-full h-[70px] object-cover bg-gray-200" />
+          <img src={img} className="w-full h-[120px] object-cover bg-gray-200" />
         </motion.div>
       ))}
 
@@ -555,7 +593,7 @@ function Step5RecycleBin({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5 }}
           onClick={onNext}
-          className="bg-[#c0c0c0] text-black px-8 py-3 border-t-2 border-l-2 border-white border-b-2 border-r-2 border-[#808080] active:border-t-[#808080] active:border-l-[#808080] active:border-b-white active:border-r-white font-bold relative z-30 shadow-2xl mt-12"
+          className="bg-[#c0c0c0] text-black px-8 py-3 border-t-2 border-l-2 border-white border-b-2 border-r-2 border-[#808080] active:border-t-[#808080] active:border-l-[#808080] active:border-b-white active:border-r-white font-bold relative z-40 shadow-2xl mt-12"
         >
           Xem tiếp
         </motion.button>
