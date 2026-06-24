@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertTriangle, WifiOff, Trash2, Heart, MessageCircle, ServerCrash, XCircle, Send, CheckCircle2 } from "lucide-react";
 import confetti from "canvas-confetti";
@@ -161,111 +161,272 @@ function Step2NoInternet({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
 
 // --- STEP 3: MINIGAME DINO ---
 function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
-  const [isJumping, setIsJumping] = useState(false);
   const [score, setScore] = useState(0);
+  const [gameState, setGameState] = useState<"playing" | "won">("playing");
+  
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const requestRef = useRef<number>(null);
+  
+  // Game State Refs to avoid dependency issues in loop
+  const state = useRef({
+    score: 0,
+    speed: 5,
+    isWon: false,
+    dino: { x: 50, y: 0, vy: 0, state: 'run', frame: 0, width: 44, height: 47, ducking: false },
+    obstacles: [] as { x: number, y: number, type: 'ground' | 'flying', width: number, height: number, emoji: string, passed: boolean }[],
+    clouds: [] as { x: number, y: number, scale: number }[],
+    trackX: 0,
+    frame: 0,
+    keys: { jump: false, duck: false }
+  });
 
-  const jump = () => {
-    if (!isJumping && !autoPlay) {
-      setIsJumping(true);
-      setTimeout(() => setIsJumping(false), 600);
+  // Load images
+  const imgs = useRef<{ [key: string]: HTMLImageElement }>({});
+  useEffect(() => {
+    const load = (src: string) => {
+      const img = new Image();
+      img.src = src;
+      return img;
+    };
+    imgs.current = {
+      run1: load("/sorry-3/dino/DinoRun1.png"),
+      run2: load("/sorry-3/dino/DinoRun2.png"),
+      jump: load("/sorry-3/dino/DinoJump.png"),
+      duck1: load("/sorry-3/dino/DinoDuck1.png"),
+      duck2: load("/sorry-3/dino/DinoDuck2.png"),
+      cloud: load("/sorry-3/dino/Cloud.png"),
+      track: load("/sorry-3/dino/Track.png")
+    };
+    
+    // Init clouds
+    state.current.clouds = Array.from({length: 3}).map(() => ({
+      x: Math.random() * 400,
+      y: 20 + Math.random() * 50,
+      scale: 0.5 + Math.random() * 0.5
+    }));
+  }, []);
+
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
+      e.preventDefault();
+      state.current.keys.jump = true;
     }
-  };
+    if (e.code === 'ArrowDown' || e.code === 'KeyS') {
+      e.preventDefault();
+      state.current.keys.duck = true;
+    }
+  }, []);
+
+  const handleKeyUp = useCallback((e: KeyboardEvent) => {
+    if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') state.current.keys.jump = false;
+    if (e.code === 'ArrowDown' || e.code === 'KeyS') state.current.keys.duck = false;
+  }, []);
 
   useEffect(() => {
-    if (autoPlay) {
-      const t = setTimeout(onNext, 4000);
-      return () => clearTimeout(t);
-    }
-  }, [autoPlay, onNext]);
+    window.addEventListener('keydown', handleKeyDown, { passive: false });
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [handleKeyDown, handleKeyUp]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setScore(s => {
-        if (s >= 4) {
-          clearInterval(interval);
-          setTimeout(onNext, 500);
-          return 5;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let isActive = true;
+
+    const loop = () => {
+      if (!isActive) return;
+      const st = state.current;
+      st.frame++;
+
+      // Clear
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Won Sequence
+      if (st.isWon) {
+        st.dino.x += 3;
+        st.dino.frame = (Math.floor(st.frame / 5) % 2 === 0) ? 1 : 2;
+        st.dino.state = 'run';
+        st.dino.y = 0;
+      } else {
+        // --- GAME PLAY LOGIC ---
+        
+        // AutoPlay Bot
+        if (autoPlay) {
+          const nextObs = st.obstacles.find(o => o.x + 30 > st.dino.x && !o.passed);
+          if (nextObs && nextObs.x - (st.dino.x + st.dino.width) < 80) {
+            if (nextObs.type === 'flying') {
+              st.keys.duck = true;
+              st.keys.jump = false;
+            } else {
+              st.keys.jump = true;
+              st.keys.duck = false;
+            }
+          } else {
+            st.keys.jump = false;
+            st.keys.duck = false;
+          }
         }
-        return s + 1;
+
+        // Dino Physics
+        if (st.keys.jump && st.dino.y === 0 && !st.dino.ducking) {
+          st.dino.vy = -12;
+          st.dino.state = 'jump';
+        }
+        
+        st.dino.y += st.dino.vy;
+        st.dino.vy += 0.8; // Gravity
+        
+        if (st.dino.y > 0) {
+          st.dino.y = 0;
+          st.dino.vy = 0;
+          if (st.keys.duck) {
+            st.dino.state = 'duck';
+            st.dino.ducking = true;
+          } else {
+            st.dino.state = 'run';
+            st.dino.ducking = false;
+          }
+        }
+
+        if (st.dino.state === 'run' || st.dino.state === 'duck') {
+          st.dino.frame = (Math.floor(st.frame / 5) % 2 === 0) ? 1 : 2;
+        }
+
+        // Spawn Obstacles
+        if (st.frame % 90 === 0) {
+          const isFlying = Math.random() > 0.5;
+          st.obstacles.push({
+            x: 400,
+            y: isFlying ? 45 : 10,
+            type: isFlying ? 'flying' : 'ground',
+            width: 30,
+            height: 30,
+            emoji: isFlying ? '🎮' : '🍺',
+            passed: false
+          });
+        }
+
+        // Move Obstacles
+        for (let i = st.obstacles.length - 1; i >= 0; i--) {
+          const obs = st.obstacles[i];
+          obs.x -= st.speed;
+          
+          if (!obs.passed && obs.x < st.dino.x) {
+            obs.passed = true;
+            st.score += 10;
+            setScore(st.score);
+            if (st.score >= 100 && !st.isWon) {
+               st.isWon = true;
+               setGameState("won");
+               setTimeout(onNext, 2500);
+            }
+          }
+          
+          if (obs.x < -50) {
+            st.obstacles.splice(i, 1);
+          }
+        }
+
+        st.trackX -= st.speed;
+        if (st.trackX <= -1200) st.trackX = 0;
+
+        // Move Clouds
+        st.clouds.forEach(c => {
+          c.x -= st.speed * 0.2;
+          if (c.x < -50) c.x = 450;
+        });
+      }
+
+      // --- RENDER ---
+      
+      // Clouds
+      st.clouds.forEach(c => {
+        if (imgs.current.cloud) {
+          ctx.globalAlpha = 0.5;
+          ctx.drawImage(imgs.current.cloud, c.x, c.y, 46 * c.scale, 14 * c.scale);
+          ctx.globalAlpha = 1;
+        }
       });
-    }, 2000);
-    return () => clearInterval(interval);
-  }, [onNext]);
+
+      // Track
+      if (imgs.current.track) {
+        ctx.globalAlpha = 0.5;
+        ctx.drawImage(imgs.current.track, st.trackX, 150 - 15, 1200, 12);
+        ctx.drawImage(imgs.current.track, st.trackX + 1200, 150 - 15, 1200, 12);
+        ctx.globalAlpha = 1;
+      }
+
+      // Obstacles
+      ctx.font = "28px sans-serif";
+      st.obstacles.forEach(obs => {
+        ctx.fillText(obs.emoji, obs.x, 150 - obs.y);
+      });
+
+      // Dino
+      ctx.save();
+      
+      let dinoImg = imgs.current.jump;
+      if (st.dino.state === 'run') dinoImg = st.dino.frame === 1 ? imgs.current.run1 : imgs.current.run2;
+      if (st.dino.state === 'duck') dinoImg = st.dino.frame === 1 ? imgs.current.duck1 : imgs.current.duck2;
+      
+      if (dinoImg) {
+        ctx.drawImage(dinoImg, st.dino.x, 150 - (st.dino.ducking ? 30 : 47) + st.dino.y, st.dino.ducking ? 59 : 44, st.dino.ducking ? 30 : 47);
+      }
+      ctx.restore();
+
+      if (isActive) {
+        requestRef.current = requestAnimationFrame(loop);
+      }
+    };
+
+    requestRef.current = requestAnimationFrame(loop);
+    
+    return () => {
+      isActive = false;
+      if (requestRef.current) cancelAnimationFrame(requestRef.current);
+    };
+  }, [gameState, autoPlay, onNext]);
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      onClick={jump}
-      className="absolute inset-0 bg-white text-[#5f6368] overflow-hidden cursor-pointer z-10"
+      className="absolute inset-0 bg-pink-50 text-[#5f6368] overflow-hidden z-10 select-none"
+      onPointerDown={() => {
+        if (!autoPlay) state.current.keys.jump = true;
+      }}
+      onPointerUp={() => {
+        if (!autoPlay) state.current.keys.jump = false;
+      }}
     >
-      <div className="absolute top-10 right-10 text-xl font-mono font-bold tracking-widest bg-gray-100/50 px-3 py-1 rounded-md backdrop-blur-sm shadow-sm">
+      <div className="absolute top-10 right-10 text-xl font-mono font-bold tracking-widest bg-pink-200/50 text-pink-700 px-3 py-1 rounded-md backdrop-blur-sm shadow-sm z-20">
         {String(score).padStart(5, '0')}
       </div>
-
-      {/* Moving Clouds */}
-      <motion.div 
-        animate={{ x: [400, -100] }}
-        transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
-        className="absolute top-20 text-4xl opacity-40 drop-shadow-sm"
-      >
-        ☁️
-      </motion.div>
-      <motion.div 
-        animate={{ x: [400, -100] }}
-        transition={{ repeat: Infinity, duration: 6, ease: "linear", delay: 2 }}
-        className="absolute top-32 text-2xl opacity-30 drop-shadow-sm"
-      >
-        ☁️
-      </motion.div>
-
-      {/* Moving Ground */}
-      <motion.div 
-        animate={{ x: ["0%", "-50%"] }}
-        transition={{ repeat: Infinity, duration: 0.5, ease: "linear" }}
-        className="absolute bottom-[128px] left-0 w-[200%] h-[2px] bg-gradient-to-r from-transparent via-[#5f6368] to-transparent opacity-50 border-b border-dashed border-[#5f6368]" 
-      />
-
-      {/* Dino */}
-      <motion.div
-        initial={{ scaleX: -1 }}
-        animate={isJumping ? { y: [0, -130, 0], scaleX: -1, rotate: [0, -5, 5, 0] } : { y: 0, scaleX: -1 }}
-        transition={{ duration: 0.6, ease: "easeInOut" }}
-        className="absolute bottom-[128px] left-10 text-6xl origin-bottom drop-shadow-md z-20"
-      >
-        🦖
-      </motion.div>
-
-      {/* Obstacles & Hearts */}
-      <div className="absolute bottom-[128px] left-0 w-full h-full pointer-events-none">
-        {["🎮", "🍺", "📱", "🎮", "📱"].map((obs, i) => (
-          <motion.div
-            key={`obs-${i}`}
-            initial={{ x: 400 }}
-            animate={{ x: -100 }}
-            transition={{ duration: 2, delay: i * 2, ease: "linear" }}
-            className="absolute bottom-0 text-4xl"
-          >
-            {obs}
-          </motion.div>
-        ))}
-        {["❤️", "❤️", "❤️", "❤️", "❤️"].map((heart, i) => (
-          <motion.div
-            key={`heart-${i}`}
-            initial={{ x: 400, y: -80 }}
-            animate={{ x: -100 }}
-            transition={{ duration: 2, delay: i * 2 + 0.5, ease: "linear" }}
-            className="absolute bottom-0 text-3xl text-rose-500"
-          >
-            {heart}
-          </motion.div>
-        ))}
+      
+      <div className="absolute bottom-10 w-full flex justify-center gap-4 z-20 opacity-60 text-xs">
+        <div className="flex gap-2 items-center">
+          <div className="bg-white px-2 py-1 rounded border border-pink-200 shadow-sm font-bold text-pink-500">W / SPACE</div>
+          <span className="text-pink-400 font-medium">Nhảy</span>
+        </div>
+        <div className="flex gap-2 items-center">
+          <div className="bg-white px-2 py-1 rounded border border-pink-200 shadow-sm font-bold text-pink-500">S / XUỐNG</div>
+          <span className="text-pink-400 font-medium">Cúi</span>
+        </div>
       </div>
 
-      <p className="absolute bottom-10 w-full text-center text-sm opacity-60 animate-pulse">
-        Chạm để nhảy qua lỗi lầm!
-      </p>
+      <canvas 
+        ref={canvasRef} 
+        width={400} 
+        height={200} 
+        className="absolute top-[30%] w-full h-[200px]"
+      />
     </motion.div>
   );
 }
