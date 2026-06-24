@@ -6,6 +6,13 @@ import { AlertTriangle, WifiOff, Trash2, Heart, MessageCircle, ServerCrash, XCir
 import confetti from "canvas-confetti";
 import GameOverImg from './textures/map/GameOver.png';
 import ResetImg from './textures/map/Reset.png';
+import DinoRun1Img from './textures/Dino/DinoRun1.png';
+import DinoRun2Img from './textures/Dino/DinoRun2.png';
+import DinoJumpImg from './textures/Dino/DinoJump.png';
+import DinoDuck1Img from './textures/Dino/DinoDuck1.png';
+import DinoDuck2Img from './textures/Dino/DinoDuck2.png';
+import CloudImg from './textures/map/Cloud.png';
+import TrackImg from './textures/map/Track.png';
 
 const APOLOGY_DATA = {
   reason: "mải chơi game quên nhắn tin",
@@ -192,13 +199,13 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
       return img;
     };
     imgs.current = {
-      run1: load("/sorry-3/dino/DinoRun1.png"),
-      run2: load("/sorry-3/dino/DinoRun2.png"),
-      jump: load("/sorry-3/dino/DinoJump.png"),
-      duck1: load("/sorry-3/dino/DinoDuck1.png"),
-      duck2: load("/sorry-3/dino/DinoDuck2.png"),
-      cloud: load("/sorry-3/dino/Cloud.png"),
-      track: load("/sorry-3/dino/Track.png")
+      run1: load(DinoRun1Img.src),
+      run2: load(DinoRun2Img.src),
+      jump: load(DinoJumpImg.src),
+      duck1: load(DinoDuck1Img.src),
+      duck2: load(DinoDuck2Img.src),
+      cloud: load(CloudImg.src),
+      track: load(TrackImg.src)
     };
     
     // Init clouds
