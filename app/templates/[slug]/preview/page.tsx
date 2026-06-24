@@ -15,7 +15,7 @@ function getScreens(sampleData: unknown) {
   return data?.screens ?? ["Mở đầu", "Tương tác", "Kỷ niệm", "Lá thư", "Phản hồi"];
 }
 
-export const revalidate = 60; // cache for 60 seconds
+// export const revalidate = 60; // removed cache for preview pages so changes appear instantly
 
 export default async function TemplatePreviewPage({
   params,
@@ -24,6 +24,9 @@ export default async function TemplatePreviewPage({
 }) {
   const { slug } = await params;
   const template = await getTemplateBySlug(slug);
+
+  console.log("Preview page called with slug:", slug);
+  console.log("Template result:", template ? template.slug : "NULL");
 
   if (!template) notFound();
 
