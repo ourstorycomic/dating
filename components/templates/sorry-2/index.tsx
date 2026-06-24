@@ -577,25 +577,14 @@ function Step6Promise({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
 
 // --- STEP 7: VERDICT ---
 function Step7Verdict({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
-  const [noPos, setNoPos] = useState({ x: 0, y: 0 });
+  const [noClickCount, setNoClickCount] = useState(0);
   const [pleading, setPleading] = useState(false);
 
-  const moveNo = () => {
+  const handleNoClick = () => {
     if (autoPlay) return;
-    const spreadX = 220;
-    const spreadY = 220;
-    let newX = (Math.random() - 0.5) * spreadX;
-    let newY = (Math.random() - 0.5) * spreadY;
-    if (Math.abs(newX - noPos.x) < 70) newX = newX > noPos.x ? newX + 70 : newX - 70;
-    if (Math.abs(newY - noPos.y) < 70) newY = newY > noPos.y ? newY + 70 : newY - 70;
-    setNoPos({ x: newX, y: newY });
-  };
-
-  const forceNoClick = () => {
-    if (!autoPlay) {
-      setPleading(true);
-      setTimeout(() => setPleading(false), 2000);
-    }
+    setNoClickCount(prev => prev + 1);
+    setPleading(true);
+    setTimeout(() => setPleading(false), 2000);
   };
 
   useEffect(() => {
@@ -604,6 +593,18 @@ function Step7Verdict({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
       return () => clearTimeout(t);
     }
   }, [autoPlay, onNext]);
+
+  const yesScale = 1 + noClickCount * 0.3;
+  const noScale = Math.max(0, 1 - noClickCount * 0.25);
+  const showNo = noClickCount < 4;
+
+  const pleadingTexts = [
+    "Tha cho tui đi mà! 😭",
+    "Đừng đánh nữa đau quá! 🤕",
+    "Nút nhỏ xíu rồi kìa! 😱",
+    "Chết tui rồi... 👻"
+  ];
+  const pleadingText = pleadingTexts[Math.min(noClickCount > 0 ? noClickCount - 1 : 0, pleadingTexts.length - 1)];
 
   return (
     <motion.div
@@ -624,39 +625,39 @@ function Step7Verdict({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
         Bị cáo đã nhận tội, quan tòa phán quyết sao đây?
       </p>
 
-      <div className="flex flex-col gap-6 w-full max-w-xs relative h-[180px] justify-center">
+      <div className="flex flex-col gap-6 w-full max-w-xs relative h-[180px] justify-center items-center">
         <motion.button
           onClick={onNext}
-          animate={{ scale: [1, 1.05, 1], boxShadow: ["0px 0px 0px rgba(244,63,94,0)", "0px 0px 30px rgba(244,63,94,0.8)", "0px 0px 0px rgba(244,63,94,0)"] }}
+          animate={{ scale: [yesScale, yesScale * 1.05, yesScale], boxShadow: ["0px 0px 0px rgba(244,63,94,0)", "0px 0px 30px rgba(244,63,94,0.8)", "0px 0px 0px rgba(244,63,94,0)"] }}
           transition={{ repeat: Infinity, duration: 1.5 }}
-          className="px-6 py-5 bg-gradient-to-r from-orange-400 to-rose-500 text-[#ffffff] rounded-full font-black shadow-2xl border-4 border-white flex items-center justify-center gap-2 z-20"
+          className="px-6 py-5 bg-gradient-to-r from-orange-400 to-rose-500 text-[#ffffff] rounded-full font-black shadow-2xl border-4 border-white flex items-center justify-center gap-2 z-20 origin-center whitespace-nowrap"
+          style={{ width: "100%" }}
         >
           <Heart size={24} fill="currentColor" /> THA THỨ (KÈM TRÀ SỮA) 🧋
         </motion.button>
 
-        <motion.button
-          animate={noPos}
-          transition={{ type: "spring", stiffness: 1200, damping: 14, mass: 0.2 }}
-          onHoverStart={moveNo}
-          onPointerEnter={moveNo}
-          onTouchStart={moveNo}
-          onClick={forceNoClick}
-          className="px-6 py-4 bg-slate-800 text-slate-300 rounded-full font-bold border-4 border-slate-700 flex items-center justify-center gap-2 z-10 transition-colors shadow-[0_5px_15px_rgba(0,0,0,0.3)] absolute w-full bottom-0"
-        >
-          ĐÁNH TIẾP 🔨
-        </motion.button>
+        {showNo && (
+          <motion.button
+            animate={{ scale: noScale }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            onClick={handleNoClick}
+            className="px-6 py-4 bg-slate-800 text-[#ffffff] rounded-full font-bold border-4 border-slate-700 flex items-center justify-center gap-2 z-10 transition-colors shadow-[0_5px_15px_rgba(0,0,0,0.3)] absolute w-full bottom-0 origin-center"
+          >
+            ĐÁNH TIẾP 🔨
+          </motion.button>
+        )}
       </div>
 
       <AnimatePresence>
         {pleading && (
           <motion.div
-            key="pleading-toast"
-            initial={{ opacity: 0, y: 20, scale: 0.8 }}
+            initial={{ opacity: 0, y: 10, scale: 0.8 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.8 }}
-            className="absolute bottom-10 bg-gradient-to-r from-red-600 to-rose-600 text-[#ffffff] px-6 py-4 rounded-3xl shadow-2xl font-bold max-w-[85%] border-2 border-red-400"
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="absolute bottom-10 bg-gradient-to-r from-red-600 to-rose-600 text-[#ffffff] px-6 py-3 rounded-2xl shadow-xl font-bold whitespace-nowrap z-30"
           >
-            Máu tụt đáy rồi, đánh nữa là chầu ông bà đó 😭 Tha đi!
+            {pleadingText}
+            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-rose-600 rotate-45" />
           </motion.div>
         )}
       </AnimatePresence>
