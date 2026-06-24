@@ -157,15 +157,12 @@ function Step1Knock({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
         className="relative z-10 flex flex-col items-center origin-center"
       >
         <div className="w-72 h-48 bg-white rounded-xl shadow-xl relative flex items-center justify-center overflow-hidden border-4 border-rose-50">
-          {/* The inside letter that pulls up */}
+          {/* Glowing Light Inside */}
           <motion.div 
-            animate={{ y: knocks >= 3 ? -40 : 0, opacity: knocks >= 3 ? 1 : 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="absolute bottom-4 w-64 h-32 bg-pink-50 border border-pink-200 rounded p-4 flex flex-col items-center justify-center z-0"
-          >
-            <Heart size={32} className="text-pink-400 mb-2" />
-            <p className="text-pink-500 font-serif font-bold text-sm">Gửi người thương...</p>
-          </motion.div>
+            animate={{ opacity: knocks >= 3 ? 1 : 0, scale: knocks >= 3 ? 3 : 1 }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
+            className="absolute top-10 w-full h-full bg-white blur-2xl z-0 rounded-full"
+          />
 
           {/* Envelope Flap */}
           <motion.div 
@@ -214,6 +211,7 @@ function Step1Knock({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
 // --- STEP 2: THE SURPRISE (LIGHT SWITCH) ---
 function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
   const [isOn, setIsOn] = useState(false);
+  const [leverY, setLeverY] = useState(0);
 
   const triggerSurprise = () => {
     setIsOn(true);
@@ -234,11 +232,13 @@ function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
 
   useEffect(() => {
     if (autoPlay) {
+      const t0 = setTimeout(() => setLeverY(60), 1000); // Slow pull
       const t1 = setTimeout(() => {
         triggerSurprise();
       }, 1500);
       const t2 = setTimeout(onNext, 4500);
       return () => {
+        clearTimeout(t0);
         clearTimeout(t1);
         clearTimeout(t2);
       };
@@ -275,14 +275,14 @@ function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
             exit={{ opacity: 0, scale: 0.8 }}
             animate={{ rotate: [-8, 8, -8] }}
             transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-            className="absolute top-1/2 left-1/2 -translate-x-[140px] -translate-y-[80px] z-10"
+            className="absolute top-1/2 left-1/2 -translate-x-[160px] -translate-y-[80px] z-10"
           >
-            <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/20 shadow-lg relative">
-              <p className="text-orange-200 font-medium text-sm text-center">
+            <div className="px-4 py-2 relative">
+              <p className="text-white font-medium text-sm text-center drop-shadow-md">
                 Kéo công tắc<br/>xuống nhé! ✨
               </p>
               {/* Arrow pointing to switch */}
-              <div className="absolute -bottom-6 -right-2 text-orange-300 text-2xl rotate-[30deg]">
+              <div className="absolute -bottom-6 -right-2 text-white text-2xl rotate-[30deg]">
                 ⤵️
               </div>
             </div>
@@ -291,7 +291,7 @@ function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
       </AnimatePresence>
 
       <motion.div
-        animate={{ y: isOn ? 200 : 0, opacity: isOn ? 0 : 1 }}
+        animate={{ opacity: isOn ? 0 : 1, scale: isOn ? 0.9 : 1 }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
         className="w-16 h-32 bg-slate-800 rounded-full border-4 border-slate-700 shadow-[inset_0_10px_20px_rgba(0,0,0,0.5)] relative overflow-hidden flex items-start justify-center pt-2 z-20"
       >
@@ -299,13 +299,27 @@ function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
           drag={isOn ? false : "y"}
           dragConstraints={{ top: 0, bottom: 60 }}
           onDragEnd={handleDragEnd}
-          animate={{ y: isOn ? 60 : autoPlay ? 0 : [0, 10, 0] }}
+          animate={{ y: isOn ? 60 : autoPlay ? leverY : [0, 10, 0] }}
           transition={!isOn && !autoPlay ? { repeat: Infinity, duration: 1.5, ease: "easeInOut" } : {}}
           className={`w-10 h-14 rounded-full shadow-lg flex items-center justify-center ${isOn ? 'bg-orange-400 shadow-[0_0_20px_#fb923c]' : 'bg-slate-300'}`}
           style={{ cursor: isOn ? 'default' : 'grab' }}
         >
           <ChevronDown className={isOn ? 'text-orange-100' : 'text-slate-500'} />
         </motion.div>
+        
+        {/* Sparks when pulled */}
+        {isOn && (
+          <motion.div
+            initial={{ opacity: 1, y: 0 }}
+            animate={{ opacity: 0, y: 40, scale: 1.5 }}
+            transition={{ duration: 0.4 }}
+            className="absolute bottom-2 w-full flex justify-center gap-2 z-30"
+          >
+            <div className="w-1 h-6 bg-yellow-300 origin-bottom rotate-[-30deg]" />
+            <div className="w-1 h-8 bg-yellow-200 origin-bottom" />
+            <div className="w-1 h-6 bg-yellow-300 origin-bottom rotate-[30deg]" />
+          </motion.div>
+        )}
       </motion.div>
 
       {isOn && (
@@ -359,10 +373,7 @@ function Step3Balloons({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
       let count = 0;
       const interval = setInterval(() => {
         if (count < 3) {
-          const unpopped = balloons.filter(b => !b.popped);
-          if (unpopped.length > 0) {
-            handlePop(unpopped[0].id);
-          }
+          handlePop(count);
           count++;
         } else {
           clearInterval(interval);
@@ -410,8 +421,8 @@ function Step3Balloons({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
           ) : (
             <motion.div
               initial={{ opacity: 0, scale: 0.5, y: 0 }}
-              animate={{ opacity: [0, 1, 1, 0.8], scale: 1, y: -50 }}
-              transition={{ duration: 1 }}
+              animate={{ opacity: [0, 1, 1, 0.8], scale: 1, y: -50, rotate: [-5, 5, -5, 5, 0] }}
+              transition={{ duration: 2, ease: "easeInOut" }}
               className="absolute z-20 font-black text-2xl text-pink-500 drop-shadow-lg whitespace-nowrap bg-white/80 px-4 py-2 rounded-full border-2 border-pink-200"
               style={{ left: `${b.x - 10}%`, top: '40%' }} // approximate pop position
             >
