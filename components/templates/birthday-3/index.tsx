@@ -40,7 +40,7 @@ function BackgroundSparkles() {
   }, []);
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden z-40">
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
       {sparkles.map((s) => (
         <motion.div
           key={s.id}
@@ -67,8 +67,6 @@ export default function Birthday3Template({ autoPlay = false, compact = false }:
 
   return (
     <div className={`relative w-full overflow-hidden text-gray-800 touch-none font-sans mx-auto ${compact ? 'h-full bg-transparent' : 'max-w-[400px] h-[800px] max-h-[90vh] bg-[#fdfbf7] rounded-[2.5rem] shadow-2xl border-[10px] border-white'}`}>
-      <BackgroundSparkles />
-      <FloatingParticles step={step} />
       <AnimatePresence mode="wait">
         {step === 1 && <Step1Knock key="step1" onNext={nextStep} autoPlay={autoPlay} />}
         {step === 2 && <Step2Surprise key="step2" onNext={nextStep} autoPlay={autoPlay} />}
@@ -104,7 +102,7 @@ function FloatingParticles({ step }: { step: number }) {
   const emojis = getEmoji();
 
   return (
-    <div className="absolute inset-0 pointer-events-none z-50 overflow-hidden opacity-60">
+    <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden opacity-60">
       {particles.map((_, i) => (
         <motion.div
           key={`${step}-${i}`}
@@ -173,6 +171,8 @@ function Step1Knock({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
       className="absolute inset-0 bg-gradient-to-br from-pink-100 to-rose-200 flex flex-col items-center justify-center cursor-pointer z-10 overflow-hidden"
       onClick={handleKnock}
     >
+      <BackgroundSparkles />
+      <FloatingParticles step={1} />
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIj4KICA8ZmlsdGVyIGlkPSJub2lzZSI+CiAgICA8ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC45IiBudW1PY3RhdmVzPSIzIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+CiAgPC9maWx0ZXI+CiAgPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI25vaXNlKSIgb3BhY2l0eT0iMC4wOCIvPgo8L3N2Zz4=')] opacity-20 mix-blend-overlay pointer-events-none" />
       
       <motion.div 
@@ -295,6 +295,8 @@ function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
       transition={{ duration: 1 }}
       className="absolute inset-0 flex flex-col items-center justify-center z-10 overflow-hidden"
     >
+      <BackgroundSparkles />
+      <FloatingParticles step={2} />
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-50" />
       {/* Decorative Lights */}
       {isOn && (
@@ -477,6 +479,8 @@ function Step3Balloons({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
       exit={{ opacity: 0 }}
       className="absolute inset-0 bg-[#fdfbf7] flex flex-col items-center pt-16 z-10 overflow-hidden"
     >
+      <BackgroundSparkles />
+      <FloatingParticles step={3} />
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIj4KICA8ZmlsdGVyIGlkPSJub2lzZSI+CiAgICA8ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC45IiBudW1PY3RhdmVzPSIzIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+CiAgPC9maWx0ZXI+CiAgPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI25vaXNlKSIgb3BhY2l0eT0iMC4wOCIvPgo8L3N2Zz4=')] opacity-10 mix-blend-overlay pointer-events-none" />
       
       <h2 className="text-2xl font-bold text-center px-6 text-slate-700 leading-relaxed z-20 bg-white/70 backdrop-blur-md py-4 rounded-3xl mx-4 shadow-sm border border-pink-50">
@@ -592,6 +596,9 @@ function Step4Cake({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean
       exit={{ opacity: 0, y: 50 }}
       className="absolute inset-0 bg-slate-900 flex flex-col items-center justify-between py-16 z-10"
     >
+      <BackgroundSparkles />
+      <FloatingParticles step={4} />
+
       <div className="text-center px-6">
         <h2 className="text-2xl font-bold text-amber-100 mb-2 drop-shadow-md">Make a Wish! 🌟</h2>
         <p className="text-slate-300 text-sm">Nhắm mắt lại, chắp tay và ước một điều thật to lớn đi nào!</p>
@@ -703,6 +710,8 @@ function Step5Cards({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
       exit={{ opacity: 0 }}
       className="absolute inset-0 bg-[#fdfbf7] flex flex-col items-center justify-center z-10"
     >
+      <BackgroundSparkles />
+      <FloatingParticles step={5} />
       <div className="absolute top-16 text-center w-full px-6">
         <h2 className="text-2xl font-bold text-amber-700 font-serif">Lời Chúc Từ Trái Tim</h2>
         <p className="text-slate-500 text-sm mt-2">Chạm vào thiệp để đọc tiếp ({currentIndex + 1}/{BIRTHDAY_DATA.wishes.length})</p>
@@ -762,6 +771,8 @@ function Step6Memory({ onNext, autoPlay }: { onNext: () => void; autoPlay: boole
       exit={{ opacity: 0 }}
       className="absolute inset-0 bg-stone-900 flex flex-col items-center justify-center p-6 z-10"
     >
+      <BackgroundSparkles />
+      <FloatingParticles step={6} />
       <h2 className="absolute top-16 text-xl font-medium text-stone-300 text-center px-4 leading-relaxed">
         Một năm qua cậu đã rực rỡ thế này cơ mà...
       </h2>
@@ -850,6 +861,8 @@ function Step7Unboxing({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
       className="absolute inset-0 bg-amber-50 flex flex-col items-center justify-center z-10 cursor-pointer"
       onClick={handleTap}
     >
+      <BackgroundSparkles />
+      <FloatingParticles step={7} />
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-50" />
       <div className="text-center mb-12 relative z-20">
         <h2 className="text-3xl font-black text-amber-600 mb-2 uppercase tracking-wide">Quà của cậu này!</h2>
@@ -934,6 +947,8 @@ function Step8Afterparty({ autoPlay }: { autoPlay: boolean }) {
       animate={{ opacity: 1 }}
       className="absolute inset-0 bg-gradient-to-br from-pink-400 via-rose-400 to-amber-400 flex flex-col items-center justify-center p-6 z-10"
     >
+      <BackgroundSparkles />
+      <FloatingParticles step={8} />
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-50" />
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIj4KICA8ZmlsdGVyIGlkPSJub2lzZSI+CiAgICA8ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC45IiBudW1PY3RhdmVzPSIzIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+CiAgPC9maWx0ZXI+CiAgPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI25vaXNlKSIgb3BhY2l0eT0iMC4wOCIvPgo8L3N2Zz4=')] opacity-20 mix-blend-overlay pointer-events-none" />
       
