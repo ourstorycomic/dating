@@ -50,7 +50,7 @@ function FloatingParticles({ step }: { step: number }) {
     <div className="absolute inset-0 pointer-events-none overflow-hidden z-50 opacity-60">
       {particles.map(p => (
         <motion.div
-          key={p.id}
+          key={`${step}-${p.id}`}
           className="absolute drop-shadow-md"
           style={{ left: `${p.x}%`, top: `${p.y}%`, fontSize: p.size }}
           animate={{
@@ -68,9 +68,22 @@ function FloatingParticles({ step }: { step: number }) {
   );
 }
 
-function BackgroundEffects() {
+function BackgroundEffects({ step }: { step: number }) {
+  const getColors = () => {
+    switch (step) {
+      case 1: return ["bg-blue-200/40", "bg-cyan-200/40", "bg-white/40"]; // BSOD
+      case 3: return ["bg-green-300/40", "bg-yellow-200/40", "bg-emerald-300/40"]; // Dino
+      case 4:
+      case 8: return ["bg-pink-400/40", "bg-red-300/40", "bg-rose-400/40"]; // Love
+      case 5: return ["bg-teal-300/40", "bg-emerald-200/40", "bg-cyan-300/40"]; // Trash
+      default: return ["bg-pink-300/40", "bg-blue-300/40", "bg-purple-300/40"]; // Default
+    }
+  };
+
+  const colors = getColors();
+
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden z-40">
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-40 transition-colors duration-1000">
       <motion.div
         animate={{
           scale: [1, 1.2, 1],
@@ -79,7 +92,7 @@ function BackgroundEffects() {
           y: [0, 30, 0],
         }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -top-20 -left-20 w-64 h-64 bg-pink-300/40 rounded-full blur-3xl mix-blend-screen"
+        className={`absolute -top-20 -left-20 w-64 h-64 rounded-full blur-3xl mix-blend-screen transition-colors duration-1000 ${colors[0]}`}
       />
       <motion.div
         animate={{
@@ -89,7 +102,7 @@ function BackgroundEffects() {
           y: [0, 50, 0],
         }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="absolute top-1/3 -right-20 w-72 h-72 bg-blue-300/40 rounded-full blur-3xl mix-blend-screen"
+        className={`absolute top-1/3 -right-20 w-72 h-72 rounded-full blur-3xl mix-blend-screen transition-colors duration-1000 ${colors[1]}`}
       />
       <motion.div
         animate={{
@@ -99,7 +112,7 @@ function BackgroundEffects() {
           y: [0, -40, 0],
         }}
         transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        className="absolute -bottom-20 left-1/4 w-80 h-80 bg-purple-300/40 rounded-full blur-3xl mix-blend-screen"
+        className={`absolute -bottom-20 left-1/4 w-80 h-80 rounded-full blur-3xl mix-blend-screen transition-colors duration-1000 ${colors[2]}`}
       />
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIj4KICA8ZmlsdGVyIGlkPSJub2lzZSI+CiAgICA8ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC45IiBudW1PY3RhdmVzPSIzIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+CiAgPC9maWx0ZXI+CiAgPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI25vaXNlKSIgb3BhY2l0eT0iMC4wOCIvPgo8L3N2Zz4=')] opacity-20 mix-blend-overlay pointer-events-none" />
     </div>
@@ -113,7 +126,7 @@ export default function Sorry3Template({ autoPlay = false, compact = false }: { 
 
   return (
     <div className={`relative w-full overflow-hidden text-gray-800 touch-none font-sans mx-auto ${compact ? 'h-full bg-transparent' : 'max-w-[400px] h-[800px] max-h-[90vh] bg-[#f8f9fa] rounded-[2.5rem] shadow-2xl border-[10px] border-gray-200'}`}>
-      <BackgroundEffects />
+      <BackgroundEffects step={step} />
       <FloatingParticles step={step} />
       <AnimatePresence mode="wait">
         {step === 1 && <Step1BSOD key="step1" onNext={nextStep} autoPlay={autoPlay} />}
