@@ -40,7 +40,7 @@ function BackgroundSparkles() {
   }, []);
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-40">
       {sparkles.map((s) => (
         <motion.div
           key={s.id}
@@ -66,7 +66,7 @@ export default function Birthday3Template({ autoPlay = false, compact = false }:
   }, []);
 
   return (
-    <div className={`relative w-full max-w-[400px] h-[800px] max-h-[90vh] bg-[#fdfbf7] overflow-hidden rounded-[2.5rem] shadow-2xl mx-auto border-[10px] border-white text-gray-800 touch-none ${compact ? 'scale-[0.8] transform-origin-top' : ''}`}>
+    <div className={`relative w-full overflow-hidden text-gray-800 touch-none font-sans mx-auto ${compact ? 'h-full bg-transparent' : 'max-w-[400px] h-[800px] max-h-[90vh] bg-[#fdfbf7] rounded-[2.5rem] shadow-2xl border-[10px] border-white'}`}>
       <BackgroundSparkles />
       <FloatingParticles step={step} />
       <AnimatePresence mode="wait">
@@ -104,7 +104,7 @@ function FloatingParticles({ step }: { step: number }) {
   const emojis = getEmoji();
 
   return (
-    <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+    <div className="absolute inset-0 pointer-events-none z-50 overflow-hidden opacity-60">
       {particles.map((_, i) => (
         <motion.div
           key={`${step}-${i}`}
@@ -311,14 +311,12 @@ function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
         </div>
       )}
 
-      <AnimatePresence>
-        {!isOn && (
-          <motion.div
-            exit={{ opacity: 0, scale: 0.8 }}
-            animate={{ rotate: [-4, 4, -4] }}
-            transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-            className="absolute top-20 left-6 z-10"
-          >
+      {!isOn && (
+        <motion.div
+          animate={{ rotate: [-4, 4, -4] }}
+          transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+          className="absolute top-20 left-6 z-10"
+        >
             <div className="relative px-6 py-4">
               <p 
                 className="font-serif font-bold italic text-4xl text-center whitespace-nowrap" 
@@ -348,7 +346,6 @@ function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
             </div>
           </motion.div>
         )}
-      </AnimatePresence>
 
       <motion.div
         animate={{ opacity: isOn ? 0 : 1, scale: isOn ? 0.9 : 1 }}
