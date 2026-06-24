@@ -35,13 +35,13 @@ function FloatingParticles({ step }: { step: number }) {
     else if (step === 5) emojis = ['🗑️', '📁', '💔', '📸'];
     else if (step === 6) emojis = ['⚙️', '🔄', '🔋', '📡'];
 
-    const p = Array.from({ length: 12 }).map((_, i) => ({
+    const p = Array.from({ length: 30 }).map((_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
       size: Math.random() * 15 + 10,
       delay: Math.random() * 5,
-      emoji: emojis[Math.floor(Math.random() * emojis.length)]
+      emoji: Math.random() > 0.3 ? emojis[Math.floor(Math.random() * emojis.length)] : (Math.random() > 0.5 ? '✨' : '💫')
     }));
     setParticles(p);
   }, [step]);
@@ -101,6 +101,7 @@ function BackgroundEffects() {
         transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 1 }}
         className="absolute -bottom-20 left-1/4 w-80 h-80 bg-purple-300/30 rounded-full blur-3xl mix-blend-multiply"
       />
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIj4KICA8ZmlsdGVyIGlkPSJub2lzZSI+CiAgICA8ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC45IiBudW1PY3RhdmVzPSIzIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+CiAgPC9maWx0ZXI+CiAgPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI25vaXNlKSIgb3BhY2l0eT0iMC4wOCIvPgo8L3N2Zz4=')] opacity-20 mix-blend-overlay pointer-events-none" />
       <div className="absolute inset-0 bg-white/10 backdrop-blur-[1px]" />
     </div>
   );

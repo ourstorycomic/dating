@@ -173,7 +173,7 @@ function Step1Knock({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
       className="absolute inset-0 bg-gradient-to-br from-pink-100 to-rose-200 flex flex-col items-center justify-center cursor-pointer z-10 overflow-hidden"
       onClick={handleKnock}
     >
-      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIj4KICA8ZmlsdGVyIGlkPSJub2lzZSI+CiAgICA8ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC45IiBudW1PY3RhdmVzPSIzIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+CiAgPC9maWx0ZXI+CiAgPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI25vaXNlKSIgb3BhY2l0eT0iMC4wOCIvPgo8L3N2Zz4=')] opacity-20 mix-blend-overlay pointer-events-none" />
       
       <motion.div 
         animate={{ opacity: knocks >= 3 ? 0 : 1, y: knocks >= 3 ? -50 : 0 }}
@@ -480,7 +480,7 @@ function Step3Balloons({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
       exit={{ opacity: 0 }}
       className="absolute inset-0 bg-[#fdfbf7] flex flex-col items-center pt-16 z-10 overflow-hidden"
     >
-      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay" />
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIj4KICA8ZmlsdGVyIGlkPSJub2lzZSI+CiAgICA8ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC45IiBudW1PY3RhdmVzPSIzIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+CiAgPC9maWx0ZXI+CiAgPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI25vaXNlKSIgb3BhY2l0eT0iMC4wOCIvPgo8L3N2Zz4=')] opacity-10 mix-blend-overlay pointer-events-none" />
       
       <h2 className="text-2xl font-bold text-center px-6 text-slate-700 leading-relaxed z-20 bg-white/70 backdrop-blur-md py-4 rounded-3xl mx-4 shadow-sm border border-pink-50">
         Chào mừng <span className="text-pink-500 font-black">{BIRTHDAY_DATA.name}</span> bước sang tuổi <span className="text-pink-500 font-black">{BIRTHDAY_DATA.age}</span>!
@@ -938,7 +938,7 @@ function Step8Afterparty({ autoPlay }: { autoPlay: boolean }) {
       className="absolute inset-0 bg-gradient-to-br from-pink-400 via-rose-400 to-amber-400 flex flex-col items-center justify-center p-6 z-10"
     >
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-50" />
-      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none" />
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIj4KICA8ZmlsdGVyIGlkPSJub2lzZSI+CiAgICA8ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC45IiBudW1PY3RhdmVzPSIzIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+CiAgPC9maWx0ZXI+CiAgPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI25vaXNlKSIgb3BhY2l0eT0iMC4wOCIvPgo8L3N2Zz4=')] opacity-20 mix-blend-overlay pointer-events-none" />
       
       <motion.div 
         initial={{ y: 50, opacity: 0 }}
