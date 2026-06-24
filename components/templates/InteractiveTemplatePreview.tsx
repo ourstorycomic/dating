@@ -119,7 +119,7 @@ function BotAutoPlayer({ children, enabled }: { children: React.ReactNode; enabl
         }
       }
       
-    }, 2500);
+    }, 3500);
 
     return () => {
       isActive = false;

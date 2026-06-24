@@ -87,9 +87,13 @@ export function Step1Alarm({ onNext, autoPlay = false, compact = false }: { onNe
           animate={pageControls}
           className="text-center mt-6 flex flex-col items-center gap-2 drop-shadow-md"
         >
-          <div className="bg-pink-500/80 p-4 rounded-full backdrop-blur-md mb-3 shadow-[0_0_30px_rgba(236,72,153,0.6)]">
+          <motion.div 
+            animate={{ rotate: [0, -15, 15, -15, 15, 0], scale: [1, 1.1, 1] }}
+            transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+            className="bg-pink-500/80 p-4 rounded-full backdrop-blur-md mb-3 shadow-[0_0_30px_rgba(236,72,153,0.6)]"
+          >
             <Bell className="w-10 h-10 text-white" />
-          </div>
+          </motion.div>
           <h2 className="text-4xl font-extrabold tracking-tight text-pink-50 drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]">Báo thức</h2>
           <p className="text-pink-200 font-bold text-lg drop-shadow-md">Dậy thôi lợn con ơi! 🐷</p>
         </motion.div>
@@ -105,9 +109,14 @@ export function Step1Alarm({ onNext, autoPlay = false, compact = false }: { onNe
             onDragEnd={handleDragEnd}
             animate={handleControls}
             style={{ x }}
-            className="w-14 h-14 bg-white rounded-full ml-1 flex items-center justify-center shadow-lg cursor-grab active:cursor-grabbing z-20 border-2 border-pink-100"
+            className="w-14 h-14 bg-white rounded-full ml-1 flex items-center justify-center shadow-lg cursor-grab active:cursor-grabbing z-20 border-2 border-pink-100 relative"
           >
-            <ChevronRight className="w-6 h-6 text-pink-500" />
+            <motion.div 
+               animate={{ scale: [1, 1.5, 1], opacity: [0.8, 0, 0.8] }}
+               transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+               className="absolute inset-0 rounded-full bg-white"
+            />
+            <ChevronRight className="w-6 h-6 text-pink-500 relative z-10" />
           </motion.div>
         </div>
       </div>
