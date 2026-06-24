@@ -90,7 +90,7 @@ function Step1Trigger({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
       />
 
       <motion.div
-        animate={{ opacity: [0, 0.3, 0, 0.6, 0], backgroundColor: ["transparent", "#ef4444", "transparent", "#ef4444", "transparent"] }}
+        animate={{ opacity: [0, 0.3, 0, 0.6, 0], backgroundColor: ["rgba(239,68,68,0)", "#ef4444", "rgba(239,68,68,0)", "#ef4444", "rgba(239,68,68,0)"] }}
         transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 1 }}
         className="absolute inset-0 pointer-events-none mix-blend-color-burn"
       />

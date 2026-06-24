@@ -146,7 +146,6 @@ export default function Sorry3Template({ autoPlay = false, compact = false }: { 
   const nextStep = () => setStep((s) => Math.min(s + 1, 8));
 
   const getContainerBg = () => {
-    if (compact) return "bg-transparent";
     switch (step) {
       case 1: return "bg-[#0052a5]"; // BSOD
       case 2: return "bg-white"; // No Internet
@@ -162,8 +161,12 @@ export default function Sorry3Template({ autoPlay = false, compact = false }: { 
 
   return (
     <div className={`relative w-full overflow-hidden text-gray-800 touch-none font-sans mx-auto transition-colors duration-1000 ${getContainerBg()} ${compact ? 'h-full' : 'max-w-[400px] h-[800px] max-h-[90vh] rounded-[2.5rem] shadow-2xl border-[10px] border-gray-200'}`}>
-      <BackgroundEffects step={step} />
-      <FloatingParticles step={step} />
+      {step >= 3 && (
+        <>
+          <BackgroundEffects step={step} />
+          <FloatingParticles step={step} />
+        </>
+      )}
       <AnimatePresence mode="wait">
         {step === 1 && <Step1BSOD key="step1" onNext={nextStep} autoPlay={autoPlay} />}
         {step === 2 && <Step2NoInternet key="step2" onNext={nextStep} autoPlay={autoPlay} />}
