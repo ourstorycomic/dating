@@ -57,14 +57,14 @@ function FloatingParticles({ step }: { step: number }) {
               className="absolute drop-shadow-md w-1 h-1 bg-white rounded-full"
               style={{ left: `${p.x}%`, top: `${p.y}%` }}
               animate={{
-                x: [-100, 300],
-                y: [-50, 150],
+                x: [200, -200],
+                y: [-100, 300],
                 opacity: [0, 1, 0],
                 scale: [0, 2, 0],
               }}
               transition={{ duration: 1 + Math.random() * 2, repeat: Infinity, delay: p.delay, ease: "linear" }}
             >
-              <div className="absolute top-0 right-0 w-20 h-px bg-gradient-to-l from-white to-transparent transform -rotate-45 origin-right translate-x-full" />
+              <div className="absolute top-1/2 left-1/2 w-20 h-px bg-gradient-to-r from-white to-transparent transform -rotate-45 origin-left" />
             </motion.div>
           );
         }
@@ -356,9 +356,18 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
     if (!ctx) return;
 
     let isActive = true;
+    let lastTime = performance.now();
 
-    const loop = () => {
+    const loop = (time: number) => {
       if (!isActive) return;
+      if (isActive) {
+        requestRef.current = requestAnimationFrame(loop);
+      }
+      
+      const elapsed = time - lastTime;
+      if (elapsed < 16) return; // Throttle to ~60 FPS
+      lastTime = time - (elapsed % 16);
+
       const st = state.current;
       st.frame++;
 
@@ -519,10 +528,6 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
         ctx.drawImage(dinoImg, st.dino.x, 150 - (st.dino.ducking ? 30 : 47) + st.dino.y, st.dino.ducking ? 59 : 44, st.dino.ducking ? 30 : 47);
       }
       ctx.restore();
-
-      if (isActive) {
-        requestRef.current = requestAnimationFrame(loop);
-      }
     };
 
     requestRef.current = requestAnimationFrame(loop);
@@ -539,7 +544,11 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="absolute inset-0 bg-transparent text-[#5f6368] overflow-hidden z-10 select-none"
-      onPointerDown={() => {
+      onPointerDown={(e) => {
+        if (gameState === "lost") {
+          resetGame();
+          return;
+        }
         if (!autoPlay) state.current.keys.jump = true;
       }}
       onPointerUp={() => {
@@ -550,15 +559,23 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
         ❤️ {score}/5
       </div>
       
-      <div className="absolute bottom-10 w-full flex justify-center gap-4 z-20 opacity-60 text-xs">
-        <div className="flex gap-2 items-center">
-          <div className="bg-white px-2 py-1 rounded border border-pink-200 shadow-sm font-bold text-pink-500">W / SPACE</div>
-          <span className="text-pink-400 font-medium">Nhảy</span>
-        </div>
-        <div className="flex gap-2 items-center">
-          <div className="bg-white px-2 py-1 rounded border border-pink-200 shadow-sm font-bold text-pink-500">S / XUỐNG</div>
-          <span className="text-pink-400 font-medium">Cúi</span>
-        </div>
+      <div className="absolute bottom-10 w-full flex justify-center gap-4 z-20 opacity-80 text-xs px-6">
+        <button 
+          onPointerDown={(e) => { e.stopPropagation(); if (!autoPlay) state.current.keys.jump = true; }}
+          onPointerUp={(e) => { e.stopPropagation(); if (!autoPlay) state.current.keys.jump = false; }}
+          onMouseLeave={(e) => { e.stopPropagation(); if (!autoPlay) state.current.keys.jump = false; }}
+          className="flex-1 bg-white/90 py-3 rounded-xl border-2 border-pink-200 shadow-md font-black text-pink-500 text-center uppercase active:bg-pink-100 transition-colors"
+        >
+          NHẢY (W)
+        </button>
+        <button 
+          onPointerDown={(e) => { e.stopPropagation(); if (!autoPlay) state.current.keys.duck = true; }}
+          onPointerUp={(e) => { e.stopPropagation(); if (!autoPlay) state.current.keys.duck = false; }}
+          onMouseLeave={(e) => { e.stopPropagation(); if (!autoPlay) state.current.keys.duck = false; }}
+          className="flex-1 bg-white/90 py-3 rounded-xl border-2 border-pink-200 shadow-md font-black text-pink-500 text-center uppercase active:bg-pink-100 transition-colors"
+        >
+          CÚI (S)
+        </button>
       </div>
 
       <canvas 
@@ -569,11 +586,11 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
       />
 
       {gameState === "lost" && (
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[20px] flex flex-col items-center gap-4 z-30">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[20px] flex flex-col items-center gap-4 z-30 pointer-events-none">
           <img src={GameOverImg.src} alt="Game Over" className="h-8 object-contain drop-shadow-md" />
-          <button onClick={resetGame} className="hover:scale-110 active:scale-95 transition-transform bg-white/20 p-2 rounded-full backdrop-blur-md">
+          <div className="bg-white/20 p-2 rounded-full backdrop-blur-md animate-pulse mt-2">
             <img src={ResetImg.src} alt="Reset" className="h-10 object-contain drop-shadow-md" />
-          </button>
+          </div>
         </div>
       )}
     </motion.div>
