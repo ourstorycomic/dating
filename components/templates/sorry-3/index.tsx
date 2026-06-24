@@ -169,11 +169,11 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
   
   // Game State Refs to avoid dependency issues in loop
   const state = useRef({
-    score: 0,
+    score: 0, // Hearts collected
     speed: 5,
     isWon: false,
     dino: { x: 50, y: 0, vy: 0, state: 'run', frame: 0, width: 44, height: 47, ducking: false },
-    obstacles: [] as { x: number, y: number, type: 'ground' | 'flying', width: number, height: number, emoji: string, passed: boolean }[],
+    obstacles: [] as { x: number, y: number, type: 'ground' | 'flying' | 'heart', width: number, height: number, emoji: string, passed: boolean }[],
     clouds: [] as { x: number, y: number, scale: number }[],
     trackX: 0,
     frame: 0,
@@ -252,13 +252,14 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
         st.dino.x += 3;
         st.dino.frame = (Math.floor(st.frame / 5) % 2 === 0) ? 1 : 2;
         st.dino.state = 'run';
+        st.dino.ducking = false;
         st.dino.y = 0;
       } else {
         // --- GAME PLAY LOGIC ---
         
         // AutoPlay Bot
         if (autoPlay) {
-          const nextObs = st.obstacles.find(o => o.x + 30 > st.dino.x && !o.passed);
+          const nextObs = st.obstacles.find(o => o.type !== 'heart' && o.x + 30 > st.dino.x && !o.passed);
           if (nextObs && nextObs.x - (st.dino.x + st.dino.width) < 80) {
             if (nextObs.type === 'flying') {
               st.keys.duck = true;
@@ -300,14 +301,15 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
 
         // Spawn Obstacles
         if (st.frame % 90 === 0) {
-          const isFlying = Math.random() > 0.5;
+          const isHeart = st.frame % 360 === 0; // Every 4th item is a heart
+          const type = isHeart ? 'heart' : (Math.random() > 0.5 ? 'flying' : 'ground');
           st.obstacles.push({
             x: 400,
-            y: isFlying ? 45 : 10,
-            type: isFlying ? 'flying' : 'ground',
+            y: type === 'flying' ? 45 : (type === 'heart' ? 30 : 10),
+            type: type,
             width: 30,
             height: 30,
-            emoji: isFlying ? '🎮' : '🍺',
+            emoji: type === 'heart' ? '❤️' : (type === 'flying' ? '🎮' : '🍺'),
             passed: false
           });
         }
@@ -317,14 +319,25 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
           const obs = st.obstacles[i];
           obs.x -= st.speed;
           
-          if (!obs.passed && obs.x < st.dino.x) {
-            obs.passed = true;
-            st.score += 10;
-            setScore(st.score);
-            if (st.score >= 100 && !st.isWon) {
-               st.isWon = true;
-               setGameState("won");
-               setTimeout(onNext, 2500);
+          if (!obs.passed) {
+            if (obs.type === 'heart') {
+              // Heart collection collision
+              const dx = (st.dino.x + 22) - (obs.x + 15);
+              const dy = (150 - (st.dino.ducking ? 30 : 47) + st.dino.y + 20) - (150 - obs.y - 15);
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < 40) {
+                obs.passed = true;
+                obs.emoji = ''; // Hide heart
+                st.score += 1;
+                setScore(st.score);
+                if (st.score >= 5 && !st.isWon) {
+                   st.isWon = true;
+                   setGameState("won");
+                   setTimeout(onNext, 2500);
+                }
+              }
+            } else if (obs.x < st.dino.x) {
+              obs.passed = true;
             }
           }
           
@@ -406,8 +419,8 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
         if (!autoPlay) state.current.keys.jump = false;
       }}
     >
-      <div className="absolute top-10 right-10 text-xl font-mono font-bold tracking-widest bg-pink-200/50 text-pink-700 px-3 py-1 rounded-md backdrop-blur-sm shadow-sm z-20">
-        {String(score).padStart(5, '0')}
+      <div className="absolute top-10 right-10 text-lg font-bold bg-pink-200/50 text-pink-700 px-3 py-1 rounded-full backdrop-blur-sm shadow-sm z-20 flex items-center gap-1">
+        ❤️ {score}/5
       </div>
       
       <div className="absolute bottom-10 w-full flex justify-center gap-4 z-20 opacity-60 text-xs">
