@@ -75,7 +75,7 @@ export function Stage4MeteorMic({
           setBlown(true);
           recorder.stop();
           stream.getTracks().forEach(t => t.stop());
-          if (audioContextRef.current) audioContextRef.current.close();
+          if (audioContextRef.current && audioContextRef.current.state !== 'closed') audioContextRef.current.close();
         }
       }, 30000);
 
@@ -98,7 +98,7 @@ export function Stage4MeteorMic({
           setBlown(true);
           recorder.stop();
           stream.getTracks().forEach(t => t.stop());
-          if (audioContextRef.current) audioContextRef.current.close();
+          if (audioContextRef.current && audioContextRef.current.state !== 'closed') audioContextRef.current.close();
         } else {
           requestAnimationFrame(checkVolume);
         }

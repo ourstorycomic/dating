@@ -93,7 +93,9 @@ export function ConstellationVaultExperience({
   onResponse,
   forceStage,
   autoPlay = false,
+  isBuilderPreview = false,
 }: {
+  isBuilderPreview?: boolean;
   anniversaryCode?: string;
   connectInstruction?: string;
   finalCta?: string;

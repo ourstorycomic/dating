@@ -14,9 +14,8 @@ const pxX = (pct: number) => (pct / 100) * GLASS_W - 20;
 
 // Eggs shifted right so they don't overlap the chute on the left
 const EGGS = [
-  { id: 1, x: 25, gradientClass: "from-blue-400 to-indigo-500",    rotation: -12 },
-  { id: 2, x: 55, gradientClass: "from-pink-400 to-rose-500",      rotation:   4 },
-  { id: 3, x: 85, gradientClass: "from-purple-400 to-fuchsia-500", rotation:  18 },
+  { id: 1, x: 35, gradientClass: "from-blue-400 to-indigo-500",    rotation: -12 },
+  { id: 2, x: 75, gradientClass: "from-pink-400 to-rose-500",      rotation:   4 },
 ];
 // X % inside glass box where the chute opening center is
 const CHUTE_X = 9;
@@ -49,7 +48,7 @@ function playSuccessSound() {
   } catch (_) {}
 }
 
-export function Valentine2ClawMachine({ onEggGrabbed, autoPlay = false }: { onEggGrabbed: () => void; autoPlay?: boolean }) {
+export function Valentine2ClawMachine({ onEggGrabbed, autoPlay = false }: { onEggGrabbed: (colorClass: string) => void; autoPlay?: boolean }) {
   const [step,          setStep]          = useState<GameStep>("insert");
   const [clawX,         setClawX]         = useState(50);
   const [showMiss,      setShowMiss]      = useState(false);
@@ -209,7 +208,7 @@ export function Valentine2ClawMachine({ onEggGrabbed, autoPlay = false }: { onEg
       // 9) Success!
       setIsAnimating(false);
       setStep("success");
-      setTimeout(onEggGrabbed, 1600);
+      setTimeout(() => onEggGrabbed(nearest.gradientClass), 1600);
 
     } else {
       // MISS

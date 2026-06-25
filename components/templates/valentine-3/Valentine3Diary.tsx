@@ -18,6 +18,7 @@ export function Valentine3Diary({
   fullScreen = false,
   data = DEFAULT_APP_DATA,
   autoPlay = false,
+  isBuilderPreview = false,
   onResponse,
 }: {
   compact?: boolean;
@@ -26,6 +27,7 @@ export function Valentine3Diary({
   data?: any;
   roomId?: string;
   autoPlay?: boolean;
+  isBuilderPreview?: boolean;
   onResponse?: (res: { answer: string; message: string }) => void;
 }) {
   const [step, setStep] = useState(1);

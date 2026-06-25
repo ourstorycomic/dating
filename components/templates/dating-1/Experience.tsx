@@ -181,13 +181,13 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
     setTimeout(() => { isMoving.current = false; }, 100);
     playSwoosh();
 
-    const xRange = compact ? { min: -120, max: 60 } : { min: -300, max: 100 };
-    const yRange = compact ? { min: -180, max: -50 } : { min: -400, max: -100 };
+    const xRange = compact ? { min: -60, max: 40 } : { min: -120, max: 60 };
+    const yRange = compact ? { min: -80, max: -30 } : { min: -140, max: -50 };
 
     let newX = noBtnPos.x;
     let newY = noBtnPos.y;
 
-    while (Math.hypot(newX - noBtnPos.x, newY - noBtnPos.y) < 150) {
+    while (Math.hypot(newX - noBtnPos.x, newY - noBtnPos.y) < 60) {
       newX = xRange.min + Math.random() * (xRange.max - xRange.min);
       newY = yRange.min + Math.random() * (yRange.max - yRange.min);
     }

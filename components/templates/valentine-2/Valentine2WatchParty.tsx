@@ -68,6 +68,7 @@ export function Valentine2WatchParty({
   roomId?: string;
   isHost?: boolean;
   autoPlay?: boolean;
+  isBuilderPreview?: boolean;
   onResponse?: (response: { answer: string; message?: string }) => void;
 }) {
   const data = { ...DEFAULT_MEMORY_DATA, ...inputData };
@@ -75,6 +76,8 @@ export function Valentine2WatchParty({
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const [selectedMovie, setSelectedMovie] = useState<MovieData | null>(null);
+
+  const [eggColor, setEggColor] = useState("from-pink-400 to-rose-500");
 
   const playMusic = () => {
     if (audioRef.current) {
@@ -140,7 +143,10 @@ export function Valentine2WatchParty({
         {step === 5 && (
           <Valentine2ClawMachine
             key="clawMachine"
-            onEggGrabbed={() => setStep(6)}
+            onEggGrabbed={(color) => {
+              setEggColor(color);
+              setStep(6);
+            }}
             autoPlay={autoPlay}
           />
         )}
@@ -152,6 +158,7 @@ export function Valentine2WatchParty({
             onComplete={() => setStep(7)}
             compact={compact}
             autoPlay={autoPlay}
+            eggColor={eggColor}
           />
         )}
 

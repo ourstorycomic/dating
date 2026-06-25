@@ -4,7 +4,7 @@ import confetti from "canvas-confetti";
 import { Ticket } from "lucide-react";
 import { FloatingParticles } from "./FloatingParticles";
 
-export function Step6Popup({ confession, onComplete, compact, autoPlay = false }: { confession: string; onComplete: () => void; compact?: boolean; autoPlay?: boolean }) {
+export function Step6Popup({ confession, onComplete, compact, autoPlay = false, eggColor = "from-pink-400 to-rose-500" }: { confession: string; onComplete: () => void; compact?: boolean; autoPlay?: boolean; eggColor?: string }) {
   const [noHoverCount, setNoHoverCount] = useState(0);
   const [noBtnPos, setNoBtnPos] = useState({ x: 0, y: 0 });
   
@@ -55,8 +55,8 @@ export function Step6Popup({ confession, onComplete, compact, autoPlay = false }
     setTimeout(() => { isMoving.current = false; }, 80);
 
     const side = Math.random() > 0.5 ? 1 : -1;
-    const newX = side * (100 + Math.random() * 120);
-    const newY = 60 + Math.random() * 120;
+    const newX = side * (30 + Math.random() * 50);
+    const newY = 30 + Math.random() * 50;
 
     setNoBtnPos({ x: newX, y: newY });
     setNoHoverCount(c => c + 1);
@@ -149,7 +149,7 @@ export function Step6Popup({ confession, onComplete, compact, autoPlay = false }
                   opacity: phase === 1 ? 0 : 1
                 }}
                 transition={{ duration: 0.8, ease: "easeInOut" }}
-                className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-br from-pink-400 to-rose-500 rounded-t-[50%_50%] origin-bottom shadow-lg z-20 overflow-hidden"
+                className={`absolute top-0 left-0 w-full h-1/2 bg-gradient-to-br ${eggColor} rounded-t-[50%_50%] origin-bottom shadow-lg z-20 overflow-hidden`}
               >
                 <div className="absolute bottom-0 w-full h-2 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
               </motion.div>
@@ -179,7 +179,7 @@ export function Step6Popup({ confession, onComplete, compact, autoPlay = false }
                   opacity: phase === 1 ? 0 : 1
                 }}
                 transition={{ duration: 0.8, ease: "easeInOut" }}
-                className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-br from-rose-500 to-pink-600 rounded-b-[50%_50%] origin-top shadow-lg z-20"
+                className={`absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-br ${eggColor} rounded-b-[50%_50%] origin-top shadow-lg z-20`}
               />
             </div>
             {phase === 0 && (

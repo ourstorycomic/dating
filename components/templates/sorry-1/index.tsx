@@ -418,14 +418,14 @@ function Step6Treaty({ onNext, autoPlay, config }: { onNext: () => void; autoPla
 
   const moveNo = () => {
     if (autoPlay) return;
-    const spreadX = 260;
-    const spreadY = 260;
+    const spreadX = 120;
+    const spreadY = 120;
     let newX = (Math.random() - 0.5) * spreadX;
     let newY = (Math.random() - 0.5) * spreadY;
     
     // Force distance from current position so it doesn't jump into the cursor
-    if (Math.abs(newX - noPos.x) < 80) newX = newX > noPos.x ? newX + 80 : newX - 80;
-    if (Math.abs(newY - noPos.y) < 80) newY = newY > noPos.y ? newY + 80 : newY - 80;
+    if (Math.abs(newX - noPos.x) < 40) newX = newX > noPos.x ? newX + 40 : newX - 40;
+    if (Math.abs(newY - noPos.y) < 40) newY = newY > noPos.y ? newY + 40 : newY - 40;
     
     setNoPos({ x: newX, y: newY });
   };
