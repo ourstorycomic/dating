@@ -151,23 +151,23 @@ export default async function Home() {
                 .animate-bounce-slow { animation: bounce-slow 2s infinite; }
               `}</style>
               
-              {/* Cute floating decors */}
-              <div className="absolute -top-10 -left-10 text-4xl anim-float-cute opacity-70 pointer-events-none" style={{ animationDelay: '0s' }}>✨</div>
-              <div className="absolute top-20 right-10 text-3xl anim-float-cute opacity-60 pointer-events-none" style={{ animationDelay: '1s' }}>💖</div>
-              <div className="absolute -bottom-10 left-40 text-4xl anim-float-cute opacity-80 pointer-events-none" style={{ animationDelay: '2s' }}>🎀</div>
+              {/* Cute floating images */}
+              <img src="/assets/happy/dudu-bubu.webp" alt="cute" className="absolute -top-12 -left-12 w-28 h-28 object-contain anim-float-cute opacity-90 pointer-events-none drop-shadow-xl" style={{ animationDelay: '0s' }} />
+              <img src="/assets/happy/cat-kitty.webp" alt="cute" className="absolute top-24 -right-16 w-24 h-24 object-contain anim-float-cute opacity-80 pointer-events-none drop-shadow-xl" style={{ animationDelay: '1.5s' }} />
+              <img src="/assets/happy/cute-love.webp" alt="cute" className="absolute -bottom-16 left-32 w-20 h-20 object-contain anim-float-cute opacity-90 pointer-events-none drop-shadow-xl" style={{ animationDelay: '3s' }} />
 
-              <p className="inline-flex items-center gap-2 rounded-full border-[3px] border-[#ffb6c1] bg-white/90 px-5 py-2.5 text-sm font-extrabold text-[#ff59ab] shadow-[0_8px_16px_rgba(255,182,193,0.3)] hover:scale-105 transition-transform cursor-default backdrop-blur-md">
-                <span className="animate-bounce inline-block">💌</span> Web tặng người yêu, mở ra là rụng tim!
+              <p className="inline-flex items-center gap-2 rounded-full border-[3px] border-[#ffb6c1] bg-white/90 px-5 py-2.5 text-sm font-extrabold text-[#ff59ab] shadow-[0_8px_16px_rgba(255,182,193,0.3)] transition-transform cursor-default backdrop-blur-md">
+                Web tặng người yêu, mở ra là rụng tim!
               </p>
               
               <h1 className="mt-6 max-w-4xl text-5xl font-black leading-[1.15] tracking-tight text-[#ff6b9d] sm:text-6xl lg:text-7xl drop-shadow-sm">
                 Gói trọn lời yêu <br/>
-                vào chiếc web <span className="text-[#ffa07a] inline-block hover:rotate-6 transition-transform cursor-pointer">siêu cuthée! 🧸</span>
+                vào chiếc web <span className="text-[#ffa07a] inline-block hover:scale-105 transition-transform cursor-pointer">siêu cuthée!</span>
               </h1>
               
               <p className="mt-6 max-w-2xl text-lg font-semibold leading-relaxed text-[#7b536b] sm:text-xl">
-                Chỉ cần chọn mẫu, gửi ảnh và vài dòng nhắn nhủ thầm kín qua TikTok thui! ✨ <br/>
-                Shop sẽ úm ba la biến thành một món quà tràn ngập tương tác đáng yêu dành riêng cho hai bạn. 💖
+                Chỉ cần chọn mẫu, gửi ảnh và vài dòng nhắn nhủ thầm kín qua TikTok thui! <br/>
+                Shop sẽ úm ba la biến thành một món quà tràn ngập tương tác đáng yêu dành riêng cho hai bạn.
               </p>
               
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
@@ -176,7 +176,7 @@ export default async function Home() {
                   href="#mau-web"
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
-                    Xem mẫu ngay nào! <span className="group-hover:animate-bounce inline-block">✨</span>
+                    Xem mẫu ngay nào!
                   </span>
                   <div className="absolute inset-0 bg-white/20 opacity-0 transition-opacity group-hover:opacity-100" />
                 </a>
@@ -185,7 +185,7 @@ export default async function Home() {
                   href={tiktokLink()}
                 >
                   <span className="flex items-center justify-center gap-2">
-                    Nhờ shop tư vấn xíu <span className="group-hover:animate-wiggle inline-block">🌸</span>
+                    Nhờ shop tư vấn xíu
                   </span>
                 </a>
               </div>
