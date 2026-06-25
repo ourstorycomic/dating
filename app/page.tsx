@@ -101,18 +101,18 @@ export default async function Home() {
           <Link className="flex items-center gap-2 text-base font-extrabold tracking-normal sm:text-lg" href="/">
             <img src="/favicon.ico" alt="Lovora Logo" className="h-10 w-10 rounded-[12px] shadow-[0_10px_24px_rgba(255,143,199,0.38)] animate-bounce-slow" />
             <span className="text-[#ff59ab]">
-              Lovora <span className="hidden font-semibold text-[#ffa07a] sm:inline">thay lời muốn nói 💌</span>
+              Lovora <span className="hidden font-semibold text-[#ffa07a] sm:inline">thay lời muốn nói</span>
             </span>
           </Link>
           <nav className="ml-auto hidden items-center gap-5 text-sm font-bold text-[#7b536b] md:flex">
             <a className="transition hover:text-[#ff6b9d] hover:-translate-y-1 inline-block" href="#quy-trinh">
-              Quy trình ✨
+              Quy trình
             </a>
             <a className="transition hover:text-[#ff6b9d] hover:-translate-y-1 inline-block" href="#mau-web">
-              Mẫu web 🎁
+              Mẫu web
             </a>
             <Link className="transition hover:text-[#ff6b9d] hover:-translate-y-1 inline-block" href="/dashboard">
-              Quản trị ⚙️
+              Quản trị
             </Link>
           </nav>
           <div className="ml-auto flex items-center gap-2 md:ml-0">
@@ -123,13 +123,13 @@ export default async function Home() {
               className="rounded-full border-[2px] border-[#ffb6c1] bg-white px-5 py-2.5 text-sm font-bold text-[#ff6b9d] shadow-[0_8px_20px_rgba(255,182,193,0.3)] transition-all hover:bg-[#ff6b9d] hover:text-white hover:scale-105"
               href={tiktokLink()}
             >
-              Nhắn TikTok 💬
+              Nhắn TikTok
             </a>
           </div>
         </header>
 
         <main className="mx-auto max-w-7xl">
-          <section className="grid min-h-[calc(100vh-88px)] items-center gap-8 py-8 lg:grid-cols-[1.02fr_0.98fr] lg:py-12">
+          <section className="relative grid min-h-[calc(100vh-88px)] items-center gap-8 py-8 lg:grid-cols-[1.02fr_0.98fr] lg:py-12">
             <div className="max-w-3xl relative z-10">
               <style>{`
                 @keyframes float-cute {
@@ -138,12 +138,6 @@ export default async function Home() {
                   75% { transform: translateY(8px) rotate(2deg); }
                 }
                 .anim-float-cute { animation: float-cute 4s ease-in-out infinite; }
-                @keyframes wiggle-cute {
-                  0%, 100% { transform: rotate(0); }
-                  25% { transform: rotate(-10deg); }
-                  75% { transform: rotate(10deg); }
-                }
-                .group-hover\\:animate-wiggle:hover { animation: wiggle-cute 0.5s ease-in-out infinite; }
                 @keyframes bounce-slow {
                   0%, 100% { transform: translateY(0); }
                   50% { transform: translateY(-3px); }
@@ -151,10 +145,10 @@ export default async function Home() {
                 .animate-bounce-slow { animation: bounce-slow 2s infinite; }
               `}</style>
               
-              {/* Cute floating images */}
-              <img src="/assets/happy/dudu-bubu.webp" alt="cute" className="absolute -top-12 -left-12 w-28 h-28 object-contain anim-float-cute opacity-90 pointer-events-none drop-shadow-xl" style={{ animationDelay: '0s' }} />
-              <img src="/assets/happy/cat-kitty.webp" alt="cute" className="absolute top-24 -right-16 w-24 h-24 object-contain anim-float-cute opacity-80 pointer-events-none drop-shadow-xl" style={{ animationDelay: '1.5s' }} />
-              <img src="/assets/happy/cute-love.webp" alt="cute" className="absolute -bottom-16 left-32 w-20 h-20 object-contain anim-float-cute opacity-90 pointer-events-none drop-shadow-xl" style={{ animationDelay: '3s' }} />
+              {/* Cute floating images - Positioned in empty spaces */}
+              <img src="/assets/happy/dudu-bubu.webp" alt="cute" className="absolute -top-6 -right-12 w-28 h-28 object-contain anim-float-cute opacity-80 pointer-events-none drop-shadow-xl z-[-1]" style={{ animationDelay: '0s' }} />
+              <img src="/assets/happy/ami-bụng-bự.webp" alt="cute" className="absolute top-[40%] -left-16 w-32 h-32 object-contain anim-float-cute opacity-80 pointer-events-none drop-shadow-xl z-[-1]" style={{ animationDelay: '1.5s' }} />
+              <img src="/assets/happy/salute-peach-and-goma.webp" alt="cute" className="absolute -bottom-20 right-10 w-24 h-24 object-contain anim-float-cute opacity-90 pointer-events-none drop-shadow-xl z-[-1]" style={{ animationDelay: '3s' }} />
 
               <p className="inline-flex items-center gap-2 rounded-full border-[3px] border-[#ffb6c1] bg-white/90 px-5 py-2.5 text-sm font-extrabold text-[#ff59ab] shadow-[0_8px_16px_rgba(255,182,193,0.3)] transition-transform cursor-default backdrop-blur-md">
                 Web tặng người yêu, mở ra là rụng tim!
@@ -165,12 +159,12 @@ export default async function Home() {
                 vào chiếc web <span className="text-[#ffa07a] inline-block hover:scale-105 transition-transform cursor-pointer">siêu cuthée!</span>
               </h1>
               
-              <p className="mt-6 max-w-2xl text-lg font-semibold leading-relaxed text-[#7b536b] sm:text-xl">
+              <p className="mt-6 max-w-2xl text-lg font-semibold leading-relaxed text-[#7b536b] sm:text-xl z-10 relative">
                 Chỉ cần chọn mẫu, gửi ảnh và vài dòng nhắn nhủ thầm kín qua TikTok thui! <br/>
                 Shop sẽ úm ba la biến thành một món quà tràn ngập tương tác đáng yêu dành riêng cho hai bạn.
               </p>
               
-              <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <div className="mt-8 flex flex-col gap-4 sm:flex-row relative z-10">
                 <a
                   className="group relative overflow-hidden rounded-[2rem] bg-gradient-to-r from-[#ff7eb8] via-[#ff9fbe] to-[#ffb347] px-8 py-4 text-center text-lg font-black text-white shadow-[0_15px_30px_rgba(255,126,184,0.4)] transition-all hover:scale-105 hover:shadow-[0_20px_40px_rgba(255,126,184,0.6)] active:scale-95"
                   href="#mau-web"
@@ -190,15 +184,12 @@ export default async function Home() {
                 </a>
               </div>
 
-              <div id="quy-trinh" className="mt-12 grid gap-4 sm:grid-cols-3">
+              <div id="quy-trinh" className="mt-12 grid gap-4 sm:grid-cols-3 relative z-10">
                 {steps.map((step, index) => (
                   <div
                     className="relative rounded-[2rem] border-[3px] border-[#ffe0ef] bg-white/80 p-5 shadow-[0_15px_35px_rgba(255,182,193,0.15)] backdrop-blur-xl transition-transform hover:-translate-y-2 hover:shadow-[0_25px_45px_rgba(255,182,193,0.3)]"
                     key={step.title}
                   >
-                    <div className="absolute -top-4 -right-4 text-3xl anim-float-cute" style={{ animationDelay: `${index * 0.5}s` }}>
-                      {index === 0 ? "👀" : index === 1 ? "💌" : "🎁"}
-                    </div>
                     <span className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-[#ffb6c1] to-[#ff6b9d] text-base font-black text-white shadow-md">
                       {index + 1}
                     </span>
@@ -209,7 +200,7 @@ export default async function Home() {
               </div>
             </div>
 
-            <GlassCard glow className="float-slow mx-auto w-full max-w-[520px] p-4 sm:p-5">
+            <GlassCard glow className="float-slow mx-auto w-full max-w-[520px] p-4 sm:p-5 relative z-20">
               <div className="relative overflow-hidden rounded-[30px] border-[4px] border-[#ffe0ef] bg-[#fff9fc] p-4 shadow-inner" style={{ perspective: 1200 }}>
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_24%_16%,rgba(255,142,199,0.34),transparent_28%),radial-gradient(circle_at_82%_34%,rgba(166,222,255,0.42),transparent_30%),radial-gradient(circle_at_50%_92%,rgba(255,221,132,0.38),transparent_32%)]" />
                 <TiltPhonePreview />
@@ -221,17 +212,17 @@ export default async function Home() {
             <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="text-sm font-extrabold uppercase tracking-[0.16em] text-[#ff59ab]">
-                  🎀 Kho tàng cute 🎀
+                  Kho tàng cute
                 </p>
                 <h2 className="mt-3 max-w-3xl text-4xl font-black leading-tight text-[#ff6b9d] sm:text-5xl">
-                  Chọn mẫu xinh yêu, xem thử rồi nhắn shop liền nha! 🧸
+                  Chọn mẫu xinh yêu, xem thử rồi nhắn shop liền nha!
                 </h2>
               </div>
               <a
                 className="group w-fit rounded-[2rem] border-[3px] border-[#ffb6c1] bg-white/90 px-6 py-4 text-base font-black text-[#ff6b9d] shadow-[0_12px_28px_rgba(255,182,193,0.3)] transition-all hover:bg-[#ff6b9d] hover:text-white hover:scale-105 active:scale-95"
                 href={tiktokLink()}
               >
-                Tư vấn mẫu hợp nhất <span className="group-hover:animate-bounce inline-block">💖</span>
+                Tư vấn mẫu hợp nhất
               </a>
             </div>
 
@@ -247,7 +238,7 @@ export default async function Home() {
           className="block rounded-[2rem] border-[3px] border-[#ffb6c1] bg-gradient-to-r from-[#ff7eb8] to-[#ffb347] px-6 py-4 text-center text-lg font-black text-white shadow-[0_15px_30px_rgba(255,126,184,0.5)] transition-transform active:scale-95 animate-bounce-slow"
           href={tiktokLink()}
         >
-          Nhắn TikTok shop tư vấn nha! 💌
+          Nhắn TikTok shop tư vấn nha!
         </a>
       </div>
     </div>
