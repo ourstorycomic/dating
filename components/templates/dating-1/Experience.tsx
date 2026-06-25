@@ -282,7 +282,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             { questionImage ? (
               <img src={questionImage} alt="question" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
-              <img src="/assets/dumb/hm.webp" alt="question" className="mb-4 h-32 w-32 object-contain mx-auto animate-bounce drop-shadow-xl" />
+              <img src="/assets/dumb/kitty-cat.webp" alt="question" className="mb-4 h-32 w-32 object-contain mx-auto animate-bounce drop-shadow-xl" />
             )}
             <h1 className="text-3xl font-extrabold drop-shadow-sm" style={{ color: accentColor }}>{displayQuestionTitle}</h1>
             <div className="mx-auto my-6 h-1 w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
