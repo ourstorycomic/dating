@@ -449,16 +449,16 @@ export function CameraRig({
       targetCameraPos.set(0, 1.15, 2.2); lookY.current = 1.2; lookX.current = 0;
     } else if (phase === "celebration") {
       if (celebrationZoom) {
-        targetCameraPos.set(1.5, -1.0, 3.0); lookY.current = -1.2; lookX.current = 1.8;
+        targetCameraPos.set(1.6, -1.2, 4.2); lookY.current = -1.75; lookX.current = 1.6;
         lerpSpeed = 2.0; lookLerpSpeed = 2.0;
       } else {
         targetCameraPos.set(0, 0.5, 7.5); lookY.current = -0.5; lookX.current = 0;
         lerpSpeed = 2.0; lookLerpSpeed = 2.0;
       }
     } else if (phase === "gift-reveal") {
-      targetCameraPos.set(1.5, -1.0, 3.0);
+      targetCameraPos.set(1.6, -1.2, 4.2);
       camera.position.lerp(targetCameraPos, delta * 4);
-      camera.lookAt(1.8, -1.2, 1.0); 
+      camera.lookAt(1.6, -1.75, 1.4); 
       return; 
     } else if (phase === "vintage-gallery") {
       const t = Math.min(1, vintageElapsed / 15.0); const xPos = -1.5 + t * 15.5; 
@@ -1398,7 +1398,7 @@ function MagicDust({ burst }: { burst: boolean }) {
   );
 }
 
-export function MagicDecorWand({ onDone, onMagic, onTouch }: { onDone: () => void; onMagic: () => void; onTouch: () => void }) {
+export function MagicDecorWand({ onDone, onMagic, onTouch, autoPlay }: { onDone: () => void; onMagic: () => void; onTouch: () => void; autoPlay?: boolean }) {
   const group = useRef<THREE.Group>(null);
   const [cast, setCast] = useState(false);
   const [castStartTime, setCastStartTime] = useState(0);
@@ -1494,6 +1494,15 @@ export function MagicDecorWand({ onDone, onMagic, onTouch }: { onDone: () => voi
     window.setTimeout(onMagic, 1350);
     window.setTimeout(onDone, 2450);
   }
+
+  useEffect(() => {
+    if (autoPlay && !cast) {
+      const timer = setTimeout(() => {
+        castSpell();
+      }, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [autoPlay, cast]);
 
   return (
     <group ref={group} position={[-2.4, -3, 1.42]}>
@@ -1650,7 +1659,7 @@ function MatchstickModel({ ...props }: ThreeElements["group"]) {
         desiredHeight={0.35} 
         fit="max" 
         position={[-0.135, 0.005, 0]} 
-        rotation={[0, 0, -0.2]} 
+        rotation={[0, 0, Math.PI - 0.2]} 
         url={MODELS.matchstick} 
       />
     </group>
@@ -1807,11 +1816,12 @@ function MatchMagicDust() {
   );
 }
 
-export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipientName, onGiftOpen }: { phase: BirthdayPhase; age: number; onCandleLit: () => void; onWishRecorded: (audioUrl: string) => void; recipientName?: string; onGiftOpen?: () => void; }) {
+export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipientName, onGiftOpen, celebrationZoom, autoPlay }: { phase: BirthdayPhase; age: number; onCandleLit: () => void; onWishRecorded: (audioUrl: string) => void; recipientName?: string; onGiftOpen?: () => void; celebrationZoom?: boolean; autoPlay?: boolean; }) {
   const [holding, setHolding] = useState(false); const [nearWick, setNearWick] = useState(false);
   const [lit, setLit] = useState(false); const [matchLit, setMatchLit] = useState(false);
   const [strikeCount, setStrikeCount] = useState(0); const [wishTimeLeft, setWishTimeLeft] = useState(10);
   const [showHelper, setShowHelper] = useState(false);
+  const autoPlayStart = useRef(performance.now());
 
   const litProgressRef = useRef(0); const fireScaleRef = useRef(0);
   const candleFireRef = useRef<THREE.Group>(null);
@@ -1822,8 +1832,23 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
   const matchFireScaleRef = useRef(0); const flickStartTime = useRef(0);
   const matchboxWrap = useRef<THREE.Group>(null);
   const matchGroup = useRef<THREE.Group>(null);
+  const tipPos = useMemo(() => new THREE.Vector3(), []);
   
-  // ĐỒNG BỘ TỌA ĐỘ VÀO CHUẨN Y = 1.2
+  useEffect(() => {
+    if (phase === "wish-record") {
+      setWishTimeLeft(10);
+      const timer = setInterval(() => {
+        setWishTimeLeft((prev) => {
+          if (prev <= 1) { clearInterval(timer); stopRecordingAndBlow(); return 0; }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+    if (phase === "match-ignite") {
+      autoPlayStart.current = performance.now();
+    }
+  }, [phase]);
   const MATCHBOX_WORLD_POS = new THREE.Vector3(-0.35, 1.2, 1.1);
   const matchWorld = useRef(new THREE.Vector3(0.25, 1.2, 1.3)); 
 
@@ -1878,7 +1903,8 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
       if (!matchLit && holding && phase === "match-ignite") {
         if (Math.abs(MATCHBOX_WORLD_POS.y - matchWorld.current.y) < 0.6 && Math.abs(MATCHBOX_WORLD_POS.x - matchWorld.current.x) < 1.0) {
           targetRotZ = 0.8;
-          if (lastMatchX.current < -0.3 && matchWorld.current.x >= -0.3 && performance.now() - strikeTime.current > 350) {
+          const velocityX = Math.abs(matchWorld.current.x - lastMatchX.current);
+          if (velocityX > 0.03 && performance.now() - strikeTime.current > 200) {
             strikeTime.current = performance.now(); setStrikeCount((c) => { const next = c + 1; if (next >= 3) setMatchLit(true); return next; });
           }
         } else targetRotZ = matchWorld.current.x < 0 ? -0.4 : 0.4;
@@ -1910,15 +1936,17 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
       matchboxWrap.current.rotation.z -= delta * 4;
     }
 
-    if (matchFireRef.current) matchFireRef.current.scale.setScalar(Math.max(0.001, 0.45 * (matchLit && !isFlicking && !lit ? (matchFireScaleRef.current = Math.min(1, matchFireScaleRef.current + delta * 3.5)) : (matchFireScaleRef.current = Math.max(0, matchFireScaleRef.current - delta * 5.0)))));
+    if (matchFireRef.current) {
+      matchFireRef.current.scale.setScalar(Math.max(0.001, 0.45 * (matchLit && !isFlicking && !lit ? (matchFireScaleRef.current = Math.min(1, matchFireScaleRef.current + delta * 3.5)) : (matchFireScaleRef.current = Math.max(0, matchFireScaleRef.current - delta * 5.0)))));
+      matchFireRef.current.getWorldPosition(tipPos);
+      setNearWick(Math.hypot(tipPos.x, tipPos.y - 1.2) < 0.25);
+    }
     
     fireScaleRef.current = lit ? Math.min(1, fireScaleRef.current + delta / 2.0) : Math.max(0, fireScaleRef.current - delta * 3.0);
     if (candleFireRef.current) candleFireRef.current.scale.setScalar(Math.max(0.001, fireScaleRef.current * 0.8));
-
-    setNearWick(Math.hypot(matchWorld.current.x, matchWorld.current.y - 1.2) < 0.35);
     
     if (holding && matchLit && nearWick && phase === "match-ignite" && !lit) {
-      litProgressRef.current = Math.min(1, litProgressRef.current + delta / 0.4); 
+      litProgressRef.current = Math.min(1, litProgressRef.current + delta / 1.5); 
       if (litProgressRef.current >= 1) { 
         setLit(true); 
         flickStartTime.current = performance.now(); 
@@ -1929,10 +1957,43 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
       litProgressRef.current = Math.max(0, litProgressRef.current - delta);
     }
 
-    if (phase === "celebration" && candleGroup.current) {
+    if (phase === "celebration" && candleGroup.current && !celebrationZoom) {
       candleGroup.current.rotation.y += delta * 0.3;
     }
+
+    if (autoPlay && phase === "match-ignite" && !lit) {
+      const elapsed = (performance.now() - autoPlayStart.current) / 1000;
+      
+      const activeElapsed = elapsed - 9.0; // Wait 9s for balloons to clear!
+      
+      if (activeElapsed > 0) {
+        setHolding(true);
+        if (activeElapsed < 1.0) {
+           matchWorld.current.lerp(new THREE.Vector3(-0.25, 1.2, 1.3), delta * 5);
+        } else if (activeElapsed < 2.2 && !matchLit) {
+           matchWorld.current.x = -0.3 + Math.sin(activeElapsed * 35) * 0.15;
+           matchWorld.current.y = 1.2 + Math.cos(activeElapsed * 25) * 0.05;
+           if (activeElapsed > 2.0 && strikeCount < 3) {
+              setStrikeCount(3);
+              setMatchLit(true);
+              if (touchAudioRef.current) touchAudioRef.current.play().catch(() => {});
+           }
+        } else if (matchLit) {
+           matchWorld.current.lerp(new THREE.Vector3(0.170, 1.024, 1.3), delta * 4);
+        }
+      }
+    }
   });
+
+  useEffect(() => {
+    if (!autoPlay) return;
+    if (phase === "wish-record") {
+      const timer = setTimeout(() => {
+        stopRecordingAndBlow();
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [autoPlay, phase, lit]);
 
   return (
     <>
@@ -1943,10 +2004,9 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
       </group>
 
       <group visible={phase === "match-ignite" || phase === "wish-record" || phase === "celebration" || phase === "gift-reveal"}>
-        <group ref={candleGroup} position={[0, -1.62, 0]}>
+        <group ref={candleGroup} position={[0, -2.35, 0]}>
           
-          {/* NẾN CHÍNH THU NHỎ CHIỀU CAO (1.4) ĐỂ CẮM KHÍT MẶT BÁNH KEM */}
-          <group position={[0, 2.12, 0]}>
+          <group position={[0, 2.85, 0]}>
             <NormalizedModel desiredHeight={1.4} url={MODELS.candle} />
             <group ref={candleFireRef} position={[0, 0.7, 0]} scale={0.001}><AnimatedFire lockRotation scale={0.5} /></group>
             {/* GIỚI HẠN BÁN KÍNH SÁNG ĐỂ TẠO VÒNG TRÒN LỬA TRONG BÓNG ĐÊM */}
@@ -1955,30 +2015,48 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
 
           {phase !== "match-ignite" && phase !== "wish-record" && (
             <group>
-              <BirthdayBanner name={recipientName || ""} visible={phase === "celebration"} position={[0, 4.5, 0]} />
-              <NormalizedModel desiredHeight={2.85} position={[0, 0, 0]} url={MODELS.cake} />
-              <NumberCandle age={age} lit={lit} position={[0, 0.82, 0.4]} scale={0.9} />
+              <group scale={0.7} position={[0, 3.6, 0]}>
+                <BirthdayBanner name={recipientName || ""} visible={phase === "celebration"} position={[0, 0, 0]} />
+              </group>
+              <NormalizedModel desiredHeight={2.85} position={[0, 1.425, 0]} url={MODELS.cake} />
+              <NumberCandle age={age} lit={lit} position={[0, 2.22, 0.4]} scale={0.9} />
               <CelebrationEffects />
-              <GiftFinale onOpen={onGiftOpen || (() => {})} opening={phase === "gift-reveal"} position={[1.8, 0.0, 1.0]} />
             </group>
           )}
 
         </group>
+
+        {phase !== "match-ignite" && phase !== "wish-record" && (
+          <group position={[0, -2.35, 0]}>
+            <NormalizedModel position={[-2.2, 0.5, 0.8]} desiredHeight={1.0} url={MODELS.giftBox} />
+            <NormalizedModel position={[2.2, 0.4, -0.5]} desiredHeight={0.8} url={MODELS.giftBox} />
+            <GiftFinale onOpen={onGiftOpen || (() => {})} opening={phase === "gift-reveal"} position={[1.6, 0.6, 1.4]} celebrationZoom={celebrationZoom} autoPlay={autoPlay} />
+          </group>
+        )}
       </group>
 
       {phase === "match-ignite" && !lit && (
-        <mesh position={[0, 1.2, 1.2]} onPointerDown={(e) => { e.stopPropagation(); setHolding(true); matchWorld.current.copy(e.point); }} onPointerMove={(e) => { if (!holding) return; e.stopPropagation(); matchWorld.current.copy(e.point); }} onPointerUp={() => setHolding(false)}>
+        <mesh position={[0, 1.2, 1.35]} onPointerDown={(e) => { 
+            const elapsed = (performance.now() - autoPlayStart.current) / 1000;
+            if (elapsed < 9.0) return;
+            e.stopPropagation(); setHolding(true); matchWorld.current.copy(e.point); 
+          }} onPointerMove={(e) => { 
+            if (!holding) return; 
+            const elapsed = (performance.now() - autoPlayStart.current) / 1000;
+            if (elapsed < 9.0) return;
+            e.stopPropagation(); matchWorld.current.copy(e.point); 
+          }} onPointerUp={() => setHolding(false)}>
           <planeGeometry args={[100, 100]} /><meshBasicMaterial visible={false} />
         </mesh>
       )}
 
-      <group ref={matchGroup} position={[0.6, 1.2, 1.2]} visible={phase === "match-ignite"}>
+      <group ref={matchGroup} position={[0.6, 1.2, 1.35]} visible={phase === "match-ignite"}>
         <MatchstickModel scale={1.0} position={[0, 0, 0]} />
-        <group ref={matchFireRef} position={[0, 0, 0]} scale={0.001}><AnimatedFire scale={0.3} /></group>
+        <group ref={matchFireRef} position={[-0.170, 0.176, 0]} scale={0.001}><AnimatedFire scale={0.3} /></group>
         {/* LỬA DIÊM CŨNG BỊ GIỚI HẠN BÁN KÍNH (1.0) ĐỂ KHÔNG SÁNG ĐẾN ĐÁY CÂY NẾN */}
-        {matchLit && (<pointLight color="#ffbd6f" distance={1.0} decay={2} intensity={nearWick ? 8.0 : 4.0} position={[0, 0, 0]} />)}
+        {matchLit && (<pointLight color="#ffbd6f" distance={1.0} decay={2} intensity={nearWick ? 8.0 : 4.0} position={[-0.170, 0.176, 0]} />)}
 
-        <group ref={sparkGroup} position={[0, 0, 0]} visible={false}>
+        <group ref={sparkGroup} position={[-0.170, 0.176, 0]} visible={false}>
           <mesh position={[0.05, 0, 0]}><sphereGeometry args={[0.04]}/><meshBasicMaterial color="#ffcc00"/></mesh>
           <mesh position={[-0.05, 0.05, 0]}><sphereGeometry args={[0.03]}/><meshBasicMaterial color="#ffaa00"/></mesh>
           <pointLight color="#ffcc00" distance={1.5} intensity={4.0} />
@@ -1994,16 +2072,16 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
       </group>
 
       {phase === "wish-record" && isRecording && (
-        <Html fullscreen zIndexRange={[90, 80]}>
-           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="absolute left-0 right-0 top-[12%] flex flex-col items-center text-center w-full">
-            <div className="whitespace-nowrap text-4xl font-black text-[#ffd84d]">Hãy ước...</div>
-            <div className="mt-3 flex items-center justify-center gap-2 text-lg font-bold text-white/90">
-              <span className="relative flex h-3 w-3"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#ff7fc7] opacity-75"></span><span className="relative inline-flex h-3 w-3 rounded-full bg-[#ff38aa]"></span></span>
-              Đang ghi âm điều ước ({wishTimeLeft}s)
-            </div>
-            <div className="mt-6 h-16 w-36"><div id="record-wave-indicator" className="w-2.5 bg-gradient-to-t from-pink-500 to-yellow-400 rounded-full transition-all duration-75" style={{ height: '15px' }} /></div>
-            <button onClick={stopRecordingAndBlow} className="mt-6 px-8 py-3.5 border-2 border-white/40 bg-pink-600/60 text-white font-extrabold uppercase rounded-full tracking-wider shadow-lg backdrop-blur-md text-sm pointer-events-auto">Thổi nến & Gửi điều ước ✨</button>
-          </motion.div>
+        <Html center position={[0, 1.9, 0]} zIndexRange={[90, 80]}>
+           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center text-center w-[300px]">
+             <div className="whitespace-nowrap text-4xl font-black text-[#ffd84d]">Hãy ước...</div>
+             <div className="mt-3 flex items-center justify-center gap-2 text-lg font-bold text-white/90">
+               <span className="relative flex h-3 w-3"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#ff7fc7] opacity-75"></span><span className="relative inline-flex h-3 w-3 rounded-full bg-[#ff38aa]"></span></span>
+               Đang ghi âm điều ước ({wishTimeLeft}s)
+             </div>
+             <div className="mt-6 h-16 w-36"><div id="record-wave-indicator" className="w-2.5 bg-gradient-to-t from-pink-500 to-yellow-400 rounded-full transition-all duration-75" style={{ height: '15px' }} /></div>
+             <button onClick={stopRecordingAndBlow} className="mt-6 px-8 py-3.5 border-2 border-white/40 bg-pink-600/60 text-white font-extrabold uppercase rounded-full tracking-wider shadow-lg backdrop-blur-md text-sm pointer-events-auto">Thổi nến & Gửi điều ước ✨</button>
+           </motion.div>
         </Html>
       )}
     </>
@@ -2052,11 +2130,7 @@ export function CelebrationEffects() {
       <NormalizedModel position={[-2.5, 0.8, -2.0]} desiredHeight={2.0} url={MODELS.confetti} loop />
       <NormalizedModel position={[2.5, 1.0, -2.2]} desiredHeight={2.0} url={MODELS.firework} loop />
       
-      <Model position={[0.4, 1.45, 0.4]} scale={0.45} url={MODELS.hat} />
-      
-      {/* Quà phụ nằm rạp dưới sàn */}
-      <NormalizedModel position={[-2.2, 0.0, 0.8]} desiredHeight={1.0} url={MODELS.giftBox} />
-      <NormalizedModel position={[2.2, 0.0, -0.5]} desiredHeight={0.8} url={MODELS.giftBox} />
+      <Model position={[0.4, 2.85, 0.4]} scale={0.45} url={MODELS.hat} />
     </>
   );
 }
@@ -2086,7 +2160,7 @@ export function BirthdayBanner({ name, visible = true, position = [0, 3.2, 0] }:
   );
 }
 
-export function GiftFinale({ onOpen, opening, position = [0, 0, 0] }: { onOpen: () => void; opening: boolean; position?: [number, number, number] }) {
+export function GiftFinale({ onOpen, opening, position = [0, 0, 0], celebrationZoom, autoPlay }: { onOpen: () => void; opening: boolean; position?: [number, number, number]; celebrationZoom?: boolean; autoPlay?: boolean }) {
   const [signal, setSignal] = useState(0);
   const groupRef = useRef<THREE.Group>(null);
   const [animState, setAnimState] = useState<"idle" | "bouncing" | "opened">("idle");
@@ -2117,13 +2191,20 @@ export function GiftFinale({ onOpen, opening, position = [0, 0, 0] }: { onOpen: 
 
   const handleClick = () => { if (animState === "idle") { setAnimState("bouncing"); animStart.current = performance.now(); } };
 
+  useEffect(() => {
+    if (autoPlay && celebrationZoom && animState === "idle") {
+      const timer = setTimeout(() => { handleClick(); }, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [autoPlay, celebrationZoom, animState]);
+
   return (
     <group position={position}>
       <group position={[0, 0, 0]}>
         <group ref={groupRef}>
           <NormalizedModel
             onClick={handleClick} playSignal={signal} loop={false} noClone
-            desiredHeight={2.0} // ĐÃ PHÓNG TO LOOTBOX CHO SIÊU NỔI BẬT
+            desiredHeight={1.2}
             url={MODELS.lootBox}
           />
         </group>

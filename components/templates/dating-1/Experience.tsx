@@ -48,6 +48,7 @@ export function WillYouDateMeExperience({
   swooshSfxUrl = "",
   yaySfxUrl = "",
   hideNavigation = false,
+  isBuilderPreview = false,
   fullScreen = false,
   forceStage,
   onComplete,
@@ -85,6 +86,7 @@ export function WillYouDateMeExperience({
   swooshSfxUrl?: string;
   yaySfxUrl?: string;
   hideNavigation?: boolean;
+  isBuilderPreview?: boolean;
   fullScreen?: boolean;
   forceStage?: string;
   onComplete?: (data: any) => void;
@@ -150,7 +152,10 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
   }, [forceStage]);
   
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    setMounted(true);
+    console.log("WillYouDateMeExperience mounted:", { isBuilderPreview, autoPlay, compact });
+  }, [isBuilderPreview, autoPlay, compact]);
 
   let noBtnResponses = [
     "KHÔNG! ☹",
@@ -239,11 +244,13 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
           <div className="absolute inset-0 z-0 bg-white/40 backdrop-blur-sm" />
         </>
       ) : (
-        <motion.div 
-          className="absolute inset-0 z-0 bg-[linear-gradient(45deg,#ffe4e6,#fbcfe8,#fce7f3,#ffe4e6)] bg-[length:400%_400%]"
-          animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
-          transition={{ duration: 15, ease: "linear", repeat: Infinity }}
-        />
+        <>
+          <div 
+            className="absolute inset-0 z-0 bg-cover bg-center" 
+            style={{ backgroundImage: `url('/assets/bg/bg6.jpg')` }} 
+          />
+          <div className="absolute inset-0 z-0 bg-pink-50/70 backdrop-blur-[2px]" />
+        </>
       )}
 
       {/* Background Elements */}
@@ -275,7 +282,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             { questionImage ? (
               <img src={questionImage} alt="question" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
-              <div className="mb-4 text-5xl animate-bounce">🥺</div>
+              <img src="/assets/dumb/hm.webp" alt="question" className="mb-4 h-32 w-32 object-contain mx-auto animate-bounce drop-shadow-xl" />
             )}
             <h1 className="text-3xl font-extrabold drop-shadow-sm" style={{ color: accentColor }}>{displayQuestionTitle}</h1>
             <div className="mx-auto my-6 h-1 w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
@@ -316,7 +323,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             { successImage ? (
               <img src={successImage} alt="success" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
-              <div className="mb-4 text-6xl">🥰</div>
+              <img src="/assets/happy/love-valentines.webp" alt="success" className="mb-4 h-40 w-40 object-contain mx-auto animate-bounce drop-shadow-xl" />
             )}
             <h1 className="text-4xl font-extrabold drop-shadow-sm" style={{ color: accentColor }}>{successTitle}</h1>
             <div className="mx-auto my-6 h-1 w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
@@ -343,7 +350,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             { locationImage ? (
               <img src={locationImage} alt="location" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
-              <div className="mb-2 text-4xl">🛵</div>
+              <img src="/assets/happy/cute-love.webp" alt="location" className="mb-4 h-32 w-32 object-contain mx-auto animate-bounce drop-shadow-xl" />
             )}
             <h1 className="text-2xl font-extrabold drop-shadow-sm" style={{ color: accentColor }}>{locationTitle}</h1>
             <div className="mx-auto my-4 h-1 w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
@@ -387,7 +394,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             { datetimeImage ? (
               <img src={datetimeImage} alt="datetime" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
-              <div className="mb-2 text-4xl">⏰</div>
+              <img src="/assets/dumb/kids.webp" alt="datetime" className="mb-4 h-32 w-32 object-contain mx-auto animate-bounce drop-shadow-xl" />
             )}
             <h1 className="text-2xl font-extrabold drop-shadow-sm" style={{ color: accentColor }}>{datetimeTitle}</h1>
             <div className="mx-auto my-4 h-1 w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
@@ -436,7 +443,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             { foodImage ? (
               <img src={foodImage} alt="food" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
-              <div className="mb-2 text-4xl">🍕</div>
+              <img src="/assets/happy/kiss-love.webp" alt="food" className="mb-4 h-32 w-32 object-contain mx-auto animate-bounce drop-shadow-xl" />
             )}
             <h1 className="text-2xl font-extrabold drop-shadow-sm" style={{ color: accentColor }}>{foodTitle}</h1>
             <div className="mx-auto my-4 h-1 w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
@@ -480,7 +487,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             { drinkImage ? (
               <img src={drinkImage} alt="drink" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
-              <div className="mb-2 text-4xl">🧋</div>
+              <img src="/assets/dumb/auau.webp" alt="drink" className="mb-4 h-32 w-32 object-contain mx-auto animate-bounce drop-shadow-xl" />
             )}
             <h1 className="text-2xl font-extrabold drop-shadow-sm" style={{ color: accentColor }}>{drinkTitle}</h1>
             <div className="mx-auto my-4 h-1 w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
@@ -573,7 +580,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
         onPrev={() => setStage(stageOrder[Math.max(0, currentStageIndex - 1)])}
         onNext={() => setStage(stageOrder[Math.min(stageOrder.length - 2, currentStageIndex + 1)])}
         accentColor={accentColor}
-        isHidden={hideNavigation || stage === "completion"}
+        isHidden={hideNavigation || autoPlay || stage === "completion"}
       />
     </div>
   );

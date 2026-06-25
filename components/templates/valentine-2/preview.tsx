@@ -13,7 +13,8 @@ export function Valentine2Preview({
     <Valentine2WatchParty 
       compact={compact} 
       fullScreen={!compact && !isBuilderPreview} 
-      hideNavigation={compact || hideNavigation}
+      hideNavigation={hideNavigation}
+      isBuilderPreview={isBuilderPreview}
       data={props.customData || (props as any)}
       roomId={roomId}
       autoPlay={props.autoPlay}

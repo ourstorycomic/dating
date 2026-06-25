@@ -83,7 +83,7 @@ const JourneyStyles = `
   }
 `;
 
-export function LoveSpaceTemplate({ compact, fullScreen, hideNavigation, onComplete, autoPlay, customData = {} }: any) {
+export function LoveSpaceTemplate({ compact, fullScreen, hideNavigation, isBuilderPreview, onComplete, autoPlay, customData = {} }: any) {
   const [step, setStep] = useState(1);
   const [wheelResult, setWheelResult] = useState("");
   const [dateTime, setDateTime] = useState({ date: "", time: "" });
@@ -108,7 +108,11 @@ export function LoveSpaceTemplate({ compact, fullScreen, hideNavigation, onCompl
   }
 
   const bgStyle = {
-    background: `linear-gradient(to bottom right, ${customData.bgFrom || "#ffe6f2"}, ${customData.bgTo || "#ffb3d9"})`
+    background: `linear-gradient(to bottom right, ${customData.bgFrom || "#ffe6f2"}, ${customData.bgTo || "#ffb3d9"})`,
+    backgroundImage: `url('/assets/bg/bg3.jpg')`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundBlendMode: 'overlay'
   };
 
   if (!mounted) return <div className={containerClass} style={bgStyle} />;
@@ -151,7 +155,7 @@ export function LoveSpaceTemplate({ compact, fullScreen, hideNavigation, onCompl
               if (idx < s.length - 1) setStep(s[idx + 1]);
             }}
             accentColor="#db2777"
-            isHidden={compact || hideNavigation}
+            isHidden={hideNavigation || autoPlay}
           />
 
         </div>

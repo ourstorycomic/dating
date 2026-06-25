@@ -65,6 +65,205 @@ const allowedTemplateMatches = [
   "sorry #1",
   "sorry-2",
   "sorry #2",
+  "sorry-3",
+  "sorry #3",
+  "birthday-3",
+  "birthday #3",
+];
+
+export const MOCK_TEMPLATES = [
+  {
+    id: "sorry-1-mock",
+    slug: "sorry-1",
+    name: "Sorry #1",
+    component_key: "sorry-1",
+    description: "Trải nghiệm 6 bước xoa dịu cơn giận từ việc đập tan lớp băng giá đến bản hiệp ước hòa bình hồng rực rỡ.",
+    tagline: "Làm Hòa",
+    base_price: 2000,
+    visual_label: "HOT",
+    gradient: "from-slate-400 to-rose-400",
+    status_label: "Mới",
+    sort_order: 20,
+    data_schema: [
+      { section: "P1. Lớp Băng", key: "iceTitle", label: "Tiêu đề", type: "text", default: "đang giận tớ lắm đúng không...?" },
+      { section: "P1. Lớp Băng", key: "iceSubtitle", label: "Phụ đề", type: "text", default: "Bấm vào màn hình để đập vỡ lớp băng này nhé, lạnh quá..." },
+      
+      { section: "P2. Thú Tội", key: "confessText", label: "Lời thú tội", type: "textarea", default: "Tớ biết tớ sai rồi. Tớ vô tâm, tớ hư, tớ đáng bị đòn..." },
+      { section: "P2. Thú Tội", key: "confessBtn", label: "Nút bấm", type: "text", default: "Đúng, cậu rất đáng đòn! 😡" },
+      
+      { section: "P3. Vòng Quay", key: "wheelTitle", label: "Tiêu đề", type: "text", default: "Vòng Quay Đền Tội" },
+      { section: "P3. Vòng Quay", key: "wheelSubtitle", label: "Phụ đề", type: "text", default: "Trước khi tha lỗi, cho cậu quyền phạt tớ đấy! Quay đi, tớ chịu hết!" },
+      { section: "P3. Vòng Quay", key: "wheelBtn", label: "Nút quay", type: "text", default: "QUAY NGAY" },
+      { section: "P3. Vòng Quay", key: "wheelOpt1", label: "Lựa chọn 1", type: "text", default: "Trà sữa 1 tuần" },
+      { section: "P3. Vòng Quay", key: "wheelOpt2", label: "Lựa chọn 2", type: "text", default: "Đấm 3 cái" },
+      { section: "P3. Vòng Quay", key: "wheelOpt3", label: "Lựa chọn 3", type: "text", default: "Rửa bát 1 tháng" },
+      { section: "P3. Vòng Quay", key: "wheelOpt4", label: "Lựa chọn 4", type: "text", default: "Làm osin 1 ngày" },
+      { section: "P3. Vòng Quay", key: "wheelOpt5", label: "Lựa chọn 5", type: "text", default: "Mua quà xịn" },
+      { section: "P3. Vòng Quay", key: "wheelOpt6", label: "Lựa chọn 6", type: "text", default: "Bao đi ăn tối" },
+      { section: "P3. Vòng Quay", key: "wheelNextBtn", label: "Nút tiếp tục", type: "text", default: "Tạm bớt giận 👉" },
+
+      { section: "P4. Kỷ Niệm", key: "memory1", label: "Ảnh kỷ niệm 1", type: "media" },
+      { section: "P4. Kỷ Niệm", key: "memory2", label: "Ảnh kỷ niệm 2", type: "media" },
+      { section: "P4. Kỷ Niệm", key: "memory3", label: "Ảnh kỷ niệm 3", type: "media" },
+      { section: "P4. Kỷ Niệm", key: "nostalgiaText", label: "Lời nhắn", type: "textarea", default: "\"Tớ không muốn vì một phút ngu ngốc mà đánh mất những nụ cười này...\"" },
+      { section: "P4. Kỷ Niệm", key: "nostalgiaBtn", label: "Nút xem tiếp", type: "text", default: "Xem tiếp" },
+      
+      { section: "P5. Thư Xin Lỗi", key: "letterText", label: "Nội dung thư", type: "textarea", default: "Anh biết lỗi rồi. Anh đã quá vô tâm và trẻ con. Anh hứa sẽ không bao giờ như vậy nữa. Tha lỗi cho anh nha, chiều nay tớ qua đón đi ăn đền tội, chịu không? ❤️" },
+      { section: "P5. Thư Xin Lỗi", key: "letterBtn", label: "Nút chốt hạ", type: "text", default: "Chốt hạ" },
+      
+      { section: "P6. Ký Tên", key: "treatyTitle", label: "Tiêu đề", type: "text", default: "Hiệp Ước Hòa Bình" },
+      { section: "P6. Ký Tên", key: "treatySubtitle", label: "Phụ đề", type: "text", default: "Quyết định nằm trong tay cậu. Xin hãy nương tay..." },
+      { section: "P6. Ký Tên", key: "treatyBtnYes", label: "Nút tha thứ", type: "text", default: "KÝ TÊN, THA MẠNG CHÓ 🐾" },
+      { section: "P6. Ký Tên", key: "treatyBtnNo", label: "Nút không tha", type: "text", default: "GIẬN TIẾP, KHÔNG THA 😤" },
+      
+      { section: "P7. Thành Công", key: "successTitle", label: "Tiêu đề", type: "text", default: "Cảm ơn cậu! ❤️" },
+      { section: "P7. Thành Công", key: "successDesc", label: "Lời nhắn", type: "text", default: "Tớ qua đón cậu đi ăn đền tội ngay đây!" },
+      { section: "P7. Thành Công", key: "musicUrl", label: "Nhạc nền", type: "audio" }
+    ],
+    sample_data: { screens: ["Đập băng", "Thú tội", "Vòng quay", "Kỷ niệm", "Ký tên"] },
+    template_categories: { slug: "sorry", name: "Sorry", description: null }
+  },
+  {
+    id: "sorry-2-mock",
+    slug: "sorry-2",
+    name: "Sorry #2",
+    component_key: "sorry-2",
+    description: "Đập tan cơn tức giận với minigame 'Whack-a-Lover' rồi xoa dịu bằng lời hứa chân thành và trà sữa.",
+    tagline: "Xả Giận",
+    base_price: 2000,
+    visual_label: "FUN",
+    gradient: "from-orange-400 to-rose-400",
+    status_label: "Mới",
+    sort_order: 21,
+    data_schema: [
+      { section: "P1. Cảnh Báo", key: "warnTitle", label: "Tiêu đề", type: "text", default: "Cảnh Báo Xả Giận" },
+      { section: "P1. Cảnh Báo", key: "warnDesc", label: "Mô tả", type: "textarea", default: "Người này đã làm bạn giận. Bạn có quyền được xả giận ngay bây giờ!" },
+      { section: "P1. Cảnh Báo", key: "warnBtn", label: "Nút bắt đầu", type: "text", default: "Bắt đầu xả giận" },
+      
+      { section: "P2. Vũ Khí", key: "weaponTitle", label: "Tiêu đề", type: "text", default: "Chọn Vũ Khí" },
+      { section: "P2. Vũ Khí", key: "weapon1", label: "Vũ khí 1", type: "text", default: "Dép lào" },
+      { section: "P2. Vũ Khí", key: "weapon2", label: "Vũ khí 2", type: "text", default: "Chổi chà" },
+      
+      { section: "P3. Game", key: "gameTarget", label: "Điểm mục tiêu", type: "text", default: "20" },
+      
+      { section: "P4. Băng Bó", key: "bandageTitle", label: "Tiêu đề", type: "text", default: "Á ui... đau quá!" },
+      { section: "P4. Băng Bó", key: "bandageDesc", label: "Lời nhắn", type: "textarea", default: "Cậu xả giận xong chưa? Đau xót ruột luôn rồi nè 😭" },
+      { section: "P4. Băng Bó", key: "bandageBtn", label: "Nút tiếp tục", type: "text", default: "Nghe giải thích" },
+      
+      { section: "P5. Xin Lỗi", key: "apologyText", label: "Lời xin lỗi", type: "textarea", default: "Anh biết lỗi rồi..." },
+      { section: "P5. Xin Lỗi", key: "apologyBtn", label: "Nút chốt", type: "text", default: "Tha thứ" },
+      
+      { section: "P6. Tha Thứ", key: "successTitle", label: "Tiêu đề", type: "text", default: "Hòa nhé!" },
+      { section: "P6. Tha Thứ", key: "successDesc", label: "Lời nhắn", type: "text", default: "Cảm ơn cậu đã tha lỗi. Mãi iu ❤️" },
+      { section: "P6. Tha Thứ", key: "musicUrl", label: "Nhạc nền", type: "audio" }
+    ],
+    sample_data: { screens: ["Châm ngòi", "Chọn vũ khí", "Xả giận", "Băng bó", "Xin lỗi", "Tha thứ"] },
+    template_categories: { slug: "sorry", name: "Sorry", description: null }
+  },
+  {
+    id: "sorry-3-mock",
+    slug: "sorry-3",
+    name: "Sorry #3",
+    component_key: "sorry-3",
+    description: "Hành trình chuộc lỗi đầy tính công nghệ và hài hước, từ màn hình xanh tử thần đến minigame khủng long.",
+    tagline: "Chuộc Lỗi",
+    base_price: 2000,
+    visual_label: "FUN",
+    gradient: "from-blue-400 to-indigo-400",
+    status_label: "Mới",
+    sort_order: 22,
+    data_schema: [
+      { section: "P1. Màn Hình Xanh", key: "bsodTitle", label: "Tiêu đề lỗi", type: "text", default: "LỖI HỆ THỐNG" },
+      { section: "P1. Màn Hình Xanh", key: "bsodMessage", label: "Mô tả lỗi", type: "textarea", default: "MỐI QUAN HỆ ĐANG BỊ GIÁN ĐOẠN." },
+      { section: "P1. Màn Hình Xanh", key: "reason", label: "Nguyên nhân lỗi", type: "text", default: "mải chơi game quên nhắn tin" },
+      { section: "P1. Màn Hình Xanh", key: "bsodCode", label: "Mã lỗi", type: "text", default: "LOVE_NOT_FOUND_404" },
+      { section: "P1. Màn Hình Xanh", key: "bsodButton", label: "Nút bấm", type: "text", default: "[ Tái khởi động ]" },
+      
+      { section: "P2. Mất Kết Nối", key: "noConnTitle", label: "Tiêu đề", type: "text", default: "Không có kết nối" },
+      { section: "P2. Mất Kết Nối", key: "noConnMessage", label: "Mô tả", type: "textarea", default: "Mất kết nối với trái tim của người yêu." },
+      { section: "P2. Mất Kết Nối", key: "noConnHint1", label: "Gợi ý 1", type: "text", default: "Kiểm tra lại độ thành tâm" },
+      { section: "P2. Mất Kết Nối", key: "noConnHint2", label: "Gợi ý 2", type: "text", default: "Chuẩn bị sẵn lời xin lỗi" },
+      { section: "P2. Mất Kết Nối", key: "noConnHint3", label: "Gợi ý 3", type: "text", default: "Chạy qua nhà đền tội ngay lập tức" },
+      
+      { section: "P3. Khủng Long", key: "dinoTitle", label: "Tiêu đề Game Over", type: "text", default: "ERR_HEART_BROKEN" },
+      { section: "P3. Khủng Long", key: "dinoHelpText", label: "Hướng dẫn chơi", type: "text", default: "Bấm phím Space hoặc chạm vào màn hình để thử lại." },
+      
+      { section: "P4. Cảnh Báo", key: "alertTitle", label: "Tiêu đề", type: "text", default: "Cảnh_Báo.exe" },
+      { section: "P4. Cảnh Báo", key: "alertMessage", label: "Nội dung cảnh báo", type: "textarea", default: "CẢNH BÁO: Tên ngốc này đã nhận ra lỗi lầm!\n\nHắn thừa nhận mình vô tâm, trẻ con và hứa sẽ sửa đổi. Bạn có muốn xem bằng chứng không?" },
+      { section: "P4. Cảnh Báo", key: "alertBtnYes", label: "Nút Đồng ý", type: "text", default: "Xem bằng chứng" },
+      { section: "P4. Cảnh Báo", key: "alertBtnNo", label: "Nút Từ chối", type: "text", default: "Hủy" },
+      
+      { section: "P5. Thùng Rác", key: "trashMessage", label: "Nội dung", type: "textarea", default: "Tớ đã lỡ vứt những thói quen xấu vào thùng rác rồi.<br/>Bù lại, tớ tìm thấy cái này..." },
+      { section: "P5. Thùng Rác", key: "trashBtn", label: "Nút Xem tiếp", type: "text", default: "Xem tiếp" },
+      { section: "P5. Thùng Rác", key: "memory1", label: "Ảnh kỷ niệm 1", type: "media" },
+      { section: "P5. Thùng Rác", key: "memory2", label: "Ảnh kỷ niệm 2", type: "media" },
+      { section: "P5. Thùng Rác", key: "memory3", label: "Ảnh kỷ niệm 3", type: "media" },
+      
+      { section: "P6. Cài Đặt", key: "installStep1", label: "Tiến trình 1", type: "text", default: "Đang tải... Sự quan tâm" },
+      { section: "P6. Cài Đặt", key: "installStep2", label: "Tiến trình 2", type: "text", default: "Đang cài đặt... Tính tự giác" },
+      { section: "P6. Cài Đặt", key: "installStep3", label: "Tiến trình 3", type: "text", default: "Đang xóa bỏ... Thói quen vô tâm" },
+      { section: "P6. Cài Đặt", key: "installSuccess", label: "Hoàn tất", type: "text", default: "Hoàn tất! Hệ thống đã được nâng cấp." },
+      
+      { section: "P7. Hộp Thư", key: "letterTitle", label: "Tiêu đề hộp thư", type: "text", default: "INBOX" },
+      { section: "P7. Hộp Thư", key: "letter", label: "Nội dung bức thư", type: "textarea", default: "Anh biết lỗi rồi. Anh đã quá vô tâm và trẻ con. Anh hứa sẽ không bao giờ như vậy nữa. Tha lỗi cho anh nha, chiều nay tớ qua đón đi ăn đền tội, chịu không? ❤️" },
+      { section: "P7. Hộp Thư", key: "letterBtn", label: "Nút xem lựa chọn", type: "text", default: "Xem lựa chọn" },
+      
+      { section: "P8. Chốt Kèo", key: "choiceTitle", label: "Tiêu đề lựa chọn", type: "text", default: "Trả lời thế nào đây?" },
+      { section: "P8. Chốt Kèo", key: "acceptText", label: "Nút đồng ý", type: "text", default: "ĐỒNG Ý (CÓ TRÀ SỮA) 🧋" },
+      { section: "P8. Chốt Kèo", key: "rejectText", label: "Nút từ chối", type: "text", default: "KHÔNG THA 😤" },
+      { section: "P8. Chốt Kèo", key: "successTitle", label: "Tiêu đề thành công", type: "text", default: "Chốt kèo!" },
+      { section: "P8. Chốt Kèo", key: "successMessage", label: "Lời nhắn thành công", type: "text", default: "Tớ qua ngay đây! 🛵💨" }
+    ],
+    sample_data: { screens: ["Lỗi hệ thống", "Mất kết nối", "Khủng long vượt ải", "Cảnh báo", "Thùng rác", "Cài đặt lại", "Tin nhắn", "Chốt kèo"] },
+    template_categories: { slug: "sorry", name: "Sorry", description: null }
+  },
+  {
+    id: "birthday-3-mock",
+    slug: "birthday-3",
+    name: "Birthday #3",
+    component_key: "birthday-3",
+    description: "Lộ trình sinh nhật 8 bước sang trọng, từ gõ cửa, bật đèn, đập bóng bay đến xé quà bất ngờ.",
+    tagline: "Sinh Nhật",
+    base_price: 2000,
+    visual_label: "LUXURY",
+    gradient: "from-amber-200 to-yellow-500",
+    status_label: "Mới",
+    sort_order: 12,
+    data_schema: [
+      { section: "P1. Mở Thư", key: "doorSign", label: "Tiêu đề", type: "text", default: "A SPECIAL GIFT 💌" },
+      { section: "P1. Mở Thư", key: "doorInstruction", label: "Hướng dẫn", type: "text", default: "Chạm 3 lần để mở thư!" },
+      
+      { section: "P2. Phòng Tối", key: "darkRoomText", label: "Lời nhắn", type: "text", default: "Phòng tối quá... Cậu bật đèn giúp tớ với!" },
+      { section: "P2. Phòng Tối", key: "switchBtn", label: "Nút bật đèn", type: "text", default: "Bật đèn" },
+      
+      { section: "P3. Bóng Bay", key: "balloonText", label: "Lời nhắn", type: "text", default: "Trời ơi, bóng bay nhiều quá! Đập vỡ chúng đi!" },
+      
+      { section: "P4. Thổi Nến", key: "cakeTitle", label: "Tiêu đề", type: "text", default: "Happy Birthday!" },
+      { section: "P4. Thổi Nến", key: "cakeInstruction", label: "Hướng dẫn", type: "text", default: "Hãy nhắm mắt, ước một điều và thổi nến nhé!" },
+      { section: "P4. Thổi Nến", key: "blowBtn", label: "Nút thổi nến", type: "text", default: "Phùuuu 💨" },
+      
+      { section: "P5. Lật Thiệp", key: "cardTitle", label: "Tiêu đề thiệp", type: "text", default: "Happy Birthday!" },
+      { section: "P5. Lật Thiệp", key: "cardMessage", label: "Nội dung thiệp", type: "textarea", default: "Mong mọi điều tốt đẹp nhất sẽ đến với cậu. Tuổi mới thật rực rỡ nhé!" },
+      { section: "P5. Lật Thiệp", key: "cardBtn", label: "Nút xem ảnh", type: "text", default: "Xem ảnh kỷ niệm" },
+      
+      { section: "P6. Kỷ Niệm", key: "memory1", label: "Ảnh 1", type: "media" },
+      { section: "P6. Kỷ Niệm", key: "memory2", label: "Ảnh 2", type: "media" },
+      { section: "P6. Kỷ Niệm", key: "memory3", label: "Ảnh 3", type: "media" },
+      { section: "P6. Kỷ Niệm", key: "memoryWish1", label: "Lời chúc 1", type: "textarea", default: "Chúc bé tuổi mới luôn xinh đẹp, rạng rỡ và ngập tràn niềm vui nhé! 💖" },
+      { section: "P6. Kỷ Niệm", key: "memoryWish2", label: "Lời chúc 2", type: "textarea", default: "Tuổi 22 sẽ là một năm đầy hứa hẹn. Chúc mọi dự định của cậu đều thành công rực rỡ! ✨" },
+      { section: "P6. Kỷ Niệm", key: "memoryWish3", label: "Lời chúc 3", type: "textarea", default: "Dù có chuyện gì xảy ra thì vẫn luôn có tớ ở đây ủng hộ cậu. Happy Birthday! 🎂" },
+      { section: "P6. Kỷ Niệm", key: "memoryWish4", label: "Lời chúc cuối", type: "textarea", default: "Cảm ơn vì đã xuất hiện và làm thanh xuân của tớ trở nên tuyệt vời hơn rất nhiều. 🥰" },
+      { section: "P6. Kỷ Niệm", key: "memoryBtn", label: "Nút nhận quà", type: "text", default: "Nhận quà nè 🎁" },
+      
+      { section: "P7. Mở Quà", key: "giftInstruction", label: "Hướng dẫn", type: "text", default: "Xé giấy gói quà đi nào!" },
+      
+      { section: "P8. Quà Tặng", key: "giftName", label: "Tên món quà", type: "text", default: "VOUCHER BAO ĐI ĂN BUFFET & XEM PHIM 🎟️" },
+      { section: "P8. Quà Tặng", key: "giftImage", label: "Ảnh món quà", type: "media" },
+      { section: "P8. Quà Tặng", key: "musicUrl", label: "Nhạc nền", type: "audio" },
+    ],
+    sample_data: { screens: ["Gõ cửa", "Bật đèn", "Bóng bay", "Thổi nến", "Lật thiệp", "Ảnh kỷ niệm", "Xé quà", "Nhận quà"] },
+    template_categories: { slug: "birthday", name: "Birthday", description: null }
+  }
 ];
 
 function isSupportedTemplate(template: Pick<TemplateCatalogItem, "component_key" | "name" | "slug">) {
@@ -100,82 +299,15 @@ export async function getPublishedTemplates() {
     return [];
   }
 
-  return (data ?? []).map(normalizeTemplateRelations).filter(isSupportedTemplate);
+  const dbTemplates = (data ?? []).map(normalizeTemplateRelations).filter(isSupportedTemplate);
+  return [...dbTemplates, ...MOCK_TEMPLATES] as any[];
 }
 
 export async function getTemplateBySlug(slug: string) {
-  if (slug === "sorry-1") {
-    return {
-      id: "sorry-1-mock",
-      slug: "sorry-1",
-      name: "Sorry #1",
-      component_key: "sorry-1",
-      description: "Trải nghiệm 6 bước xoa dịu cơn giận từ việc đập tan lớp băng giá đến bản hiệp ước hòa bình hồng rực rỡ.",
-      tagline: "Làm Hòa",
-      base_price: 2000,
-      visual_label: "HOT",
-      gradient: "from-slate-400 to-rose-400",
-      status_label: "Mới",
-      sort_order: 20,
-      data_schema: {},
-      sample_data: { screens: ["Đập băng", "Thú tội", "Vòng quay", "Kỷ niệm", "Ký tên"] },
-      template_categories: { slug: "sorry", name: "Sorry", description: null }
-    } as any;
-  }
-  if (slug === "sorry-2") {
-    return {
-      id: "sorry-2-mock",
-      slug: "sorry-2",
-      name: "Sorry #2",
-      component_key: "sorry-2",
-      description: "Đập tan cơn tức giận với minigame 'Whack-a-Lover' rồi xoa dịu bằng lời hứa chân thành và trà sữa.",
-      tagline: "Xả Giận",
-      base_price: 2000,
-      visual_label: "FUN",
-      gradient: "from-orange-400 to-rose-400",
-      status_label: "Mới",
-      sort_order: 21,
-      data_schema: {},
-      sample_data: { screens: ["Châm ngòi", "Chọn vũ khí", "Xả giận", "Băng bó", "Xin lỗi", "Tha thứ"] },
-      template_categories: { slug: "sorry", name: "Sorry", description: null }
-    } as any;
-  }
-  if (slug === "sorry-3") {
-    return {
-      id: "sorry-3-mock",
-      slug: "sorry-3",
-      name: "Sorry #3",
-      component_key: "sorry-3",
-      description: "Hành trình chuộc lỗi đầy tính công nghệ và hài hước, từ màn hình xanh tử thần đến minigame khủng long.",
-      tagline: "Chuộc Lỗi",
-      base_price: 2000,
-      visual_label: "FUN",
-      gradient: "from-blue-400 to-indigo-400",
-      status_label: "Mới",
-      sort_order: 22,
-      data_schema: {},
-      sample_data: { screens: ["Lỗi hệ thống", "Mất kết nối", "Khủng long vượt ải", "Cảnh báo", "Thùng rác", "Cài đặt lại", "Tin nhắn", "Chốt kèo"] },
-      template_categories: { slug: "sorry", name: "Sorry", description: null }
-    } as any;
-  }
-  if (slug === "birthday-3") {
-    return {
-      id: "birthday-3-mock",
-      slug: "birthday-3",
-      name: "Birthday #3",
-      component_key: "birthday-3",
-      description: "Lộ trình sinh nhật 8 bước sang trọng, từ gõ cửa, bật đèn, đập bóng bay đến xé quà bất ngờ.",
-      tagline: "Sinh Nhật",
-      base_price: 2000,
-      visual_label: "LUXURY",
-      gradient: "from-amber-200 to-yellow-500",
-      status_label: "Mới",
-      sort_order: 12,
-      data_schema: {},
-      sample_data: { screens: ["Gõ cửa", "Bật đèn", "Bóng bay", "Thổi nến", "Lật thiệp", "Ảnh kỷ niệm", "Xé quà", "Nhận quà"] },
-      template_categories: { slug: "birthday", name: "Birthday", description: null }
-    } as any;
-  }
+  console.log("getTemplateBySlug called with:", slug);
+  const mock = MOCK_TEMPLATES.find(m => m.slug === slug);
+  console.log("Found mock:", mock ? mock.slug : "NONE");
+  if (mock) return mock;
 
   const supabase = createServerSupabaseClient();
   const { data, error } = await supabase

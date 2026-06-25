@@ -243,7 +243,7 @@ export function ConstellationVaultExperience({
             onPrev={() => setStage((current) => Math.max(1, current - 1))}
             onNext={() => setStage((current) => Math.min(5, current + 1))}
             accentColor={stage === 5 ? finalAccent : [stage1Accent, stage2Accent, stage3Accent, stage4Accent][stage - 1] ?? "#fff"}
-            isHidden={compact || hideNavigation}
+            isHidden={hideNavigation || autoPlay}
           />
         </>
       )}

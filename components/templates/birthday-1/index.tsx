@@ -36,6 +36,37 @@ import {
   prepareScene
 } from "./components";
 
+function ConfettiOverlay({ active }: { active: boolean }) {
+  if (!active) return null;
+  return (
+    <div className="pointer-events-none absolute inset-0 z-40 overflow-hidden">
+      {Array.from({ length: 60 }).map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute h-3 w-3"
+          style={{
+            background: ["#ff7eb3", "#ff758c", "#ff9a9e", "#fecfef", "#ffcc00", "#73e8ff"][i % 6],
+            left: `${Math.random() * 100}%`,
+            top: "-5%",
+            borderRadius: i % 3 === 0 ? "50%" : "0%",
+          }}
+          animate={{
+            y: ["0vh", "110vh"],
+            x: [(Math.random() - 0.5) * 100, (Math.random() - 0.5) * 300],
+            rotate: [0, Math.random() * 720 + 360],
+          }}
+          transition={{
+            duration: 3 + Math.random() * 3,
+            repeat: Infinity,
+            delay: Math.random() * 4,
+            ease: "linear",
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 function BirthdayScene({
   recipientName,
   finalMessage,
@@ -392,7 +423,7 @@ function BirthdayScene({
                 ? -1.05 // Nấc 1: Đỡ máy hát và mèo
                 : phase === "cake-messages" 
                   ? -1.42 // Nấc 2: Đỡ chiếc bánh lúc hiện lời chúc
-                  : -3.25, // Nấc 3: Đỡ chiếc bánh lúc cắm nến, mở quà
+                  : -2.35, // Nấc 3: Đỡ chiếc bánh lúc cắm nến, mở quà
               0
             ]} 
             visible={isBright}
@@ -457,7 +488,7 @@ function BirthdayScene({
           )}
 
           {phase === "decorate-popup" && (
-            <MagicDecorWand onDone={handleWandClicked} onMagic={playMagic} onTouch={playTouch} />
+            <MagicDecorWand onDone={handleWandClicked} onMagic={playMagic} onTouch={playTouch} autoPlay={autoPlay} />
           )}
 
           {phase === "cake-messages" && (
@@ -472,6 +503,8 @@ function BirthdayScene({
               onCandleLit={handleCandleLit}
               onWishRecorded={handleWishRecorded}
               onGiftOpen={handleGiftOpen}
+              celebrationZoom={celebrationZoom}
+              autoPlay={autoPlay}
             />
           )}
 
@@ -487,6 +520,8 @@ function BirthdayScene({
           <BalloonShower active={balloonCoverActive} />
         </Canvas>
       </div>
+      
+      <ConfettiOverlay active={phase === "celebration" || phase === "gift-reveal"} />
 
       <AnimatePresence mode="wait">
         {phase === "cake-messages" && messageIndex >= 0 && messageIndex < messages.length && (

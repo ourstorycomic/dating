@@ -10,11 +10,11 @@ export function DatingTwoPreview(props: TemplatePreviewProps) {
 
   return (
     <LoveSpaceTemplate
-      compact={props.compact}
+      compact={props.compact} isBuilderPreview={props.isBuilderPreview}
       recipientName={props.recipientName}
       senderName={props.senderName}
       fullScreen={props.fullScreen}
-      hideNavigation={props.compact || props.hideNavigation}
+      hideNavigation={props.hideNavigation}
       customData={parsedConfig}
       onComplete={() => {
         props.onResponse?.({

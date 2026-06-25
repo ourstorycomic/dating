@@ -77,7 +77,10 @@ export function Step4Wheel({ onNext, autoPlay, data }: { onNext: (location: stri
       className="absolute inset-0 z-50 flex flex-col items-center justify-center p-6"
       style={{ background: `linear-gradient(to bottom right, ${data?.wheelBgFrom || '#ffecd2'}, ${data?.wheelBgTo || '#fcb69f'})` }}
     >
-      <h2 className="text-4xl font-extrabold text-pink-600 mb-2 text-center drop-shadow-sm anim-spring-up">{data?.stepWheelTitle}</h2>
+      <h2 className="text-4xl font-extrabold text-pink-600 mb-2 text-center drop-shadow-sm anim-spring-up flex flex-col items-center">
+        <img src="/assets/dumb/hm.webp" className="w-24 h-24 object-contain mb-2 drop-shadow-xl" alt="wheel" />
+        {data?.stepWheelTitle}
+      </h2>
       <p className="text-pink-800/80 font-medium mb-10 text-center anim-spring-up delay-100">{data?.stepWheelSub}</p>
       
       <div className="relative w-[300px] h-[300px] anim-spring-up delay-200">

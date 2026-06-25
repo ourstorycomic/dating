@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/session";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createServerSupabaseClient, MOCK_TEMPLATES } from "@/lib/supabase/server";
 
 function randomCode(prefix: string, length = 8) {
   const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -56,12 +56,23 @@ export async function POST(request: Request) {
     .eq("id", templateId)
     .maybeSingle();
 
+  let finalTemplate = template;
+
   if (templateError || !template || !template.is_published) {
-    if (templateError) console.error("Template lookup failed", templateError);
-    return NextResponse.json({ error: "Template không hợp lệ hoặc đã tắt." }, { status: 400 });
+    const mockMatch = MOCK_TEMPLATES.find(m => m.id === templateId || m.slug === templateId);
+    if (mockMatch) {
+      finalTemplate = {
+        id: mockMatch.id,
+        base_price: mockMatch.base_price,
+        is_published: true
+      };
+    } else {
+      if (templateError) console.error("Template lookup failed", templateError);
+      return NextResponse.json({ error: "Template không hợp lệ hoặc đã tắt." }, { status: 400 });
+    }
   }
 
-  const amount = Number(template.base_price);
+  const amount = Number(finalTemplate.base_price);
   if (!amount || amount <= 0) {
     return NextResponse.json({ error: "Giá template không hợp lệ." }, { status: 400 });
   }

@@ -12,6 +12,7 @@ export function StarryConstellationPreview({
   onResponse,
   customData,
   autoPlay = false,
+  isBuilderPreview = false,
 }: TemplatePreviewProps) {
   const messages = customData?.memories?.length
     ? customData.memories.map((memory) => memory.message || memory.title)
@@ -85,6 +86,7 @@ export function StarryConstellationPreview({
       senderName={senderName}
       recipientName={recipientName}
       compact={compact}
+      isBuilderPreview={isBuilderPreview}
       fullScreen={fullScreen}
       hideNavigation={hideNavigation}
       onResponse={(r) => onResponse?.({ answer: r.answer, date: r.date, audioDataUrl: r.audioDataUrl })}

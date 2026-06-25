@@ -58,6 +58,7 @@ export function Valentine2WatchParty({
   roomId,
   isHost = false,
   autoPlay = false,
+  isBuilderPreview = false,
   onResponse
 }: {
   compact?: boolean;
@@ -101,12 +102,12 @@ export function Valentine2WatchParty({
   // Remove the blind autoPlay interval. The children components will advance automatically using their callbacks when autoPlay is true.
   // We keep the container class.
 
-  let containerClass = "w-full overflow-hidden transition-colors duration-[2000ms] mx-auto text-gray-800 touch-none [perspective:1500px] ";
+  let containerClass = "w-full overflow-hidden transition-colors duration-[2000ms] mx-auto text-gray-800 [perspective:1500px] ";
 
   const isCinemaMode = step >= 7;
   const bgClass = isCinemaMode
-    ? "bg-gradient-to-br from-[#fff6fa] via-[#ffe4ef] to-[#ffd4e5] text-rose-950"
-    : "bg-gradient-to-br from-[#fffafc] via-[#ffe6f0] to-[#ffd9e7] text-rose-950";
+    ? "bg-gradient-to-br from-[#fff6fa]/80 via-[#ffe4ef]/80 to-[#ffd4e5]/80 text-rose-950 bg-[url('/assets/bg/bg8.jpg')] bg-cover bg-center bg-blend-overlay"
+    : "bg-gradient-to-br from-[#fffafc]/80 via-[#ffe6f0]/80 to-[#ffd9e7]/80 text-rose-950 bg-[url('/assets/bg/bg5.jpg')] bg-cover bg-center bg-blend-overlay";
 
   if (compact) {
     containerClass += `absolute inset-0 border-[6px] border-[#f4c5d6] rounded-[2.5rem] shadow-2xl ${bgClass}`;
@@ -225,7 +226,7 @@ export function Valentine2WatchParty({
           if (idx < s.length - 1) setStep(s[idx + 1]);
         }}
         accentColor="#db2777"
-        isHidden={compact || hideNavigation}
+        isHidden={hideNavigation || autoPlay}
       />
     </div>
   );

@@ -85,74 +85,6 @@ const steps = [
 export default async function Home() {
   const templates = await getPublishedTemplates();
 
-  // Inject Sorry 1 for demo since it's not in DB yet
-  templates.push({
-    id: "sorry-1-mock",
-    slug: "sorry-1",
-    name: "Sorry #1",
-    component_key: "sorry-1",
-    description: "Trải nghiệm 6 bước xoa dịu cơn giận từ việc đập tan lớp băng giá đến bản hiệp ước hòa bình hồng rực rỡ.",
-    tagline: "Làm Hòa",
-    base_price: 2000,
-    visual_label: "HOT",
-    gradient: "from-slate-400 to-rose-400",
-    status_label: "Mới",
-    sort_order: 20,
-    data_schema: {},
-    sample_data: { screens: ["Đập băng", "Thú tội", "Vòng quay", "Kỷ niệm", "Ký tên"] },
-    template_categories: { slug: "sorry", name: "Sorry", description: null }
-  } as any);
-  templates.push({
-    id: "sorry-2-mock",
-    slug: "sorry-2",
-    name: "Sorry #2",
-    component_key: "sorry-2",
-    description: "Đập tan cơn tức giận với minigame 'Whack-a-Lover' rồi xoa dịu bằng lời hứa chân thành và trà sữa.",
-    tagline: "Xả Giận",
-    base_price: 2000,
-    visual_label: "FUN",
-    gradient: "from-orange-400 to-rose-400",
-    status_label: "Mới",
-    sort_order: 21,
-    data_schema: {},
-    sample_data: { screens: ["Châm ngòi", "Chọn vũ khí", "Xả giận", "Băng bó", "Xin lỗi", "Tha thứ"] },
-    template_categories: { slug: "sorry", name: "Sorry", description: null }
-  } as any);
-
-  templates.push({
-    id: "sorry-3-mock",
-    slug: "sorry-3",
-    name: "Sorry #3",
-    component_key: "sorry-3",
-    description: "Hành trình chuộc lỗi đầy tính công nghệ và hài hước, từ màn hình xanh tử thần đến minigame khủng long.",
-    tagline: "Chuộc Lỗi",
-    base_price: 2000,
-    visual_label: "FUN",
-    gradient: "from-blue-400 to-indigo-400",
-    status_label: "Mới",
-    sort_order: 22,
-    data_schema: {},
-    sample_data: { screens: ["Lỗi hệ thống", "Mất kết nối", "Khủng long vượt ải", "Cảnh báo", "Thùng rác", "Cài đặt lại", "Tin nhắn", "Chốt kèo"] },
-    template_categories: { slug: "sorry", name: "Sorry", description: null }
-  } as any);
-
-  templates.push({
-    id: "birthday-3-mock",
-    slug: "birthday-3",
-    name: "Birthday #3",
-    component_key: "birthday-3",
-    description: "Lộ trình sinh nhật 8 bước sang trọng, từ gõ cửa, bật đèn, đập bóng bay đến xé quà bất ngờ.",
-    tagline: "Sinh Nhật",
-    base_price: 2000,
-    visual_label: "LUXURY",
-    gradient: "from-amber-200 to-yellow-500",
-    status_label: "Mới",
-    sort_order: 12,
-    data_schema: {},
-    sample_data: { screens: ["Gõ cửa", "Bật đèn", "Bóng bay", "Thổi nến", "Lật thiệp", "Ảnh kỷ niệm", "Xé quà", "Nhận quà"] },
-    template_categories: { slug: "birthday", name: "Birthday", description: null }
-  } as any);
-
 
   const grouped = categoryOrder
     .map((slug) => ({
@@ -183,12 +115,17 @@ export default async function Home() {
               Quản trị
             </Link>
           </nav>
-          <a
-            className="ml-auto rounded-full bg-[#332035] px-4 py-2 text-sm font-bold text-[#fff] shadow-[0_12px_28px_rgba(51,32,53,0.18)] transition hover:bg-[#d53f8c] md:ml-0"
-            href={tiktokLink()}
-          >
-            Nhắn TikTok
-          </a>
+          <div className="ml-auto flex items-center gap-2 md:ml-0">
+            <Link className="md:hidden text-sm font-bold text-[#b83276] px-2" href="/dashboard">
+              Quản trị
+            </Link>
+            <a
+              className="rounded-full bg-[#332035] px-4 py-2 text-sm font-bold text-[#fff] shadow-[0_12px_28px_rgba(51,32,53,0.18)] transition hover:bg-[#d53f8c]"
+              href={tiktokLink()}
+            >
+              Nhắn TikTok
+            </a>
+          </div>
         </header>
 
         <main className="mx-auto max-w-7xl">

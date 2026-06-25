@@ -13,6 +13,7 @@ import DinoDuck1Img from './textures/Dino/DinoDuck1.png';
 import DinoDuck2Img from './textures/Dino/DinoDuck2.png';
 import CloudImg from './textures/map/Cloud.png';
 import TrackImg from './textures/map/Track.png';
+import { TemplateNavigator } from "../TemplateNavigator";
 
 const APOLOGY_DATA = {
   reason: "mải chơi game quên nhắn tin",
@@ -22,7 +23,12 @@ const APOLOGY_DATA = {
     "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=500&q=80",
     "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=500&q=80"
   ],
-  letter: "Anh biết lỗi rồi. Anh đã quá vô tâm và trẻ con. Anh hứa sẽ không bao giờ như vậy nữa. Tha lỗi cho anh nha, chiều nay tớ qua đón đi ăn đền tội, chịu không? ❤️"
+  letter: "Anh biết lỗi rồi. Anh đã quá vô tâm và trẻ con. Anh hứa sẽ không bao giờ như vậy nữa. Tha lỗi cho anh nha, chiều nay tớ qua đón đi ăn đền tội, chịu không? ❤️",
+  choiceTitle: "Trả lời thế nào đây?",
+  acceptText: "ĐỒNG Ý (CÓ TRÀ SỮA) 🧋",
+  rejectText: "KHÔNG THA 😤",
+  successTitle: "Chốt kèo!",
+  successMessage: "Tớ qua ngay đây! 🛵💨"
 };
 
 function FloatingParticles({ step }: { step: number }) {
@@ -57,14 +63,14 @@ function FloatingParticles({ step }: { step: number }) {
               className="absolute drop-shadow-md w-1 h-1 bg-white rounded-full"
               style={{ left: `${p.x}%`, top: `${p.y}%` }}
               animate={{
-                x: [200, -200],
-                y: [-100, 300],
+                x: [0, -400],
+                y: [0, 400],
                 opacity: [0, 1, 0],
-                scale: [0, 2, 0],
+                scale: [0, 1.5, 0],
               }}
-              transition={{ duration: 1 + Math.random() * 2, repeat: Infinity, delay: p.delay, ease: "linear" }}
+              transition={{ duration: 1.5 + Math.random() * 2, repeat: Infinity, delay: p.delay, ease: "linear" }}
             >
-              <div className="absolute top-1/2 left-1/2 w-20 h-px bg-gradient-to-r from-white to-transparent transform -rotate-45 origin-left" />
+              <div className="absolute top-1/2 left-1/2 w-24 h-px bg-gradient-to-r from-white to-transparent transform -rotate-45 origin-left" />
             </motion.div>
           );
         }
@@ -140,49 +146,60 @@ function BackgroundEffects({ step }: { step: number }) {
   );
 }
 
-export default function Sorry3Template({ autoPlay = false, compact = false }: { autoPlay?: boolean; compact?: boolean }) {
+export default function Sorry3Template({ autoPlay = false, compact = false, hideNavigation = false, config = {} }: { autoPlay?: boolean; compact?: boolean; hideNavigation?: boolean; config?: any }) {
   const [step, setStep] = useState(1);
 
   const nextStep = () => setStep((s) => Math.min(s + 1, 8));
 
   const getContainerBg = () => {
     switch (step) {
-      case 1: return "bg-[#0052a5]"; // BSOD
-      case 2: return "bg-white"; // No Internet
-      case 3: return "bg-pink-50"; // Dino
-      case 4: return "bg-[#008080]"; // Confession
-      case 5: return "bg-[#008080]"; // Recycle Bin
-      case 6: return "bg-[#f0f2f5]"; // Reinstalling
-      case 7: return "bg-[#f0f2f5]"; // Inbox
-      case 8: return "bg-[#f0f2f5]"; // Final choice
-      default: return "bg-[#f8f9fa]";
+      case 1: return "bg-pink-100/90"; // BSOD -> PSOD
+      case 2: return "bg-pink-50/90"; // No Internet
+      case 3: return "bg-pink-50/90"; // Dino
+      case 4: return "bg-rose-100/90"; // Confession
+      case 5: return "bg-rose-100/90"; // Recycle Bin
+      case 6: return "bg-pink-50/90"; // Reinstalling
+      case 7: return "bg-pink-50/90"; // Inbox
+      case 8: return "bg-pink-50/90"; // Final choice
+      default: return "bg-pink-50/90";
     }
   };
 
   return (
-    <div className={`relative w-full overflow-hidden text-gray-800 touch-none font-sans mx-auto transition-colors duration-1000 ${getContainerBg()} ${compact ? 'h-full' : 'max-w-[400px] h-[800px] max-h-[90vh] rounded-[2.5rem] shadow-2xl border-[10px] border-gray-200'}`}>
-      {step >= 3 && (
-        <>
-          <BackgroundEffects step={step} />
-          <FloatingParticles step={step} />
-        </>
-      )}
+    <div 
+      className={`relative w-full overflow-hidden text-gray-800 font-sans mx-auto ${compact ? 'h-full' : 'max-w-[400px] h-[800px] max-h-[90vh] rounded-[2.5rem] shadow-2xl border-[10px] border-pink-200'}`}
+      style={{ backgroundImage: "url('/assets/bg/bg5.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}
+    >
+      <div className={`absolute inset-0 transition-colors duration-1000 backdrop-blur-[2px] pointer-events-none ${getContainerBg()}`} />
+      <div className="absolute inset-0 pointer-events-none z-0">
+        {step >= 3 && <BackgroundEffects step={step} />}
+        {step >= 3 && <FloatingParticles step={step} />}
+      </div>
       <AnimatePresence mode="wait">
-        {step === 1 && <Step1BSOD key="step1" onNext={nextStep} autoPlay={autoPlay} />}
-        {step === 2 && <Step2NoInternet key="step2" onNext={nextStep} autoPlay={autoPlay} />}
-        {step === 3 && <Step3DinoRun key="step3" onNext={nextStep} autoPlay={autoPlay} />}
-        {step === 4 && <Step4Confession key="step4" onNext={nextStep} autoPlay={autoPlay} />}
-        {step === 5 && <Step5RecycleBin key="step5" onNext={nextStep} autoPlay={autoPlay} />}
-        {step === 6 && <Step6Reinstalling key="step6" onNext={nextStep} autoPlay={autoPlay} />}
-        {step === 7 && <Step7Inbox key="step7" onNext={nextStep} autoPlay={autoPlay} />}
-        {step === 8 && <Step8FinalChoice key="step8" autoPlay={autoPlay} />}
+        {step === 1 && <Step1BSOD key="step1" onNext={nextStep} autoPlay={autoPlay} config={config} />}
+        {step === 2 && <Step2NoInternet key="step2" onNext={nextStep} autoPlay={autoPlay} config={config} />}
+        {step === 3 && <Step3DinoRun key="step3" onNext={nextStep} autoPlay={autoPlay} config={config} />}
+        {step === 4 && <Step4Confession key="step4" onNext={nextStep} autoPlay={autoPlay} config={config} />}
+        {step === 5 && <Step5RecycleBin key="step5" onNext={nextStep} autoPlay={autoPlay} config={config} />}
+        {step === 6 && <Step6Reinstalling key="step6" onNext={nextStep} autoPlay={autoPlay} config={config} />}
+        {step === 7 && <Step7Inbox key="step7" onNext={nextStep} autoPlay={autoPlay} config={config} />}
+        {step === 8 && <Step8FinalChoice key="step8" autoPlay={autoPlay} config={config} />}
       </AnimatePresence>
+
+      <TemplateNavigator
+        currentIndex={step - 1}
+        totalSteps={8}
+        onPrev={() => setStep(s => Math.max(1, s - 1))}
+        onNext={() => setStep(s => Math.min(8, s + 1))}
+        accentColor="#0052a5"
+        isHidden={hideNavigation || autoPlay}
+      />
     </div>
   );
 }
 
 // --- STEP 1: BSOD ---
-function Step1BSOD({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step1BSOD({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   useEffect(() => {
     if (autoPlay) {
       const t = setTimeout(onNext, 3000);
@@ -195,17 +212,19 @@ function Step1BSOD({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, transition: { duration: 1.5, ease: "easeOut" } }}
-      className="absolute inset-0 bg-transparent text-white p-8 flex flex-col justify-center font-mono z-10"
+      className="absolute inset-0 bg-transparent text-rose-700 p-8 flex flex-col justify-center font-mono z-10"
     >
-      <p className="text-8xl mb-6">:(</p>
-      <h1 className="text-2xl font-bold mb-6">LỖI HỆ THỐNG</h1>
+      <div className="flex items-center gap-4 mb-6">
+        <p className="text-8xl">:(</p>
+      </div>
+      <h1 className="text-2xl font-bold mb-6">{config?.bsodTitle || "LỖI HỆ THỐNG"}</h1>
       <p className="text-lg leading-relaxed mb-6">
-        MỐI QUAN HỆ ĐANG BỊ GIÁN ĐOẠN.
+        {config?.bsodMessage || "MỐI QUAN HỆ ĐANG BỊ GIÁN ĐOẠN."}
         <br /><br />
-        Nguyên nhân: Tên ngốc này đã <span className="bg-white/20 px-1">{APOLOGY_DATA.reason}</span>.
+        Nguyên nhân: Tên ngốc này đã <span className="bg-white/20 px-1">{config?.reason || APOLOGY_DATA.reason}</span>.
       </p>
       <p className="text-sm opacity-80 mb-12">
-        Mã lỗi: LOVE_NOT_FOUND_404
+        {config?.bsodCode || "Mã lỗi: LOVE_NOT_FOUND_404"}
       </p>
       
       <motion.button
@@ -213,16 +232,16 @@ function Step1BSOD({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean
         whileTap={{ scale: 0.95 }}
         onClick={autoPlay ? undefined : onNext}
         disabled={autoPlay}
-        className="self-start px-6 py-3 bg-white text-[#0052a5] font-bold shadow-lg border-2 border-transparent hover:border-white/50 transition-colors disabled:opacity-50"
+        className="self-start px-6 py-3 bg-white text-rose-600 font-bold shadow-lg border-2 border-transparent hover:border-rose-200 transition-colors disabled:opacity-50"
       >
-        [ Tái khởi động ]
+        {config?.bsodButton || "[ Tái khởi động ]"}
       </motion.button>
     </motion.div>
   );
 }
 
 // --- STEP 2: NO INTERNET ---
-function Step2NoInternet({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step2NoInternet({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   useEffect(() => {
     if (autoPlay) {
       const t = setTimeout(onNext, 2000);
@@ -238,29 +257,32 @@ function Step2NoInternet({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
       onClick={autoPlay ? undefined : onNext}
       className={`absolute inset-0 bg-transparent text-[#5f6368] p-8 flex flex-col pt-32 z-10 ${autoPlay ? '' : 'cursor-pointer'}`}
     >
-      <div className="w-16 h-16 mb-6 opacity-80">
-        <WifiOff size={64} />
+      <div className="flex justify-between items-start mb-6">
+        <div className="w-16 h-16 opacity-80">
+          <WifiOff size={64} />
+        </div>
+        <img src="/assets/sad/123.webp" className="w-20 h-20 object-contain drop-shadow-sm opacity-80 -mt-8" alt="no internet" />
       </div>
-      <h1 className="text-2xl font-bold mb-4 text-[#202124]">Không có kết nối</h1>
+      <h1 className="text-2xl font-bold mb-4 text-[#202124]">{config?.noConnTitle || "Không có kết nối"}</h1>
       <p className="text-[15px] leading-relaxed mb-8">
-        Mất kết nối với trái tim của người yêu.
+        {config?.noConnMessage || "Mất kết nối với trái tim của người yêu."}
       </p>
       <ul className="text-[13px] list-disc pl-5 space-y-2 opacity-80">
-        <li>Kiểm tra lại độ thành tâm</li>
-        <li>Chuẩn bị sẵn lời xin lỗi</li>
-        <li>Chạy qua nhà đền tội ngay lập tức</li>
+        <li>{config?.noConnHint1 || "Kiểm tra lại độ thành tâm"}</li>
+        <li>{config?.noConnHint2 || "Chuẩn bị sẵn lời xin lỗi"}</li>
+        <li>{config?.noConnHint3 || "Chạy qua nhà đền tội ngay lập tức"}</li>
       </ul>
-      <p className="text-[13px] mt-8 text-blue-500 font-medium">ERR_HEART_BROKEN</p>
+      <p className="text-[13px] mt-8 text-blue-500 font-medium">{config?.noConnErr || "ERR_HEART_BROKEN"}</p>
       
-      <p className="absolute bottom-10 left-0 w-full text-center text-sm animate-pulse opacity-60">
-        Bấm phím Space hoặc chạm vào màn hình để thử lại.
+      <p className="absolute bottom-10 left-0 w-full text-center text-sm animate-pulse opacity-60 z-10">
+        {config?.dinoHelpText || "Bấm phím Space hoặc chạm vào màn hình để thử lại."}
       </p>
     </motion.div>
   );
 }
 
 // --- STEP 3: MINIGAME DINO ---
-function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step3DinoRun({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   const [score, setScore] = useState(0);
   const [gameState, setGameState] = useState<"playing" | "won" | "lost">("playing");
   
@@ -403,12 +425,12 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
 
         // Dino Physics
         if (st.keys.jump && st.dino.y === 0 && !st.dino.ducking) {
-          st.dino.vy = -12;
+          st.dino.vy = -10;
           st.dino.state = 'jump';
         }
         
         st.dino.y += st.dino.vy;
-        st.dino.vy += 0.8; // Gravity
+        st.dino.vy += 0.6; // Gravity
         
         if (st.dino.y > 0) {
           st.dino.y = 0;
@@ -561,20 +583,28 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
       
       <div className="absolute bottom-10 w-full flex justify-center gap-4 z-20 opacity-80 text-xs px-6">
         <button 
-          onPointerDown={(e) => { e.stopPropagation(); if (!autoPlay) state.current.keys.jump = true; }}
+          onPointerDown={(e) => { 
+            e.stopPropagation(); 
+            if (gameState === "lost") { resetGame(); return; }
+            if (!autoPlay) state.current.keys.jump = true; 
+          }}
           onPointerUp={(e) => { e.stopPropagation(); if (!autoPlay) state.current.keys.jump = false; }}
           onMouseLeave={(e) => { e.stopPropagation(); if (!autoPlay) state.current.keys.jump = false; }}
           className="flex-1 bg-white/90 py-3 rounded-xl border-2 border-pink-200 shadow-md font-black text-pink-500 text-center uppercase active:bg-pink-100 transition-colors"
         >
-          NHẢY (W)
+          {config?.dinoJumpBtn || "NHẢY (W)"}
         </button>
         <button 
-          onPointerDown={(e) => { e.stopPropagation(); if (!autoPlay) state.current.keys.duck = true; }}
+          onPointerDown={(e) => { 
+            e.stopPropagation(); 
+            if (gameState === "lost") { resetGame(); return; }
+            if (!autoPlay) state.current.keys.duck = true; 
+          }}
           onPointerUp={(e) => { e.stopPropagation(); if (!autoPlay) state.current.keys.duck = false; }}
           onMouseLeave={(e) => { e.stopPropagation(); if (!autoPlay) state.current.keys.duck = false; }}
           className="flex-1 bg-white/90 py-3 rounded-xl border-2 border-pink-200 shadow-md font-black text-pink-500 text-center uppercase active:bg-pink-100 transition-colors"
         >
-          CÚI (S)
+          {config?.dinoDuckBtn || "CÚI (S)"}
         </button>
       </div>
 
@@ -598,7 +628,7 @@ function Step3DinoRun({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
 }
 
 // --- STEP 4: CONFESSION WINDOW ---
-function Step4Confession({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step4Confession({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   useEffect(() => {
     if (autoPlay) {
       const t = setTimeout(onNext, 2500);
@@ -615,27 +645,27 @@ function Step4Confession({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
     >
       <div className="bg-[#c0c0c0] w-full max-w-sm border-t-2 border-l-2 border-white border-b-2 border-r-2 border-[#808080] shadow-[2px_2px_0_0_#000]">
         <div className="bg-[#000080] text-white px-2 py-1 flex items-center justify-between font-bold text-sm">
-          <span>Cảnh_Báo.exe</span>
+          <span>{config?.alertTitle || "Cảnh_Báo.exe"}</span>
           <button className="bg-[#c0c0c0] text-black px-2 border-t border-l border-white border-b border-r border-[#808080] font-bold">X</button>
         </div>
-        <div className="p-6 flex flex-col items-center text-center">
+        <div className="p-6 flex flex-col items-center text-center relative">
+          <img src="/assets/sad/el-gato.webp" className="absolute top-4 right-4 w-12 h-12 object-contain" alt="gato" />
           <AlertTriangle size={48} className="text-[#ffff00] mb-4 fill-[#ffff00] text-black" />
-          <p className="text-black mb-6 text-[15px] leading-relaxed">
-            CẢNH BÁO: Tên ngốc này đã nhận ra lỗi lầm!<br /><br />
-            Hắn thừa nhận mình vô tâm, trẻ con và hứa sẽ sửa đổi. Bạn có muốn xem bằng chứng không?
+          <p className="text-black mb-6 text-[15px] leading-relaxed whitespace-pre-line">
+            {config?.alertMessage || "CẢNH BÁO: Tên ngốc này đã nhận ra lỗi lầm!\n\nHắn thừa nhận mình vô tâm, trẻ con và hứa sẽ sửa đổi. Bạn có muốn xem bằng chứng không?"}
           </p>
           <div className="flex gap-4 w-full">
             <button
               onClick={onNext}
               className="flex-1 bg-[#c0c0c0] text-black py-2 border-t-2 border-l-2 border-white border-b-2 border-r-2 border-[#808080] active:border-t-[#808080] active:border-l-[#808080] active:border-b-white active:border-r-white font-bold"
             >
-              Xem bằng chứng
+              {config?.alertBtnYes || "Xem bằng chứng"}
             </button>
             <button
               onClick={onNext}
               className="flex-1 bg-[#c0c0c0] text-black py-2 border-t-2 border-l-2 border-white border-b-2 border-r-2 border-[#808080] active:border-t-[#808080] active:border-l-[#808080] active:border-b-white active:border-r-white font-bold"
             >
-              Hủy
+              {config?.alertBtnNo || "Hủy"}
             </button>
           </div>
         </div>
@@ -645,7 +675,7 @@ function Step4Confession({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
 }
 
 // --- STEP 5: RECYCLE BIN ---
-function Step5RecycleBin({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step5RecycleBin({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   const [opened, setOpened] = useState(false);
 
   useEffect(() => {
@@ -673,18 +703,26 @@ function Step5RecycleBin({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
         onClick={() => setOpened(true)}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
-        className="mb-8 relative z-20"
+        className="mb-8 relative z-20 flex flex-col items-center"
       >
-        <Trash2 size={80} className={`text-white transition-all ${opened ? 'opacity-50' : 'opacity-100'}`} />
+        <div className="relative">
+          <Trash2 size={80} className={`text-white transition-all ${opened ? 'opacity-50' : 'opacity-100'}`} />
+          {!opened && <img src="/assets/sad/love-cute.webp" className="absolute -top-6 -right-6 w-12 h-12 object-contain drop-shadow-lg" alt="cute" />}
+        </div>
         <p className="text-white mt-2 font-mono text-sm">Recycle Bin</p>
       </motion.button>
 
-      <p className="text-white mb-10 font-mono text-sm bg-black/40 p-4 border border-white/20">
-        Tớ đã lỡ vứt những thói quen xấu vào thùng rác rồi.<br/>Bù lại, tớ tìm thấy cái này...
-      </p>
+      <p 
+        className="text-white mb-10 font-mono text-sm bg-black/40 p-4 border border-white/20 whitespace-pre-line"
+        dangerouslySetInnerHTML={{__html: config?.trashMessage || "Tớ đã lỡ vứt những thói quen xấu vào thùng rác rồi.<br/>Bù lại, tớ tìm thấy cái này..."}}
+      />
 
       {/* Memories flying out */}
-      {opened && APOLOGY_DATA.memories.map((img, i) => (
+      {opened && (
+        [config?.memory1, config?.memory2, config?.memory3].filter(Boolean).length > 0 
+          ? [config?.memory1, config?.memory2, config?.memory3].filter(Boolean)
+          : APOLOGY_DATA.memories
+      ).map((img: string, i: number) => (
         <motion.div
           key={i}
           initial={{ opacity: 0, scale: 0, y: -50 }}
@@ -710,7 +748,7 @@ function Step5RecycleBin({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
           onClick={onNext}
           className="bg-[#c0c0c0] text-black px-8 py-3 border-t-2 border-l-2 border-white border-b-2 border-r-2 border-[#808080] active:border-t-[#808080] active:border-l-[#808080] active:border-b-white active:border-r-white font-bold relative z-40 shadow-2xl mt-12"
         >
-          Xem tiếp
+          {config?.trashBtn || "Xem tiếp"}
         </motion.button>
       )}
     </motion.div>
@@ -718,14 +756,14 @@ function Step5RecycleBin({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
 }
 
 // --- STEP 6: REINSTALLING ---
-function Step6Reinstalling({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step6Reinstalling({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   const [progress, setProgress] = useState(0);
 
   const getStatus = (p: number) => {
-    if (p < 30) return "Đang tải... Sự quan tâm";
-    if (p < 60) return "Đang cài đặt... Tính tự giác";
-    if (p < 90) return "Đang xóa bỏ... Thói quen vô tâm";
-    return "Hoàn tất! Hệ thống đã được nâng cấp.";
+    if (p < 30) return config?.installStep1 || "Đang tải... Sự quan tâm";
+    if (p < 60) return config?.installStep2 || "Đang cài đặt... Tính tự giác";
+    if (p < 90) return config?.installStep3 || "Đang xóa bỏ... Thói quen vô tâm";
+    return config?.installSuccess || "Hoàn tất! Hệ thống đã được nâng cấp.";
   };
 
   useEffect(() => {
@@ -767,11 +805,12 @@ function Step6Reinstalling({ onNext, autoPlay }: { onNext: () => void; autoPlay:
 }
 
 // --- STEP 7: INBOX ---
-function Step7Inbox({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step7Inbox({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   const [typedChars, setTypedChars] = useState(0);
 
   useEffect(() => {
-    if (typedChars < APOLOGY_DATA.letter.length) {
+    const text = config?.letter || APOLOGY_DATA.letter;
+    if (typedChars < text.length) {
       const timeout = setTimeout(() => {
         setTypedChars(prev => prev + 1);
       }, 50); // Typing speed
@@ -806,12 +845,12 @@ function Step7Inbox({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
         
         {/* The message */}
         <div className="self-start bg-white border border-gray-200 text-gray-800 p-4 rounded-2xl rounded-tl-none shadow-sm max-w-[85%] relative">
-          <p className="whitespace-pre-wrap leading-relaxed text-[15px]">
-            {APOLOGY_DATA.letter.slice(0, typedChars)}
-            {typedChars < APOLOGY_DATA.letter.length && (
+          <div className="whitespace-pre-wrap leading-relaxed text-[#1c1e21] text-[15px] font-[system-ui]">
+            {(config?.letter || APOLOGY_DATA.letter).slice(0, typedChars)}
+            {typedChars < (config?.letter || APOLOGY_DATA.letter).length && (
               <span className="inline-block w-1.5 h-4 bg-blue-500 ml-1 animate-pulse align-middle" />
             )}
-          </p>
+          </div>
         </div>
       </div>
 
@@ -822,7 +861,7 @@ function Step7Inbox({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
           <Send size={18} className="text-blue-500" />
         </div>
         <AnimatePresence>
-          {typedChars >= APOLOGY_DATA.letter.length && (
+          {typedChars >= (config?.letter || APOLOGY_DATA.letter).length && (
             <motion.button
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -840,7 +879,7 @@ function Step7Inbox({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
 }
 
 // --- STEP 8: FINAL CHOICE ---
-function Step8FinalChoice({ autoPlay }: { autoPlay: boolean }) {
+function Step8FinalChoice({ autoPlay, config }: { autoPlay: boolean; config: any }) {
   const [rejectScale, setRejectScale] = useState(1);
   const [accepted, setAccepted] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -887,9 +926,9 @@ function Step8FinalChoice({ autoPlay }: { autoPlay: boolean }) {
         >
           <Heart size={80} className="text-white fill-white drop-shadow-[0_0_20px_rgba(255,255,255,0.8)] mb-6" />
         </motion.div>
-        <h2 className="text-4xl font-black text-white mb-4 drop-shadow-md">Chốt kèo!</h2>
+        <h2 className="text-4xl font-black text-white mb-4 drop-shadow-md">{config?.successTitle || APOLOGY_DATA.successTitle}</h2>
         <p className="text-xl text-pink-100 font-bold bg-white/20 px-6 py-3 rounded-full backdrop-blur-sm">
-          Tớ qua ngay đây! 🛵💨
+          {config?.successMessage || APOLOGY_DATA.successMessage}
         </p>
       </motion.div>
     );
@@ -903,7 +942,7 @@ function Step8FinalChoice({ autoPlay }: { autoPlay: boolean }) {
     >
       <div className="flex-1 p-6 flex flex-col items-center justify-center text-center">
         <MessageCircle size={64} className="text-blue-500 mb-6" />
-        <h2 className="text-2xl font-bold text-gray-800 mb-8">Trả lời thế nào đây?</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-8">{config?.choiceTitle || APOLOGY_DATA.choiceTitle}</h2>
         
         <div className="flex flex-col gap-4 w-full max-w-xs relative h-[200px] justify-center items-center">
           <motion.button
@@ -913,9 +952,8 @@ function Step8FinalChoice({ autoPlay }: { autoPlay: boolean }) {
             transition={{ repeat: Infinity, duration: 1.5 }}
             className="w-full bg-blue-500 text-[#ffffff] py-4 rounded-full font-bold shadow-lg flex items-center justify-center gap-2 z-20 origin-center text-lg disabled:opacity-80"
           >
-            ĐỒNG Ý (CÓ TRÀ SỮA) 🧋
+            {config?.acceptText || APOLOGY_DATA.acceptText}
           </motion.button>
-
           {rejectScale > 0 && (
             <motion.button
               animate={{ scale: rejectScale, opacity: rejectScale }}
@@ -923,7 +961,7 @@ function Step8FinalChoice({ autoPlay }: { autoPlay: boolean }) {
               disabled={autoPlay}
               className="w-full bg-gray-200 text-gray-600 py-3 rounded-full font-bold shadow-sm flex items-center justify-center gap-2 z-10 absolute bottom-0 origin-center disabled:opacity-50"
             >
-              KHÔNG THA 😤
+              {config?.rejectText || APOLOGY_DATA.rejectText || "KHÔNG THA 😤"}
             </motion.button>
           )}
         </div>

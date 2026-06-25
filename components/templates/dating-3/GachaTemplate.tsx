@@ -135,7 +135,7 @@ const GachaStyles = `
 
 import { GACHA_DATA } from "./config";
 
-export function GachaTemplate({ compact, fullScreen, hideNavigation, onComplete, autoPlay, data: customData }: any) {
+export function GachaTemplate({ compact, fullScreen, hideNavigation, isBuilderPreview, onComplete, autoPlay, data: customData }: any) {
   const data = { ...GACHA_DATA, ...customData };
   const [step, setStep] = useState(1);
   const [mounted, setMounted] = useState(false);
@@ -182,24 +182,24 @@ export function GachaTemplate({ compact, fullScreen, hideNavigation, onComplete,
     }
   };
 
-  let containerClass = "gacha-container relative w-full overflow-hidden bg-gradient-to-b from-[#e0c3fc] to-[#8ec5fc] select-none ";
-  if (compact) {
-    containerClass += "h-full mx-auto max-w-[400px]";
-  } else {
-    containerClass += "min-h-screen w-full";
-  }
+  let outerClass = `relative w-full shadow-2xl mx-auto rounded-[3rem] bg-pink-200 p-[10px] ${compact ? 'h-full max-w-[400px]' : 'min-h-[800px] max-w-[400px] max-h-[90vh]'}`;
+  let containerClass = "gacha-container relative w-full h-full overflow-hidden select-none rounded-[calc(3rem-10px)] ";
 
-  if (!mounted) return <div className={containerClass} />;
+  if (!mounted) return <div className={outerClass} />;
 
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: GachaStyles }} />
       <div className={`w-full flex items-center justify-center ${compact ? 'h-full' : 'min-h-screen'} ${fullScreen || compact ? '' : 'p-4 bg-gray-100'}`}>
-        <div id="preview-container" className={containerClass}>
+        <div className={outerClass}>
+          <div id="preview-container" className={containerClass} style={{ backgroundImage: "url('/assets/bg/bg7.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
+            <div className="absolute inset-0 bg-pink-100/60 backdrop-blur-sm pointer-events-none rounded-[2.4rem]" />
           
-          <audio ref={audioRef} loop muted={compact && !autoPlay}>
-            <source src={data.audioSrc} type="audio/mpeg" />
-          </audio>
+          {data.audioSrc ? (
+            <audio ref={audioRef} loop muted={compact && !autoPlay}>
+              <source src={data.audioSrc} type="audio/mpeg" />
+            </audio>
+          ) : null}
 
           {!compact && <FloatingHearts3D />}
           
@@ -247,11 +247,12 @@ export function GachaTemplate({ compact, fullScreen, hideNavigation, onComplete,
               if (idx < s.length - 1) setStep(s[idx + 1]);
             }}
             accentColor="#ec4899"
-            isHidden={compact || hideNavigation}
+            isHidden={hideNavigation || autoPlay}
           />
 
           <canvas id="confetti-canvas" className="absolute inset-0 w-full h-full pointer-events-none z-[100]"></canvas>
 
+          </div>
         </div>
       </div>
     </>

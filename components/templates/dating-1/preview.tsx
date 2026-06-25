@@ -14,7 +14,7 @@ export function WillYouDateMePreview(props: TemplatePreviewProps) {
       accentColor={parsedConfig.accentColor as string | undefined}
       backgroundColor={parsedConfig.backgroundColor as string | undefined}
       backgroundImage={parsedConfig.backgroundImage as string | undefined}
-      compact={props.compact}
+      compact={props.compact} isBuilderPreview={props.isBuilderPreview}
       autoPlay={props.autoPlay}
       datetimeTitle={parsedConfig.datetimeTitle as string | undefined}
       drinkTitle={parsedConfig.drinkTitle as string | undefined}
@@ -34,7 +34,7 @@ export function WillYouDateMePreview(props: TemplatePreviewProps) {
       successTitle={parsedConfig.successTitle as string | undefined}
       foodOptions={parsedConfig.foodOptions as string[] | undefined}
       yesButton={parsedConfig.yesButton as string | undefined}
-      hideNavigation={props.compact || props.hideNavigation}
+      hideNavigation={props.hideNavigation}
       fullScreen={props.fullScreen}
       forceStage={parsedConfig.forceStage}
       onComplete={(selections) => {

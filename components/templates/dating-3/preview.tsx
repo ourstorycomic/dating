@@ -10,11 +10,11 @@ export function DatingThreePreview(props: TemplatePreviewProps) {
 
   return (
     <GachaTemplate
-      compact={props.compact}
+      compact={props.compact} isBuilderPreview={props.isBuilderPreview}
       recipientName={props.recipientName}
       senderName={props.senderName}
       fullScreen={props.fullScreen}
-      hideNavigation={props.compact || props.hideNavigation}
+      hideNavigation={props.hideNavigation}
       autoPlay={props.autoPlay}
       data={parsedConfig}
       onComplete={() => {

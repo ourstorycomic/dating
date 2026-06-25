@@ -28,12 +28,14 @@ export default async function TemplatePreviewPage({
   console.log("Preview page called with slug:", slug);
   console.log("Template result:", template ? template.slug : "NULL");
 
-  if (!template) notFound();
+  if (!template) {
+    return <div className="text-white p-20 text-5xl">TEMPLATE NOT FOUND FOR SLUG: {slug}</div>;
+  }
 
   const screens = getScreens(template.sample_data);
 
   return (
-    <div className="min-h-screen px-4 py-5 text-white sm:px-6 lg:px-10 relative">
+    <div className="min-h-[100dvh] px-4 py-5 pb-24 text-white sm:px-6 lg:px-10 relative">
       <div className="fixed top-4 left-4 z-50 md:hidden">
         <Link href="/" className="bg-black/50 backdrop-blur-md text-[#ffffff] px-4 py-2 rounded-full border border-white/20 shadow-lg text-sm font-bold flex items-center gap-2">
           <span>&larr;</span> Trang chủ
@@ -41,7 +43,7 @@ export default async function TemplatePreviewPage({
       </div>
       <main className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.86fr_1.14fr] pt-10 md:pt-0">
         <section className="glass-panel rounded-2xl p-5 sm:p-6">
-          <Link className="inline-block text-sm font-semibold text-white/58 hover:text-white" href="/">
+          <Link className="hidden md:inline-block text-sm font-semibold text-white/58 hover:text-white" href="/">
             &larr; Quay lại trang chủ
           </Link>
           <p className="mt-6 text-sm font-semibold text-pink-100/80">

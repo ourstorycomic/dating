@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
+import { TemplateNavigator } from "../TemplateNavigator";
 import { ChevronDown, Gift, Image as ImageIcon, Flame, Maximize2, X, Heart } from "lucide-react";
 import confetti from "canvas-confetti";
 
@@ -58,7 +59,7 @@ function BackgroundSparkles() {
   );
 }
 
-export default function Birthday3Template({ autoPlay = false, compact = false }: { autoPlay?: boolean; compact?: boolean }) {
+export default function Birthday3Template({ autoPlay = false, compact = false, hideNavigation = false, config = {} }: { autoPlay?: boolean; compact?: boolean; hideNavigation?: boolean; config?: any }) {
   const [step, setStep] = useState(1);
 
   const nextStep = useCallback(() => {
@@ -66,17 +67,25 @@ export default function Birthday3Template({ autoPlay = false, compact = false }:
   }, []);
 
   return (
-    <div className={`relative w-full overflow-hidden text-gray-800 touch-none font-sans mx-auto ${compact ? 'h-full bg-transparent' : 'max-w-[400px] h-[800px] max-h-[90vh] bg-[#fdfbf7] rounded-[2.5rem] shadow-2xl border-[10px] border-white'}`}>
+    <div className={`relative w-full overflow-hidden text-gray-800 font-sans mx-auto ${compact ? 'h-full bg-transparent' : 'max-w-[400px] h-[800px] max-h-[90vh] bg-pink-50 rounded-[2.5rem] shadow-2xl border-[10px] border-pink-200'}`} style={{ backgroundImage: "url('/assets/bg/bg6.jpg')", backgroundSize: 'cover', backgroundBlendMode: 'overlay' }}>
       <AnimatePresence mode="wait">
-        {step === 1 && <Step1Knock key="step1" onNext={nextStep} autoPlay={autoPlay} />}
-        {step === 2 && <Step2Surprise key="step2" onNext={nextStep} autoPlay={autoPlay} />}
-        {step === 3 && <Step3Balloons key="step3" onNext={nextStep} autoPlay={autoPlay} />}
-        {step === 4 && <Step4Cake key="step4" onNext={nextStep} autoPlay={autoPlay} />}
-        {step === 5 && <Step5Cards key="step5" onNext={nextStep} autoPlay={autoPlay} />}
-        {step === 6 && <Step6Memory key="step6" onNext={nextStep} autoPlay={autoPlay} />}
-        {step === 7 && <Step7Unboxing key="step7" onNext={nextStep} autoPlay={autoPlay} />}
-        {step === 8 && <Step8Afterparty key="step8" autoPlay={autoPlay} />}
+        {step === 1 && <Step1Knock key="step1" onNext={nextStep} autoPlay={autoPlay} config={config} />}
+        {step === 2 && <Step2Surprise key="step2" onNext={nextStep} autoPlay={autoPlay} config={config} />}
+        {step === 3 && <Step3Balloons key="step3" onNext={nextStep} autoPlay={autoPlay} config={config} />}
+        {step === 4 && <Step4Cake key="step4" onNext={nextStep} autoPlay={autoPlay} config={config} />}
+        {step === 5 && <Step5Cards key="step5" onNext={nextStep} autoPlay={autoPlay} config={config} />}
+        {step === 6 && <Step6Memory key="step6" onNext={nextStep} autoPlay={autoPlay} config={config} />}
+        {step === 7 && <Step7Unboxing key="step7" onNext={nextStep} autoPlay={autoPlay} config={config} />}
+        {step === 8 && <Step8Afterparty key="step8" autoPlay={autoPlay} config={config} />}
       </AnimatePresence>
+      <TemplateNavigator
+        currentIndex={step - 1}
+        totalSteps={8}
+        onPrev={() => setStep(s => Math.max(1, s - 1))}
+        onNext={() => setStep(s => Math.min(8, s + 1))}
+        accentColor="#f43f5e"
+        isHidden={hideNavigation || autoPlay}
+      />
     </div>
   );
 }
@@ -133,7 +142,7 @@ function FloatingParticles({ step }: { step: number }) {
 }
 
 // --- STEP 1: THE KNOCK ---
-function Step1Knock({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step1Knock({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   const [knocks, setKnocks] = useState(0);
 
   const handleKnock = () => {
@@ -179,8 +188,8 @@ function Step1Knock({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
         animate={{ opacity: knocks >= 3 ? 0 : 1, y: knocks >= 3 ? -50 : 0 }}
         className="text-center mb-12 relative z-20"
       >
-        <h2 className="text-3xl font-serif font-bold text-rose-500 mb-2 drop-shadow-sm">Thư Mời</h2>
-        <p className="text-rose-400 font-medium tracking-widest bg-white/50 px-4 py-1 rounded-full shadow-sm">GÕ 3 LẦN ĐỂ MỞ</p>
+        <h2 className="text-3xl font-serif font-bold text-rose-500 mb-2 drop-shadow-sm">{config?.doorSign || "A SPECIAL GIFT 💌"}</h2>
+        <p className="text-rose-400 font-medium tracking-widest bg-white/50 px-4 py-1 rounded-full shadow-sm">{config?.doorInstruction || "Chạm 3 lần để mở thư!"}</p>
       </motion.div>
 
       <motion.div
@@ -246,7 +255,7 @@ function Step1Knock({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
 }
 
 // --- STEP 2: THE SURPRISE (LIGHT SWITCH) ---
-function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step2Surprise({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   const [isOn, setIsOn] = useState(false);
   const [leverY, setLeverY] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -321,10 +330,10 @@ function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
         >
             <div className="relative px-6 py-4">
               <p 
-                className="font-serif font-bold italic text-4xl text-center whitespace-nowrap" 
+                className="font-serif font-bold italic text-4xl text-center whitespace-pre-wrap" 
                 style={{ color: "#ffffff", textShadow: "0px 4px 10px rgba(0,0,0,0.6)" }}
               >
-                Kéo xuống<br/>nhé!
+                {config?.darkRoomText || "Kéo xuống\nnhé!"}
               </p>
               
               {/* Sparks Top-Left */}
@@ -415,7 +424,7 @@ function Step2Surprise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
 }
 
 // --- STEP 3: THE BALLOONS ---
-function Step3Balloons({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step3Balloons({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   const [poppedCount, setPoppedCount] = useState(0);
   const [balloons, setBalloons] = useState<{ id: number, x: number, delay: number, color: string, text: string, popped: boolean }[]>([]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -486,7 +495,7 @@ function Step3Balloons({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
       <h2 className="text-2xl font-bold text-center px-6 text-slate-700 leading-relaxed z-20 bg-white/70 backdrop-blur-md py-4 rounded-3xl mx-4 shadow-sm border border-pink-50">
         Chào mừng <span className="text-pink-500 font-black">{BIRTHDAY_DATA.name}</span> bước sang tuổi <span className="text-pink-500 font-black">{BIRTHDAY_DATA.age}</span>!
       </h2>
-      <p className="text-slate-500 mt-2 z-20 text-sm font-medium bg-white/50 px-4 py-1 rounded-full">Chạm vào 3 quả bóng bay để xem điều bất ngờ!</p>
+      <p className="text-slate-500 mt-2 z-20 text-sm font-medium bg-white/50 px-4 py-1 rounded-full">{config?.balloonText || "Chạm vào 3 quả bóng bay để xem điều bất ngờ!"}</p>
 
       {/* Balloons */}
       {balloons.map((b) => (
@@ -547,7 +556,7 @@ function Step3Balloons({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
 }
 
 // --- STEP 4: THE CAKE ---
-function Step4Cake({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step4Cake({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   const [blowProgress, setBlowProgress] = useState(0);
   const [blown, setBlown] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -594,14 +603,14 @@ function Step4Cake({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, y: 50 }}
-      className="absolute inset-0 bg-slate-900 flex flex-col items-center justify-between py-16 z-10"
+      className="absolute inset-0 bg-slate-900/80 flex flex-col items-center justify-between py-16 z-10 backdrop-blur-sm"
     >
       <BackgroundSparkles />
       <FloatingParticles step={4} />
 
       <div className="text-center px-6">
-        <h2 className="text-2xl font-bold text-amber-100 mb-2 drop-shadow-md">Make a Wish! 🌟</h2>
-        <p className="text-slate-300 text-sm">Nhắm mắt lại, chắp tay và ước một điều thật to lớn đi nào!</p>
+        <h2 className="text-2xl font-bold text-amber-100 mb-2 drop-shadow-md">{config?.cakeTitle || "Happy Birthday! 🌟"}</h2>
+        <p className="text-slate-300 text-sm">{config?.cakeInstruction || "Nhắm mắt lại, chắp tay và ước một điều thật to lớn đi nào!"}</p>
       </div>
 
       <motion.div 
@@ -643,9 +652,7 @@ function Step4Cake({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean
         </div>
         
         {/* The Cake */}
-        <div className="text-9xl drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)] z-0 -mt-2">
-          🎂
-        </div>
+        <img src="/assets/happy/cute-love.webp" className="w-48 h-48 object-contain z-0 -mt-2 drop-shadow-2xl" alt="cake" />
       </motion.div>
 
       <div className="relative w-64 h-16">
@@ -656,7 +663,7 @@ function Step4Cake({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean
           disabled={blown || autoPlay}
           className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full font-bold text-white shadow-[0_5px_20px_rgba(245,158,11,0.4)] disabled:opacity-50 select-none z-10 touch-none flex items-center justify-center gap-2"
         >
-          {blown ? "ĐÃ ƯỚC XONG ✨" : "NHẤN GIỮ ĐỂ THỔI NẾN 🌬️"}
+          {blown ? "ĐÃ ƯỚC XONG ✨" : (config?.blowBtn || "NHẤN GIỮ ĐỂ THỔI NẾN 🌬️")}
         </button>
         
         {/* Progress Ring Overlay */}
@@ -675,7 +682,7 @@ function Step4Cake({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean
 }
 
 // --- STEP 5: THE GREETING CARDS ---
-function Step5Cards({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step5Cards({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const nextCard = () => {
@@ -713,7 +720,7 @@ function Step5Cards({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
       <BackgroundSparkles />
       <FloatingParticles step={5} />
       <div className="absolute top-16 text-center w-full px-6">
-        <h2 className="text-2xl font-bold text-amber-700 font-serif">Lời Chúc Từ Trái Tim</h2>
+        <h2 className="text-2xl font-bold text-amber-700 font-serif">{config?.cardTitle || "Lời Chúc Từ Trái Tim"}</h2>
         <p className="text-slate-500 text-sm mt-2">Chạm vào thiệp để đọc tiếp ({currentIndex + 1}/{BIRTHDAY_DATA.wishes.length})</p>
       </div>
 
@@ -736,7 +743,7 @@ function Step5Cards({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
               "{BIRTHDAY_DATA.wishes[currentIndex]}"
             </p>
             <div className="absolute bottom-6 text-xs text-amber-400 font-bold uppercase tracking-widest">
-              Lật thiệp
+              {config?.cardBtn || "Lật thiệp"}
             </div>
           </motion.div>
         </AnimatePresence>
@@ -746,7 +753,7 @@ function Step5Cards({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
 }
 
 // --- STEP 6: THE MEMORY WALL ---
-function Step6Memory({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step6Memory({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   const [photoIndex, setPhotoIndex] = useState(0);
 
   useEffect(() => {
@@ -769,12 +776,12 @@ function Step6Memory({ onNext, autoPlay }: { onNext: () => void; autoPlay: boole
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="absolute inset-0 bg-stone-900 flex flex-col items-center justify-center p-6 z-10"
+      className="absolute inset-0 bg-stone-900/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 z-10"
     >
       <BackgroundSparkles />
       <FloatingParticles step={6} />
-      <h2 className="absolute top-16 text-xl font-medium text-stone-300 text-center px-4 leading-relaxed">
-        Một năm qua cậu đã rực rỡ thế này cơ mà...
+      <h2 className="absolute top-16 text-xl font-medium text-stone-300 text-center px-4 leading-relaxed whitespace-pre-line">
+        {[config?.memoryWish1, config?.memoryWish2, config?.memoryWish3, config?.memoryWish4].filter(Boolean)[photoIndex] || "Một năm qua cậu đã rực rỡ thế này cơ mà..."}
       </h2>
 
       <div className="relative w-full aspect-[4/5] max-w-[300px]">
@@ -788,9 +795,8 @@ function Step6Memory({ onNext, autoPlay }: { onNext: () => void; autoPlay: boole
             className="absolute inset-0 bg-white p-4 pb-16 rounded-sm shadow-2xl"
           >
             <div className="w-full h-full bg-stone-200 overflow-hidden relative">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
-                src={BIRTHDAY_DATA.photos[photoIndex]} 
+                src={[config?.memory1, config?.memory2, config?.memory3].filter(Boolean)[photoIndex] || BIRTHDAY_DATA.photos[photoIndex]} 
                 alt="Memory" 
                 className="w-full h-full object-cover"
               />
@@ -812,7 +818,7 @@ function Step6Memory({ onNext, autoPlay }: { onNext: () => void; autoPlay: boole
 }
 
 // --- STEP 7: THE UNBOXING ---
-function Step7Unboxing({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step7Unboxing({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   const [taps, setTaps] = useState(0);
   const maxTaps = 5;
 
@@ -866,7 +872,7 @@ function Step7Unboxing({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-50" />
       <div className="text-center mb-12 relative z-20">
         <h2 className="text-3xl font-black text-amber-600 mb-2 uppercase tracking-wide">Quà của cậu này!</h2>
-        <p className="text-amber-700/70 font-medium">Chạm liên tục để xé giấy gói nhé!</p>
+        <p className="text-amber-700/70 font-medium">{config?.giftInstruction || "Chạm liên tục để xé giấy gói nhé!"}</p>
       </div>
 
       <motion.div
@@ -878,9 +884,7 @@ function Step7Unboxing({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
         className="relative"
       >
         {taps < maxTaps ? (
-          <div className="text-9xl drop-shadow-[0_20px_30px_rgba(245,158,11,0.4)]">
-            🎁
-          </div>
+          <img src="/assets/dumb/auau.webp" className="w-40 h-40 object-contain drop-shadow-[0_20px_30px_rgba(245,158,11,0.4)] animate-bounce" alt="gift" />
         ) : (
           <motion.div
             initial={{ scale: 0, opacity: 0 }}
@@ -892,7 +896,7 @@ function Step7Unboxing({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
             </div>
             <h3 className="text-lg font-bold text-slate-800 mb-2">Wowww!</h3>
             <p className="text-sm font-medium text-amber-600 px-4 py-2 bg-amber-50 rounded-lg">
-              {BIRTHDAY_DATA.giftText}
+              {config?.giftName || BIRTHDAY_DATA.giftText}
             </p>
           </motion.div>
         )}
@@ -912,7 +916,7 @@ function Step7Unboxing({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
 }
 
 // --- STEP 8: THE AFTERPARTY ---
-function Step8Afterparty({ autoPlay }: { autoPlay: boolean }) {
+function Step8Afterparty({ autoPlay, config }: { autoPlay: boolean; config: any }) {
   const [showPopup, setShowPopup] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -962,8 +966,11 @@ function Step8Afterparty({ autoPlay }: { autoPlay: boolean }) {
           Lên Đồ Thôi!
         </h2>
         
-        <div className="bg-rose-50 p-4 rounded-xl border border-rose-100 mb-8">
-          <p className="font-bold text-rose-700">{BIRTHDAY_DATA.giftText}</p>
+        <div className="bg-rose-50 p-4 rounded-xl border border-rose-100 mb-8 overflow-hidden rounded-md relative flex justify-center">
+          {config?.giftImage ? (
+            <img src={config.giftImage} alt="Gift" className="w-full h-32 object-cover rounded-md mb-2" />
+          ) : null}
+          <p className="font-bold text-rose-700 absolute bottom-2 left-0 right-0 bg-white/80 p-2 m-2 rounded-lg backdrop-blur-md">{config?.giftName || BIRTHDAY_DATA.giftText}</p>
         </div>
 
         <motion.button
@@ -973,7 +980,7 @@ function Step8Afterparty({ autoPlay }: { autoPlay: boolean }) {
           transition={{ repeat: Infinity, duration: 1.5 }}
           className="w-full py-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-full font-black shadow-lg flex justify-center items-center gap-2 text-lg disabled:opacity-80 disabled:cursor-default"
         >
-          NHẬN QUÀ NGAY 👗
+          {config?.memoryBtn || "NHẬN QUÀ NGAY 👗"}
         </motion.button>
       </motion.div>
 
@@ -986,7 +993,7 @@ function Step8Afterparty({ autoPlay }: { autoPlay: boolean }) {
             exit={{ opacity: 0, scale: 0.8 }}
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] bg-white rounded-2xl shadow-2xl p-6 z-50 text-center border-4 border-rose-400"
           >
-            <div className="text-5xl mb-4">🥰</div>
+            <img src="/assets/happy/love-valentines.webp" className="w-24 h-24 object-contain mx-auto mb-4" alt="love" />
             <h3 className="text-2xl font-black text-slate-800 mb-2">Chốt Đơn!</h3>
             <p className="text-slate-600 font-medium">Chuẩn bị xong gọi tớ qua đón nhé!</p>
             <button 

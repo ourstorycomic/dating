@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
+import { TemplateNavigator } from "../TemplateNavigator";
 import { WHACK_DATA } from "./config";
 import { AlertTriangle, ChevronRight, Heart, HeartHandshake, ShieldAlert } from "lucide-react";
 
@@ -50,9 +51,9 @@ function FloatingParticles({ step }: { step: number }) {
 }
 
 // --- STEP 1: TRIGGER ---
-function Step1Trigger({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step1Trigger({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   const [text, setText] = useState("");
-  const fullText = "Phát hiện có người đang rất cục súc và giận dữ! Cục tức này nếu không xả ra sẽ rất hại sức khỏe. Muốn đập cho tên đáng ghét kia một trận không?";
+  const fullText = config?.warnDesc || "Người này đã làm bạn giận. Bạn có quyền được xả giận ngay bây giờ!";
   const [done, setDone] = useState(false);
 
   useEffect(() => {
@@ -64,7 +65,7 @@ function Step1Trigger({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
         clearInterval(t);
         setDone(true);
       }
-    }, autoPlay ? 5 : 40);
+    }, 40);
     return () => clearInterval(t);
   }, [fullText, autoPlay]);
 
@@ -79,30 +80,30 @@ function Step1Trigger({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
     <motion.div
       key="step1"
       exit={{ opacity: 0, scale: 1.1 }}
-      className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 bg-slate-900 text-[#ffffff] overflow-hidden"
+      className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 bg-pink-50/50 backdrop-blur-sm text-slate-800 overflow-hidden"
     >
       {/* Caution tape background */}
       <motion.div
         animate={{ y: [0, -40] }}
         transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-        className="absolute -inset-[100%] pointer-events-none opacity-10"
-        style={{ backgroundImage: "repeating-linear-gradient(45deg, #000 0, #000 40px, #f59e0b 40px, #f59e0b 80px)", backgroundSize: "200% 200%" }}
+        className="absolute -inset-[100%] pointer-events-none opacity-40"
+        style={{ backgroundImage: "repeating-linear-gradient(45deg, #fbcfe8 0, #fbcfe8 40px, #f9a8d4 40px, #f9a8d4 80px)", backgroundSize: "200% 200%" }}
       />
 
       <motion.div
-        animate={{ opacity: [0, 0.3, 0, 0.6, 0], backgroundColor: ["rgba(239,68,68,0)", "#ef4444", "rgba(239,68,68,0)", "#ef4444", "rgba(239,68,68,0)"] }}
+        animate={{ opacity: [0, 0.3, 0, 0.6, 0], backgroundColor: ["rgba(255,255,255,0)", "#fecdd3", "rgba(255,255,255,0)", "#fecdd3", "rgba(255,255,255,0)"] }}
         transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 1 }}
         className="absolute inset-0 pointer-events-none mix-blend-color-burn"
       />
 
       <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 0.5, repeat: Infinity }}>
-        <AlertTriangle size={80} className="text-red-500 mb-6 drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]" />
+        <img src="/assets/sad/roflandz-mad-kitten.webp" className="w-24 h-24 object-contain mb-6 drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]" alt="mad" />
       </motion.div>
 
-      <div className="bg-slate-800/80 p-8 rounded-3xl shadow-[0_0_30px_rgba(0,0,0,0.5)] backdrop-blur-xl border border-red-500/30 min-h-[220px] flex items-center justify-center w-full relative z-10">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent opacity-50" />
-        <p className="text-lg font-bold leading-relaxed text-red-50">
-          {text}<span className="animate-pulse text-red-500">|</span>
+      <div className="bg-white/60 p-8 rounded-3xl shadow-[0_0_30px_rgba(0,0,0,0.1)] backdrop-blur-xl border border-pink-200/50 min-h-[220px] flex items-center justify-center w-full relative z-10">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-pink-300 to-transparent opacity-50" />
+        <p className="text-lg font-bold leading-relaxed text-slate-800">
+          {text}<span className="animate-pulse text-pink-500">|</span>
         </p>
       </div>
 
@@ -116,9 +117,9 @@ function Step1Trigger({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
             whileTap={{ scale: 0.95 }}
             onClick={autoPlay ? undefined : onNext}
             disabled={autoPlay}
-            className="mt-12 px-8 py-4 bg-gradient-to-b from-red-500 to-red-700 text-[#ffffff] rounded-full font-black shadow-2xl flex items-center gap-2 border-2 border-red-400 z-10"
+            className="mt-12 px-8 py-4 bg-gradient-to-b from-pink-500 to-rose-600 text-[#ffffff] rounded-full font-black shadow-2xl flex items-center gap-2 border-2 border-pink-300 z-10"
           >
-            Đưa nó ra đây cho bà! 😡
+            {config?.warnBtn || "Bắt đầu xả giận"}
           </motion.button>
         )}
       </AnimatePresence>
@@ -127,12 +128,10 @@ function Step1Trigger({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
 }
 
 // --- STEP 2: CHOOSE WEAPON ---
-function Step2Weapon({ onNext, autoPlay, setWeapon }: { onNext: () => void; autoPlay: boolean; setWeapon: (w: string) => void }) {
+function Step2Weapon({ onNext, autoPlay, setWeapon, config }: { onNext: () => void; autoPlay: boolean; setWeapon: (w: string) => void; config: any }) {
   const weapons = [
-    { id: "slipper", name: "Dép Lào", emoji: "🩴" },
-    { id: "pan", name: "Chảo Chống Dính", emoji: "🍳" },
-    { id: "hammer", name: "Búa Nhựa", emoji: "🔨" },
-    { id: "radish", name: "Củ Cải", emoji: "🥖" }, // standard baguette as radish placeholder if missing, or we can use 🥕
+    { id: "slipper", name: config?.weapon1 || "Dép Lào", emoji: "🩴" },
+    { id: "pan", name: config?.weapon2 || "Chổi chà", emoji: "🧹" },
   ];
 
   const [selected, setSelected] = useState<string | null>(null);
@@ -161,10 +160,10 @@ function Step2Weapon({ onNext, autoPlay, setWeapon }: { onNext: () => void; auto
       className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10"
     >
       <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}>
-        <ShieldAlert size={60} className="text-orange-500 mb-4 drop-shadow-lg" />
+        <img src="/assets/dumb/hm.webp" className="w-24 h-24 object-contain mb-4 drop-shadow-lg" alt="weapon" />
       </motion.div>
-      <h2 className="text-3xl font-black text-slate-800 mb-2 uppercase tracking-wide">Chọn Vũ Khí</h2>
-      <p className="text-sm font-medium text-slate-600 mb-10 bg-white/50 px-4 py-2 rounded-full shadow-sm backdrop-blur-sm">Hãy chọn binh khí thuận tay nhất!</p>
+      <h2 className="text-3xl font-black text-rose-800 mb-2 uppercase tracking-wide">{config?.weaponTitle || "Chọn Vũ Khí"}</h2>
+      <p className="text-sm font-medium text-rose-700 mb-10 bg-white/60 px-4 py-2 rounded-full shadow-sm backdrop-blur-sm">Hãy chọn binh khí thuận tay nhất!</p>
 
       <div className="grid grid-cols-2 gap-5 w-full max-w-[300px]">
         {weapons.map((w, i) => (
@@ -183,7 +182,7 @@ function Step2Weapon({ onNext, autoPlay, setWeapon }: { onNext: () => void; auto
               <motion.div layoutId="weapon-outline" className="absolute inset-0 border-4 border-orange-400 rounded-2xl pointer-events-none" />
             )}
             <span className="text-5xl drop-shadow-md">{w.emoji}</span>
-            <span className="text-xs font-black text-slate-700 uppercase tracking-wider">{w.name}</span>
+            <span className="text-xs font-black text-rose-700 uppercase tracking-wider">{w.name}</span>
           </motion.button>
         ))}
       </div>
@@ -198,7 +197,7 @@ function Step2Weapon({ onNext, autoPlay, setWeapon }: { onNext: () => void; auto
             whileTap={{ scale: 0.95 }}
             onClick={autoPlay ? undefined : onNext}
             disabled={autoPlay}
-            className="mt-12 px-8 py-4 bg-gradient-to-r from-slate-800 to-slate-900 text-[#ffffff] rounded-full font-black shadow-[0_10px_30px_rgba(15,23,42,0.5)] flex items-center gap-2 border-2 border-slate-700"
+            className="mt-12 px-8 py-4 bg-gradient-to-r from-pink-600 to-rose-600 text-[#ffffff] rounded-full font-black shadow-[0_10px_30px_rgba(225,29,72,0.5)] flex items-center gap-2 border-2 border-pink-400"
           >
             Bắt đầu xả giận <ChevronRight size={20} />
           </motion.button>
@@ -209,17 +208,19 @@ function Step2Weapon({ onNext, autoPlay, setWeapon }: { onNext: () => void; auto
 }
 
 // --- STEP 3: WHACK-A-LOVER ---
-function Step3Whack({ onNext, autoPlay, weapon }: { onNext: () => void; autoPlay: boolean; weapon: string }) {
+function Step3Whack({ onNext, autoPlay, weapon, config }: { onNext: () => void; autoPlay: boolean; weapon: string; config: any }) {
   const [activeHole, setActiveHole] = useState<number>(-1);
   const [health, setHealth] = useState(0);
   const [floatingTexts, setFloatingTexts] = useState<{ id: number, text: string, x: number, y: number }[]>([]);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [showCursor, setShowCursor] = useState(false);
   const [whacking, setWhacking] = useState(false);
+  
+  const maxHealth = parseInt(config?.gameTarget) || 10;
 
   // Random active hole
   useEffect(() => {
-    if (health >= 10) return;
+    if (health >= maxHealth) return;
     const interval = setInterval(() => {
       let nextHole;
       do {
@@ -233,7 +234,7 @@ function Step3Whack({ onNext, autoPlay, weapon }: { onNext: () => void; autoPlay
 
   // Autoplay bot
   useEffect(() => {
-    if (autoPlay && activeHole !== -1 && health < 10) {
+    if (autoPlay && activeHole !== -1 && health < maxHealth) {
       const t = setTimeout(() => {
         handleHit(activeHole, 150 + Math.random() * 50, 300 + Math.random() * 100);
       }, 400);
@@ -253,7 +254,7 @@ function Step3Whack({ onNext, autoPlay, weapon }: { onNext: () => void; autoPlay
   };
 
   const handleHit = (index: number, cx: number, cy: number) => {
-    if (index !== activeHole || health >= 10) return;
+    if (index !== activeHole || health >= maxHealth) return;
 
     // Add floating text
     const randomText = WHACK_DATA.hitVoices[Math.floor(Math.random() * WHACK_DATA.hitVoices.length)];
@@ -270,7 +271,7 @@ function Step3Whack({ onNext, autoPlay, weapon }: { onNext: () => void; autoPlay
     setHealth(newHealth);
     setActiveHole(-1); // hide immediately
 
-    if (newHealth >= 10) {
+    if (newHealth >= maxHealth) {
       setTimeout(onNext, 1500);
     }
   };
@@ -294,24 +295,24 @@ function Step3Whack({ onNext, autoPlay, weapon }: { onNext: () => void; autoPlay
       </motion.h2>
 
       {/* Health Bar */}
-      <div className="w-full max-w-[280px] h-8 bg-slate-800 rounded-full mb-10 overflow-hidden border-4 border-slate-900 relative shadow-[inset_0_5px_10px_rgba(0,0,0,0.5)]">
+      <div className="w-full max-w-[280px] h-8 bg-pink-200 rounded-full mb-10 overflow-hidden border-4 border-pink-300 relative shadow-[inset_0_5px_10px_rgba(0,0,0,0.1)]">
         <motion.div
           className="h-full bg-gradient-to-r from-rose-500 via-red-500 to-orange-500"
           initial={{ width: 0 }}
-          animate={{ width: `${(health / 10) * 100}%` }}
+          animate={{ width: `${(health / maxHealth) * 100}%` }}
           transition={{ type: "spring", stiffness: 100 }}
         />
         {/* Shine overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
         <div className="absolute inset-0 flex items-center justify-center text-sm font-black text-[#ffffff] drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
-          {health} / 10
+          {health} / {maxHealth}
         </div>
       </div>
 
       {/* 3x3 Grid */}
-      <div className="grid grid-cols-3 gap-4 w-full max-w-[320px] p-4 bg-slate-800/20 rounded-3xl backdrop-blur-sm border border-white/10 shadow-xl">
+      <div className="grid grid-cols-3 gap-4 w-full max-w-[320px] p-4 bg-pink-100/50 rounded-3xl backdrop-blur-sm border border-white/40 shadow-xl">
         {Array.from({ length: 9 }).map((_, i) => (
-          <div key={i} className="relative w-full aspect-square bg-gradient-to-b from-slate-900 to-black rounded-full border-[6px] border-slate-700 shadow-[inset_0_-15px_25px_rgba(0,0,0,0.8),_0_5px_15px_rgba(0,0,0,0.5)] overflow-hidden flex items-end justify-center">
+          <div key={i} className="relative w-full aspect-square bg-gradient-to-b from-pink-200 to-rose-300 rounded-full border-[6px] border-pink-300 shadow-[inset_0_-10px_20px_rgba(244,63,94,0.3),_0_5px_15px_rgba(0,0,0,0.1)] overflow-hidden flex items-end justify-center">
             {/* The character */}
             <AnimatePresence>
               {activeHole === i && (
@@ -329,15 +330,15 @@ function Step3Whack({ onNext, autoPlay, weapon }: { onNext: () => void; autoPlay
                     handleHit(i, rect.left + rect.width / 2, rect.top);
                   }}
                 >
-                  <div className="w-full h-full rounded-full bg-gradient-to-br from-orange-100 to-orange-300 border-4 border-slate-900 overflow-hidden relative shadow-[0_-5px_15px_rgba(0,0,0,0.5)]">
-                    <img src={WHACK_DATA.avatar} alt="avatar" className="w-full h-full object-cover pointer-events-none" />
+                  <div className="w-full h-full rounded-full bg-gradient-to-br from-pink-100 to-pink-300 border-4 border-slate-900 overflow-hidden relative shadow-[0_-5px_15px_rgba(0,0,0,0.5)]">
+                    <img src="/assets/sad/el-gato.webp" alt="avatar" className="w-full h-full object-cover pointer-events-none" />
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
 
             {/* Front lip of the hole to cover bottom of character */}
-            <div className="absolute bottom-[-5%] w-[110%] h-[30%] bg-gradient-to-b from-slate-700 to-slate-800 rounded-t-[50%] rounded-b-full pointer-events-none shadow-[inset_0_2px_5px_rgba(255,255,255,0.1)] border-t border-slate-500" />
+            <div className="absolute bottom-[-5%] w-[110%] h-[30%] bg-gradient-to-b from-rose-300 to-rose-400 rounded-t-[50%] rounded-b-full pointer-events-none shadow-[inset_0_2px_5px_rgba(255,255,255,0.4)] border-t border-rose-300" />
           </div>
         ))}
       </div>
@@ -375,7 +376,7 @@ function Step3Whack({ onNext, autoPlay, weapon }: { onNext: () => void; autoPlay
 }
 
 // --- STEP 4: BANDAGED FACE ---
-function Step4Bandaged({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step4Bandaged({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   useEffect(() => {
     if (autoPlay) {
       const t = setTimeout(onNext, 3000);
@@ -397,7 +398,7 @@ function Step4Bandaged({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
         transition={{ duration: 1.5, ease: "easeInOut" }}
         className="relative w-56 h-56 rounded-full border-[10px] border-white shadow-[0_15px_35px_rgba(0,0,0,0.3)] mb-10 overflow-hidden bg-orange-100"
       >
-        <img src={WHACK_DATA.avatar} alt="avatar" className="w-full h-full object-cover filter brightness-90 sepia-[0.2]" />
+        <img src="/assets/sad/lots-of-tears-crying-hard.webp" alt="avatar" className="w-full h-full object-cover filter brightness-90 sepia-[0.2]" />
 
         {/* Band-aids */}
         <div className="absolute top-[20%] left-[20%] w-16 h-5 bg-[#e8ba98] rotate-45 border-2 border-[#d29b74] rounded-full opacity-95 shadow-md flex items-center justify-center overflow-hidden">
@@ -431,8 +432,9 @@ function Step4Bandaged({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
         className="bg-white/95 p-6 rounded-[2rem] shadow-[0_10px_30px_rgba(0,0,0,0.15)] backdrop-blur-md border-2 border-white mb-10 relative w-full max-w-[320px]"
       >
         <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-b-[20px] border-b-white/95" />
-        <p className="text-slate-800 font-bold leading-relaxed text-[15px]">
-          "Ui cha mẹ ơi... Đánh xong rồi, đằng ấy đã xả hết giận chưa? Xót người ta chưa? 🥺 Nếu bớt giận rồi thì cho người ta giải thích nhé?"
+        <h3 className="text-slate-900 font-bold mb-2 text-lg text-center">{config?.bandageTitle || "Á ui... đau quá!"}</h3>
+        <p className="text-slate-800 font-medium leading-relaxed text-[15px]">
+          {config?.bandageDesc || "\"Ui cha mẹ ơi... Đánh xong rồi, đằng ấy đã xả hết giận chưa? Xót người ta chưa? 🥺 Nếu bớt giận rồi thì cho người ta giải thích nhé?\""}
         </p>
       </motion.div>
 
@@ -440,18 +442,18 @@ function Step4Bandaged({ onNext, autoPlay }: { onNext: () => void; autoPlay: boo
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={onNext}
-        className="px-8 py-4 bg-slate-800 text-[#ffffff] rounded-full font-black shadow-[0_10px_20px_rgba(15,23,42,0.4)] flex items-center gap-2 border-2 border-slate-700"
+        className="px-8 py-4 bg-gradient-to-r from-pink-500 to-rose-500 text-[#ffffff] rounded-full font-black shadow-[0_10px_20px_rgba(244,63,94,0.4)] flex items-center gap-2 border-2 border-pink-300"
       >
-        Giải thích đi nghe thử 😒
+        {config?.bandageBtn || "Giải thích đi nghe thử 😒"}
       </motion.button>
     </motion.div>
   );
 }
 
 // --- STEP 5: CONFESSION ---
-function Step5Confession({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step5Confession({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   const [text, setText] = useState("");
-  const fullText = WHACK_DATA.letter;
+  const fullText = config?.apologyText || WHACK_DATA.letter;
   const [done, setDone] = useState(false);
 
   useEffect(() => {
@@ -463,7 +465,7 @@ function Step5Confession({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
         clearInterval(t);
         setDone(true);
       }
-    }, autoPlay ? 5 : 60);
+    }, 60);
     return () => clearInterval(t);
   }, [fullText, autoPlay]);
 
@@ -503,7 +505,7 @@ function Step5Confession({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
             onClick={onNext}
             className="mt-12 px-8 py-4 bg-gradient-to-r from-orange-400 to-rose-500 text-[#ffffff] rounded-full font-black shadow-[0_10px_20px_rgba(244,63,94,0.4)] transition-transform border-2 border-white flex items-center gap-2"
           >
-            Đọc tiếp <ChevronRight className="inline" size={20} />
+            {config?.apologyBtn || "Tha thứ"} <ChevronRight className="inline" size={20} />
           </motion.button>
         )}
       </AnimatePresence>
@@ -512,9 +514,9 @@ function Step5Confession({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
 }
 
 // --- STEP 6: PROMISE ---
-function Step6Promise({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step6Promise({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   const [text, setText] = useState("");
-  const fullText = "Từ nay tớ hứa sẽ ngoan, không cãi lời, không làm đằng ấy phải dỗi nữa. Cho tớ một cơ hội chuộc lỗi bằng một cốc trà sữa to chà bá nhé? 🧋";
+  const fullText = config?.successDesc || "Từ nay tớ hứa sẽ ngoan, không cãi lời, không làm đằng ấy phải dỗi nữa. Cho tớ một cơ hội chuộc lỗi bằng một cốc trà sữa to chà bá nhé? 🧋";
   const [done, setDone] = useState(false);
 
   useEffect(() => {
@@ -569,7 +571,7 @@ function Step6Promise({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
             disabled={autoPlay}
             className="mt-12 px-8 py-4 bg-gradient-to-r from-orange-400 to-rose-500 text-[#ffffff] rounded-full font-black shadow-[0_10px_20px_rgba(244,63,94,0.4)] transition-transform flex items-center gap-2 border-2 border-white"
           >
-            Chốt kèo <HeartHandshake size={24} />
+            {config?.successTitle || "Hòa nhé!"} <img src="/assets/happy/kiss-love.webp" className="w-8 h-8 object-contain" alt="kiss" />
           </motion.button>
         )}
       </AnimatePresence>
@@ -578,7 +580,7 @@ function Step6Promise({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
 }
 
 // --- STEP 7: VERDICT ---
-function Step7Verdict({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step7Verdict({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   const [noClickCount, setNoClickCount] = useState(0);
   const [pleading, setPleading] = useState(false);
 
@@ -618,9 +620,8 @@ function Step7Verdict({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
       <motion.div
         animate={{ rotate: [-5, 5, -5] }}
         transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-        className="text-7xl mb-8 drop-shadow-[0_5px_15px_rgba(244,63,94,0.4)]"
       >
-        ⚖️
+        <img src="/assets/dumb/auau.webp" className="w-24 h-24 object-contain mx-auto drop-shadow-xl" alt="verdict" />
       </motion.div>
       <h2 className="text-4xl font-black text-rose-600 mb-4 uppercase tracking-wider drop-shadow-sm">Tòa Tuyên Án</h2>
       <p className="text-slate-700 font-bold mb-12 bg-white/60 backdrop-blur-sm px-6 py-3 rounded-full shadow-sm border border-white/50">
@@ -635,7 +636,7 @@ function Step7Verdict({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
           className="px-6 py-5 bg-gradient-to-r from-orange-400 to-rose-500 text-[#ffffff] rounded-full font-black shadow-2xl border-4 border-white flex items-center justify-center gap-2 z-20 origin-center whitespace-nowrap"
           style={{ width: "100%" }}
         >
-          <Heart size={24} fill="currentColor" /> THA THỨ (KÈM TRÀ SỮA) 🧋
+          <img src="/assets/happy/love-valentines.webp" className="w-6 h-6 object-contain" alt="heart" /> THA THỨ (KÈM TRÀ SỮA) 🧋
         </motion.button>
 
         {showNo && (
@@ -668,23 +669,35 @@ function Step7Verdict({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
 }
 
 // --- MAIN TEMPLATE ---
-export default function Sorry2Template({ compact = false, autoPlay = false }: { compact?: boolean; autoPlay?: boolean }) {
+export default function Sorry2Template({ compact = false, autoPlay = false, hideNavigation = false, config }: { compact?: boolean; autoPlay?: boolean; hideNavigation?: boolean; config?: any }) {
   const [step, setStep] = useState(1);
   const [weapon, setWeapon] = useState("🔨");
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  const bgImages = [
+    "url('/assets/bg/bg1.jpg')",
+    "url('/assets/bg/bg2.jpg')",
+    "url('/assets/bg/bg3.jpg')",
+    "url('/assets/bg/bg4.jpg')",
+    "url('/assets/bg/bg5.jpg')",
+    "url('/assets/bg/bg6.jpg')",
+    "url('/assets/bg/bg7.jpg')",
+    "url('/assets/bg/bg8.jpg')",
+  ];
+
   const bgColors = [
-    "from-slate-800 to-slate-900", // 1 trigger
-    "from-slate-100 to-orange-50", // 2 weapon
-    "from-red-50 to-orange-100",   // 3 whack
-    "from-orange-100 to-amber-50", // 4 bandaged
-    "from-orange-200 to-rose-200", // 5 confession
-    "from-rose-200 to-pink-200",   // 6 promise
-    "from-pink-100 to-rose-100",   // 7 verdict
-    "from-rose-400 to-orange-400", // 8 end
+    "from-pink-100 to-rose-100", // 1 trigger
+    "from-pink-50 to-pink-100", // 2 weapon
+    "from-rose-100 to-pink-200",   // 3 whack
+    "from-pink-100 to-rose-200", // 4 bandaged
+    "from-rose-100 to-pink-200", // 5 confession
+    "from-pink-100 to-fuchsia-100",   // 6 promise
+    "from-fuchsia-100 to-pink-200",   // 7 verdict
+    "from-pink-100 to-rose-200", // 8 end
   ];
 
   const currentBg = bgColors[step - 1] || bgColors[bgColors.length - 1];
+  const currentImg = bgImages[step - 1] || bgImages[bgImages.length - 1];
 
   const triggerConfetti = useCallback(() => {
     if (!canvasRef.current) return;
@@ -713,19 +726,22 @@ export default function Sorry2Template({ compact = false, autoPlay = false }: { 
   }, [step, autoPlay, triggerConfetti]);
 
   return (
-    <div className={`relative w-full overflow-hidden transition-colors duration-1000 bg-gradient-to-b ${currentBg} text-slate-800 touch-none mx-auto ${compact ? 'h-full' : 'max-w-[400px] h-[800px] max-h-[90vh] rounded-[3rem] shadow-2xl border-[10px] border-[#ffffff]'}`}>
-      <div className="absolute inset-0 pointer-events-none bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIj4KICA8ZmlsdGVyIGlkPSJub2lzZSI+CiAgICA8ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC45IiBudW1PY3RhdmVzPSIzIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+CiAgPC9maWx0ZXI+CiAgPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI25vaXNlKSIgb3BhY2l0eT0iMC4wOCIvPgo8L3N2Zz4=')] opacity-20 mix-blend-overlay z-0" />
+    <div 
+      className={`relative w-full overflow-hidden transition-colors duration-1000 text-slate-800 mx-auto ${compact ? 'h-full' : 'max-w-[400px] h-[800px] max-h-[90vh] rounded-[3rem] shadow-2xl border-[10px] border-pink-200'}`}
+      style={{ backgroundImage: currentImg, backgroundSize: 'cover', backgroundPosition: 'center' }}
+    >
+      <div className={`absolute inset-0 bg-gradient-to-b ${currentBg} backdrop-blur-sm bg-opacity-80`} />
       <FloatingParticles step={step} />
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-50" />
 
       <AnimatePresence mode="wait">
-        {step === 1 && <Step1Trigger key="s1" onNext={handleNext} autoPlay={autoPlay} />}
-        {step === 2 && <Step2Weapon key="s2" onNext={handleNext} autoPlay={autoPlay} setWeapon={setWeapon} />}
-        {step === 3 && <Step3Whack key="s3" onNext={handleNext} autoPlay={autoPlay} weapon={weapon} />}
-        {step === 4 && <Step4Bandaged key="s4" onNext={handleNext} autoPlay={autoPlay} />}
-        {step === 5 && <Step5Confession key="s5" onNext={handleNext} autoPlay={autoPlay} />}
-        {step === 6 && <Step6Promise key="s6" onNext={handleNext} autoPlay={autoPlay} />}
-        {step === 7 && <Step7Verdict key="s7" onNext={handleNext} autoPlay={autoPlay} />}
+        {step === 1 && <Step1Trigger key="s1" onNext={handleNext} autoPlay={autoPlay} config={config} />}
+        {step === 2 && <Step2Weapon key="s2" onNext={handleNext} autoPlay={autoPlay} setWeapon={setWeapon} config={config} />}
+        {step === 3 && <Step3Whack key="s3" onNext={handleNext} autoPlay={autoPlay} weapon={weapon} config={config} />}
+        {step === 4 && <Step4Bandaged key="s4" onNext={handleNext} autoPlay={autoPlay} config={config} />}
+        {step === 5 && <Step5Confession key="s5" onNext={handleNext} autoPlay={autoPlay} config={config} />}
+        {step === 6 && <Step6Promise key="s6" onNext={handleNext} autoPlay={autoPlay} config={config} />}
+        {step === 7 && <Step7Verdict key="s7" onNext={handleNext} autoPlay={autoPlay} config={config} />}
         {step === 8 && (
           <motion.div
             key="s8"
@@ -733,14 +749,22 @@ export default function Sorry2Template({ compact = false, autoPlay = false }: { 
             animate={{ opacity: 1, scale: 1 }}
             className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 text-[#ffffff]"
           >
-            <h2 className="text-4xl font-black mb-6 drop-shadow-lg text-center leading-tight">Yayyy! Cảm ơn cục cưng! 🥰</h2>
-            <div className="bg-white/20 p-6 rounded-3xl backdrop-blur-md border border-white/40 shadow-2xl">
-              <p className="text-xl font-medium mb-4">Tớ qua đón đi chơi liền đây!</p>
-              <div className="text-6xl animate-bounce mt-4">🛵💨</div>
+            <h2 className="text-4xl font-black mb-6 drop-shadow-lg text-center leading-tight bg-white/70 text-pink-600 px-4 py-2 rounded-full">{config?.successTitle || "Yayyy! Cảm ơn cục cưng! 🥰"}</h2>
+            <div className="bg-white/40 p-6 rounded-3xl backdrop-blur-md border border-white/60 shadow-2xl text-slate-800">
+              <p className="text-xl font-bold mb-4">{config?.successDesc || "Tớ qua đón đi chơi liền đây!"}</p>
+              <img src="/assets/happy/cute-love.webp" className="w-32 h-32 object-contain mx-auto animate-bounce mt-4 drop-shadow-xl" alt="cute" />
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+      <TemplateNavigator
+        currentIndex={step - 1}
+        totalSteps={8}
+        onPrev={() => setStep(s => Math.max(1, s - 1))}
+        onNext={() => setStep(s => Math.min(8, s + 1))}
+        accentColor="#f97316"
+        isHidden={hideNavigation || autoPlay}
+      />
     </div>
   );
 }

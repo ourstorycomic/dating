@@ -31,6 +31,7 @@ export function BirthdayMagicPreview(props: TemplatePreviewProps) {
       greetingCardSignature={parsedConfig.greetingCardSignature as string | undefined}
       final3DSignature={parsedConfig.final3DSignature as string | undefined}
       onResponse={props.onResponse}
+      autoPlay={props.autoPlay}
     />
   );
 }

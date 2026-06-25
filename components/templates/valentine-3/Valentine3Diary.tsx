@@ -39,14 +39,14 @@ export function Valentine3Diary({
 
   // No blind interval here. Children handle their own autoPlay.
 
-  let containerClass = "w-full overflow-hidden transition-colors duration-[2000ms] mx-auto text-gray-800 touch-none select-none ";
+  let containerClass = "w-full overflow-hidden transition-colors duration-[2000ms] mx-auto text-gray-800 select-none ";
   
   if (compact) {
-    containerClass += `absolute inset-0 border-[6px] border-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(255,105,180,0.3)] bg-gradient-to-br from-[#fff0f5] via-[#ffe4e1] to-[#ffb6c1]`;
+    containerClass += `absolute inset-0 border-[6px] border-pink-200 rounded-[2.5rem] shadow-[0_20px_50px_rgba(255,105,180,0.3)]`;
   } else if (fullScreen) {
-    containerClass += `relative min-h-screen bg-gradient-to-br from-[#fff0f5] via-[#ffe4e1] to-[#ffb6c1]`;
+    containerClass += `relative min-h-screen`;
   } else {
-    containerClass += `relative max-w-[400px] h-[800px] max-h-[90vh] rounded-[2.5rem] shadow-[0_20px_50px_rgba(255,105,180,0.3)] mx-auto border-[10px] border-white bg-gradient-to-br from-[#fff0f5] via-[#ffe4e1] to-[#ffb6c1]`;
+    containerClass += `relative max-w-[400px] h-[800px] max-h-[90vh] rounded-[2.5rem] shadow-[0_20px_50px_rgba(255,105,180,0.3)] mx-auto border-[10px] border-pink-200`;
   }
 
   const mergedData = {
@@ -63,7 +63,8 @@ export function Valentine3Diary({
   // Auto play music logic could be placed here if needed, but Step 1 handles user interaction
 
   return (
-    <div className={containerClass}>
+    <div className={containerClass} style={{ backgroundImage: "url('/assets/bg/bg5.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <div className="absolute inset-0 bg-pink-50/70 backdrop-blur-[2px] pointer-events-none" />
       {mergedData.musicUrl && <audio ref={audioRef} src={mergedData.musicUrl} loop preload="auto" muted={compact && !autoPlay} />}
 
       {!compact && <FloatingParticles />}

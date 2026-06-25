@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Frown, HandHeart, RefreshCcw, ScrollText, CheckCircle2, XCircle } from "lucide-react";
 import confetti from "canvas-confetti";
 import { APOLOGY_DATA } from "./config";
+import { TemplateNavigator } from "../TemplateNavigator";
 
 // --- BACKGROUND PARTICLES ---
 function FloatingParticles() {
@@ -39,7 +40,7 @@ function FloatingParticles() {
 }
 
 // --- STEP 1: BREAK THE ICE ---
-function Step1Ice({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step1Ice({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   const [cracks, setCracks] = useState(0);
 
   useEffect(() => {
@@ -86,12 +87,12 @@ function Step1Ice({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean 
         transition={{ duration: 0.3 }}
         className="relative z-10"
       >
-        <span className="text-6xl mb-4 block">🥶</span>
+        <img src="/assets/sad/rat-cute-cry.webp" className="w-32 h-32 object-contain mx-auto mb-4 drop-shadow-lg" alt="sad" />
         <h2 className="text-2xl font-bold text-slate-800 drop-shadow-md">
-          {APOLOGY_DATA.name} đang giận tớ lắm đúng không...?
+          {config?.iceTitle || "đang giận tớ lắm đúng không...?"}
         </h2>
         <p className="mt-4 text-slate-700 font-medium bg-white/40 px-4 py-2 rounded-full inline-block backdrop-blur-sm">
-          Bấm vào màn hình để đập vỡ lớp băng này nhé, lạnh quá...
+          {config?.iceSubtitle || "Bấm vào màn hình để đập vỡ lớp băng này nhé, lạnh quá..."}
         </p>
       </motion.div>
     </motion.div>
@@ -99,9 +100,9 @@ function Step1Ice({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean 
 }
 
 // --- STEP 2: CONFESSION ---
-function Step2Confession({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step2Confession({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   const [text, setText] = useState("");
-  const fullText = `Tớ biết tớ sai rồi. Tớ ${APOLOGY_DATA.mistakes}. Tớ vô tâm, tớ hư, tớ đáng bị đòn...`;
+  const fullText = config?.confessText || `Tớ biết tớ sai rồi. Tớ vô tâm, tớ hư, tớ đáng bị đòn...`;
   const [done, setDone] = useState(false);
 
   useEffect(() => {
@@ -113,7 +114,7 @@ function Step2Confession({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
         clearInterval(t);
         setDone(true);
       }
-    }, autoPlay ? 5 : 50); // type speed
+    }, 50); // type speed
     return () => clearInterval(t);
   }, [fullText, autoPlay]);
 
@@ -135,9 +136,10 @@ function Step2Confession({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
       <motion.div
         animate={{ y: [-5, 5, -5], rotate: [-2, 2, -2] }}
         transition={{ repeat: Infinity, duration: 2 }}
-        className="mb-8"
+        className="mb-8 relative"
       >
-        <Frown size={80} className="text-slate-600 opacity-80" />
+        <img src="/assets/sad/lots-of-tears-crying-hard.webp" className="w-40 h-40 object-contain drop-shadow-xl mx-auto" alt="crying" />
+        <img src="/assets/sad/cat-blah.webp" className="absolute -bottom-4 -right-8 w-16 h-16 object-contain drop-shadow-md" alt="blah" />
       </motion.div>
       <div className="bg-white/60 p-6 rounded-2xl shadow-lg backdrop-blur-md border border-white/40 min-h-[150px] flex items-center justify-center w-full relative">
         <p className="text-lg font-medium text-slate-800 leading-relaxed">
@@ -151,9 +153,9 @@ function Step2Confession({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             onClick={onNext}
-            className="mt-10 px-8 py-4 bg-slate-800 text-[#ffffff] rounded-full font-bold shadow-xl hover:scale-105 transition-transform"
+            className="mt-10 px-8 py-4 bg-pink-500 text-white rounded-full font-bold shadow-xl hover:scale-105 transition-transform"
           >
-            Đúng, cậu rất đáng đòn! 😡
+            {config?.confessBtn || "Đúng, cậu rất đáng đòn! 😡"}
           </motion.button>
         )}
       </AnimatePresence>
@@ -162,8 +164,15 @@ function Step2Confession({ onNext, autoPlay }: { onNext: () => void; autoPlay: b
 }
 
 // --- STEP 3: PENALTY WHEEL ---
-function Step3Wheel({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
-  const options = ["Trà sữa 1 tuần", "Đấm 3 cái", "Rửa bát 1 tháng", "Làm osin 1 ngày", "Mua quà xịn", "Bao đi ăn tối"];
+function Step3Wheel({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
+  const options = [
+    config?.wheelOpt1 || "Trà sữa 1 tuần", 
+    config?.wheelOpt2 || "Đấm 3 cái", 
+    config?.wheelOpt3 || "Rửa bát 1 tháng", 
+    config?.wheelOpt4 || "Làm osin 1 ngày", 
+    config?.wheelOpt5 || "Mua quà xịn", 
+    config?.wheelOpt6 || "Bao đi ăn tối"
+  ];
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [rotation, setRotation] = useState(0);
@@ -209,13 +218,15 @@ function Step3Wheel({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
       exit={{ opacity: 0, scale: 0.9 }}
       className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10"
     >
-      <h2 className="text-2xl font-bold text-slate-800 mb-2">Vòng Quay Đền Tội</h2>
-      <p className="text-sm font-medium text-slate-600 mb-8">Trước khi tha lỗi, cho cậu quyền phạt tớ đấy! Quay đi, tớ chịu hết!</p>
+      <img src="/assets/dumb/hm.webp" className="w-24 h-24 object-contain mx-auto mb-2 drop-shadow-md" alt="dumb" />
+      <h2 className="text-2xl font-bold text-slate-800 mb-2">{config?.wheelTitle || "Vòng Quay Đền Tội"}</h2>
+      <p className="text-sm font-medium text-slate-600 mb-8 bg-white/50 p-2 rounded-xl backdrop-blur-sm">{config?.wheelSubtitle || "Trước khi tha lỗi, cho cậu quyền phạt tớ đấy! Quay đi, tớ chịu hết!"}</p>
 
       <div className="relative w-64 h-64 mb-8">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 -mt-4 z-20 text-rose-500 drop-shadow-md">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21l-12-18h24z"/></svg>
         </div>
+        <img src="/assets/sad/tisramissu.webp" className="absolute -bottom-4 -left-8 w-16 h-16 object-contain drop-shadow-lg z-30" alt="decor" />
         <motion.div
           animate={{ rotate: rotation }}
           transition={{ duration: 4, ease: [0.2, 0.8, 0.2, 1] }}
@@ -243,7 +254,7 @@ function Step3Wheel({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
           disabled={spinning}
           className="px-8 py-4 bg-rose-500 text-[#ffffff] rounded-full font-bold shadow-xl hover:bg-rose-600 transition-colors flex items-center gap-2"
         >
-          <RefreshCcw className={spinning ? "animate-spin" : ""} /> {spinning ? "Đang quay..." : "QUAY NGAY"}
+          <RefreshCcw className={spinning ? "animate-spin" : ""} /> {spinning ? "Đang quay..." : (config?.wheelBtn || "QUAY NGAY")}
         </button>
       ) : (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center gap-4">
@@ -253,9 +264,9 @@ function Step3Wheel({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
           </div>
           <button
             onClick={onNext}
-            className="px-8 py-3 bg-slate-800 text-[#ffffff] rounded-full font-bold shadow-xl hover:scale-105 transition-transform"
+            className="px-8 py-3 bg-pink-500 text-[#ffffff] rounded-full font-bold shadow-xl hover:scale-105 transition-transform"
           >
-            Tạm bớt giận 👉
+            {config?.wheelNextBtn || "Tạm bớt giận 👉"}
           </button>
         </motion.div>
       )}
@@ -264,7 +275,7 @@ function Step3Wheel({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolea
 }
 
 // --- STEP 4: NOSTALGIA ---
-function Step4Nostalgia({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step4Nostalgia({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   useEffect(() => {
     if (autoPlay) {
       const t = setTimeout(onNext, 2500);
@@ -281,7 +292,20 @@ function Step4Nostalgia({ onNext, autoPlay }: { onNext: () => void; autoPlay: bo
       className="absolute inset-0 flex flex-col items-center justify-center p-6 z-10"
     >
       <div className="relative w-full h-[300px] mb-12">
-        {APOLOGY_DATA.memories.slice(0,3).map((img, i) => (
+        {[config?.memory1, config?.memory2, config?.memory3].filter(Boolean).length > 0 
+          ? [config?.memory1, config?.memory2, config?.memory3].filter(Boolean).map((img, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 50, rotate: (i - 1) * -15 }}
+              animate={{ opacity: 1, y: 0, rotate: (i - 1) * 10 }}
+              transition={{ delay: i * 0.5, type: "spring" }}
+              className="absolute top-0 w-40 h-48 bg-white p-2 pb-8 shadow-2xl rounded-sm border border-slate-200"
+              style={{ left: `calc(50% - 5rem + ${(i - 1) * 2}rem)`, zIndex: i }}
+            >
+              <img src={img} alt="memory" className="w-full h-full object-cover" />
+            </motion.div>
+          ))
+          : APOLOGY_DATA.memories.slice(0,3).map((img, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0, y: 50, rotate: (i - 1) * -15 }}
@@ -294,13 +318,21 @@ function Step4Nostalgia({ onNext, autoPlay }: { onNext: () => void; autoPlay: bo
           </motion.div>
         ))}
       </div>
+      <motion.img
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 1.5 }}
+        src="/assets/happy/cute-love.webp"
+        className="w-32 h-32 object-contain mx-auto mb-6 drop-shadow-xl relative z-10"
+        alt="love"
+      />
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2 }}
-        className="text-lg font-medium text-slate-800 text-center mb-8 px-4 bg-white/50 backdrop-blur-sm py-3 rounded-2xl"
+        className="text-lg font-medium text-slate-800 text-center mb-8 px-4 bg-white/60 backdrop-blur-sm py-3 rounded-2xl"
       >
-        "Tớ không muốn vì một phút ngu ngốc mà đánh mất những nụ cười này..."
+        {config?.nostalgiaText || "\"Tớ không muốn vì một phút ngu ngốc mà đánh mất những nụ cười này...\""}
       </motion.p>
       <motion.button
         initial={{ opacity: 0 }}
@@ -309,16 +341,16 @@ function Step4Nostalgia({ onNext, autoPlay }: { onNext: () => void; autoPlay: bo
         onClick={onNext}
         className="px-8 py-3 bg-amber-500 text-[#ffffff] rounded-full font-bold shadow-xl hover:scale-105 transition-transform"
       >
-        Xem tiếp
+        {config?.nostalgiaBtn || "Xem tiếp"}
       </motion.button>
     </motion.div>
   );
 }
 
 // --- STEP 5: SINCERE APOLOGY ---
-function Step5Apology({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step5Apology({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   const [text, setText] = useState("");
-  const fullText = APOLOGY_DATA.letter;
+  const fullText = config?.letterText || APOLOGY_DATA.letter;
   const [done, setDone] = useState(false);
 
   useEffect(() => {
@@ -330,7 +362,7 @@ function Step5Apology({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
         clearInterval(t);
         setDone(true);
       }
-    }, autoPlay ? 5 : 80); // slower typewriter
+    }, 80); // slower typewriter
     return () => clearInterval(t);
   }, [fullText, autoPlay]);
 
@@ -349,13 +381,14 @@ function Step5Apology({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
       exit={{ opacity: 0, y: -100 }}
       className="absolute inset-0 flex flex-col items-center justify-center p-6 z-10"
     >
+      <img src="/assets/sad/el-gato.webp" className="w-28 h-28 object-contain mx-auto mb-4 drop-shadow-lg z-20" alt="pleading" />
       <motion.div
         animate={{ rotate: [-1, 1, -1] }}
         transition={{ repeat: Infinity, duration: 4 }}
-        className="bg-[#fefce8] p-8 rounded-sm shadow-2xl w-full max-w-sm relative"
-        style={{ backgroundImage: "repeating-linear-gradient(transparent, transparent 31px, #fbbf24 31px, #fbbf24 32px)", lineHeight: "32px", backgroundAttachment: "local" }}
+        className="bg-pink-50 p-8 rounded-sm shadow-2xl w-full max-w-sm relative border-2 border-pink-200"
+        style={{ backgroundImage: "repeating-linear-gradient(transparent, transparent 31px, #fbcfe8 31px, #fbcfe8 32px)", lineHeight: "32px", backgroundAttachment: "local" }}
       >
-        <div className="absolute top-[-15px] left-1/2 -translate-x-1/2 w-8 h-8 bg-red-500/20 rounded-full" /> {/* pin */}
+        <div className="absolute top-[-15px] left-1/2 -translate-x-1/2 w-8 h-8 bg-pink-500/40 rounded-full shadow-inner" /> {/* pin */}
         <p className="text-slate-800 font-medium text-lg italic font-serif pt-2 min-h-[200px]">
           {text}<span className="animate-pulse">_</span>
         </p>
@@ -369,7 +402,7 @@ function Step5Apology({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
             onClick={onNext}
             className="mt-10 px-8 py-4 bg-rose-500 text-[#ffffff] rounded-full font-bold shadow-xl hover:bg-rose-600 transition-transform flex items-center gap-2"
           >
-            Chốt hạ <ScrollText size={20} />
+            {config?.letterBtn || "Chốt hạ"} <ScrollText size={20} />
           </motion.button>
         )}
       </AnimatePresence>
@@ -378,7 +411,7 @@ function Step5Apology({ onNext, autoPlay }: { onNext: () => void; autoPlay: bool
 }
 
 // --- STEP 6: PEACE TREATY ---
-function Step6Treaty({ onNext, autoPlay }: { onNext: () => void; autoPlay: boolean }) {
+function Step6Treaty({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
   const [noPos, setNoPos] = useState({ x: 0, y: 0 });
   const [pleading, setPleading] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -419,9 +452,9 @@ function Step6Treaty({ onNext, autoPlay }: { onNext: () => void; autoPlay: boole
       className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10"
       ref={containerRef}
     >
-      <HandHeart size={64} className="text-rose-500 mb-6 drop-shadow-md" />
-      <h2 className="text-3xl font-black text-slate-800 mb-2 uppercase tracking-wide">Hiệp Ước Hòa Bình</h2>
-      <p className="text-slate-600 font-medium mb-12">Quyết định nằm trong tay cậu. Xin hãy nương tay...</p>
+      <img src="/assets/happy/kiss-love.webp" className="w-40 h-40 object-contain mx-auto mb-6 drop-shadow-xl" alt="kiss" />
+      <h2 className="text-3xl font-black text-slate-800 mb-2 uppercase tracking-wide">{config?.treatyTitle || "Hiệp Ước Hòa Bình"}</h2>
+      <p className="text-slate-600 font-medium mb-12">{config?.treatySubtitle || "Quyết định nằm trong tay cậu. Xin hãy nương tay..."}</p>
 
       <div className="flex flex-col gap-6 w-full max-w-xs relative">
         <motion.button
@@ -430,7 +463,7 @@ function Step6Treaty({ onNext, autoPlay }: { onNext: () => void; autoPlay: boole
           transition={{ repeat: Infinity, duration: 1.5 }}
           className="px-6 py-4 bg-gradient-to-r from-rose-400 to-pink-500 text-[#ffffff] rounded-full font-bold shadow-xl border-2 border-white flex items-center justify-center gap-2 z-20"
         >
-          <CheckCircle2 size={20} /> KÝ TÊN, THA MẠNG CHÓ 🐾
+          <CheckCircle2 size={20} /> {config?.treatyBtnYes || "KÝ TÊN, THA MẠNG CHÓ 🐾"}
         </motion.button>
 
         <motion.button
@@ -442,7 +475,7 @@ function Step6Treaty({ onNext, autoPlay }: { onNext: () => void; autoPlay: boole
           onClick={forceNoClick}
           className="px-6 py-4 bg-slate-200 text-slate-500 rounded-full font-bold border-2 border-slate-300 flex items-center justify-center gap-2 z-10 transition-colors hover:bg-slate-300"
         >
-          <XCircle size={20} /> GIẬN TIẾP, KHÔNG THA 😤
+          <XCircle size={20} /> {config?.treatyBtnNo || "GIẬN TIẾP, KHÔNG THA 😤"}
         </motion.button>
       </div>
 
@@ -452,8 +485,9 @@ function Step6Treaty({ onNext, autoPlay }: { onNext: () => void; autoPlay: boole
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute bottom-10 bg-slate-800 text-[#ffffff] px-6 py-3 rounded-2xl shadow-2xl font-bold"
+            className="absolute bottom-10 bg-pink-500 text-white px-6 py-3 rounded-2xl shadow-2xl font-bold flex flex-col items-center gap-2"
           >
+            <img src="/assets/sad/cat-kitty.webp" className="w-16 h-16 object-contain" alt="cry" />
             Thôi màaaa, xin đấyyyy 😭
           </motion.div>
         )}
@@ -463,22 +497,32 @@ function Step6Treaty({ onNext, autoPlay }: { onNext: () => void; autoPlay: boole
 }
 
 // --- MAIN TEMPLATE COMPONENT ---
-export default function Sorry1Template({ compact = false, autoPlay = false }: { compact?: boolean; autoPlay?: boolean }) {
+export default function Sorry1Template({ compact = false, autoPlay = false, hideNavigation = false, config }: { compact?: boolean; autoPlay?: boolean; hideNavigation?: boolean; config?: any }) {
   const [step, setStep] = useState(1);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // Background color mapping
+  // Background image and color mapping
+  const bgImages = [
+    "url('/assets/bg/bg1.jpg')",
+    "url('/assets/bg/bg2.jpg')",
+    "url('/assets/bg/bg3.jpg')",
+    "url('/assets/bg/bg4.jpg')",
+    "url('/assets/bg/bg5.jpg')",
+    "url('/assets/bg/bg6.jpg')",
+    "url('/assets/bg/bg7.jpg')"
+  ];
   const bgColors = [
-    "from-slate-200 to-slate-400",   // 1
-    "from-slate-300 to-slate-500",   // 2
-    "from-orange-100 to-amber-200",  // 3
-    "from-amber-200 to-rose-200",    // 4
-    "from-rose-100 to-pink-200",     // 5
-    "from-pink-300 to-rose-400",     // 6
-    "from-pink-400 to-fuchsia-500"   // 7 (End)
+    "from-pink-100/80 to-rose-200/80",   
+    "from-pink-200/80 to-fuchsia-300/80",   
+    "from-rose-200/80 to-pink-300/80",  
+    "from-pink-300/80 to-rose-400/80",    
+    "from-fuchsia-200/80 to-pink-300/80",     
+    "from-rose-300/80 to-pink-500/80",     
+    "from-pink-400/80 to-fuchsia-500/80"   
   ];
 
   const currentBg = bgColors[step - 1] || bgColors[bgColors.length - 1];
+  const currentImg = bgImages[step - 1] || bgImages[bgImages.length - 1];
 
   const triggerConfetti = () => {
     if (!canvasRef.current) return;
@@ -523,16 +567,20 @@ export default function Sorry1Template({ compact = false, autoPlay = false }: { 
   };
 
   return (
-    <div className={`relative w-full overflow-hidden transition-colors duration-1000 bg-gradient-to-b ${currentBg} text-slate-800 touch-none mx-auto ${compact ? 'h-full' : 'max-w-[400px] h-[800px] max-h-[90vh] rounded-[3rem] shadow-2xl border-[10px] border-[#ffffff]'}`}>
+    <div 
+      className={`relative w-full overflow-hidden transition-all duration-1000 text-slate-800 mx-auto ${compact ? 'h-full' : 'max-w-[400px] h-[800px] max-h-[90vh] rounded-[3rem] shadow-2xl border-[10px] border-pink-200'}`}
+      style={{ backgroundImage: currentImg, backgroundSize: 'cover', backgroundPosition: 'center' }}
+    >
+      <div className={`absolute inset-0 bg-gradient-to-b ${currentBg} backdrop-blur-[2px]`} />
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-50" />
       <FloatingParticles />
       <AnimatePresence mode="wait">
-        {step === 1 && <Step1Ice key="s1" onNext={handleNext} autoPlay={autoPlay} />}
-        {step === 2 && <Step2Confession key="s2" onNext={handleNext} autoPlay={autoPlay} />}
-        {step === 3 && <Step3Wheel key="s3" onNext={handleNext} autoPlay={autoPlay} />}
-        {step === 4 && <Step4Nostalgia key="s4" onNext={handleNext} autoPlay={autoPlay} />}
-        {step === 5 && <Step5Apology key="s5" onNext={handleNext} autoPlay={autoPlay} />}
-        {step === 6 && <Step6Treaty key="s6" onNext={handleNext} autoPlay={autoPlay} />}
+        {step === 1 && <Step1Ice key="s1" onNext={handleNext} autoPlay={autoPlay} config={config} />}
+        {step === 2 && <Step2Confession key="s2" onNext={handleNext} autoPlay={autoPlay} config={config} />}
+        {step === 3 && <Step3Wheel key="s3" onNext={handleNext} autoPlay={autoPlay} config={config} />}
+        {step === 4 && <Step4Nostalgia key="s4" onNext={handleNext} autoPlay={autoPlay} config={config} />}
+        {step === 5 && <Step5Apology key="s5" onNext={handleNext} autoPlay={autoPlay} config={config} />}
+        {step === 6 && <Step6Treaty key="s6" onNext={handleNext} autoPlay={autoPlay} config={config} />}
         {step === 7 && (
           <motion.div
             key="s7"
@@ -540,13 +588,22 @@ export default function Sorry1Template({ compact = false, autoPlay = false }: { 
             animate={{ opacity: 1, scale: 1 }}
             className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 text-[#ffffff]"
           >
-            <h2 className="text-4xl font-black mb-4 drop-shadow-md">Cảm ơn cậu! ❤️</h2>
+            <img src="/assets/happy/love-valentines.webp" className="w-48 h-48 object-contain mx-auto mb-6 drop-shadow-2xl" alt="happy" />
+            <h2 className="text-4xl font-black mb-4 drop-shadow-md text-pink-600 bg-white/70 px-6 py-2 rounded-full">{config?.successTitle || "Cảm ơn cậu! ❤️"}</h2>
             <p className="text-xl font-medium bg-white/20 p-4 rounded-2xl backdrop-blur-sm border border-white/40">
-              Tớ qua đón cậu đi ăn đền tội ngay đây!
+              {config?.successDesc || "Tớ qua đón cậu đi ăn đền tội ngay đây!"}
             </p>
           </motion.div>
         )}
       </AnimatePresence>
+      <TemplateNavigator
+        currentIndex={step - 1}
+        totalSteps={7}
+        onPrev={() => setStep(s => Math.max(1, s - 1))}
+        onNext={() => setStep(s => Math.min(7, s + 1))}
+        accentColor="#ec4899"
+        isHidden={hideNavigation || autoPlay}
+      />
     </div>
   );
 }

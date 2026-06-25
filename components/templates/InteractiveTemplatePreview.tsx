@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { useInView } from "framer-motion";
 import type { TemplatePreviewProps } from "./previews/types";
 import { StarryConstellationPreview } from "./valentine-1/preview";
 import { Valentine2Preview } from "./valentine-2/preview";
@@ -148,7 +149,18 @@ export function InteractiveTemplatePreview({
   ...props
 }: InteractiveTemplatePreviewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { amount: 0.5 });
   const [isHovered, setIsHovered] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const isPreviewActive = (isMobile && isInView) || (!isMobile && isHovered);
   const normalizedKey = componentKey.toLowerCase();
   const preview = previewRegistry.find((item) => normalizedKey.includes(item.match));
 
@@ -159,7 +171,7 @@ export function InteractiveTemplatePreview({
         return (
           <div 
             ref={containerRef} 
-            className="mx-auto flex aspect-[9/19] w-[340px] max-w-full shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative isolate z-0 ring-1 ring-inset ring-black/10"
+            className="mx-auto flex aspect-[9/19] w-full max-w-[340px] shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative isolate z-0 ring-1 ring-inset ring-black/10"
             style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)' }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -170,15 +182,19 @@ export function InteractiveTemplatePreview({
             <div className="absolute inset-0 z-50" />
             
             <div className="absolute inset-0 pointer-events-none">
-              <BotAutoPlayer enabled={isHovered} key={isHovered ? "active" : "idle"}>
-                <Component {...props} roomId={roomId} autoPlay={isHovered} compact={true} />
+              <BotAutoPlayer enabled={isPreviewActive} key={isPreviewActive ? "active" : "inactive"}>
+                <Component {...props} roomId={roomId} autoPlay={isPreviewActive} compact={true} />
               </BotAutoPlayer>
             </div>
           </div>
         );
       } else {
         return (
-          <div ref={containerRef} className="mx-auto flex aspect-[9/19] w-[340px] max-w-full shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative">
+          <div 
+            ref={containerRef} 
+            className="mx-auto flex aspect-[9/19] h-[calc(100dvh-140px)] max-h-[720px] w-auto max-w-[360px] shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative isolate z-0"
+            style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)' }}
+          >
             <Component {...props} roomId={roomId} autoPlay={false} />
           </div>
         );

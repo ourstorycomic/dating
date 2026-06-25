@@ -116,7 +116,7 @@ export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
                     viewport={{ once: true, margin: "-40px" }}
                     transition={{ duration: 0.5, type: "spring", bounce: 0.3 }}
                     key={template.id}
-                    className="h-full"
+                    className="h-full min-w-0"
                   >
                     <GlassCard
                       className="shine-card flex h-full min-h-[590px] flex-col p-4 sm:p-5"
@@ -134,6 +134,7 @@ export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
                         componentKey={template.component_key}
                         gradient={template.gradient}
                         visualLabel={template.visual_label}
+                        hideNavigation={true}
                       />
                     </div>
 

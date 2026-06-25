@@ -446,6 +446,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
     confessionText: "Trang sách này tớ muốn để ngỏ, chờ cậu cùng viết tiếp. Tối nay đi xem phim với tớ nhé?",
   });
 
+  const [dynamicData, setDynamicData] = useState<Record<string, any>>({});
   const [result, setResult] = useState<{ amount: number; giftLink: string; orderId: string; paymentCode: string; paymentStatus: string; qrCodeUrl: string | null; status: string; trackLink: string; unlocked: boolean } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSavingEdits, setIsSavingEdits] = useState(false);
@@ -629,7 +630,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
       accentColor: stage1Accent,
     } : {
       forceStage: valentine1Stage,
-    })
+    }),
+    ...dynamicData
   };
 
   async function createOrder() {
@@ -824,7 +826,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
     if (cd.balloonText) setBirthdayBalloonText(cd.balloonText);
     if (cd.greetingCardSignature) setBirthdayGreetingCardSignature(cd.greetingCardSignature);
     if (cd.final3DSignature) setBirthdayFinal3DSignature(cd.final3DSignature);
-    
+    setDynamicData(cd);
+
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -1270,7 +1273,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
                   </div>
                 </Section>
               </>
-            ) : (
+            ) : !(Array.isArray(selectedTemplate?.data_schema) && selectedTemplate.data_schema.length > 0) ? (
               <>
                 <div className="md:col-span-2 hidden">
                 </div>
@@ -1361,6 +1364,30 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
                     <ColorInput label="Màu nền đoạn cuối" onCommit={setFinalBackground} value={finalBackground} />
                     <ColorInput label="Màu nút/nhấn đoạn cuối" onCommit={setFinalAccent} value={finalAccent} />
                   </Section>
+              </>
+            ) : null}
+
+            {Array.isArray(selectedTemplate?.data_schema) && selectedTemplate.data_schema.length > 0 && (
+              <>
+                {Array.from(new Set(selectedTemplate.data_schema.map((f: any) => f.section || "Tùy chỉnh nội dung"))).map((sectionName: any, secIdx) => (
+                  <Section key={secIdx} title={sectionName}>
+                    {selectedTemplate.data_schema
+                      .filter((f: any) => (f.section || "Tùy chỉnh nội dung") === sectionName)
+                      .map((field: any, i: number) => {
+                        const val = dynamicData[field.key] ?? field.default ?? "";
+                        if (field.type === "color") {
+                          return <ColorInput key={i} label={field.label} value={val} onCommit={v => setDynamicData(d => ({ ...d, [field.key]: v }))} />;
+                        }
+                        if (field.type === "media" || field.type === "image" || field.type === "audio" || field.type === "video") {
+                          return <MediaInput key={i} label={field.label} onChange={(v) => setDynamicData(d => ({ ...d, [field.key]: v }))} />;
+                        }
+                        if (field.type === "textarea") {
+                          return <TextArea key={i} label={field.label} value={val} onChange={v => setDynamicData(d => ({ ...d, [field.key]: v }))} />;
+                        }
+                        return <TextInput key={i} label={field.label} value={val} onChange={v => setDynamicData(d => ({ ...d, [field.key]: v }))} />;
+                      })}
+                  </Section>
+                ))}
               </>
             )}
             
@@ -1481,22 +1508,24 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
       </div>
 
       {showSetupWorkspace ? (
-      <aside className="glass-panel-soft rounded-2xl p-4 xl:sticky xl:top-5 xl:h-fit">
-        <div className="px-1 pb-4">
+      <aside className="glass-panel-soft rounded-2xl p-4 xl:sticky xl:top-5 xl:h-[calc(100dvh-40px)] flex flex-col w-full xl:w-[450px]">
+        <div className="px-1 pb-4 shrink-0">
           <h2 className="text-2xl font-semibold">Live Preview</h2>
           <p className="mt-1 text-sm text-white/54">Xem trước hiển thị ở đây.</p>
         </div>
-        <InteractiveTemplatePreview
-          componentKey={selectedComponentKey}
-          customData={customData}
-          question={question}
-          recipientName={recipientName || "Em"}
-          senderName={senderName || "Anh"}
-          visualLabel={selectedTemplate?.visual_label}
-          compact={false}
-          isBuilderPreview={true}
-          fullScreen={true}
-        />
+        <div className="flex-1 w-full flex items-center justify-center">
+            <InteractiveTemplatePreview
+              componentKey={selectedComponentKey}
+              customData={customData}
+              question={question}
+              recipientName={recipientName || "Em"}
+              senderName={senderName || "Anh"}
+              visualLabel={selectedTemplate?.visual_label}
+              compact={true}
+              isBuilderPreview={true}
+              fullScreen={false}
+            />
+        </div>
       </aside>
       ) : null}
     </div>

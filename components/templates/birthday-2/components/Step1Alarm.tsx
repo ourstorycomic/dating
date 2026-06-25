@@ -65,7 +65,7 @@ export function Step1Alarm({ onNext, autoPlay = false, compact = false }: { onNe
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 1.1, filter: "brightness(1.5)" }}
       transition={{ duration: 0.8 }}
-      className="absolute inset-0 flex flex-col items-center justify-between py-16 bg-cover bg-center bg-[url('https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=600&auto=format&fit=crop')] z-10"
+      className="absolute inset-0 flex flex-col items-center justify-between py-16 bg-cover bg-center bg-[url('/assets/bg/bg4.jpg')] z-10"
     >
       <div className="absolute inset-0 bg-pink-900/20 backdrop-blur-[2px] z-0" />
       <motion.div className="absolute inset-0 bg-white z-0 pointer-events-none" style={{ opacity: bgOpacity }} />
@@ -88,11 +88,11 @@ export function Step1Alarm({ onNext, autoPlay = false, compact = false }: { onNe
           className="text-center mt-6 flex flex-col items-center gap-2 drop-shadow-md"
         >
           <motion.div 
-            animate={{ rotate: [0, -15, 15, -15, 15, 0], scale: [1, 1.1, 1] }}
-            transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-            className="bg-pink-500/80 p-4 rounded-full backdrop-blur-md mb-3 shadow-[0_0_30px_rgba(236,72,153,0.6)]"
+            animate={{ rotate: [0, -5, 5, -5, 5, 0], scale: [1, 1.05, 1] }}
+            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+            className="mb-2"
           >
-            <Bell className="w-10 h-10 text-white" />
+            <img src="/assets/dumb/auau.webp" className="w-24 h-24 object-contain drop-shadow-xl" alt="alarm" />
           </motion.div>
           <h2 className="text-4xl font-extrabold tracking-tight text-pink-50 drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]">Báo thức</h2>
           <p className="text-pink-200 font-bold text-lg drop-shadow-md">Dậy thôi lợn con ơi! 🐷</p>

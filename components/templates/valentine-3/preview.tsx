@@ -12,7 +12,8 @@ export function Valentine3Preview({
     <Valentine3Diary 
       compact={compact} 
       fullScreen={!compact && !isBuilderPreview} 
-      hideNavigation={compact || hideNavigation}
+      hideNavigation={hideNavigation}
+      isBuilderPreview={isBuilderPreview}
       data={props.customData || (props as any)}
       roomId={roomId}
       autoPlay={props.autoPlay}
