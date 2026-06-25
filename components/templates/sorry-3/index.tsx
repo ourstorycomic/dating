@@ -146,7 +146,7 @@ function BackgroundEffects({ step }: { step: number }) {
   );
 }
 
-export default function Sorry3Template({ autoPlay = false, compact = false, hideNavigation = false, config = {} }: { autoPlay?: boolean; compact?: boolean; hideNavigation?: boolean; config?: any }) {
+export default function Sorry3Template({ autoPlay = false, compact = false, hideNavigation = false, isBuilderPreview = false, config = {} }: { autoPlay?: boolean; compact?: boolean; hideNavigation?: boolean; isBuilderPreview?: boolean; config?: any }) {
   const [step, setStep] = useState(1);
 
   const nextStep = () => setStep((s) => Math.min(s + 1, 8));

@@ -1976,7 +1976,6 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
            if (activeElapsed > 2.0 && strikeCount < 3) {
               setStrikeCount(3);
               setMatchLit(true);
-              if (touchAudioRef.current) touchAudioRef.current.play().catch(() => {});
            }
         } else if (matchLit) {
            matchWorld.current.lerp(new THREE.Vector3(0.170, 1.024, 1.3), delta * 4);

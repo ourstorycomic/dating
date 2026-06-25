@@ -669,7 +669,7 @@ function Step7Verdict({ onNext, autoPlay, config }: { onNext: () => void; autoPl
 }
 
 // --- MAIN TEMPLATE ---
-export default function Sorry2Template({ compact = false, autoPlay = false, hideNavigation = false, config }: { compact?: boolean; autoPlay?: boolean; hideNavigation?: boolean; config?: any }) {
+export default function Sorry2Template({ compact = false, autoPlay = false, hideNavigation = false, isBuilderPreview = false, config }: { compact?: boolean; autoPlay?: boolean; hideNavigation?: boolean; isBuilderPreview?: boolean; config?: any }) {
   const [step, setStep] = useState(1);
   const [weapon, setWeapon] = useState("🔨");
   const canvasRef = useRef<HTMLCanvasElement>(null);

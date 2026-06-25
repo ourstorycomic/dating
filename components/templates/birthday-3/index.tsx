@@ -59,7 +59,7 @@ function BackgroundSparkles() {
   );
 }
 
-export default function Birthday3Template({ autoPlay = false, compact = false, hideNavigation = false, config = {} }: { autoPlay?: boolean; compact?: boolean; hideNavigation?: boolean; config?: any }) {
+export default function Birthday3Template({ autoPlay = false, compact = false, hideNavigation = false, isBuilderPreview = false, config = {} }: { autoPlay?: boolean; compact?: boolean; hideNavigation?: boolean; isBuilderPreview?: boolean; config?: any }) {
   const [step, setStep] = useState(1);
 
   const nextStep = useCallback(() => {

@@ -497,7 +497,7 @@ function Step6Treaty({ onNext, autoPlay, config }: { onNext: () => void; autoPla
 }
 
 // --- MAIN TEMPLATE COMPONENT ---
-export default function Sorry1Template({ compact = false, autoPlay = false, hideNavigation = false, config }: { compact?: boolean; autoPlay?: boolean; hideNavigation?: boolean; config?: any }) {
+export default function Sorry1Template({ compact = false, autoPlay = false, hideNavigation = false, isBuilderPreview = false, config }: { compact?: boolean; autoPlay?: boolean; hideNavigation?: boolean; isBuilderPreview?: boolean; config?: any }) {
   const [step, setStep] = useState(1);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 

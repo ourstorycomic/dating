@@ -72,7 +72,7 @@ export async function POST(request: Request) {
     }
   }
 
-  const amount = Number(finalTemplate.base_price);
+  const amount = Number(finalTemplate?.base_price || 0);
   if (!amount || amount <= 0) {
     return NextResponse.json({ error: "Giá template không hợp lệ." }, { status: 400 });
   }
