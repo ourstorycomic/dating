@@ -183,7 +183,15 @@ export function GachaTemplate({ compact, fullScreen, hideNavigation, isBuilderPr
   };
 
   let outerClass = `relative w-full shadow-2xl mx-auto rounded-[3rem] bg-pink-200 p-[10px] ${compact ? 'h-full max-w-[400px]' : 'min-h-[800px] max-w-[400px] max-h-[90vh]'}`;
-  let containerClass = "gacha-container relative w-full h-full overflow-hidden select-none rounded-[calc(3rem-10px)] ";
+  let containerClass = "gacha-container w-full h-full overflow-hidden transition-colors duration-[2000ms] mx-auto text-gray-800 select-none ";
+  
+  if (compact) {
+    containerClass += `absolute inset-0`;
+  } else if (fullScreen) {
+    containerClass += `relative min-h-screen`;
+  } else {
+    containerClass += `relative max-w-[400px] h-[800px] max-h-[90vh] rounded-[2.5rem] shadow-[0_20px_50px_rgba(255,105,180,0.3)] mx-auto border-[10px] border-pink-200`;
+  }
 
   if (!mounted) return <div className={outerClass} />;
 
@@ -193,7 +201,7 @@ export function GachaTemplate({ compact, fullScreen, hideNavigation, isBuilderPr
       <div className={`w-full flex items-center justify-center ${compact ? 'h-full' : 'min-h-screen'} ${fullScreen || compact ? '' : 'p-4 bg-gray-100'}`}>
         <div className={outerClass}>
           <div id="preview-container" className={containerClass} style={{ backgroundImage: "url('/assets/bg/bg7.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
-            <div className="absolute inset-0 bg-pink-100/60 backdrop-blur-sm pointer-events-none rounded-[2.4rem]" />
+            <div className={`absolute inset-0 bg-pink-100/60 backdrop-blur-sm pointer-events-none ${!compact && 'rounded-[2.4rem]'}`} />
           
           {data.audioSrc ? (
             <audio ref={audioRef} loop muted={compact && !autoPlay}>

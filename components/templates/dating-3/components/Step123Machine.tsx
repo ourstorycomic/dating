@@ -22,9 +22,16 @@ export function Step123Machine({ onEggDropped, autoPlay, data }: { onEggDropped:
     let timer: any;
     if (step === 1) {
       timer = setTimeout(async () => {
-        // Mô phỏng kéo đồng xu lên khe nhét xu
+        let targetX = 103;
+        let targetY = -248;
+        if (slotRef.current && coinRef.current) {
+          const slotRect = slotRef.current.getBoundingClientRect();
+          const coinRect = coinRef.current.getBoundingClientRect();
+          targetX = slotRect.left + slotRect.width / 2 - (coinRect.left + coinRect.width / 2);
+          targetY = slotRect.top + slotRect.height / 2 - (coinRect.top + coinRect.height / 2);
+        }
         await coinControls.start({
-          x: 103, y: -248, transition: { duration: 1.2, ease: "easeInOut" }
+          x: targetX, y: targetY, transition: { duration: 1.2, ease: "easeInOut" }
         });
         setStep(1.5);
         await coinControls.start({
