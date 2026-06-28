@@ -8,6 +8,7 @@ import { InteractiveTemplatePreview } from "@/components/templates/InteractiveTe
 import { FormStepNavigator } from "./FormStepNavigator";
 import { GACHA_DATA } from "@/components/templates/dating-3/config";
 import { toast } from "@/components/ui/Toast";
+import { ImageCropperModal } from "@/components/ui/ImageCropperModal";
 
 type MyOrderRow = {
   amount: number;
@@ -169,48 +170,74 @@ function MediaInput({
   accept?: string;
 }) {
   const [isUploading, setIsUploading] = useState(false);
+  const [cropFile, setCropFile] = useState<File | null>(null);
+  const [cropSrc, setCropSrc] = useState<string>("");
+
+  const uploadFile = async (file: File) => {
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+      
+      if (!res.ok) {
+         const errData = await res.json().catch(() => ({}));
+         throw new Error(errData.error || "Upload failed");
+      }
+      const data = await res.json();
+      
+      onChange(data.url, file.type);
+    } catch (error: any) {
+      console.error("Upload error", error);
+      toast.error("Lỗi tải file: " + error.message);
+    } finally {
+      setIsUploading(false);
+      setCropFile(null);
+      setCropSrc("");
+    }
+  };
 
   return (
     <label className="grid gap-2 text-sm md:col-span-2">
-      <span className="text-white/64">{label}</span>
+      {label && <span className="text-white/64">{label}</span>}
       <input
         accept={accept}
         disabled={isUploading}
         className="rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3 outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-pink-500/10 file:text-pink-500 hover:file:bg-pink-500/20 disabled:opacity-50"
-        onChange={async (event) => {
+        onChange={(event) => {
           const file = event.target.files?.[0];
           if (!file) {
             onChange("", "");
             return;
           }
-          
-          setIsUploading(true);
-          try {
-            const formData = new FormData();
-            formData.append("file", file);
-            
-            const res = await fetch("/api/upload", {
-              method: "POST",
-              body: formData,
-            });
-            
-            if (!res.ok) {
-               const errData = await res.json().catch(() => ({}));
-               throw new Error(errData.error || "Upload failed");
-            }
-            const data = await res.json();
-            
-            onChange(data.url, file.type);
-          } catch (error: any) {
-            console.error("Upload error", error);
-            toast.error("Lỗi tải file: " + error.message);
-          } finally {
-            setIsUploading(false);
+          if (file.type.startsWith("image/")) {
+            setCropFile(file);
+            setCropSrc(URL.createObjectURL(file));
+          } else {
+            uploadFile(file);
           }
         }}
         type="file"
       />
       {isUploading && <span className="text-xs font-semibold text-pink-400">Đang tải file lên đám mây...</span>}
+      {cropSrc && (
+        <ImageCropperModal
+          isOpen={!!cropSrc}
+          onClose={() => { setCropSrc(""); setCropFile(null); }}
+          imageSrc={cropSrc}
+          onCropComplete={async (croppedDataUrl) => {
+            if (!cropFile) return;
+            const res = await fetch(croppedDataUrl);
+            const blob = await res.blob();
+            const newFile = new File([blob], cropFile.name, { type: "image/jpeg" });
+            uploadFile(newFile);
+          }}
+        />
+      )}
     </label>
   );
 }
@@ -236,14 +263,11 @@ function MemoryArrayInput({
               <button type="button" onClick={() => onChange(values.filter((_, idx) => idx !== i))} className="text-red-400 text-xs hover:underline px-2 py-1 bg-red-400/10 rounded-lg">Xóa ảnh này</button>
            </div>
            
-           <input type="file" accept="image/*" onChange={(e) => {
-              const file = e.target.files?.[0];
-              if(file) {
-                 const newValues = [...values];
-                 newValues[i].imageUrl = URL.createObjectURL(file);
-                 onChange(newValues);
-              }
-           }} className="text-xs text-white/70 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-pink-500/10 file:text-pink-500 hover:file:bg-pink-500/20" />
+           <MediaInput label="" accept="image/*" onChange={(url) => {
+              const newValues = [...values];
+              newValues[i].imageUrl = url;
+              onChange(newValues);
+           }} />
            
            <input type="text" value={v.message} placeholder="Nhập dòng chú thích ngắn dưới ảnh..." onChange={(e) => {
               const newValues = [...values];
