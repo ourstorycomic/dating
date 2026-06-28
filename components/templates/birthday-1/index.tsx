@@ -413,6 +413,7 @@ function BirthdayScene({
             celebrationZoom={celebrationZoom}
             giftZoomInside={giftZoomInside}
             vintageElapsed={vintageElapsed}
+            memoriesCount={memories && memories.length > 0 ? memories.length : 4}
           />
 
           {/* MẶT SÀN THÔNG MINH 3 CẤP ĐỘ */}

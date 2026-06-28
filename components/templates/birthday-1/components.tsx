@@ -421,9 +421,9 @@ export function DreamLights({ active, phase }: { active: boolean; phase?: string
 }
 
 export function CameraRig({
-  enabled = true, musicActive, phase, celebrationZoom, giftZoomInside, vintageElapsed,
+  enabled = true, musicActive, phase, celebrationZoom, giftZoomInside, vintageElapsed, memoriesCount = 4
 }: {
-  enabled?: boolean; musicActive: boolean; phase: BirthdayPhase; celebrationZoom: boolean; giftZoomInside: boolean; vintageElapsed: number;
+  enabled?: boolean; musicActive: boolean; phase: BirthdayPhase; celebrationZoom: boolean; giftZoomInside: boolean; vintageElapsed: number; memoriesCount?: number;
 }) {
   const { camera } = useThree();
   const lookY = useRef(0.55);
@@ -461,7 +461,8 @@ export function CameraRig({
       camera.lookAt(1.6, -1.75, 1.4); 
       return; 
     } else if (phase === "vintage-gallery") {
-      const t = Math.min(1, vintageElapsed / 15.0); const xPos = -1.5 + t * 15.5; 
+      const finalX = memoriesCount * 3.5;
+      const t = Math.min(1, vintageElapsed / 15.0); const xPos = -1.5 + t * (finalX + 1.5); 
       camera.position.set(xPos, vintageElapsed > 25.0 ? 0.9 + Math.min(1, (vintageElapsed - 25.0) / 4.0) * 5.0 : 0.9, 5.5);
       camera.lookAt(xPos, vintageElapsed > 25.0 ? 0.9 + Math.min(1, (vintageElapsed - 25.0) / 4.0) * 5.0 : 0.9, 0); return;
     }
