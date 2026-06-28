@@ -528,6 +528,9 @@ function Step3DinoRun({ onNext, autoPlay, config }: { onNext: () => void; autoPl
       }
 
       // --- RENDER ---
+      ctx.save();
+      ctx.scale(2.8, 2.8);
+      ctx.translate(0, -35); // Zoom in và đẩy camera xuống một chút
       
       // Clouds
       st.clouds.forEach(c => {
@@ -568,27 +571,44 @@ function Step3DinoRun({ onNext, autoPlay, config }: { onNext: () => void; autoPl
         ctx.drawImage(dinoImg, dX, dY, dW, dH);
         
         if (imgs.current.face && imgs.current.face.complete && imgs.current.face.naturalWidth > 0) {
-          ctx.save();
-          let faceW = 18;
-          let faceH = 18;
-          let faceX = dX + 22;
-          let faceY = dY + 2;
+          let faceW = 30;
+          let faceH = 30;
+          let faceX = dX + 16;
+          let faceY = dY - 6;
           
           if (st.dino.ducking) {
-            faceX = dX + 38;
-            faceY = dY + 6;
-            faceW = 16;
-            faceH = 16;
+            faceX = dX + 32;
+            faceY = dY + 0;
+            faceW = 26;
+            faceH = 26;
           }
           
+          const cx = faceX + faceW/2;
+          const cy = faceY + faceH/2;
+          const wobble = Math.sin(st.frame * 0.4) * 0.15;
+          
+          ctx.save();
+          ctx.translate(cx, cy);
+          ctx.rotate(wobble);
+          
+          // Vẽ khuôn mặt được clip tròn
+          ctx.save();
           ctx.beginPath();
-          ctx.arc(faceX + faceW/2, faceY + faceH/2, faceW/2, 0, Math.PI * 2);
+          ctx.arc(0, 0, faceW/2, 0, Math.PI * 2);
           ctx.clip();
-          ctx.drawImage(imgs.current.face, faceX, faceY, faceW, faceH);
+          ctx.drawImage(imgs.current.face, -faceW/2, -faceH/2, faceW, faceH);
+          ctx.restore();
+          
+          // Vẽ icon nước mắt
+          ctx.font = "14px sans-serif";
+          ctx.fillText("💦", faceW/2 - 6, -faceH/4 + 4);
+          
           ctx.restore();
         }
       }
-      ctx.restore();
+      ctx.restore(); // Phục hồi ctx của khủng long
+      
+      ctx.restore(); // Phục hồi ctx của toàn bộ frame (zoom)
     };
 
     requestRef.current = requestAnimationFrame(loop);
@@ -649,8 +669,8 @@ function Step3DinoRun({ onNext, autoPlay, config }: { onNext: () => void; autoPl
 
       <canvas 
         ref={canvasRef} 
-        width={400} 
-        height={200} 
+        width={800} 
+        height={400} 
         className="absolute top-[30%] w-full h-[200px]"
       />
 
