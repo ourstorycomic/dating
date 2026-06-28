@@ -299,28 +299,28 @@ export function WatchRoom({
 
   // ─────────────────────────────────────────────────────────────────────────
   return (
-    <div className="w-full h-full flex flex-col bg-gradient-to-br from-rose-50 via-pink-50 to-fuchsia-100 overflow-y-auto custom-scrollbar text-rose-950">
+    <div className="w-full h-full flex flex-col bg-[#05020a] overflow-y-auto custom-scrollbar text-rose-50">
       {/* ── Navbar ── */}
-      <div className="flex-shrink-0 h-14 bg-white/60 backdrop-blur-xl border-b border-pink-200/60 flex items-center justify-between px-4 z-50 sticky top-0">
+      <div className="flex-shrink-0 h-14 bg-black/60 backdrop-blur-xl border-b border-white/10 flex items-center justify-between px-4 z-50 sticky top-0">
         <div className="flex items-center gap-3">
           {isHost && onBackToLobby && (
-            <button onClick={onBackToLobby} className="flex items-center gap-2 text-rose-700 hover:text-rose-950 transition-colors text-sm font-bold bg-white/60 hover:bg-white/90 px-3 py-1.5 rounded-full shadow-sm">
+            <button onClick={onBackToLobby} className="flex items-center gap-2 text-rose-300 hover:text-white transition-colors text-sm font-bold bg-white/10 hover:bg-white/20 px-4 py-1.5 rounded-full shadow-sm">
               <ArrowLeft size={16} /> Quay lại sảnh
             </button>
           )}
           {!isHost && (
-            <div className="flex items-center gap-2 text-rose-700 text-sm font-bold bg-white/60 px-3 py-1.5 rounded-full shadow-sm">
+            <div className="flex items-center gap-2 text-rose-300 text-sm font-bold bg-white/10 px-4 py-1.5 rounded-full shadow-sm">
               🍿 Đang xem cùng Host
             </div>
           )}
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-rose-700/80 text-xs font-bold">
+          <span className="text-rose-300/80 text-xs font-bold hidden sm:inline-block">
             {viewerCount} người trong phòng
           </span>
           <button
             onClick={() => setShowChat(v => !v)}
-            className="text-xs font-bold px-4 py-1.5 rounded-full bg-rose-500 text-white shadow-lg shadow-rose-200/50 hover:bg-rose-400 transition-colors"
+            className="text-xs font-bold px-4 py-1.5 rounded-full bg-rose-600/80 text-white shadow-lg shadow-rose-900/50 hover:bg-rose-500 transition-colors border border-rose-500/50"
           >
             💬 Chat {showChat ? "▲" : "▼"}
           </button>
@@ -328,16 +328,16 @@ export function WatchRoom({
       </div>
 
       {/* ── Main Layout ── */}
-      <div className="w-full max-w-[1600px] mx-auto p-4 lg:p-6 flex flex-col gap-6 z-10">
+      <div className="w-full max-w-[1800px] mx-auto p-2 sm:p-4 lg:p-6 flex flex-col gap-4 lg:gap-6 z-10">
         
         {/* ── TOP ROW: Video/Info & Chat ── */}
-        <div className="flex flex-col xl:flex-row gap-6 items-stretch">
+        <div className="flex flex-col xl:flex-row gap-4 lg:gap-6 items-stretch">
           
           {/* Left Column: Video & Info */}
-          <div className="flex-1 min-w-0 flex flex-col gap-6">
+          <div className="flex-[3] min-w-0 flex flex-col gap-4 lg:gap-6">
             
-            {/* Video Container */}
-            <div className="w-full aspect-video bg-black rounded-3xl shadow-2xl overflow-hidden border border-rose-900/50 relative">
+            {/* Video Container - Make it huge */}
+            <div className="w-full aspect-video bg-black rounded-xl sm:rounded-2xl lg:rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.8)] overflow-hidden border border-white/10 relative ring-1 ring-white/5">
               <VideoPlayer
                 src={streamUrl}
                 externalRef={videoRef}
@@ -351,18 +351,18 @@ export function WatchRoom({
             </div>
 
             {/* Info bar & Episodes */}
-            <div className="bg-white/60 backdrop-blur-xl border border-pink-200/60 rounded-3xl shadow-lg overflow-hidden flex flex-col">
-              <div className="px-5 py-4 flex items-center gap-3">
+            <div className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-xl sm:rounded-2xl lg:rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+              <div className="px-5 py-4 flex items-center gap-3 bg-gradient-to-r from-white/[0.05] to-transparent">
                 <div className="flex-1 min-w-0 flex flex-col justify-center">
-                  <p className="text-rose-950 font-black text-xl lg:text-2xl truncate">{movie.name}</p>
-                  <div className="text-xs mt-2 flex flex-wrap items-center gap-2">
-                    <span className={`font-bold px-2.5 py-1 rounded-md shadow-sm ${isHost ? "bg-rose-500 text-white" : "bg-fuchsia-500 text-white"}`}>
+                  <p className="text-white font-black text-xl lg:text-3xl truncate drop-shadow-md">{movie.name}</p>
+                  <div className="text-xs mt-3 flex flex-wrap items-center gap-2">
+                    <span className={`font-bold px-3 py-1.5 rounded-md shadow-sm border ${isHost ? "bg-rose-600/80 border-rose-500 text-white" : "bg-fuchsia-600/80 border-fuchsia-500 text-white"}`}>
                       {isHost ? "HOST" : "GUEST"}
                     </span>
                     {episodes.length > 1 && (
                       <>
-                        <span className="text-rose-400 opacity-60">•</span>
-                        <span className="text-rose-700/80 font-bold text-sm">Tập {episodes[currentEpIndex]?.name}</span>
+                        <span className="text-rose-400/50">•</span>
+                        <span className="text-rose-200 font-bold text-sm bg-white/10 px-3 py-1.5 rounded-md border border-white/5">Tập {episodes[currentEpIndex]?.name}</span>
                       </>
                     )}
                   </div>
@@ -370,7 +370,7 @@ export function WatchRoom({
               </div>
 
               {isHost && episodes.length > 1 && (
-                <div className="px-5 pb-5 overflow-y-auto max-h-64 no-scrollbar custom-scrollbar border-t border-pink-100/50 pt-4">
+                <div className="px-5 pb-5 overflow-y-auto max-h-64 no-scrollbar custom-scrollbar pt-4">
                   <div className="flex flex-wrap gap-2">
                     {episodes.map((ep, i) => (
                       <button
@@ -378,8 +378,8 @@ export function WatchRoom({
                         onClick={() => handleEpisodeChange(i)}
                         className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
                           currentEpIndex === i
-                            ? "bg-rose-500 text-white shadow-[0_4px_15px_rgba(244,63,94,0.4)] translate-y-[-2px]"
-                            : "bg-white text-rose-900 hover:bg-pink-50 border border-pink-200 shadow-sm hover:shadow-md"
+                            ? "bg-rose-600 text-white shadow-[0_4px_20px_rgba(225,29,72,0.6)] translate-y-[-2px] border border-rose-500"
+                            : "bg-white/5 text-rose-200 hover:bg-white/10 border border-white/10 shadow-sm hover:shadow-md"
                         }`}
                       >
                         Tập {ep.name}
@@ -393,12 +393,12 @@ export function WatchRoom({
 
           {/* Right Column: Chat */}
           {showChat && (
-            <div className="w-full xl:w-[400px] flex-shrink-0 flex flex-col">
-              <div className="bg-white/90 backdrop-blur-xl border border-pink-200/60 rounded-3xl shadow-lg flex flex-col h-[500px] xl:h-full overflow-hidden">
+            <div className="w-full xl:w-[400px] flex-[1] flex-shrink-0 flex flex-col">
+              <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-xl sm:rounded-2xl lg:rounded-3xl shadow-2xl flex flex-col h-[500px] xl:h-full overflow-hidden relative">
                 {/* Chat header */}
-                <div className="px-5 py-4 border-b border-pink-100 flex-shrink-0 bg-white/50">
-                  <h3 className="text-rose-950 font-black text-base">💬 Trò chuyện</h3>
-                  <p className="text-rose-600/80 text-xs mt-1 font-medium">
+                <div className="px-5 py-4 border-b border-white/10 flex-shrink-0 bg-gradient-to-r from-white/[0.05] to-transparent">
+                  <h3 className="text-rose-100 font-black text-base">💬 Trò chuyện</h3>
+                  <p className="text-rose-300/80 text-xs mt-1 font-medium">
                     {isHost ? "Chỉ Host mới điều khiển phim" : "Yêu cầu Host để tua/dừng"}
                   </p>
                 </div>
@@ -406,19 +406,19 @@ export function WatchRoom({
                 {/* Messages */}
                 <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 min-h-0 custom-scrollbar">
                   {messages.length === 0 && (
-                    <p className="text-rose-500/80 text-sm text-center pt-8 font-semibold">Chưa có tin nhắn nào.<br/>Hãy gửi lời chào nhé! 👋</p>
+                    <p className="text-rose-300/50 text-sm text-center pt-8 font-semibold">Chưa có tin nhắn nào.<br/>Hãy gửi lời chào nhé! 👋</p>
                   )}
                   {messages.map((msg) => {
                     const isMine = msg.senderId === myId;
                     return (
                       <div key={msg.id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
-                        <div className={`max-w-[85%] rounded-2xl px-4 py-2 text-sm shadow-md ${
+                        <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm shadow-lg ${
                           isMine
-                            ? "bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-tr-sm"
-                            : "bg-white text-rose-950 border border-pink-100 rounded-tl-sm"
+                            ? "bg-gradient-to-r from-rose-600 to-pink-600 text-white rounded-tr-sm"
+                            : "bg-white/10 text-rose-50 border border-white/10 rounded-tl-sm backdrop-blur-md"
                         }`}>
                           {!isMine && (
-                            <p className="text-[10px] text-fuchsia-600 font-black mb-1 uppercase tracking-wider">{msg.senderName}</p>
+                            <p className="text-[10px] text-rose-300/80 font-black mb-1 uppercase tracking-wider">{msg.senderName}</p>
                           )}
                           <p className="leading-relaxed">{msg.body}</p>
                         </div>
@@ -429,17 +429,17 @@ export function WatchRoom({
                 </div>
 
                 {/* Input */}
-                <form onSubmit={sendChat} className="flex-shrink-0 flex gap-2 p-4 border-t border-pink-100 bg-white/50">
+                <form onSubmit={sendChat} className="flex-shrink-0 flex gap-2 p-4 border-t border-white/10 bg-black/20">
                   <input
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
                     placeholder="Nhắn gì đó..."
-                    className="flex-1 min-w-0 bg-white border border-pink-200 rounded-full px-5 py-3 text-sm text-rose-950 placeholder:text-rose-300 outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all shadow-inner"
+                    className="flex-1 min-w-0 bg-white/5 border border-white/10 rounded-full px-5 py-3 text-sm text-white placeholder:text-white/40 outline-none focus:border-rose-500 focus:bg-white/10 transition-all shadow-inner"
                   />
                   <button
                     type="submit"
                     disabled={!chatInput.trim()}
-                    className="flex-shrink-0 w-11 h-11 rounded-full bg-gradient-to-br from-rose-500 to-pink-500 hover:from-rose-400 hover:to-pink-400 disabled:opacity-40 flex items-center justify-center text-white transition-all shadow-[0_4px_12px_rgba(244,63,94,0.4)] disabled:shadow-none"
+                    className="flex-shrink-0 w-11 h-11 rounded-full bg-gradient-to-br from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 disabled:opacity-40 flex items-center justify-center text-white transition-all shadow-[0_4px_12px_rgba(225,29,72,0.4)] disabled:shadow-none"
                   >
                     <Send size={18} className="-ml-0.5" />
                   </button>
@@ -451,26 +451,26 @@ export function WatchRoom({
 
         {/* ── BOTTOM ROW: Suggested Movies ── */}
         {isHost && suggestedMovies.length > 0 && onChangeMovie && (
-          <div className="w-full bg-white/60 backdrop-blur-xl border border-pink-200/60 rounded-3xl shadow-lg p-5">
-            <p className="text-rose-950 text-base font-black mb-4 flex items-center gap-2">
-              <span className="w-1.5 h-5 bg-rose-500 rounded-full inline-block"></span>
+          <div className="w-full bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-xl sm:rounded-2xl lg:rounded-3xl shadow-2xl p-5 mb-10">
+            <p className="text-white text-lg font-black mb-4 flex items-center gap-3">
+              <span className="w-1.5 h-6 bg-rose-600 rounded-full inline-block"></span>
               Phim đề xuất cho bạn
             </p>
-            <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar custom-scrollbar">
+            <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar custom-scrollbar snap-x">
               {suggestedMovies.map((m) => (
                 <div
                   key={m._id}
                   onClick={() => onChangeMovie(m)}
-                  className="flex-shrink-0 w-36 lg:w-40 cursor-pointer group"
+                  className="flex-shrink-0 w-36 lg:w-44 cursor-pointer group snap-start"
                 >
-                  <div className="w-full aspect-[2/3] rounded-xl overflow-hidden shadow-md mb-2 relative border border-pink-200">
+                  <div className="w-full aspect-[2/3] rounded-xl overflow-hidden shadow-lg mb-3 relative border border-white/10 ring-1 ring-black/50">
                     <img src={m.thumb_url} alt={m.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                    <div className="absolute inset-0 bg-rose-950/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <Play size={32} className="text-white drop-shadow-lg" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+                      <Play size={40} className="text-rose-500 drop-shadow-[0_0_15px_rgba(225,29,72,0.8)] ml-1" />
                     </div>
                   </div>
-                  <p className="text-sm text-rose-950 font-bold truncate group-hover:text-rose-600 transition-colors">{m.name}</p>
-                  <p className="text-[11px] text-rose-500 font-semibold">{m.year}</p>
+                  <p className="text-sm text-rose-100 font-bold truncate group-hover:text-rose-400 transition-colors drop-shadow-md">{m.name}</p>
+                  <p className="text-xs text-rose-400/80 font-semibold mt-0.5">{m.year}</p>
                 </div>
               ))}
             </div>
