@@ -19,9 +19,9 @@ const APOLOGY_DATA = {
   reason: "mải chơi game quên nhắn tin",
   punishment: "Rửa bát 1 tháng",
   memories: [
-    "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=500&q=80",
-    "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=500&q=80",
-    "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=500&q=80"
+    "/assets/lovepics/1.jpg",
+    "/assets/lovepics/2.jpg",
+    "/assets/lovepics/3.jpg"
   ],
   letter: "Anh biết lỗi rồi. Anh đã quá vô tâm và trẻ con. Anh hứa sẽ không bao giờ như vậy nữa. Tha lỗi cho anh nha, chiều nay tớ qua đón đi ăn đền tội, chịu không? ❤️",
   choiceTitle: "Trả lời thế nào đây?",

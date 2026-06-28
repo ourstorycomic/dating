@@ -24,7 +24,7 @@ export const DEFAULT_APP_DATA = {
       wrongText: "Ủa ủa chọn lại đi má =)))",
     },
   ],
-  puzzleImage: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=1000&auto=format&fit=crop",
+  puzzleImage: "/assets/lovepics/1.jpg",
   fakeChat: [
     { sender: "me", text: "Trời hôm nay đẹp ghê ☁️" },
     { sender: "you", text: "Nhưng không đẹp bằng cậu đâu =)))" },
@@ -34,10 +34,10 @@ export const DEFAULT_APP_DATA = {
     { sender: "you", text: "Được, đi luôn!" },
   ],
   photos: [
-    "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=1000&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=1000&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1494774112351-fb141df9b128?q=80&w=1000&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1518599904199-0ca897819ddb?q=80&w=1000&auto=format&fit=crop",
+    "/assets/lovepics/2.jpg",
+    "/assets/lovepics/3.jpg",
+    "/assets/lovepics/4.jpg",
+    "/assets/lovepics/5.jpg",
   ],
   letterTitle: "Gửi cậu, người tớ thương...",
   letterContent: "Cảm ơn cậu vì đã kiên nhẫn xem đến đây.\nHành trình vừa qua thật sự rất đẹp và ý nghĩa.\nTớ muốn chúng mình sẽ có thêm thật nhiều kỷ niệm như thế nữa.\nHôm nay, cậu làm người yêu/đi hẹn hò với tớ nhé? ❤️",

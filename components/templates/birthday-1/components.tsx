@@ -2341,10 +2341,10 @@ export function HangingGallery({
   if (!active) return null;
   
   const displayMemories = memories && memories.length > 0 ? memories : [
-    { imageUrl: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=640&q=80", message: "Kỷ niệm ngọt ngào nhất ❤️" },
-    { imageUrl: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=640&q=80", message: "Nụ cười rực rỡ của cậu 😊" },
-    { imageUrl: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=640&q=80", message: "Hành trình tuyệt vời của chúng ta 🌟" },
-    { imageUrl: "https://images.unsplash.com/photo-1513151233558-d860c5398176?w=640&q=80", message: "Mãi bên nhau cậu nhé! 🥰" }
+    { imageUrl: "/assets/lovepics/1.jpg", message: "Kỷ niệm ngọt ngào nhất ❤️" },
+    { imageUrl: "/assets/lovepics/2.jpg", message: "Nụ cười rực rỡ của cậu 😊" },
+    { imageUrl: "/assets/lovepics/3.jpg", message: "Hành trình tuyệt vời của chúng ta 🌟" },
+    { imageUrl: "/assets/lovepics/4.jpg", message: "Mãi bên nhau cậu nhé! 🥰" }
   ];
 
   const startX = -1.5;

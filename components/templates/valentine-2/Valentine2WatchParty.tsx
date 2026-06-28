@@ -29,12 +29,12 @@ export const DEFAULT_MEMORY_DATA: Valentine2Data = {
   anniversaryCode: "1402",
   musicUrl: "/valentine-2-music.m4a",
   coverTitle: "Our Memories",
-  coverImage: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=600",
-  page1Image: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600",
+  coverImage: "/assets/lovepics/1.jpg",
+  page1Image: "/assets/lovepics/2.jpg",
   page1Text: "Ngày đó, tớ không nghĩ chúng mình lại đi cùng nhau xa đến thế...",
   polaroids: [
-    { id: 1, src: "https://images.unsplash.com/photo-1494774116478-eb287e07b8b2?w=400", caption: "Bình yên" },
-    { id: 2, src: "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=400", caption: "Ngốc nghếch" }
+    { id: 1, src: "/assets/lovepics/3.jpg", caption: "Bình yên" },
+    { id: 2, src: "/assets/lovepics/4.jpg", caption: "Ngốc nghếch" }
   ],
   page2Text: "Tớ yêu cái cách cậu quan tâm đến những điều nhỏ nhất...",
   page3Hint: "Kéo ruy băng nhé",

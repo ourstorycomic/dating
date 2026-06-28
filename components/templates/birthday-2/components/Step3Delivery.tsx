@@ -100,7 +100,7 @@ export function Step3Delivery({ onNext, autoPlay = false, photos = [] }: { onNex
       className="absolute inset-0 flex flex-col items-center justify-center bg-slate-100 z-30 overflow-hidden"
     >
       {/* Fake Phone Home Screen Background */}
-      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1618588507085-c79565432917?q=80&w=600&auto=format&fit=crop')" }} />
+      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/assets/lovepics/1.jpg')" }} />
       <div className="absolute inset-0 bg-white/20 backdrop-blur-md z-0" />
       
       {/* Fake Widgets and Apps */}

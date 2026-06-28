@@ -16,9 +16,9 @@ const BIRTHDAY_DATA = {
     "Cảm ơn vì đã xuất hiện và làm thanh xuân của tớ trở nên tuyệt vời hơn rất nhiều. 🥰"
   ],
   photos: [
-    "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=500&q=80",
-    "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=500&q=80",
-    "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=500&q=80"
+    "/assets/lovepics/1.jpg",
+    "/assets/lovepics/2.jpg",
+    "/assets/lovepics/3.jpg"
   ],
   letter: "Mong mọi điều tốt đẹp nhất sẽ đến với cậu. Tuổi mới thật rực rỡ nhé!",
   giftText: "VOUCHER BAO ĐI ĂN BUFFET & XEM PHIM 🎟️"
