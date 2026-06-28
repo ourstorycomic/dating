@@ -2051,11 +2051,11 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
 
       <group ref={matchGroup} position={[0.6, 1.2, 1.35]} visible={phase === "match-ignite"}>
         <MatchstickModel scale={1.0} position={[0, 0, 0]} />
-        <group ref={matchFireRef} position={[-0.2, 0, 0]} scale={0.001}><AnimatedFire scale={0.3} /></group>
+        <group ref={matchFireRef} position={[-0.32, 0.04, 0]} scale={0.001}><AnimatedFire scale={0.3} /></group>
         {/* LỬA DIÊM CŨNG BỊ GIỚI HẠN BÁN KÍNH (1.0) ĐỂ KHÔNG SÁNG ĐẾN ĐÁY CÂY NẾN */}
-        {matchLit && (<pointLight color="#ffbd6f" distance={1.0} decay={2} intensity={nearWick ? 8.0 : 4.0} position={[-0.2, 0, 0]} />)}
+        {matchLit && (<pointLight color="#ffbd6f" distance={1.0} decay={2} intensity={nearWick ? 8.0 : 4.0} position={[-0.32, 0.04, 0]} />)}
 
-        <group ref={sparkGroup} position={[-0.2, 0, 0]} visible={false}>
+        <group ref={sparkGroup} position={[-0.32, 0.04, 0]} visible={false}>
           <mesh position={[0.05, 0, 0]}><sphereGeometry args={[0.04]}/><meshBasicMaterial color="#ffcc00"/></mesh>
           <mesh position={[-0.05, 0.05, 0]}><sphereGeometry args={[0.03]}/><meshBasicMaterial color="#ffaa00"/></mesh>
           <pointLight color="#ffcc00" distance={1.5} intensity={4.0} />
