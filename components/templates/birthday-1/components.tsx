@@ -2223,7 +2223,7 @@ export function GiftFinale({ onOpen, opening, position = [0, 0, 0], celebrationZ
         <pointLight color="#fff0f8" intensity={opening ? 18 : 3} position={[0, 0.45, 0.3]} />
       </group>
       {celebrationZoom && !opening && (
-        <Html center position={[0, 1.25, 0]} zIndexRange={[80, 70]}>
+        <Html center position={[-0.1, 0.55, 0.4]} zIndexRange={[80, 70]}>
           <motion.div
             animate={{ rotate: [-2, 2, -2], scale: [1, 1.04, 1] }}
             className="pointer-events-none whitespace-nowrap rounded-none bg-transparent px-2 text-center text-lg font-black leading-tight text-[#ffd84d] drop-shadow-[0_3px_0_rgba(91,35,85,0.22)]"
