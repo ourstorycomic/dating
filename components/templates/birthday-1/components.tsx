@@ -461,7 +461,7 @@ export function CameraRig({
       camera.lookAt(1.6, -1.75, 1.4); 
       return; 
     } else if (phase === "vintage-gallery" || phase === "end") {
-      const finalX = memoriesCount * 3.5 + 0.5; // Thêm offset 0.5 để cân bằng thị giác
+      const finalX = memoriesCount * 3.5 + 0.25; // Giảm offset từ 0.5 xuống 0.25 để căn chuẩn giữa màn hình
       const t = Math.min(1, vintageElapsed / 15.0); const xPos = -1.5 + t * (finalX + 1.5); 
       camera.position.set(xPos, vintageElapsed > 25.0 ? 0.9 + Math.min(1, (vintageElapsed - 25.0) / 4.0) * 5.0 : 0.9, 5.5);
       camera.lookAt(xPos, vintageElapsed > 25.0 ? 0.9 + Math.min(1, (vintageElapsed - 25.0) / 4.0) * 5.0 : 0.9, 0); return;
@@ -2162,9 +2162,9 @@ export function BirthdayBanner({ name, visible = true, position = [0, 3.2, 0] }:
           <div className="absolute left-[15%] top-0 h-6 w-1.5 bg-[#e0a6c8]/80 shadow-sm" />
           <div className="absolute right-[15%] top-0 h-6 w-1.5 bg-[#e0a6c8]/80 shadow-sm" />
           
-          <div className="mt-4 rounded-b-[2rem] rounded-t-sm border-b-8 border-[#ffb6e0] bg-gradient-to-b from-[#ffeff8] to-[#ffdbef] px-10 py-5 text-center shadow-[0_15px_35px_rgba(255,120,180,0.4)]">
-            <div className="text-xl font-black tracking-widest text-[#ff59ab] drop-shadow-sm uppercase">Chúc Mừng Sinh Nhật</div>
-            <div className="mt-2 text-5xl font-black text-[#d6287c] drop-shadow-md uppercase">{name || "Em"}</div>
+          <div className="mt-4 max-w-[90vw] rounded-b-2xl rounded-t-sm border-b-4 border-[#ffb6e0] bg-gradient-to-b from-[#ffeff8] to-[#ffdbef] px-6 py-3 text-center shadow-[0_10px_20px_rgba(255,120,180,0.4)]">
+            <div className="text-xs md:text-sm font-bold tracking-widest text-[#ff59ab] drop-shadow-sm uppercase">Chúc Mừng Sinh Nhật</div>
+            <div className={`mt-1 font-black text-[#d6287c] drop-shadow-md uppercase ${name && name.length > 12 ? 'text-lg md:text-xl' : 'text-2xl md:text-3xl'}`}>{name || "Bạn"}</div>
           </div>
         </motion.div>
       </div>
