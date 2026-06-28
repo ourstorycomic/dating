@@ -3,10 +3,18 @@ import { useEffect, useState } from "react";
 
 export function FloatingParticles() {
   const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; scale: number; duration: number; type: "flower" | "star" }>>([]);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     const generateParticles = () => {
-      const newParticles = Array.from({ length: 25 }).map((_, i) => ({
+      const newParticles = Array.from({ length: isMobile ? 10 : 25 }).map((_, i) => ({
         id: i,
         x: Math.random() * 100,
         y: Math.random() * 100 + 100, // Start below screen
@@ -17,7 +25,7 @@ export function FloatingParticles() {
       setParticles(newParticles);
     };
     generateParticles();
-  }, []);
+  }, [isMobile]);
 
   return (
     <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">

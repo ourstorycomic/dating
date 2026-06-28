@@ -297,34 +297,34 @@ export function RoleManager({ initialRoles, templates }: { initialRoles: CustomR
       </GlassCard>
 
       {open ? (
-        <div className="modal-overlay fixed inset-0 z-50 grid place-items-center bg-black/70 p-4" onMouseDown={() => setOpen(false)}>
-          <div className="modal-panel max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-3xl border border-white/12 bg-[#15101d] text-white shadow-2xl" onMouseDown={(event) => event.stopPropagation()}>
-            <div className="modal-header sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-white/10 p-5">
-              <h2 className="text-2xl font-semibold">{form.id ? "Sửa vai trò" : "Thêm vai trò"}</h2>
-              <button className="rounded-full bg-white/10 px-4 py-2 text-sm" onClick={() => setOpen(false)} type="button">Đóng</button>
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 backdrop-blur-sm p-4" onMouseDown={() => setOpen(false)}>
+          <div className="max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-3xl border border-pink-200 bg-pink-50 text-pink-950 shadow-2xl" onMouseDown={(event) => event.stopPropagation()}>
+            <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-pink-200 bg-pink-50 p-5">
+              <h2 className="text-2xl font-semibold text-pink-900">{form.id ? "Sửa vai trò" : "Thêm vai trò"}</h2>
+              <button className="rounded-full bg-pink-100 px-4 py-2 text-sm font-medium text-pink-700 hover:bg-pink-200 transition" onClick={() => setOpen(false)} type="button">Đóng</button>
             </div>
 
             <div className="grid gap-4 p-5">
               <label className="grid gap-2 text-sm">
-                <span className="text-white/62">Tên vai trò</span>
+                <span className="font-medium text-pink-800">Tên vai trò</span>
                 <input
-                  className="rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3 outline-none"
+                  className="rounded-xl border border-pink-200 bg-white px-4 py-3 outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400/50 text-pink-950"
                   onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
                   value={form.name}
                 />
               </label>
               <label className="grid gap-2 text-sm">
-                <span className="text-white/62">Mô tả</span>
+                <span className="font-medium text-pink-800">Mô tả</span>
                 <textarea
-                  className="min-h-24 rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3 outline-none"
+                  className="min-h-24 rounded-xl border border-pink-200 bg-white px-4 py-3 outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400/50 text-pink-950"
                   onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))}
                   value={form.description}
                 />
               </label>
               <label className="grid gap-2 text-sm">
-                <span className="text-white/62">% hoa hồng mặc định</span>
+                <span className="font-medium text-pink-800">% hoa hồng mặc định</span>
                 <input
-                  className="rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3 outline-none"
+                  className="rounded-xl border border-pink-200 bg-white px-4 py-3 outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400/50 text-pink-950"
                   max={100}
                   min={0}
                   onChange={(event) => setForm((current) => ({ ...current, commissionPercentage: Number(event.target.value) }))}
@@ -335,10 +335,10 @@ export function RoleManager({ initialRoles, templates }: { initialRoles: CustomR
               </label>
 
               <div className="grid gap-2">
-                <p className="text-sm text-white/62">Quyền</p>
+                <p className="text-sm font-medium text-pink-800">Quyền</p>
                 <div className="grid gap-2 sm:grid-cols-2">
                   {permissionOptions.map((permission) => (
-                    <label className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.05] px-3 py-2 text-sm" key={permission.key}>
+                    <label className="flex items-center gap-2 rounded-xl border border-pink-200 bg-white px-3 py-2 text-sm" key={permission.key}>
                       <input
                         checked={form.permissions.includes(permission.key)}
                         onChange={() => togglePermission(permission.key)}
@@ -352,16 +352,16 @@ export function RoleManager({ initialRoles, templates }: { initialRoles: CustomR
 
               {templates.length ? (
                 <div className="grid gap-2">
-                  <p className="text-sm text-white/62">Hoa hồng riêng theo sản phẩm</p>
+                  <p className="text-sm font-medium text-pink-800">Hoa hồng riêng theo sản phẩm</p>
                   <div className="grid gap-2">
                     {templates.map((template) => (
                       <label
-                        className="grid gap-2 rounded-xl border border-white/10 bg-white/[0.05] px-3 py-2 text-sm sm:grid-cols-[1fr_120px]"
+                        className="grid gap-2 rounded-xl border border-pink-200 bg-white px-3 py-2 text-sm sm:grid-cols-[1fr_120px]"
                         key={template.id}
                       >
-                        <span>{template.name}</span>
+                        <span className="text-pink-950 font-medium">{template.name}</span>
                         <input
-                          className="rounded-lg border border-white/10 bg-white/[0.07] px-3 py-2 outline-none"
+                          className="rounded-lg border border-pink-200 bg-white px-3 py-2 outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400/50 text-pink-950"
                           max={100}
                           min={0}
                           onChange={(event) => setProductPercentage(template.id, Number(event.target.value))}
@@ -375,7 +375,7 @@ export function RoleManager({ initialRoles, templates }: { initialRoles: CustomR
                 </div>
               ) : null}
 
-              <label className="flex items-center gap-2 text-sm text-white/70">
+              <label className="flex items-center gap-2 text-sm font-medium text-pink-800">
                 <input
                   checked={form.isActive}
                   onChange={(event) => setForm((current) => ({ ...current, isActive: event.target.checked }))}
@@ -384,7 +384,7 @@ export function RoleManager({ initialRoles, templates }: { initialRoles: CustomR
                 Đang hoạt động
               </label>
 
-              {message ? <p className="rounded-xl border border-white/10 bg-white/[0.05] p-3 text-sm">{message}</p> : null}
+              {message ? <p className="rounded-xl border border-pink-200 bg-pink-100 p-3 text-sm text-pink-900">{message}</p> : null}
 
               <div className="flex flex-col gap-3 sm:flex-row">
                 <button

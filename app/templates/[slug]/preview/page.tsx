@@ -2,10 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { InteractiveTemplatePreview } from "@/components/templates/InteractiveTemplatePreview";
 import { getTemplateBySlug } from "@/lib/supabase/server";
-import { TIKTOK_INBOX_URL } from "@/lib/constants";
+import { FACEBOOK_URL } from "@/lib/constants";
 
-function tiktokLink(slug: string) {
-  return `${TIKTOK_INBOX_URL}&text=${encodeURIComponent(
+function facebookLink(slug: string) {
+  return `${FACEBOOK_URL}?text=${encodeURIComponent(
     `Tôi muốn đặt mẫu ${slug}. Tư vấn giúp tôi làm web tặng người yêu.`,
   )}`;
 }
@@ -68,9 +68,9 @@ export default async function TemplatePreviewPage({
           <div className="mt-10 flex flex-col sm:flex-row gap-3 w-full">
             <a
               className="rounded-full bg-gradient-to-r from-pink-500 to-purple-500 px-8 py-4 text-center text-lg font-black w-full shadow-lg hover:scale-105 active:scale-95 transition-transform uppercase tracking-wider text-[#ffffff]"
-              href={tiktokLink(template.slug)}
+              href={facebookLink(template.slug)}
             >
-              Nhắn TikTok chọn mẫu này
+              Nhắn Fanpage chọn mẫu này
             </a>
           </div>
         </section>

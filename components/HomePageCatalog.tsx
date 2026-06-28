@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { InteractiveTemplatePreview } from "@/components/templates/InteractiveTemplatePreview";
-import { TIKTOK_INBOX_URL } from "@/lib/constants";
+import { FACEBOOK_URL } from "@/lib/constants";
 
 type HomeTemplate = {
   id: string | number;
@@ -39,11 +39,11 @@ function getScreens(sampleData: unknown) {
   return data?.screens ?? [];
 }
 
-function tiktokLink(templateSlug?: string) {
+function facebookLink(templateSlug?: string) {
   const text = templateSlug
     ? `Tôi muốn đặt mẫu ${templateSlug}. Tư vấn giúp tôi làm web tặng người yêu.`
     : "Tôi muốn được tư vấn làm web tặng người yêu.";
-  return `${TIKTOK_INBOX_URL}&text=${encodeURIComponent(text)}`;
+  return `${FACEBOOK_URL}?text=${encodeURIComponent(text)}`;
 }
 
 export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
@@ -183,7 +183,7 @@ export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
                       </Link>
                       <a
                         className="rounded-full bg-gradient-to-r from-[#ff7eb8] to-[#ffd36f] px-4 py-3 text-center text-sm font-extrabold text-[#fff] shadow-[0_14px_30px_rgba(255,126,184,0.28)] transition hover:scale-[1.02]"
-                        href={tiktokLink(template.slug)}
+                        href={facebookLink(template.slug)}
                       >
                         Chọn mẫu
                       </a>

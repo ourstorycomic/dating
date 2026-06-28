@@ -10,8 +10,17 @@ import { TemplateNavigator } from "../TemplateNavigator";
 // --- BACKGROUND PARTICLES ---
 function FloatingParticles() {
   const [particles, setParticles] = useState<{ id: number; x: number; y: number; size: number; delay: number }[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
-    const p = Array.from({ length: 30 }).map((_, i) => ({
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    const p = Array.from({ length: isMobile ? 10 : 30 }).map((_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
@@ -19,7 +28,7 @@ function FloatingParticles() {
       delay: Math.random() * 5,
     }));
     setParticles(p);
-  }, []);
+  }, [isMobile]);
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
       {particles.map(p => (

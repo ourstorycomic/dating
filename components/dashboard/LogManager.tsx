@@ -247,14 +247,14 @@ function OrderDetailModal({ log, onClose }: { log: LogRow; onClose: () => void }
   const recipientName = textFrom(customData, "recipientName", order?.recipient_name ?? "Em");
 
   return (
-    <div className="modal-overlay fixed inset-0 z-50 grid place-items-center bg-black/70 p-4" onClick={onClose}>
-      <div className="modal-panel max-h-[92vh] w-full max-w-6xl overflow-y-auto rounded-3xl border border-white/12 bg-[#15101d] text-white shadow-2xl" onClick={(event) => event.stopPropagation()}>
-        <div className="modal-header sticky top-0 z-[60] flex items-start justify-between gap-4 border-b border-white/10 bg-[#15101d] p-5">
+    <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 backdrop-blur-sm p-4" onClick={onClose}>
+      <div className="max-h-[92vh] w-full max-w-6xl overflow-y-auto rounded-3xl border border-pink-200 bg-pink-50 text-pink-950 shadow-2xl" onClick={(event) => event.stopPropagation()}>
+        <div className="sticky top-0 z-[60] flex items-start justify-between gap-4 border-b border-pink-200 bg-pink-50 p-5">
           <div>
-            <h2 className="text-2xl font-semibold">Đơn {order?.public_id ?? "N/A"}</h2>
-            <p className="mt-1 text-sm text-white/52">{log.action} - {time(log.created_at)}</p>
+            <h2 className="text-2xl font-semibold text-pink-900">Đơn {order?.public_id ?? "N/A"}</h2>
+            <p className="mt-1 text-sm text-pink-600">{log.action} - {time(log.created_at)}</p>
           </div>
-          <button className="rounded-full bg-white/10 px-4 py-2 text-sm" onClick={onClose} type="button">Đóng</button>
+          <button className="rounded-full bg-pink-100 px-4 py-2 text-sm font-medium text-pink-700 hover:bg-pink-200 transition" onClick={onClose} type="button">Đóng</button>
         </div>
 
         <div className="grid items-start gap-5 p-5 lg:grid-cols-[0.95fr_1.05fr]">
@@ -270,10 +270,10 @@ function OrderDetailModal({ log, onClose }: { log: LogRow; onClose: () => void }
               <Info label="Trạng thái đơn" value={order?.status ?? "N/A"} />
             </div>
 
-            <details className="group rounded-2xl border border-white/10 bg-white/[0.05] p-4">
-              <summary className="flex cursor-pointer list-none items-center justify-between text-lg font-semibold outline-none">
+            <details className="group rounded-2xl border border-pink-200 bg-white/60 p-4">
+              <summary className="flex cursor-pointer list-none items-center justify-between text-lg font-semibold text-pink-900 outline-none">
                 Nội dung Form (Custom Data)
-                <span className="text-white/40 transition-transform group-open:rotate-180">▼</span>
+                <span className="text-pink-400 transition-transform group-open:rotate-180">▼</span>
               </summary>
               <div className="mt-4 grid gap-3">
                 {SECTIONS.map((section) => {
@@ -282,19 +282,19 @@ function OrderDetailModal({ log, onClose }: { log: LogRow; onClose: () => void }
 
                   return (
                     <div key={section.title} className="mb-4 last:mb-0">
-                      <h4 className="mb-2 text-sm font-semibold text-pink-200">{section.title}</h4>
-                      <div className="grid gap-2 rounded-xl bg-black/20 p-3">
+                      <h4 className="mb-2 text-sm font-semibold text-pink-700">{section.title}</h4>
+                      <div className="grid gap-2 rounded-xl bg-pink-100/50 p-3">
                         {section.keys.map((k) => {
                           const v = customData[k];
                           if (v === undefined || v === "") return null;
 
                           if (k === "memories" && Array.isArray(v)) {
                             return (
-                              <div key={k} className="border-b border-white/5 pb-2 last:border-0 last:pb-0">
-                                <p className="mb-1 font-mono text-xs text-white/50">Tin nhắn các vì sao</p>
+                              <div key={k} className="border-b border-pink-200/50 pb-2 last:border-0 last:pb-0">
+                                <p className="mb-1 font-mono text-xs font-medium text-pink-500">Tin nhắn các vì sao</p>
                                 <div className="mt-1 grid gap-1">
                                   {v.map((m: any, i: number) => (
-                                    <p key={i} className="whitespace-pre-wrap text-sm font-medium"><span className="text-white/40">{m.title || `Sao ${i + 1}`}:</span> {m.message}</p>
+                                    <p key={i} className="whitespace-pre-wrap text-sm font-medium text-pink-950"><span className="text-pink-400">{m.title || `Sao ${i + 1}`}:</span> {m.message}</p>
                                   ))}
                                 </div>
                               </div>
@@ -304,14 +304,14 @@ function OrderDetailModal({ log, onClose }: { log: LogRow; onClose: () => void }
                           const label = CUSTOM_DATA_LABELS[k] || k;
 
                           return (
-                            <div key={k} className="border-b border-white/5 pb-2 last:border-0 last:pb-0">
-                              <p className="mb-1 font-mono text-xs text-white/50">{label}</p>
+                            <div key={k} className="border-b border-pink-200/50 pb-2 last:border-0 last:pb-0">
+                              <p className="mb-1 font-mono text-xs font-medium text-pink-500">{label}</p>
                               {String(v).startsWith("http") ? (
-                                <a href={String(v)} target="_blank" rel="noreferrer" className="break-all text-sm font-medium text-pink-300 hover:underline">
+                                <a href={String(v)} target="_blank" rel="noreferrer" className="break-all text-sm font-medium text-pink-600 hover:underline">
                                   {String(v)}
                                 </a>
                               ) : (
-                                <p className="whitespace-pre-wrap text-sm font-medium">{String(v)}</p>
+                                <p className="whitespace-pre-wrap text-sm font-medium text-pink-950">{String(v)}</p>
                               )}
                             </div>
                           );
@@ -320,15 +320,15 @@ function OrderDetailModal({ log, onClose }: { log: LogRow; onClose: () => void }
                     </div>
                   );
                 })}
-                {Object.keys(customData).length === 0 && <p className="text-sm text-white/50">Không có dữ liệu form.</p>}
+                {Object.keys(customData).length === 0 && <p className="text-sm font-medium text-pink-500">Không có dữ liệu form.</p>}
               </div>
             </details>
           </div>
 
-          <div className="sticky top-[90px] h-fit rounded-2xl border border-white/10 bg-white/[0.05] p-4">
+          <div className="sticky top-[90px] h-fit rounded-2xl border border-pink-200 bg-white/60 p-4">
             <div className="mb-3 flex items-center justify-between gap-3">
-              <h3 className="text-xl font-semibold">Live preview</h3>
-              <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs text-white/62">
+              <h3 className="text-xl font-semibold text-pink-900">Live preview</h3>
+              <span className="rounded-full border border-pink-200 bg-pink-100/50 px-3 py-1 text-xs font-medium text-pink-700">
                 {order?.templates?.name ?? "Template"}
               </span>
             </div>
@@ -350,9 +350,9 @@ function OrderDetailModal({ log, onClose }: { log: LogRow; onClose: () => void }
 
 function Info({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-4">
-      <p className="text-xs text-white/46">{label}</p>
-      <p className="mt-2 break-words font-semibold">{value}</p>
+    <div className="rounded-2xl border border-pink-200 bg-white/60 p-4">
+      <p className="text-xs font-medium text-pink-600">{label}</p>
+      <p className="mt-2 break-words font-semibold text-pink-950">{value}</p>
     </div>
   );
 }

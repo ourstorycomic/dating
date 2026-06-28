@@ -263,20 +263,20 @@ export function UserManager({
       </GlassCard>
 
       {open ? (
-        <div className="modal-overlay fixed inset-0 z-50 grid place-items-center bg-black/70 p-4" onMouseDown={() => setOpen(false)}>
-          <div className="modal-panel max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-3xl border border-white/12 bg-[#15101d] text-white shadow-2xl" onMouseDown={(event) => event.stopPropagation()}>
-            <div className="modal-header sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-white/10 p-5">
-              <h2 className="text-2xl font-semibold">Thêm nhân sự</h2>
-              <button className="rounded-full bg-white/10 px-4 py-2 text-sm" onClick={() => setOpen(false)} type="button">Đóng</button>
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 backdrop-blur-sm p-4" onMouseDown={() => setOpen(false)}>
+          <div className="max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-3xl border border-pink-200 bg-pink-50 text-pink-950 shadow-2xl" onMouseDown={(event) => event.stopPropagation()}>
+            <div className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-pink-200 bg-pink-50 p-5">
+              <h2 className="text-2xl font-semibold text-pink-900">Thêm nhân sự</h2>
+              <button className="rounded-full bg-pink-100 px-4 py-2 text-sm font-medium text-pink-700 hover:bg-pink-200 transition" onClick={() => setOpen(false)} type="button">Đóng</button>
             </div>
             <div className="grid gap-4 p-5">
               <Input label="Tên" onChange={(name) => setForm((current) => ({ ...current, name }))} value={form.name} />
               <Input label="Email đăng nhập" onChange={(email) => setForm((current) => ({ ...current, email }))} value={form.email} />
               <Input label="Mật khẩu" onChange={(password) => setForm((current) => ({ ...current, password }))} type="password" value={form.password} />
               <label className="grid gap-2 text-sm">
-                <span className="text-white/58">Vai trò tuỳ chỉnh</span>
+                <span className="font-medium text-pink-800">Vai trò tuỳ chỉnh</span>
                 <select
-                  className="rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3 outline-none"
+                  className="rounded-xl border border-pink-200 bg-white px-4 py-3 outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400/50"
                   onChange={(event) => {
                     const customRole = activeRoles.find((role) => role.id === event.target.value);
                     setForm((current) => ({
@@ -294,9 +294,9 @@ export function UserManager({
                 </select>
               </label>
               <label className="grid gap-2 text-sm">
-                <span className="text-white/58">Role gốc</span>
+                <span className="font-medium text-pink-800">Role gốc</span>
                 <select
-                  className="rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3 outline-none"
+                  className="rounded-xl border border-pink-200 bg-white px-4 py-3 outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400/50"
                   onChange={(event) => setForm((current) => ({ ...current, role: event.target.value as BaseRole, managerId: "" }))}
                   value={form.role}
                 >
@@ -307,9 +307,9 @@ export function UserManager({
               </label>
               {form.role === "EMPLOYEE" ? (
                 <label className="grid gap-2 text-sm">
-                  <span className="text-white/58">Staff quản lý</span>
+                  <span className="font-medium text-pink-800">Staff quản lý</span>
                   <select
-                    className="rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3 outline-none"
+                    className="rounded-xl border border-pink-200 bg-white px-4 py-3 outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400/50"
                     onChange={(event) => setForm((current) => ({ ...current, managerId: event.target.value }))}
                     value={form.managerId}
                   >
@@ -350,9 +350,9 @@ function Input({
 }) {
   return (
     <label className="grid gap-2 text-sm">
-      <span className="text-white/58">{label}</span>
+      <span className="font-medium text-pink-800">{label}</span>
       <input
-        className="rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3 outline-none focus:border-pink-300/50"
+        className="rounded-xl border border-pink-200 bg-white px-4 py-3 outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400/50 text-pink-950 placeholder-pink-300"
         onChange={(event) => onChange(event.target.value)}
         type={type}
         value={value}

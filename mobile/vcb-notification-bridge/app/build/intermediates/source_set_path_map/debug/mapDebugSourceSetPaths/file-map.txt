@@ -1,7 +1,0 @@
-vn.yeuweb.vcbbridge.app-pngs-0 D:\dating\mobile\vcb-notification-bridge\app\build\generated\res\pngs\debug
-vn.yeuweb.vcbbridge.app-resValues-1 D:\dating\mobile\vcb-notification-bridge\app\build\generated\res\resValues\debug
-vn.yeuweb.vcbbridge.app-packageDebugResources-2 D:\dating\mobile\vcb-notification-bridge\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
-vn.yeuweb.vcbbridge.app-packageDebugResources-3 D:\dating\mobile\vcb-notification-bridge\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
-vn.yeuweb.vcbbridge.app-debug-4 D:\dating\mobile\vcb-notification-bridge\app\build\intermediates\merged_res\debug\mergeDebugResources
-vn.yeuweb.vcbbridge.app-debug-5 D:\dating\mobile\vcb-notification-bridge\app\src\debug\res
-vn.yeuweb.vcbbridge.app-main-6 D:\dating\mobile\vcb-notification-bridge\app\src\main\res

@@ -10,23 +10,27 @@ import { AlertTriangle, ChevronRight, Heart, HeartHandshake, ShieldAlert } from 
 // --- BACKGROUND PARTICLES ---
 function FloatingParticles({ step }: { step: number }) {
   const [particles, setParticles] = useState<{ id: number; x: number; y: number; size: number; delay: number; emoji: string }[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    let emojis = ['✨', '💖', '🌸', '🎀'];
-    if (step === 1) emojis = ['💢', '🌩️', '😡', '🔥'];
-    else if (step === 2 || step === 3) emojis = ['💢', '💥', '💦', '💨'];
-    else if (step === 4) emojis = ['🩹', '💧', '🥺', '💔'];
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
-    const p = Array.from({ length: 15 }).map((_, i) => ({
+  useEffect(() => {
+    const emojis = step >= 5 ? ["💖", "✨", "🌸"] : ["💧", "🌧️", "💧"];
+    const p = Array.from({ length: isMobile ? 8 : 20 }).map((_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
-      size: Math.random() * 20 + 10,
-      delay: Math.random() * 5,
-      emoji: emojis[Math.floor(Math.random() * emojis.length)]
+      size: Math.random() * 10 + 10,
+      delay: Math.random() * 2,
+      emoji: emojis[Math.floor(Math.random() * emojis.length)],
     }));
     setParticles(p);
-  }, [step]);
+  }, [step, isMobile]);
 
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 opacity-40">

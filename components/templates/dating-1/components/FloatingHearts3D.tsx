@@ -1,28 +1,39 @@
 "use client";
 
-import { memo, useMemo } from "react";
+import { memo, useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 const EMOJIS = ["❤", "💖", "💕", "🌸", "✨", "🎀", "🧸", "🌷", "🍡"];
 
 export const FloatingHearts3D = memo(function FloatingHearts3D({ count = 30 }: { count?: number }) {
-  const hearts = useMemo(() => Array.from({ length: count }).map((_, i) => {
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const actualCount = isMobile ? Math.min(count, 10) : count;
+
+  const hearts = useMemo(() => Array.from({ length: actualCount }).map((_, i) => {
     const depth = Math.random();
     return {
       id: i,
-      size: 20 + Math.random() * 30,
+      size: isMobile ? 15 + Math.random() * 20 : 20 + Math.random() * 30,
       left: Math.random() * 100,
-      duration: 8 + Math.random() * 10,
+      duration: isMobile ? 10 + Math.random() * 10 : 8 + Math.random() * 10,
       delay: -(Math.random() * 20),
       blur: depth > 0.8 ? "blur-[4px]" : depth < 0.2 ? "blur-[1px]" : "",
       emoji: EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
       y: -1000 - Math.random() * 500,
       x: (Math.random() - 0.5) * 300,
       rotZ: (Math.random() - 0.5) * 360,
-      rotX: (Math.random() - 0.5) * 720,
-      rotY: (Math.random() - 0.5) * 720,
+      rotX: isMobile ? 0 : (Math.random() - 0.5) * 720,
+      rotY: isMobile ? 0 : (Math.random() - 0.5) * 720,
     };
-  }), [count]);
+  }), [actualCount, isMobile]);
 
   return (
     <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden" style={{ perspective: "1000px" }}>

@@ -75,11 +75,22 @@ export function FloatingParticles({
   cinema?: boolean;
 }) {
   const [particles, setParticles] = useState<Particle[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const count = cinema ? 35 : (fullWidth ? 65 : 45);
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    let count = cinema ? 35 : (fullWidth ? 65 : 45);
+    if (isMobile) {
+      count = Math.min(count, 15);
+    }
     setParticles(makeParticles(count, cinema));
-  }, [fullWidth, cinema]);
+  }, [fullWidth, cinema, isMobile]);
 
   if (particles.length === 0) return null;
 

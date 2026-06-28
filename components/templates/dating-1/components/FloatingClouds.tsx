@@ -1,18 +1,27 @@
 "use client";
 
-import { memo, useMemo } from "react";
+import { memo, useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 export const FloatingClouds = memo(function FloatingClouds() {
-  const clouds = useMemo(() => Array.from({ length: 5 }).map((_, i) => ({
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const clouds = useMemo(() => Array.from({ length: isMobile ? 2 : 5 }).map((_, i) => ({
     id: i,
     width: 200 + Math.random() * 200,
     height: 80 + Math.random() * 80,
     top: 10 + Math.random() * 70,
-    durationX: 30 + Math.random() * 30,
+    durationX: isMobile ? 40 + Math.random() * 40 : 30 + Math.random() * 30,
     delayX: -(Math.random() * 30),
     durationY: 10 + Math.random() * 10,
-  })), []);
+  })), [isMobile]);
 
   return (
     <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-50">

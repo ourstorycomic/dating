@@ -33,6 +33,14 @@ const APOLOGY_DATA = {
 
 function FloatingParticles({ step }: { step: number }) {
   const [particles, setParticles] = useState<{ id: number; x: number; y: number; size: number; delay: number; emoji: string }[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     let emojis = ['❤️', '✨', '🥺', '💦'];
@@ -41,7 +49,7 @@ function FloatingParticles({ step }: { step: number }) {
     else if (step === 5) emojis = ['🗑️', '📁', '💔', '📸'];
     else if (step === 6) emojis = ['⚙️', '🔄', '🔋', '📡'];
 
-    const p = Array.from({ length: 30 }).map((_, i) => ({
+    const p = Array.from({ length: isMobile ? 10 : 20 }).map((_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
@@ -50,7 +58,7 @@ function FloatingParticles({ step }: { step: number }) {
       emoji: Math.random() > 0.3 ? emojis[Math.floor(Math.random() * emojis.length)] : (Math.random() > 0.5 ? '✨' : '💫')
     }));
     setParticles(p);
-  }, [step]);
+  }, [step, isMobile]);
 
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 opacity-60">

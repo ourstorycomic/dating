@@ -88,6 +88,9 @@ create table if not exists public.users (
   role public.user_role not null default 'EMPLOYEE',
   custom_role_id uuid,
   avatar_url text,
+  phone text,
+  address text,
+  dob date,
   is_active boolean not null default true,
   manager_id uuid references public.users(id) on delete set null,
   created_at timestamptz not null default now(),
@@ -372,9 +375,10 @@ do update set
 
 insert into public.template_categories (slug, name, description, sort_order)
 values
-  ('valentine', 'Valentine', 'Template qua tang tinh yeu va ky niem ngay yeu.', 1),
-  ('confession', 'To tinh', 'Template to tinh se duoc them lai tung mau rieng sau.', 2),
-  ('birthday', 'Sinh nhat', 'Template sinh nhat se duoc them lai tung mau rieng sau.', 3)
+  ('valentine', 'Valentine', 'Template quà tặng tình yêu và kỷ niệm ngày yêu.', 1),
+  ('birthday', 'Sinh nhật', 'Template chúc mừng sinh nhật độc đáo.', 2),
+  ('confession', 'Lời xin lỗi', 'Template xin lỗi làm hòa ngọt ngào.', 3),
+  ('dating', 'Hẹn hò', 'Template mời hẹn hò, vé cào bất ngờ.', 4)
 on conflict (slug)
 do update set
   name = excluded.name,
@@ -402,52 +406,54 @@ insert into public.templates (
   status_label,
   sort_order
 )
-values (
+values 
+(
   (select id from category_map where slug = 'valentine'),
-  'val-starry-constellation-01',
-  'Valentine #1',
-  'Ban do sao tinh yeu voi mat ma ngay ky niem, kinh vien vong, cac chang ky uc, cau tra loi va ghi am.',
-  'Nguoi nhan mo bau troi sao, di qua tung chang ky uc, tra loi va gui ghi am cho nguoi mua xem lai.',
-  'val-starry-constellation',
-  'Sao',
-  'from-[#05020d] via-fuchsia-950 to-pink-500',
-  2000,
-  '{
-    "fields": [
-      {"key":"senderName","type":"string","required":true},
-      {"key":"recipientName","type":"string","required":true},
-      {"key":"anniversaryCode","type":"string","required":true},
-      {"key":"introTitle","type":"string","required":true},
-      {"key":"introSubtitle","type":"string","required":true},
-      {"key":"connectInstruction","type":"string","required":true},
-      {"key":"stage2Title","type":"string","required":true},
-      {"key":"stage2Subtitle","type":"string","required":true},
-      {"key":"stage3Title","type":"string","required":true},
-      {"key":"stage3Subtitle","type":"string","required":true},
-      {"key":"stage3MusicLabel","type":"string","required":false},
-      {"key":"stage4Prompt","type":"string","required":true},
-      {"key":"stage4MicInstruction","type":"string","required":true},
-      {"key":"stage4FallbackButton","type":"string","required":true},
-      {"key":"finalTitle","type":"string","required":true},
-      {"key":"finalCta","type":"string","required":true},
-      {"key":"question","type":"string","required":true},
-      {"key":"memories","type":"array","required":true},
-      {"key":"colors","type":"object","required":true}
-    ]
-  }'::jsonb,
-  '{
-    "screens": ["Mo bau troi sao", "Quy dao hon loan", "Chom sao thanh am", "Mua sao bang", "Ket thuc va phan hoi"],
-    "senderName": "Anh",
-    "recipientName": "Em",
-    "anniversaryCode": "1402",
-    "introTitle": "Moi vi sao la mot ngay chung ta ben nhau",
-    "introSubtitle": "Nhap dung ngay ky niem de mo bau troi ky uc cua hai dua.",
-    "connectInstruction": "Noi cac ngoi sao",
-    "question": "Em co dong y cung anh viet tiep cau chuyen nay khong?"
-  }'::jsonb,
-  true,
-  'Dang ban',
-  1
+  'valentine-1', 'Valentine #1', 'Bản đồ sao tình yêu', 'Gửi gắm qua những vì sao', 'valentine-1', 'Sao', 'from-[#05020d] via-fuchsia-950 to-pink-500', 2000, '{"fields": []}'::jsonb, '{"senderName": "Anh", "recipientName": "Em"}'::jsonb, true, 'Đang bán', 1
+),
+(
+  (select id from category_map where slug = 'valentine'),
+  'valentine-2', 'Valentine #2', 'Hạt sáng mộng mơ', 'Yêu thương lấp lánh', 'valentine-2', 'Hạt sáng', 'from-pink-400 via-rose-300 to-red-400', 2000, '{"fields": []}'::jsonb, '{"senderName": "Anh", "recipientName": "Em"}'::jsonb, true, 'Đang bán', 2
+),
+(
+  (select id from category_map where slug = 'valentine'),
+  'valentine-3', 'Valentine #3', 'Kỷ niệm Polaroid', 'Gói gọn hoài niệm', 'valentine-3', 'Polaroid', 'from-rose-500 via-pink-400 to-orange-400', 2000, '{"fields": []}'::jsonb, '{"senderName": "Anh", "recipientName": "Em"}'::jsonb, true, 'Đang bán', 3
+),
+(
+  (select id from category_map where slug = 'birthday'),
+  'birthday-1', 'Sinh nhật #1', 'Lời chúc nhiệm màu', 'Sinh nhật lung linh', 'birthday-1', 'Birthday 1', 'from-purple-500 via-indigo-500 to-blue-500', 2000, '{"fields": []}'::jsonb, '{"senderName": "Mình", "recipientName": "Bạn"}'::jsonb, true, 'Đang bán', 4
+),
+(
+  (select id from category_map where slug = 'birthday'),
+  'birthday-2', 'Sinh nhật #2', 'Bữa tiệc pháo hoa', 'Chúc mừng vui vẻ', 'birthday-2', 'Birthday 2', 'from-orange-400 via-amber-400 to-yellow-400', 2000, '{"fields": []}'::jsonb, '{"senderName": "Mình", "recipientName": "Bạn"}'::jsonb, true, 'Đang bán', 5
+),
+(
+  (select id from category_map where slug = 'birthday'),
+  'birthday-3', 'Sinh nhật #3', 'Bánh kem 3D', 'Ngọt ngào đáng yêu', 'birthday-3', 'Birthday 3', 'from-pink-300 via-rose-300 to-red-300', 2000, '{"fields": []}'::jsonb, '{"senderName": "Mình", "recipientName": "Bạn"}'::jsonb, true, 'Đang bán', 6
+),
+(
+  (select id from category_map where slug = 'confession'),
+  'sorry-1', 'Xin lỗi #1', 'Lời xin lỗi chân thành', 'Tha thứ cho mình', 'sorry-1', 'Sorry 1', 'from-sky-300 via-blue-400 to-indigo-500', 2000, '{"fields": []}'::jsonb, '{"senderName": "Anh", "recipientName": "Em"}'::jsonb, true, 'Đang bán', 7
+),
+(
+  (select id from category_map where slug = 'confession'),
+  'sorry-2', 'Xin lỗi #2', 'Mèo con rưng rưng', 'Đáng yêu làm hòa', 'sorry-2', 'Sorry 2', 'from-teal-300 via-emerald-400 to-green-500', 2000, '{"fields": []}'::jsonb, '{"senderName": "Anh", "recipientName": "Em"}'::jsonb, true, 'Đang bán', 8
+),
+(
+  (select id from category_map where slug = 'confession'),
+  'sorry-3', 'Xin lỗi #3', 'Tin nhắn hối lỗi', 'Mong được tha thứ', 'sorry-3', 'Sorry 3', 'from-gray-300 via-slate-400 to-gray-500', 2000, '{"fields": []}'::jsonb, '{"senderName": "Anh", "recipientName": "Em"}'::jsonb, true, 'Đang bán', 9
+),
+(
+  (select id from category_map where slug = 'dating'),
+  'dating-1', 'Hẹn hò #1', 'Lời mời ngọt ngào', 'Đi chơi nhé', 'dating-1', 'Dating 1', 'from-red-400 via-rose-500 to-pink-500', 2000, '{"fields": []}'::jsonb, '{"senderName": "Anh", "recipientName": "Em"}'::jsonb, true, 'Đang bán', 10
+),
+(
+  (select id from category_map where slug = 'dating'),
+  'dating-2', 'Hẹn hò #2', 'Vé cào bất ngờ', 'Để định mệnh chọn', 'dating-2', 'Vé cào', 'from-yellow-400 via-orange-300 to-red-400', 2000, '{"fields": []}'::jsonb, '{"senderName": "Anh", "recipientName": "Em"}'::jsonb, true, 'Đang bán', 11
+),
+(
+  (select id from category_map where slug = 'dating'),
+  'dating-3', 'Hẹn hò #3', 'Lịch trình lãng mạn', 'Buổi tối tuyệt vời', 'dating-3', 'Dating 3', 'from-fuchsia-400 via-purple-500 to-indigo-500', 2000, '{"fields": []}'::jsonb, '{"senderName": "Anh", "recipientName": "Em"}'::jsonb, true, 'Đang bán', 12
 )
 on conflict (slug)
 do update set
@@ -469,7 +475,7 @@ do update set
 update public.templates
 set is_published = false,
     updated_at = now()
-where slug <> 'val-starry-constellation-01';
+where slug not in ('valentine-1', 'valentine-2', 'valentine-3', 'birthday-1', 'birthday-2', 'birthday-3', 'sorry-1', 'sorry-2', 'sorry-3', 'dating-1', 'dating-2', 'dating-3');
 
 alter table public.users enable row level security;
 alter table public.affiliates enable row level security;

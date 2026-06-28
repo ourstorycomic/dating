@@ -11,6 +11,7 @@ const navItems = [
   { href: "/dashboard/roles", label: "Vai trò", roles: ["ADMIN"] },
   { href: "/dashboard/logs", label: "Nhật ký đơn", roles: ["ADMIN", "STAFF"] },
   { href: "/dashboard/analytics", label: "Thống kê", roles: ["ADMIN", "STAFF"] },
+  { href: "/dashboard/templates", label: "Kho Template", roles: ["ADMIN"] },
   { href: "/dashboard/settings", label: "Cài đặt", roles: ["ADMIN", "STAFF", "EMPLOYEE"] },
 ] satisfies Array<{ href: string; label: string; roles: UserRole[] }>;
 

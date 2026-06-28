@@ -1,10 +1,19 @@
 "use client";
 
-import { memo, useMemo } from "react";
+import { memo, useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 export const GlowingDust = memo(function GlowingDust() {
-  const dusts = useMemo(() => Array.from({ length: 40 }).map((_, i) => {
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const dusts = useMemo(() => Array.from({ length: isMobile ? 12 : 40 }).map((_, i) => {
     const isBubble = Math.random() > 0.7;
     const isPink = Math.random() > 0.5;
     return {
@@ -14,12 +23,12 @@ export const GlowingDust = memo(function GlowingDust() {
       width: isBubble ? 12 + Math.random() * 20 : 4,
       left: Math.random() * 100,
       top: Math.random() * 100,
-      y: -100 - Math.random() * 150,
-      x: (Math.random() - 0.5) * 80,
-      duration: 3 + Math.random() * 5,
+      y: isMobile ? -50 - Math.random() * 100 : -100 - Math.random() * 150,
+      x: isMobile ? (Math.random() - 0.5) * 30 : (Math.random() - 0.5) * 80,
+      duration: isMobile ? 5 + Math.random() * 5 : 3 + Math.random() * 5,
       delay: -(Math.random() * 10),
     };
-  }), []);
+  }), [isMobile]);
 
   return (
     <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
