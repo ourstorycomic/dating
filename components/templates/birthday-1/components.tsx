@@ -462,7 +462,7 @@ export function CameraRig({
       return; 
     } else if (phase === "vintage-gallery") {
       const t = Math.min(1, vintageElapsed / 15.0); const xPos = -1.5 + t * 15.5; 
-      camera.position.set(xPos, vintageElapsed > 25.0 ? 0.9 + Math.min(1, (vintageElapsed - 25.0) / 4.0) * 5.0 : 0.9, 4.0);
+      camera.position.set(xPos, vintageElapsed > 25.0 ? 0.9 + Math.min(1, (vintageElapsed - 25.0) / 4.0) * 5.0 : 0.9, 5.5);
       camera.lookAt(xPos, vintageElapsed > 25.0 ? 0.9 + Math.min(1, (vintageElapsed - 25.0) / 4.0) * 5.0 : 0.9, 0); return;
     }
     
