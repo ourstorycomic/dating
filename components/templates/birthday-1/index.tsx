@@ -76,6 +76,7 @@ function BirthdayScene({
   age,
   compact = false,
   autoPlay = false,
+  isBuilderPreview = false,
 }: {
   recipientName: string;
   finalMessage: string;
@@ -374,13 +375,13 @@ function BirthdayScene({
         )}
       </AnimatePresence>
 
-      <audio loop preload="auto" ref={audioRef} muted={compact && !autoPlay && !props.isBuilderPreview}>
+      <audio loop preload="auto" ref={audioRef} muted={compact && !autoPlay && !isBuilderPreview}>
         <source src={musicUrl || DEFAULT_BIRTHDAY_MUSIC} type="audio/mp4" />
       </audio>
-      <audio preload="auto" ref={touchAudioRef} src={TOUCH_SOUND} muted={compact && !autoPlay && !props.isBuilderPreview} />
-      <audio preload="auto" ref={magicAudioRef} src={MAGIC_WAND_SOUND} muted={compact && !autoPlay && !props.isBuilderPreview} />
-      <audio preload="auto" ref={meowAudioRef} src="/birthday-1/vfx/meow.mp3" muted={compact && !autoPlay && !props.isBuilderPreview} />
-      <audio preload="auto" ref={patAudioRef} src="/birthday-1/vfx/lopi.ogg" muted={compact && !autoPlay && !props.isBuilderPreview} />
+      <audio preload="auto" ref={touchAudioRef} src={TOUCH_SOUND} muted={compact && !autoPlay && !isBuilderPreview} />
+      <audio preload="auto" ref={magicAudioRef} src={MAGIC_WAND_SOUND} muted={compact && !autoPlay && !isBuilderPreview} />
+      <audio preload="auto" ref={meowAudioRef} src="/birthday-1/vfx/meow.mp3" muted={compact && !autoPlay && !isBuilderPreview} />
+      <audio preload="auto" ref={patAudioRef} src="/birthday-1/vfx/lopi.ogg" muted={compact && !autoPlay && !isBuilderPreview} />
 
       <div className="absolute inset-0 z-10">
         <Canvas

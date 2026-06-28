@@ -103,6 +103,7 @@ function ThemeMusicSelector({
     birthday: [
       { label: "Sinh Nhật - Nhạc 1", url: "/assets/songs/birthday/birthday-1.mp3" },
       { label: "Sinh Nhật - Nhạc 2", url: "/assets/songs/birthday/birthday-2.mp3" },
+      { label: "Sinh Nhật - Nhạc 3", url: "/assets/songs/birthday/birthday-3.m4a" },
     ],
     valentine: [
       { label: "Valentine - Nhạc 1", url: "/assets/songs/valentine/valentine-1.mp3" },

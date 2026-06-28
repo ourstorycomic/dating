@@ -172,7 +172,7 @@ export function InteractiveTemplatePreview({
 
   const themeSongs: Record<string, string[]> = {
     dating: ["/assets/songs/dating/dating-1.mp3", "/assets/songs/dating/dating-2.mp3", "/assets/songs/dating/dating-3.mp3", "/assets/songs/dating/dating-4.mp3"],
-    birthday: ["/assets/songs/birthday/birthday-1.mp3", "/assets/songs/birthday/birthday-2.mp3"],
+    birthday: ["/assets/songs/birthday/birthday-1.mp3", "/assets/songs/birthday/birthday-2.mp3", "/assets/songs/birthday/birthday-3.m4a"],
     valentine: ["/assets/songs/valentine/valentine-1.mp3", "/assets/songs/valentine/valentine-2.mp3", "/assets/songs/valentine/valentine-3.mp3"],
     sorry: ["/assets/songs/sorry/sorry-1.mp3", "/assets/songs/sorry/sorry-2.mp3"],
   };
