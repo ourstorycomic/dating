@@ -73,6 +73,80 @@ function downloadImage(url: string, filename: string) {
   link.click();
 }
 
+export function getThemeFromComponentKey(key: string) {
+  const k = (key || "").toLowerCase();
+  if (k.includes("birthday")) return "birthday";
+  if (k.includes("sorry")) return "sorry";
+  if (k.includes("dating") || k.includes("will")) return "dating";
+  if (k.includes("val") || k.includes("starry")) return "valentine";
+  return "valentine";
+}
+
+function ThemeMusicSelector({
+  theme,
+  value,
+  onChange,
+  label
+}: {
+  theme: string;
+  value: string;
+  onChange: (url: string) => void;
+  label: string;
+}) {
+  const themeSongs: Record<string, { label: string, url: string }[]> = {
+    dating: [
+      { label: "Dating - Nhạc 1", url: "/assets/songs/dating/dating-1.mp3" },
+      { label: "Dating - Nhạc 2", url: "/assets/songs/dating/dating-2.mp3" },
+      { label: "Dating - Nhạc 3", url: "/assets/songs/dating/dating-3.mp3" },
+      { label: "Dating - Nhạc 4", url: "/assets/songs/dating/dating-4.mp3" },
+    ],
+    birthday: [
+      { label: "Sinh Nhật - Nhạc 1", url: "/assets/songs/birthday/birthday-1.mp3" },
+      { label: "Sinh Nhật - Nhạc 2", url: "/assets/songs/birthday/birthday-2.mp3" },
+    ],
+    valentine: [
+      { label: "Valentine - Nhạc 1", url: "/assets/songs/valentine/valentine-1.mp3" },
+      { label: "Valentine - Nhạc 2", url: "/assets/songs/valentine/valentine-2.mp3" },
+      { label: "Valentine - Nhạc 3", url: "/assets/songs/valentine/valentine-3.mp3" },
+    ],
+    sorry: [
+      { label: "Xin Lỗi - Nhạc 1", url: "/assets/songs/sorry/sorry-1.mp3" },
+      { label: "Xin Lỗi - Nhạc 2", url: "/assets/songs/sorry/sorry-2.mp3" },
+    ],
+  };
+
+  const options = themeSongs[theme] || themeSongs.valentine;
+  const isCustom = value && !options.some(o => o.url === value);
+
+  return (
+    <div className="grid gap-2 text-sm md:col-span-2">
+      <span className="text-white/64">{label}</span>
+      <select 
+        className="rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3 outline-none focus:border-pink-300/50 text-white"
+        value={isCustom ? "custom" : value || ""}
+        onChange={(e) => {
+           if (e.target.value !== "custom") {
+             onChange(e.target.value);
+           } else {
+             onChange(""); // reset for custom input
+           }
+        }}
+      >
+        <option value="" className="text-black">-- Chọn nhạc có sẵn --</option>
+        {options.map((o) => (
+          <option key={o.url} value={o.url} className="text-black">{o.label}</option>
+        ))}
+        <option value="custom" className="text-black">Tải lên nhạc khác...</option>
+      </select>
+      {(isCustom || value === "") && (
+         <div className="mt-2">
+           <MediaInput label="" accept="audio/*" onChange={(url) => onChange(url)} />
+         </div>
+      )}
+    </div>
+  );
+}
+
 function TextInput({
   label,
   onChange,
@@ -1198,7 +1272,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
                   <ColorInput label="Màu nền tổng thể" onCommit={setStage2Background} value={stage2Background} />
                   <ColorInput label="Màu nhấn (Nút, Tiêu đề)" onCommit={setStage1Accent} value={stage1Accent} />
                   <MediaInput label="Ảnh nền trang (Tùy chọn)" onChange={setStage1Background} />
-                  <MediaInput label="Nhạc nền chung" onChange={setGeneralAudioUrl} />
+                  <ThemeMusicSelector theme={getThemeFromComponentKey(selectedComponentKey)} label="Nhạc nền chung" value={generalAudioUrl} onChange={setGeneralAudioUrl} />
                 </Section>
                 <Section title="Bước 1: Lời mời">
                   <TextInput label="Tiêu đề lời mời" onChange={setStage1Instruction} value={stage1Instruction} />
@@ -1247,7 +1321,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
             ) : isValentine2 ? (
               <>
                 <Section title="Bước 1: Cuốn Sổ Kỷ Niệm">
-                  <MediaInput label="Nhạc nền (.mp3)" accept="audio/*" onChange={(url) => setValentine2Config({ ...valentine2Config, musicUrl: url })} />
+                  <ThemeMusicSelector theme={getThemeFromComponentKey(selectedComponentKey)} label="Nhạc nền (.mp3)" value={valentine2Config.musicUrl} onChange={(url) => setValentine2Config({ ...valentine2Config, musicUrl: url })} />
                   <TextInput label="Tiêu đề bìa" value={valentine2Config.coverTitle} onChange={(v) => setValentine2Config({ ...valentine2Config, coverTitle: v })} />
                   <MediaInput label="Ảnh ngoài bìa" accept="image/*" onChange={(url) => setValentine2Config({ ...valentine2Config, coverImage: url })} />
                   <MediaInput label="Ảnh trang 1" accept="image/*" onChange={(url) => setValentine2Config({ ...valentine2Config, page1Image: url })} />
@@ -1304,7 +1378,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
                 </div>
 
                 <Section title="Thiết lập chung của mẫu">
-                  <MediaInput label="Nhạc nền tổng" accept="audio/*" onChange={(url) => setGeneralAudioUrl(url)} />
+                  <ThemeMusicSelector theme={getThemeFromComponentKey(selectedComponentKey)} label="Nhạc nền tổng" value={generalAudioUrl} onChange={(url) => setGeneralAudioUrl(url)} />
                 </Section>
 
                   <Section title="Đoạn 1 - Ống kính dò chòm sao">

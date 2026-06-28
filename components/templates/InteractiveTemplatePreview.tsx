@@ -170,6 +170,42 @@ export function InteractiveTemplatePreview({
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  const themeSongs: Record<string, string[]> = {
+    dating: ["/assets/songs/dating/dating-1.mp3", "/assets/songs/dating/dating-2.mp3", "/assets/songs/dating/dating-3.mp3", "/assets/songs/dating/dating-4.mp3"],
+    birthday: ["/assets/songs/birthday/birthday-1.mp3", "/assets/songs/birthday/birthday-2.mp3"],
+    valentine: ["/assets/songs/valentine/valentine-1.mp3", "/assets/songs/valentine/valentine-2.mp3", "/assets/songs/valentine/valentine-3.mp3"],
+    sorry: ["/assets/songs/sorry/sorry-1.mp3", "/assets/songs/sorry/sorry-2.mp3"],
+  };
+
+  const [randomMusicUrl, setRandomMusicUrl] = useState("");
+
+  useEffect(() => {
+    const passedMusic = props.musicUrl || props.generalAudioUrl || props.customData?.musicUrl || props.customData?.generalAudioUrl;
+    if (passedMusic) return; // If provided, don't randomize
+
+    const k = componentKey.toLowerCase();
+    let theme = "valentine";
+    if (k.includes("birthday")) theme = "birthday";
+    else if (k.includes("sorry")) theme = "sorry";
+    else if (k.includes("dating") || k.includes("will")) theme = "dating";
+    else if (k.includes("val") || k.includes("starry")) theme = "valentine";
+
+    const songs = themeSongs[theme] || themeSongs.valentine;
+    const randomSong = songs[Math.floor(Math.random() * songs.length)];
+    setRandomMusicUrl(randomSong);
+  }, [componentKey, props.musicUrl, props.generalAudioUrl, props.customData?.musicUrl, props.customData?.generalAudioUrl]);
+
+  const finalProps = {
+    ...props,
+    musicUrl: props.musicUrl || props.customData?.musicUrl || randomMusicUrl,
+    generalAudioUrl: props.generalAudioUrl || props.customData?.generalAudioUrl || randomMusicUrl,
+    customData: {
+      ...props.customData,
+      musicUrl: props.customData?.musicUrl || randomMusicUrl,
+      generalAudioUrl: props.customData?.generalAudioUrl || randomMusicUrl,
+    }
+  };
+
   const isPreviewActive = (isMobile && isInView) || (!isMobile && isHovered);
   const normalizedKey = componentKey.toLowerCase();
   const preview = previewRegistry.find((item) => normalizedKey.includes(item.match));
@@ -193,7 +229,7 @@ export function InteractiveTemplatePreview({
             
             <div className="absolute inset-0 pointer-events-none">
               <BotAutoPlayer enabled={isPreviewActive} key={isPreviewActive ? "active" : "inactive"}>
-                <Component {...props} roomId={roomId} autoPlay={isPreviewActive} compact={true} />
+                <Component {...finalProps} roomId={roomId} autoPlay={isPreviewActive} compact={true} />
               </BotAutoPlayer>
             </div>
           </div>
@@ -205,15 +241,15 @@ export function InteractiveTemplatePreview({
             className="mx-auto flex aspect-[9/19] h-[calc(100dvh-140px)] max-h-[720px] w-auto max-w-[360px] shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative isolate z-0"
             style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)' }}
           >
-            <Component {...props} roomId={roomId} autoPlay={false} />
+            <Component {...finalProps} roomId={roomId} autoPlay={false} />
           </div>
         );
       }
     }
-    return <Component {...props} roomId={roomId} />;
+    return <Component {...finalProps} roomId={roomId} />;
   }
 
-  return <FallbackPreview componentKey={componentKey} {...props} />;
+  return <FallbackPreview componentKey={componentKey} {...finalProps} />;
 }
 
 function FallbackPreview({
