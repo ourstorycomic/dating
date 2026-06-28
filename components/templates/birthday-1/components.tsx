@@ -460,7 +460,7 @@ export function CameraRig({
       camera.position.lerp(targetCameraPos, delta * 4);
       camera.lookAt(1.6, -1.75, 1.4); 
       return; 
-    } else if (phase === "vintage-gallery") {
+    } else if (phase === "vintage-gallery" || phase === "end") {
       const finalX = memoriesCount * 3.5;
       const t = Math.min(1, vintageElapsed / 15.0); const xPos = -1.5 + t * (finalX + 1.5); 
       camera.position.set(xPos, vintageElapsed > 25.0 ? 0.9 + Math.min(1, (vintageElapsed - 25.0) / 4.0) * 5.0 : 0.9, 5.5);
@@ -1851,8 +1851,8 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
       autoPlayStart.current = performance.now();
     }
   }, [phase]);
-  const MATCHBOX_WORLD_POS = new THREE.Vector3(-0.35, 0.8, 1.1);
-  const matchWorld = useRef(new THREE.Vector3(0.25, 0.8, 1.3)); 
+  const MATCHBOX_WORLD_POS = new THREE.Vector3(-0.35, 1.15, 1.1);
+  const matchWorld = useRef(new THREE.Vector3(0.25, 1.15, 1.3)); 
 
   const audioContextRef = useRef<AudioContext | null>(null); const recorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null); const chunksRef = useRef<Blob[]>([]);
@@ -1919,7 +1919,7 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
         if (lit && flickStartTime.current < 0) {
           matchWorld.current.x = THREE.MathUtils.lerp(matchWorld.current.x, 5.0, delta * 3);
           matchWorld.current.y = THREE.MathUtils.lerp(matchWorld.current.y, -3.0, delta * 3); targetRotZ += delta * 4;
-        } else matchWorld.current.lerp(new THREE.Vector3(0.25, 0.8 + Math.sin(state.clock.elapsedTime * 2.5) * 0.02, 1.3), delta * 4);
+        } else matchWorld.current.lerp(new THREE.Vector3(0.25, 1.15 + Math.sin(state.clock.elapsedTime * 2.5) * 0.02, 1.3), delta * 4);
       }
       matchGroup.current.position.lerp(matchWorld.current, delta * 18);
       matchGroup.current.rotation.z = THREE.MathUtils.lerp(matchGroup.current.rotation.z, targetRotZ, delta * 10);
@@ -1981,10 +1981,10 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
       if (activeElapsed > 0) {
         setHolding(true);
         if (activeElapsed < 1.0) {
-           matchWorld.current.lerp(new THREE.Vector3(-0.25, 0.8, 1.3), delta * 5);
+           matchWorld.current.lerp(new THREE.Vector3(-0.25, 1.15, 1.3), delta * 5);
         } else if (activeElapsed < 2.2 && !matchLit) {
            matchWorld.current.x = -0.3 + Math.sin(activeElapsed * 35) * 0.15;
-           matchWorld.current.y = 0.8 + Math.cos(activeElapsed * 25) * 0.05;
+           matchWorld.current.y = 1.15 + Math.cos(activeElapsed * 25) * 0.05;
            if (activeElapsed > 2.0 && strikeCount < 3) {
               setStrikeCount(3);
               setMatchLit(true);
@@ -2011,7 +2011,7 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
     <>
       <ambientLight color="#000000" intensity={0} />
 
-      <group ref={matchboxWrap} position={[-0.35, 0.8, 1.1]} visible={phase === "match-ignite"}>
+      <group ref={matchboxWrap} position={[-0.35, 1.15, 1.1]} visible={phase === "match-ignite"}>
         <Float speed={2.5} rotationIntensity={0.2} floatIntensity={0.3}><MatchboxModel scale={1.0} /></Float>
       </group>
 
