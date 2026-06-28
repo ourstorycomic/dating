@@ -1826,6 +1826,7 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
   const litProgressRef = useRef(0); const fireScaleRef = useRef(0);
   const candleFireRef = useRef<THREE.Group>(null);
   const candleGroup = useRef<THREE.Group>(null);
+  const mainCandleRef = useRef<THREE.Group>(null);
   
   const strikeTime = useRef(0); const lastMatchX = useRef(0);
   const sparkGroup = useRef<THREE.Group>(null); const matchFireRef = useRef<THREE.Group>(null);
@@ -1939,7 +1940,13 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
     if (matchFireRef.current) {
       matchFireRef.current.scale.setScalar(Math.max(0.001, 0.45 * (matchLit && !isFlicking && !lit ? (matchFireScaleRef.current = Math.min(1, matchFireScaleRef.current + delta * 3.5)) : (matchFireScaleRef.current = Math.max(0, matchFireScaleRef.current - delta * 5.0)))));
       matchFireRef.current.getWorldPosition(tipPos);
-      setNearWick(Math.hypot(tipPos.x, tipPos.y - 1.2) < 0.25);
+      const wickY = mainCandleRef.current ? mainCandleRef.current.position.y - 1.65 : 2.15;
+      setNearWick(Math.hypot(tipPos.x, tipPos.y - wickY) < 0.35);
+    }
+    
+    if (mainCandleRef.current) {
+      const targetY = (phase === "match-ignite" || phase === "wish-record") ? 3.8 : 2.6;
+      mainCandleRef.current.position.y = THREE.MathUtils.lerp(mainCandleRef.current.position.y, targetY, delta * 2.0);
     }
     
     fireScaleRef.current = lit ? Math.min(1, fireScaleRef.current + delta / 2.0) : Math.max(0, fireScaleRef.current - delta * 3.0);
@@ -1978,7 +1985,8 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
               setMatchLit(true);
            }
         } else if (matchLit) {
-           matchWorld.current.lerp(new THREE.Vector3(0.170, 1.024, 1.3), delta * 4);
+           const wickY = mainCandleRef.current ? mainCandleRef.current.position.y - 1.65 : 2.15;
+           matchWorld.current.lerp(new THREE.Vector3(0.0, wickY - 0.05, 1.3), delta * 4);
         }
       }
     }
@@ -2005,7 +2013,7 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
       <group visible={phase === "match-ignite" || phase === "wish-record" || phase === "celebration" || phase === "gift-reveal"}>
         <group ref={candleGroup} position={[0, -2.35, 0]}>
           
-          <group position={[0, 2.6, 0]}>
+          <group ref={mainCandleRef} position={[0, 3.8, 0]}>
             <NormalizedModel desiredHeight={1.4} url={MODELS.candle} />
             <group ref={candleFireRef} position={[0, 0.7, 0]} scale={0.001}><AnimatedFire lockRotation scale={0.5} /></group>
             {/* GIỚI HẠN BÁN KÍNH SÁNG ĐỂ TẠO VÒNG TRÒN LỬA TRONG BÓNG ĐÊM */}
