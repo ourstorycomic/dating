@@ -530,7 +530,7 @@ function Step3DinoRun({ onNext, autoPlay, config }: { onNext: () => void; autoPl
       // --- RENDER ---
       ctx.save();
       ctx.scale(2.8, 2.8);
-      ctx.translate(0, -35); // Zoom in và đẩy camera xuống một chút
+      ctx.translate(0, -10); // Cân chỉnh lại camera để không bị cắt ảnh khi nhảy lên cao
       
       // Clouds
       st.clouds.forEach(c => {
