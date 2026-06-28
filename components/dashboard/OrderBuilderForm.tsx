@@ -7,6 +7,7 @@ import type { TemplateCatalogItem } from "@/lib/supabase/server";
 import { InteractiveTemplatePreview } from "@/components/templates/InteractiveTemplatePreview";
 import { FormStepNavigator } from "./FormStepNavigator";
 import { GACHA_DATA } from "@/components/templates/dating-3/config";
+import { toast } from "@/components/ui/Toast";
 
 type MyOrderRow = {
   amount: number;
@@ -202,7 +203,7 @@ function MediaInput({
             onChange(data.url, file.type);
           } catch (error: any) {
             console.error("Upload error", error);
-            alert("Lỗi tải file: " + error.message);
+            toast.error("Lỗi tải file: " + error.message);
           } finally {
             setIsUploading(false);
           }

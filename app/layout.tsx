@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "@/components/ui/Toast";
 
 const beVietnam = Be_Vietnam_Pro({
   subsets: ["latin", "vietnamese"],
@@ -30,6 +31,7 @@ export default function RootLayout({
         </div>
 
         <main className="min-h-screen text-foreground antialiased">{children}</main>
+        <Toaster />
       </body>
     </html>
   );

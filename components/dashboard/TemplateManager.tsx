@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { toast } from "@/components/ui/Toast";
 
 type Template = {
   id: string;
@@ -47,9 +48,9 @@ export function TemplateManager({ initialTemplates }: { initialTemplates: Templa
 
       setTemplates(templates.map((t) => (t.id === editing.id ? editing : t)));
       setEditing(null);
-      alert("Đã cập nhật template thành công!");
+      toast.success("Đã cập nhật template thành công!");
     } catch (err: any) {
-      alert(err.message);
+      toast.error(err.message);
     } finally {
       setSaving(false);
     }
