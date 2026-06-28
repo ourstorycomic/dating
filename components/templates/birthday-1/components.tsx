@@ -1850,8 +1850,8 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
       autoPlayStart.current = performance.now();
     }
   }, [phase]);
-  const MATCHBOX_WORLD_POS = new THREE.Vector3(-0.35, 1.2, 1.1);
-  const matchWorld = useRef(new THREE.Vector3(0.25, 1.2, 1.3)); 
+  const MATCHBOX_WORLD_POS = new THREE.Vector3(-0.35, 0.8, 1.1);
+  const matchWorld = useRef(new THREE.Vector3(0.25, 0.8, 1.3)); 
 
   const audioContextRef = useRef<AudioContext | null>(null); const recorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null); const chunksRef = useRef<Blob[]>([]);
@@ -1918,7 +1918,7 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
         if (lit && flickStartTime.current < 0) {
           matchWorld.current.x = THREE.MathUtils.lerp(matchWorld.current.x, 5.0, delta * 3);
           matchWorld.current.y = THREE.MathUtils.lerp(matchWorld.current.y, -3.0, delta * 3); targetRotZ += delta * 4;
-        } else matchWorld.current.lerp(new THREE.Vector3(0.25, 1.2 + Math.sin(state.clock.elapsedTime * 2.5) * 0.02, 1.3), delta * 4);
+        } else matchWorld.current.lerp(new THREE.Vector3(0.25, 0.8 + Math.sin(state.clock.elapsedTime * 2.5) * 0.02, 1.3), delta * 4);
       }
       matchGroup.current.position.lerp(matchWorld.current, delta * 18);
       matchGroup.current.rotation.z = THREE.MathUtils.lerp(matchGroup.current.rotation.z, targetRotZ, delta * 10);
@@ -1940,13 +1940,17 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
     if (matchFireRef.current) {
       matchFireRef.current.scale.setScalar(Math.max(0.001, 0.45 * (matchLit && !isFlicking && !lit ? (matchFireScaleRef.current = Math.min(1, matchFireScaleRef.current + delta * 3.5)) : (matchFireScaleRef.current = Math.max(0, matchFireScaleRef.current - delta * 5.0)))));
       matchFireRef.current.getWorldPosition(tipPos);
-      const wickY = mainCandleRef.current ? mainCandleRef.current.position.y - 1.65 : 2.15;
+      const wickY = mainCandleRef.current ? mainCandleRef.current.position.y - 2.35 + 0.7 * mainCandleRef.current.scale.y : 1.33;
       setNearWick(Math.hypot(tipPos.x, tipPos.y - wickY) < 0.35);
     }
     
     if (mainCandleRef.current) {
-      const targetY = (phase === "match-ignite" || phase === "wish-record") ? 3.8 : 2.6;
+      const targetY = (phase === "match-ignite" || phase === "wish-record") ? 2.7 : 2.6;
       mainCandleRef.current.position.y = THREE.MathUtils.lerp(mainCandleRef.current.position.y, targetY, delta * 2.0);
+      
+      const targetScale = (phase === "match-ignite" || phase === "wish-record") ? 1.4 : 1.0;
+      const curScale = mainCandleRef.current.scale.x;
+      mainCandleRef.current.scale.setScalar(THREE.MathUtils.lerp(curScale, targetScale, delta * 2.0));
     }
     
     fireScaleRef.current = lit ? Math.min(1, fireScaleRef.current + delta / 2.0) : Math.max(0, fireScaleRef.current - delta * 3.0);
@@ -1976,16 +1980,16 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
       if (activeElapsed > 0) {
         setHolding(true);
         if (activeElapsed < 1.0) {
-           matchWorld.current.lerp(new THREE.Vector3(-0.25, 1.2, 1.3), delta * 5);
+           matchWorld.current.lerp(new THREE.Vector3(-0.25, 0.8, 1.3), delta * 5);
         } else if (activeElapsed < 2.2 && !matchLit) {
            matchWorld.current.x = -0.3 + Math.sin(activeElapsed * 35) * 0.15;
-           matchWorld.current.y = 1.2 + Math.cos(activeElapsed * 25) * 0.05;
+           matchWorld.current.y = 0.8 + Math.cos(activeElapsed * 25) * 0.05;
            if (activeElapsed > 2.0 && strikeCount < 3) {
               setStrikeCount(3);
               setMatchLit(true);
            }
         } else if (matchLit) {
-           const wickY = mainCandleRef.current ? mainCandleRef.current.position.y - 1.65 : 2.15;
+           const wickY = mainCandleRef.current ? mainCandleRef.current.position.y - 2.35 + 0.7 * mainCandleRef.current.scale.y : 1.33;
            matchWorld.current.lerp(new THREE.Vector3(0.0, wickY - 0.05, 1.3), delta * 4);
         }
       }
@@ -2006,7 +2010,7 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
     <>
       <ambientLight color="#000000" intensity={0} />
 
-      <group ref={matchboxWrap} position={[-0.35, 1.2, 1.1]} visible={phase === "match-ignite"}>
+      <group ref={matchboxWrap} position={[-0.35, 0.8, 1.1]} visible={phase === "match-ignite"}>
         <Float speed={2.5} rotationIntensity={0.2} floatIntensity={0.3}><MatchboxModel scale={1.0} /></Float>
       </group>
 
