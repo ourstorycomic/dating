@@ -85,6 +85,7 @@ function BirthdayScene({
   age: number;
   compact?: boolean;
   autoPlay?: boolean;
+  isBuilderPreview?: boolean;
 }) {
   const [phase, setPhase] = useState<BirthdayPhase>("dark");
   const [musicActive, setMusicActive] = useState(false);
@@ -258,12 +259,12 @@ function BirthdayScene({
     setTimeout(() => {
       setGiftZoomInside(true);
       setWhiteout(true);
-    }, 1500);
+    }, 500);
 
     setTimeout(() => {
       setPhase("vintage-gallery");
       setWhiteout(false);
-    }, 4000);
+    }, 3000);
   }
 
   useEffect(() => {
@@ -373,13 +374,13 @@ function BirthdayScene({
         )}
       </AnimatePresence>
 
-      <audio loop preload="auto" ref={audioRef} muted={compact && !autoPlay}>
+      <audio loop preload="auto" ref={audioRef} muted={compact && !autoPlay && !props.isBuilderPreview}>
         <source src={musicUrl || DEFAULT_BIRTHDAY_MUSIC} type="audio/mp4" />
       </audio>
-      <audio preload="auto" ref={touchAudioRef} src={TOUCH_SOUND} muted={compact && !autoPlay} />
-      <audio preload="auto" ref={magicAudioRef} src={MAGIC_WAND_SOUND} muted={compact && !autoPlay} />
-      <audio preload="auto" ref={meowAudioRef} src="/birthday-1/vfx/meow.mp3" muted={compact && !autoPlay} />
-      <audio preload="auto" ref={patAudioRef} src="/birthday-1/vfx/lopi.ogg" muted={compact && !autoPlay} />
+      <audio preload="auto" ref={touchAudioRef} src={TOUCH_SOUND} muted={compact && !autoPlay && !props.isBuilderPreview} />
+      <audio preload="auto" ref={magicAudioRef} src={MAGIC_WAND_SOUND} muted={compact && !autoPlay && !props.isBuilderPreview} />
+      <audio preload="auto" ref={meowAudioRef} src="/birthday-1/vfx/meow.mp3" muted={compact && !autoPlay && !props.isBuilderPreview} />
+      <audio preload="auto" ref={patAudioRef} src="/birthday-1/vfx/lopi.ogg" muted={compact && !autoPlay && !props.isBuilderPreview} />
 
       <div className="absolute inset-0 z-10">
         <Canvas
@@ -540,18 +541,6 @@ function BirthdayScene({
       </AnimatePresence>
 
       <AnimatePresence>
-        {phase === "celebration" && celebrationZoom && !giftOpened && (
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute bottom-[10%] left-1/2 -translate-x-1/2 z-40 text-center"
-          >
-            <div className="text-xl font-bold text-[#f786c5] drop-shadow-md bg-white/80 px-6 py-2.5 rounded-full border border-pink-300">
-              Chạm vào hộp quà để nhận điều bất ngờ 🎁
-            </div>
-          </motion.div>
-        )}
       </AnimatePresence>
     </>
   );
@@ -579,6 +568,7 @@ export function BirthdayMagicExperience(props: BirthdayMagicExperienceProps) {
         recipientName={props.recipientName || "Bạn"}
         compact={props.compact}
         autoPlay={props.autoPlay}
+        isBuilderPreview={props.isBuilderPreview}
       />
     </div>
   );

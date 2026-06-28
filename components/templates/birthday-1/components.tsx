@@ -462,7 +462,7 @@ export function CameraRig({
       return; 
     } else if (phase === "vintage-gallery") {
       const t = Math.min(1, vintageElapsed / 15.0); const xPos = -1.5 + t * 15.5; 
-      camera.position.set(xPos, vintageElapsed > 25.0 ? 0.9 + Math.min(1, (vintageElapsed - 25.0) / 4.0) * 5.0 : 0.9, 3.0);
+      camera.position.set(xPos, vintageElapsed > 25.0 ? 0.9 + Math.min(1, (vintageElapsed - 25.0) / 4.0) * 5.0 : 0.9, 4.0);
       camera.lookAt(xPos, vintageElapsed > 25.0 ? 0.9 + Math.min(1, (vintageElapsed - 25.0) / 4.0) * 5.0 : 0.9, 0); return;
     }
     
@@ -2037,7 +2037,7 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
       {phase === "match-ignite" && !lit && (
         <mesh position={[0, 1.2, 1.35]} onPointerDown={(e) => { 
             const elapsed = (performance.now() - autoPlayStart.current) / 1000;
-            if (elapsed < 9.0) return;
+            if (elapsed < 3.0) return;
             e.stopPropagation(); setHolding(true); matchWorld.current.copy(e.point); 
           }} onPointerMove={(e) => { 
             if (!holding) return; 
@@ -2051,11 +2051,11 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
 
       <group ref={matchGroup} position={[0.6, 1.2, 1.35]} visible={phase === "match-ignite"}>
         <MatchstickModel scale={1.0} position={[0, 0, 0]} />
-        <group ref={matchFireRef} position={[-0.170, 0.176, 0]} scale={0.001}><AnimatedFire scale={0.3} /></group>
+        <group ref={matchFireRef} position={[-0.170, -0.15, 0]} scale={0.001}><AnimatedFire scale={0.3} /></group>
         {/* LỬA DIÊM CŨNG BỊ GIỚI HẠN BÁN KÍNH (1.0) ĐỂ KHÔNG SÁNG ĐẾN ĐÁY CÂY NẾN */}
-        {matchLit && (<pointLight color="#ffbd6f" distance={1.0} decay={2} intensity={nearWick ? 8.0 : 4.0} position={[-0.170, 0.176, 0]} />)}
+        {matchLit && (<pointLight color="#ffbd6f" distance={1.0} decay={2} intensity={nearWick ? 8.0 : 4.0} position={[-0.170, -0.15, 0]} />)}
 
-        <group ref={sparkGroup} position={[-0.170, 0.176, 0]} visible={false}>
+        <group ref={sparkGroup} position={[-0.170, -0.15, 0]} visible={false}>
           <mesh position={[0.05, 0, 0]}><sphereGeometry args={[0.04]}/><meshBasicMaterial color="#ffcc00"/></mesh>
           <mesh position={[-0.05, 0.05, 0]}><sphereGeometry args={[0.03]}/><meshBasicMaterial color="#ffaa00"/></mesh>
           <pointLight color="#ffcc00" distance={1.5} intensity={4.0} />
@@ -2071,7 +2071,7 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
       </group>
 
       {phase === "wish-record" && isRecording && (
-        <Html center position={[0, 1.9, 0]} zIndexRange={[90, 80]}>
+        <Html center position={[0, 1.35, 0]} zIndexRange={[90, 80]}>
            <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center text-center w-[300px]">
              <div className="whitespace-nowrap text-4xl font-black text-[#ffd84d]">Hãy ước...</div>
              <div className="mt-3 flex items-center justify-center gap-2 text-lg font-bold text-white/90">
@@ -2209,6 +2209,17 @@ export function GiftFinale({ onOpen, opening, position = [0, 0, 0], celebrationZ
         </group>
         <pointLight color="#fff0f8" intensity={opening ? 18 : 3} position={[0, 0.45, 0.3]} />
       </group>
+      {celebrationZoom && !opening && (
+        <Html center position={[0, 1.25, 0]} zIndexRange={[80, 70]}>
+          <motion.div
+            animate={{ rotate: [-2, 2, -2], scale: [1, 1.04, 1] }}
+            className="pointer-events-none whitespace-nowrap rounded-none bg-transparent px-2 text-center text-lg font-black leading-tight text-[#ffd84d] drop-shadow-[0_3px_0_rgba(91,35,85,0.22)]"
+            transition={{ duration: 1.3, repeat: Infinity }}
+          >
+            Chạm vào hộp quà<br/>để nhận bất ngờ 🎁
+          </motion.div>
+        </Html>
+      )}
     </group>
   );
 }
@@ -2249,42 +2260,41 @@ function VintageDust() {
 
 function CurvedRope({ startX, endX, y }: { startX: number; endX: number; y: number }) {
   const groupRef = useRef<THREE.Group>(null);
-  const segments = 80;
+  const ropeMeshRef = useRef<THREE.Mesh>(null);
   const len = endX - startX;
 
-  useFrame((state) => {
-    if (!groupRef.current) return;
-    const t = state.clock.elapsedTime * 0.3;
-    groupRef.current.children.forEach((child, i) => {
-      const frac = i / segments;
+  const points = useMemo(() => {
+    const pts = [];
+    for (let i = 0; i <= 30; i++) {
+      const frac = i / 30;
       const x = startX + frac * len;
-      const normalizedX = (frac - 0.5) * 2; 
-      const droop = (1 - normalizedX * normalizedX) * 0.8; // Tạo độ võng parabol mượt mà
-      const sway = Math.sin(frac * Math.PI * 2 + t) * 0.1; // Đung đưa theo gió
-      
-      child.position.set(x, y - droop, sway);
-      
-      // Xoay các lóng dây nối tiếp nhau liền mạch
-      if (i < segments - 1) {
-        const nextFrac = (i + 1) / segments;
-        const nextX = startX + nextFrac * len;
-        const nextNX = (nextFrac - 0.5) * 2;
-        const nextDroop = (1 - nextNX * nextNX) * 0.8;
-        const nextSway = Math.sin(nextFrac * Math.PI * 2 + t) * 0.1;
-        child.lookAt(nextX, y - nextDroop, nextSway);
-      }
-    });
+      const normalizedX = (frac - 0.5) * 2;
+      const droop = (1 - normalizedX * normalizedX) * 0.8;
+      pts.push(new THREE.Vector3(x, y - droop, 0));
+    }
+    return pts;
+  }, [startX, endX, len, y]);
+
+  useFrame((state) => {
+    if (!ropeMeshRef.current) return;
+    const t = state.clock.elapsedTime * 0.3;
+    const curve = new THREE.CatmullRomCurve3(
+      points.map((p, i) => {
+        const frac = i / 30;
+        const sway = Math.sin(frac * Math.PI * 2 + t) * 0.1;
+        return new THREE.Vector3(p.x, p.y, sway);
+      })
+    );
+    ropeMeshRef.current.geometry.dispose();
+    ropeMeshRef.current.geometry = new THREE.TubeGeometry(curve, 64, 0.015, 8, false);
   });
 
   return (
     <group ref={groupRef}>
-      {Array.from({ length: segments }, (_, i) => (
-        <mesh key={i}>
-          {/* Đổi thành hình trụ (cylinder) để dây tròn và mượt */}
-          <cylinderGeometry args={[0.012, 0.012, len / segments + 0.02, 6]} />
-          <meshStandardMaterial color="#4a2e15" roughness={0.8} />
-        </mesh>
-      ))}
+      <mesh ref={ropeMeshRef}>
+        <tubeGeometry args={[new THREE.CatmullRomCurve3(points), 64, 0.015, 8, false]} />
+        <meshStandardMaterial color="#4a2e15" roughness={0.8} />
+      </mesh>
     </group>
   );
 }

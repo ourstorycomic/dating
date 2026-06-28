@@ -23,6 +23,7 @@ export interface BirthdayMagicExperienceProps {
   fullScreen?: boolean;
   compact?: boolean;
   autoPlay?: boolean;
+  isBuilderPreview?: boolean;
   age?: number;
   imageUrl?: string;
   hideNavigation?: boolean;
