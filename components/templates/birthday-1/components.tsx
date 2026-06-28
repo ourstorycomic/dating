@@ -2005,7 +2005,7 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
       <group visible={phase === "match-ignite" || phase === "wish-record" || phase === "celebration" || phase === "gift-reveal"}>
         <group ref={candleGroup} position={[0, -2.35, 0]}>
           
-          <group position={[0, 2.85, 0]}>
+          <group position={[0, 2.6, 0]}>
             <NormalizedModel desiredHeight={1.4} url={MODELS.candle} />
             <group ref={candleFireRef} position={[0, 0.7, 0]} scale={0.001}><AnimatedFire lockRotation scale={0.5} /></group>
             {/* GIỚI HẠN BÁN KÍNH SÁNG ĐỂ TẠO VÒNG TRÒN LỬA TRONG BÓNG ĐÊM */}
@@ -2014,7 +2014,7 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
 
           {phase !== "match-ignite" && phase !== "wish-record" && (
             <group>
-              <group scale={0.7} position={[0, 3.6, 0]}>
+              <group scale={0.7} position={[0, 4.3, 0]}>
                 <BirthdayBanner name={recipientName || ""} visible={phase === "celebration"} position={[0, 0, 0]} />
               </group>
               <NormalizedModel desiredHeight={2.85} position={[0, 1.425, 0]} url={MODELS.cake} />
