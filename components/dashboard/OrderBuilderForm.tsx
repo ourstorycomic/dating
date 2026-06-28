@@ -1406,20 +1406,20 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
         ) : null}
 
         {result ? (
-            <div className="mt-4 grid gap-3 rounded-2xl border border-emerald-300/20 bg-emerald-300/10 p-4 text-sm">
-              <div className="flex flex-wrap items-center justify-between gap-3 font-semibold text-emerald-100">
+            <div className="mt-4 grid gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm">
+              <div className="flex flex-wrap items-center justify-between gap-3 font-semibold text-emerald-900">
                 <span>Mã chuyển khoản: {result.paymentCode}</span>
-                <span className={`rounded-full px-3 py-1 text-xs border ${result.unlocked ? "border-emerald-400/30 bg-emerald-500/20 text-emerald-100" : "border-yellow-500/30 bg-yellow-500/20 text-yellow-200"}`}>
+                <span className={`rounded-full px-3 py-1 text-xs border ${result.unlocked ? "border-emerald-300 bg-emerald-100 text-emerald-800" : "border-yellow-300 bg-yellow-100 text-yellow-800"}`}>
                   {result.unlocked ? "Đã thanh toán - đã mở khóa" : "Chờ thanh toán"}
                 </span>
               </div>
-              <p className="text-xs text-white/70">
+              <p className="text-xs text-emerald-800/70">
                 {result.unlocked
                   ? "Khách đã chuyển tiền thành công. Nhân viên có thể chỉnh template và gửi link cho khách."
                   : "Gửi QR này cho khách. Gift link đang bị khóa tới khi webhook ngân hàng xác nhận đúng mã đơn và số tiền."}
               </p>
               {!result.unlocked ? (
-                <div className="grid gap-4 rounded-2xl border border-white/20 bg-white/10 p-5 md:grid-cols-[160px_1fr]">
+                <div className="grid gap-4 rounded-2xl border border-pink-200 bg-white p-5 md:grid-cols-[160px_1fr] shadow-sm">
                 {result.qrCodeUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img alt="QR chuyển khoản" className="h-40 w-40 rounded-2xl bg-white object-contain p-2" src={result.qrCodeUrl} />
@@ -1428,13 +1428,13 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
                     Chưa cấu hình tài khoản nhận tiền
                   </div>
                 )}
-                <div className="grid content-center gap-2 text-sm">
-                  <p><span className="text-white/50">Số tiền:</span> <b>{result.amount.toLocaleString("vi-VN")}đ</b></p>
-                  <p><span className="text-white/50">Nội dung CK:</span> <b className="text-pink-100">{result.paymentCode}</b></p>
-                  <p className="text-xs leading-5 text-white/60">Khách chuyển đúng số tiền và đúng nội dung. Webhook sẽ tự mở khóa link sau khi tiền vào tài khoản.</p>
+                <div className="grid content-center gap-2 text-sm text-gray-800">
+                  <p><span className="text-gray-500 font-medium">Số tiền:</span> <b className="text-pink-600 text-lg">{result.amount.toLocaleString("vi-VN")}đ</b></p>
+                  <p><span className="text-gray-500 font-medium">Nội dung CK:</span> <b className="text-pink-600">{result.paymentCode}</b></p>
+                  <p className="text-xs leading-5 text-gray-500">Khách chuyển đúng số tiền và đúng nội dung. Webhook sẽ tự mở khóa link sau khi tiền vào tài khoản.</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     <button
-                      className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold hover:bg-white/20 transition-colors"
+                      className="rounded-full border border-pink-200 text-pink-700 bg-transparent px-4 py-2 text-xs font-semibold hover:bg-pink-50 hover:border-pink-300 transition-colors"
                       onClick={async () => {
                         await copyText(result.paymentCode);
                         showCopyMessage("Đã copy mã CK.");
@@ -1446,14 +1446,14 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
                     {result.qrCodeUrl ? (
                       <>
                         <button
-                          className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold hover:bg-white/20 transition-colors"
+                          className="rounded-full border border-pink-200 text-pink-700 bg-transparent px-4 py-2 text-xs font-semibold hover:bg-pink-50 hover:border-pink-300 transition-colors"
                           onClick={() => copyQrImage(result.qrCodeUrl || "", showCopyMessage)}
                           type="button"
                         >
                           Copy QR
                         </button>
                         <button
-                          className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold hover:bg-white/20 transition-colors"
+                          className="rounded-full border border-pink-200 text-pink-700 bg-transparent px-4 py-2 text-xs font-semibold hover:bg-pink-50 hover:border-pink-300 transition-colors"
                           onClick={() => downloadImage(result.qrCodeUrl || "", `qr-${result.paymentCode}.png`)}
                           type="button"
                         >
