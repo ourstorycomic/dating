@@ -461,7 +461,7 @@ export function CameraRig({
       camera.lookAt(1.6, -1.75, 1.4); 
       return; 
     } else if (phase === "vintage-gallery" || phase === "end") {
-      const finalX = memoriesCount * 3.5;
+      const finalX = memoriesCount * 3.5 + 0.5; // Thêm offset 0.5 để cân bằng thị giác
       const t = Math.min(1, vintageElapsed / 15.0); const xPos = -1.5 + t * (finalX + 1.5); 
       camera.position.set(xPos, vintageElapsed > 25.0 ? 0.9 + Math.min(1, (vintageElapsed - 25.0) / 4.0) * 5.0 : 0.9, 5.5);
       camera.lookAt(xPos, vintageElapsed > 25.0 ? 0.9 + Math.min(1, (vintageElapsed - 25.0) / 4.0) * 5.0 : 0.9, 0); return;
