@@ -316,9 +316,13 @@ function Step3DinoRun({ onNext, autoPlay, config }: { onNext: () => void; autoPl
   useEffect(() => {
     const load = (src: string) => {
       const img = new Image();
+      img.crossOrigin = "anonymous";
       img.src = src;
       return img;
     };
+    
+    const faceUrl = config?.dinoFaceImg || config?.avatar || (config?.memories && config.memories[0]) || APOLOGY_DATA.memories[0];
+    
     imgs.current = {
       run1: load(DinoRun1Img.src),
       run2: load(DinoRun2Img.src),
@@ -326,7 +330,8 @@ function Step3DinoRun({ onNext, autoPlay, config }: { onNext: () => void; autoPl
       duck1: load(DinoDuck1Img.src),
       duck2: load(DinoDuck2Img.src),
       cloud: load(CloudImg.src),
-      track: load(TrackImg.src)
+      track: load(TrackImg.src),
+      face: load(faceUrl)
     };
     
     // Init clouds
@@ -555,7 +560,33 @@ function Step3DinoRun({ onNext, autoPlay, config }: { onNext: () => void; autoPl
       if (st.dino.state === 'duck') dinoImg = st.dino.frame === 1 ? imgs.current.duck1 : imgs.current.duck2;
       
       if (dinoImg) {
-        ctx.drawImage(dinoImg, st.dino.x, 150 - (st.dino.ducking ? 30 : 47) + st.dino.y, st.dino.ducking ? 59 : 44, st.dino.ducking ? 30 : 47);
+        const dX = st.dino.x;
+        const dY = 150 - (st.dino.ducking ? 30 : 47) + st.dino.y;
+        const dW = st.dino.ducking ? 59 : 44;
+        const dH = st.dino.ducking ? 30 : 47;
+        
+        ctx.drawImage(dinoImg, dX, dY, dW, dH);
+        
+        if (imgs.current.face && imgs.current.face.complete && imgs.current.face.naturalWidth > 0) {
+          ctx.save();
+          let faceW = 18;
+          let faceH = 18;
+          let faceX = dX + 22;
+          let faceY = dY + 2;
+          
+          if (st.dino.ducking) {
+            faceX = dX + 38;
+            faceY = dY + 6;
+            faceW = 16;
+            faceH = 16;
+          }
+          
+          ctx.beginPath();
+          ctx.arc(faceX + faceW/2, faceY + faceH/2, faceW/2, 0, Math.PI * 2);
+          ctx.clip();
+          ctx.drawImage(imgs.current.face, faceX, faceY, faceW, faceH);
+          ctx.restore();
+        }
       }
       ctx.restore();
     };
