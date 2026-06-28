@@ -276,7 +276,7 @@ export function Stage1Telescope({
                 transition={{ duration: 2, type: "spring", bounce: 0.5 }}
                 whileHover={{ scale: 1.05 }}
               >
-                <MediaFrame alt="Ảnh hoặc video kỷ niệm" mediaType={mediaType} src={imageUrl || "https://picsum.photos/id/1025/400/400"} />
+                <MediaFrame alt="Ảnh hoặc video kỷ niệm" mediaType={mediaType} src={imageUrl || "/assets/lovepics/2.jpg"} />
               </motion.div>
               
               {/* Viền Ngôi sao đè lên trên cho nét */}

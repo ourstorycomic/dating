@@ -282,7 +282,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             { questionImage ? (
               <img src={questionImage} alt="question" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
-              <img src="/assets/dumb/suho-cat.webp" alt="question" className="mb-4 h-32 w-32 object-contain mx-auto animate-bounce drop-shadow-xl" />
+              <img src="/assets/lovepics/1.jpg" alt="question" className="mb-4 h-32 w-32 object-cover mx-auto animate-bounce drop-shadow-xl rounded-full border-4 border-white" />
             )}
             <h1 className="text-3xl font-extrabold drop-shadow-sm" style={{ color: accentColor }}>{displayQuestionTitle}</h1>
             <div className="mx-auto my-6 h-1 w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
@@ -323,7 +323,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             { successImage ? (
               <img src={successImage} alt="success" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
-              <img src="/assets/happy/love-valentines.webp" alt="success" className="mb-4 h-40 w-40 object-contain mx-auto animate-bounce drop-shadow-xl" />
+              <img src="/assets/lovepics/2.jpg" alt="success" className="mb-4 h-40 w-40 object-cover mx-auto animate-bounce drop-shadow-xl rounded-2xl border-4 border-white" />
             )}
             <h1 className="text-4xl font-extrabold drop-shadow-sm" style={{ color: accentColor }}>{successTitle}</h1>
             <div className="mx-auto my-6 h-1 w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
@@ -350,7 +350,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             { locationImage ? (
               <img src={locationImage} alt="location" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
-              <img src="/assets/happy/cute-love.webp" alt="location" className="mb-4 h-32 w-32 object-contain mx-auto animate-bounce drop-shadow-xl" />
+              <img src="/assets/lovepics/3.jpg" alt="location" className="mb-4 h-32 w-32 object-cover mx-auto animate-bounce drop-shadow-xl rounded-2xl border-4 border-white" />
             )}
             <h1 className="text-2xl font-extrabold drop-shadow-sm" style={{ color: accentColor }}>{locationTitle}</h1>
             <div className="mx-auto my-4 h-1 w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
@@ -394,7 +394,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             { datetimeImage ? (
               <img src={datetimeImage} alt="datetime" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
-              <img src="/assets/dumb/kids.webp" alt="datetime" className="mb-4 h-32 w-32 object-contain mx-auto animate-bounce drop-shadow-xl" />
+              <img src="/assets/lovepics/4.jpg" alt="datetime" className="mb-4 h-32 w-32 object-cover mx-auto animate-bounce drop-shadow-xl rounded-2xl border-4 border-white" />
             )}
             <h1 className="text-2xl font-extrabold drop-shadow-sm" style={{ color: accentColor }}>{datetimeTitle}</h1>
             <div className="mx-auto my-4 h-1 w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
@@ -443,7 +443,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             { foodImage ? (
               <img src={foodImage} alt="food" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
-              <img src="/assets/happy/kiss-love.webp" alt="food" className="mb-4 h-32 w-32 object-contain mx-auto animate-bounce drop-shadow-xl" />
+              <img src="/assets/lovepics/5.jpg" alt="food" className="mb-4 h-32 w-32 object-cover mx-auto animate-bounce drop-shadow-xl rounded-2xl border-4 border-white" />
             )}
             <h1 className="text-2xl font-extrabold drop-shadow-sm" style={{ color: accentColor }}>{foodTitle}</h1>
             <div className="mx-auto my-4 h-1 w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
@@ -487,7 +487,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             { drinkImage ? (
               <img src={drinkImage} alt="drink" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
-              <img src="/assets/dumb/auau.webp" alt="drink" className="mb-4 h-32 w-32 object-contain mx-auto animate-bounce drop-shadow-xl" />
+              <img src="/assets/lovepics/1.jpg" alt="drink" className="mb-4 h-32 w-32 object-cover mx-auto animate-bounce drop-shadow-xl rounded-2xl border-4 border-white" />
             )}
             <h1 className="text-2xl font-extrabold drop-shadow-sm" style={{ color: accentColor }}>{drinkTitle}</h1>
             <div className="mx-auto my-4 h-1 w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />

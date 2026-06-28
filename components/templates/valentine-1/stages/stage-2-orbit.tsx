@@ -137,7 +137,7 @@ export function Stage2Orbit({
                   initial={{ filter: "grayscale(100%)" }}
                   transition={{ duration: 0.4 }}
                 >
-                  <MediaFrame alt="Ảnh hoặc video làm hòa" mediaType={mediaType} src={imageUrl || "https://picsum.photos/id/1014/400/500"} />
+                  <MediaFrame alt="Ảnh hoặc video làm hòa" mediaType={mediaType} src={imageUrl || "/assets/lovepics/1.jpg"} />
                 </motion.div>
               </div>
               <div className="absolute bottom-4 left-0 w-full text-center pointer-events-none">

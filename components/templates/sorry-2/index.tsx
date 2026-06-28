@@ -335,7 +335,7 @@ function Step3Whack({ onNext, autoPlay, weapon, config }: { onNext: () => void; 
                   }}
                 >
                   <div className="w-full h-full rounded-full bg-gradient-to-br from-pink-100 to-pink-300 border-4 border-slate-900 overflow-hidden relative shadow-[0_-5px_15px_rgba(0,0,0,0.5)]">
-                    <img src="/assets/sad/el-gato.webp" alt="avatar" className="w-full h-full object-cover pointer-events-none" />
+                    <img src={WHACK_DATA.avatar || "/assets/sad/el-gato.webp"} alt="avatar" className="w-full h-full object-cover pointer-events-none" />
                   </div>
                 </motion.div>
               )}
@@ -402,7 +402,7 @@ function Step4Bandaged({ onNext, autoPlay, config }: { onNext: () => void; autoP
         transition={{ duration: 1.5, ease: "easeInOut" }}
         className="relative w-56 h-56 rounded-full border-[10px] border-white shadow-[0_15px_35px_rgba(0,0,0,0.3)] mb-10 overflow-hidden bg-orange-100"
       >
-        <img src="/assets/sad/lots-of-tears-crying-hard.webp" alt="avatar" className="w-full h-full object-cover filter brightness-90 sepia-[0.2]" />
+        <img src={WHACK_DATA.photo2 || "/assets/sad/lots-of-tears-crying-hard.webp"} alt="avatar" className="w-full h-full object-cover filter brightness-90 sepia-[0.2]" />
 
         {/* Band-aids */}
         <div className="absolute top-[20%] left-[20%] w-16 h-5 bg-[#e8ba98] rotate-45 border-2 border-[#d29b74] rounded-full opacity-95 shadow-md flex items-center justify-center overflow-hidden">
@@ -756,7 +756,7 @@ export default function Sorry2Template({ compact = false, autoPlay = false, hide
             <h2 className="text-4xl font-black mb-6 drop-shadow-lg text-center leading-tight bg-white/70 text-pink-600 px-4 py-2 rounded-full">{config?.successTitle || "Yayyy! Cảm ơn cục cưng! 🥰"}</h2>
             <div className="bg-white/40 p-6 rounded-3xl backdrop-blur-md border border-white/60 shadow-2xl text-slate-800">
               <p className="text-xl font-bold mb-4">{config?.successDesc || "Tớ qua đón đi chơi liền đây!"}</p>
-              <img src="/assets/happy/cute-love.webp" className="w-32 h-32 object-contain mx-auto animate-bounce mt-4 drop-shadow-xl" alt="cute" />
+              <img src={WHACK_DATA.photo3 || "/assets/happy/cute-love.webp"} className="w-32 h-32 object-cover mx-auto animate-bounce mt-4 drop-shadow-xl rounded-2xl border-4 border-white" alt="cute" />
             </div>
           </motion.div>
         )}
