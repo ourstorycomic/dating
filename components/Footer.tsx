@@ -43,11 +43,8 @@ export function Footer() {
           </div>
         </div>
         
-        <div className="mt-16 border-t border-white/40 pt-8 text-center flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="mt-16 border-t border-white/40 pt-8 text-center flex flex-col md:flex-row items-center justify-center gap-4">
           <p className="text-sm text-[#76556d]">© {new Date().getFullYear()} Lovora. All rights reserved.</p>
-          <a href="mailto:hi@lovora.vn" className="text-sm font-semibold text-[#c04b86] flex items-center gap-2 justify-center hover:underline">
-            <Mail size={16} /> hi@lovora.vn
-          </a>
         </div>
       </div>
     </footer>
