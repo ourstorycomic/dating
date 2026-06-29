@@ -3,7 +3,6 @@
 import { useState, useRef } from "react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Eye, EyeOff, Camera, Loader2 } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
 
 export function getRoleLabel(role: string) {
   if (role === "ADMIN") return "Admin";
@@ -66,18 +65,26 @@ export function SettingsForm({ session }: { session: any }) {
         return;
       }
       setLoading(true);
-      const supabase = createClient();
-      const { error } = await supabase.auth.updateUser({
-        password: password
-      });
-      setLoading(false);
-      
-      if (error) {
-        alert("Lỗi khi đổi mật khẩu: " + error.message);
-      } else {
-        alert("Đổi mật khẩu thành công!");
-        setPassword("");
-        setConfirmPassword("");
+      try {
+        const response = await fetch("/api/auth/update-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password })
+        });
+        
+        const data = await response.json();
+        setLoading(false);
+        
+        if (!response.ok) {
+          alert("Lỗi khi đổi mật khẩu: " + (data.error || "Unknown error"));
+        } else {
+          alert("Đổi mật khẩu thành công!");
+          setPassword("");
+          setConfirmPassword("");
+        }
+      } catch (error: any) {
+        setLoading(false);
+        alert("Lỗi khi kết nối: " + error.message);
       }
     } else {
       alert("Đã lưu các thay đổi hồ sơ! (Cập nhật thông tin khác đang phát triển)");
