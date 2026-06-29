@@ -1212,11 +1212,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
                   <TextInput label="Tiêu đề vòng quay" value={dating2Config.wheelTitle} onChange={(v) => setDating2Config({ ...dating2Config, wheelTitle: v })} />
                   <ArrayInput label="Các tùy chọn trên vòng quay" values={dating2Config.wheelOptions} onChange={(v) => setDating2Config({ ...dating2Config, wheelOptions: v })} />
                 </Section>
-                <Section title="Bước cuối: Lời kết">
-                  <TextInput label="Tiêu đề Lời kết" value={dating1Config.finalTitle || "Hoàn tất! 🎉"} onChange={(v) => setDating1Config({ ...dating1Config, finalTitle: v })} />
-                  <TextInput label="Lời nhắn cuối" multiline value={dating1Config.finalMessage || "Mọi thứ đã chuẩn bị xong, hẹn em một ngày thật đẹp nhé!"} onChange={(v) => setDating1Config({ ...dating1Config, finalMessage: v })} />
-                  <TextInput label="Chữ ký (VD: Thương mến)" value={dating1Config.signOffText || "Thương mến"} onChange={(v) => setDating1Config({ ...dating1Config, signOffText: v })} />
-                </Section>
+
                 <Section title="Bước 6: Thời gian">
                   <TextInput label="Tiêu đề thời gian" value={dating2Config.dtTitle} onChange={(v) => setDating2Config({ ...dating2Config, dtTitle: v })} />
                   <TextInput label="Nút hoàn tất chọn giờ" value={dating2Config.dtBtn} onChange={(v) => setDating2Config({ ...dating2Config, dtBtn: v })} />
