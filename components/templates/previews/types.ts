@@ -1,6 +1,8 @@
 export type TemplatePreviewProps = {
   gradient?: string | null;
   visualLabel?: string | null;
+  musicUrl?: string;
+  generalAudioUrl?: string;
   senderName?: string;
   recipientName?: string;
   message?: string;
@@ -17,6 +19,7 @@ export type TemplatePreviewProps = {
     forceStage?: string | number;
     anniversaryCode?: string;
     generalAudioUrl?: string;
+    musicUrl?: string;
     introTitle?: string;
     introSubtitle?: string;
     passwordLabel?: string;
