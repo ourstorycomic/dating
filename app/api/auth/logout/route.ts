@@ -5,3 +5,9 @@ export async function POST(req: Request) {
   response.cookies.delete("yeuweb_session");
   return response;
 }
+
+export async function GET(req: Request) {
+  const response = NextResponse.redirect(new URL("/", req.url), 303);
+  response.cookies.delete("yeuweb_session");
+  return response;
+}

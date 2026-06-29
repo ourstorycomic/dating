@@ -31,6 +31,7 @@ export function WillYouDateMeExperience({
   drinkTitle = "Bạn muốn uống gì?",
   finalTitle = "Đã xong! 💕",
   finalMessage = "Mình rất mong được gặp bạn! Buổi hẹn của chúng ta sẽ thật hoàn hảo.",
+  signOffText = "Thương mến",
   generalAudioUrl = "/dating-1/music/link_nhac_nen_chung.m4a",
   backgroundImage = "",
   backgroundColor = "#fff0f6",
