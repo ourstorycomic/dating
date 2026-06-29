@@ -250,7 +250,7 @@ function OrderDetailModal({ log, onClose }: { log: LogRow; onClose: () => void }
     <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 backdrop-blur-sm p-4" onClick={onClose}>
       <div className="flex flex-col max-h-[92vh] w-full max-w-6xl overflow-hidden rounded-3xl border border-pink-200 bg-pink-50 text-pink-950 shadow-2xl" onClick={(event) => event.stopPropagation()}>
         <div className="shrink-0 flex items-start justify-between gap-4 border-b border-pink-200 bg-pink-50 p-5">
-          <div>
+          <div className="flex items-center gap-3">
             <h2 className="text-2xl font-semibold text-pink-900">Đơn {order?.public_id ?? "N/A"}</h2>
             <p className="mt-1 text-sm text-pink-600">{log.action} - {time(log.created_at)}</p>
           </div>
@@ -340,6 +340,8 @@ function OrderDetailModal({ log, onClose }: { log: LogRow; onClose: () => void }
                   recipientName={recipientName}
                   senderName={senderName}
                   visualLabel={order?.templates?.visual_label}
+                  compact={true}
+                  isBuilderPreview={true}
                 />
               </div>
             </div>
