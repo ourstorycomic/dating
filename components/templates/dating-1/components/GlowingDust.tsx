@@ -5,13 +5,17 @@ import { motion } from "framer-motion";
 
 export const GlowingDust = memo(function GlowingDust() {
   const [isMobile, setIsMobile] = useState(false);
+  const [mounted, setMounted] = useState(false);
   
   useEffect(() => {
+    setMounted(true);
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  if (!mounted) return null;
 
   const dusts = useMemo(() => Array.from({ length: isMobile ? 12 : 40 }).map((_, i) => {
     const isBubble = Math.random() > 0.7;

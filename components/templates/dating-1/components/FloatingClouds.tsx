@@ -5,13 +5,17 @@ import { motion } from "framer-motion";
 
 export const FloatingClouds = memo(function FloatingClouds() {
   const [isMobile, setIsMobile] = useState(false);
+  const [mounted, setMounted] = useState(false);
   
   useEffect(() => {
+    setMounted(true);
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  if (!mounted) return null;
 
   const clouds = useMemo(() => Array.from({ length: isMobile ? 2 : 5 }).map((_, i) => ({
     id: i,

@@ -7,13 +7,17 @@ const EMOJIS = ["❤", "💖", "💕", "🌸", "✨", "🎀", "🧸", "🌷", "�
 
 export const FloatingHearts3D = memo(function FloatingHearts3D({ count = 30 }: { count?: number }) {
   const [isMobile, setIsMobile] = useState(false);
+  const [mounted, setMounted] = useState(false);
   
   useEffect(() => {
+    setMounted(true);
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  if (!mounted) return null;
 
   const actualCount = isMobile ? Math.min(count, 10) : count;
 
