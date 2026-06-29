@@ -2,7 +2,8 @@
 
 import { useState, useRef } from "react";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { Eye, EyeOff, Camera } from "lucide-react";
+import { Eye, EyeOff, Camera, Loader2 } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 export function getRoleLabel(role: string) {
   if (role === "ADMIN") return "Admin";
@@ -13,6 +14,9 @@ export function getRoleLabel(role: string) {
 export function SettingsForm({ session }: { session: any }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState(session?.avatarUrl || "");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -49,6 +53,35 @@ export function SettingsForm({ session }: { session: any }) {
       img.src = event.target?.result as string;
     };
     reader.readAsDataURL(file);
+  };
+
+  const handleSave = async () => {
+    if (password) {
+      if (password !== confirmPassword) {
+        alert("Mật khẩu xác nhận không khớp!");
+        return;
+      }
+      if (password.length < 6) {
+        alert("Mật khẩu phải dài ít nhất 6 ký tự!");
+        return;
+      }
+      setLoading(true);
+      const supabase = createClient();
+      const { error } = await supabase.auth.updateUser({
+        password: password
+      });
+      setLoading(false);
+      
+      if (error) {
+        alert("Lỗi khi đổi mật khẩu: " + error.message);
+      } else {
+        alert("Đổi mật khẩu thành công!");
+        setPassword("");
+        setConfirmPassword("");
+      }
+    } else {
+      alert("Đã lưu các thay đổi hồ sơ! (Cập nhật thông tin khác đang phát triển)");
+    }
   };
 
   return (
@@ -124,7 +157,9 @@ export function SettingsForm({ session }: { session: any }) {
                     <input 
                       className="w-full rounded-xl border border-pink-200 bg-white pl-4 pr-11 py-3 outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400/50 text-pink-950 transition-shadow" 
                       type={showPassword ? "text" : "password"} 
-                      placeholder="Bỏ trống nếu không đổi" 
+                      placeholder="Bỏ trống nếu không đổi"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                     <button 
                       type="button" 
@@ -141,7 +176,9 @@ export function SettingsForm({ session }: { session: any }) {
                     <input 
                       className="w-full rounded-xl border border-pink-200 bg-white pl-4 pr-11 py-3 outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400/50 text-pink-950 transition-shadow" 
                       type={showConfirmPassword ? "text" : "password"} 
-                      placeholder="Nhập lại mật khẩu mới" 
+                      placeholder="Nhập lại mật khẩu mới"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                     <button 
                       type="button" 
@@ -158,8 +195,13 @@ export function SettingsForm({ session }: { session: any }) {
           </div>
           
           <div className="flex justify-end pt-4 border-t border-pink-200/50">
-            <button className="rounded-full bg-gradient-to-r from-pink-400 to-fuchsia-400 px-8 py-3.5 text-sm font-bold text-white shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all">
-              Lưu thay đổi
+            <button 
+              onClick={handleSave}
+              disabled={loading}
+              className="flex items-center gap-2 rounded-full bg-gradient-to-r from-pink-400 to-fuchsia-400 px-8 py-3.5 text-sm font-bold text-white shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-70 disabled:hover:scale-100"
+            >
+              {loading && <Loader2 size={16} className="animate-spin" />}
+              {loading ? "Đang lưu..." : "Lưu thay đổi"}
             </button>
           </div>
         </div>
