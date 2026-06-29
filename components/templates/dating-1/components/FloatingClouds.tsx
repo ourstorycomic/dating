@@ -15,8 +15,6 @@ export const FloatingClouds = memo(function FloatingClouds() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  if (!mounted) return null;
-
   const clouds = useMemo(() => Array.from({ length: isMobile ? 2 : 5 }).map((_, i) => ({
     id: i,
     width: 200 + Math.random() * 200,
@@ -26,6 +24,8 @@ export const FloatingClouds = memo(function FloatingClouds() {
     delayX: -(Math.random() * 30),
     durationY: 10 + Math.random() * 10,
   })), [isMobile]);
+
+  if (!mounted) return null;
 
   return (
     <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-50">

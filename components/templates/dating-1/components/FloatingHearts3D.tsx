@@ -17,8 +17,6 @@ export const FloatingHearts3D = memo(function FloatingHearts3D({ count = 30 }: {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  if (!mounted) return null;
-
   const actualCount = isMobile ? Math.min(count, 10) : count;
 
   const hearts = useMemo(() => Array.from({ length: actualCount }).map((_, i) => {
@@ -38,6 +36,8 @@ export const FloatingHearts3D = memo(function FloatingHearts3D({ count = 30 }: {
       rotY: isMobile ? 0 : (Math.random() - 0.5) * 720,
     };
   }), [actualCount, isMobile]);
+
+  if (!mounted) return null;
 
   return (
     <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden" style={{ perspective: "1000px" }}>

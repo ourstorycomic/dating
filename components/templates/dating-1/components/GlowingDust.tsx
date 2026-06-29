@@ -15,8 +15,6 @@ export const GlowingDust = memo(function GlowingDust() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  if (!mounted) return null;
-
   const dusts = useMemo(() => Array.from({ length: isMobile ? 12 : 40 }).map((_, i) => {
     const isBubble = Math.random() > 0.7;
     const isPink = Math.random() > 0.5;
@@ -33,6 +31,8 @@ export const GlowingDust = memo(function GlowingDust() {
       delay: -(Math.random() * 10),
     };
   }), [isMobile]);
+
+  if (!mounted) return null;
 
   return (
     <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
