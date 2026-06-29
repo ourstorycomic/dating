@@ -522,6 +522,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
 
   const [finalTitle, setFinalTitle] = useState("Happy Valentine's Day!");
   const [finalSubtitle, setFinalSubtitle] = useState("Cảm ơn vì đã là ngoại lệ tuyệt vời nhất của nhau.");
+  const [signOffText, setSignOffText] = useState("Thương mến");
   const [finalCta, setFinalCta] = useState("Nhận Quà Đi Chơi");
   const [finalBackground, setFinalBackground] = useState("#fb7185");
   const [finalAccent, setFinalAccent] = useState("#ec4899");
@@ -635,6 +636,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
     finalCta,
     finalSubtitle,
     finalTitle,
+    signOffText,
     giftAcceptButton,
     giftAcceptedBody,
     giftAcceptedTitle,
@@ -694,10 +696,10 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
     ...(isValentine2 ? valentine2Config : {}),
     ...(!isBirthdayMagic ? {
       memories: [
-        { message: stage3Message1, title: "Tin nh?n 1" },
-        { message: stage3Message2, title: "Tin nh?n 2" },
-        { message: stage3Message3, title: "Tin nh?n 3" },
-        { message: stage3Message4, title: "Tin nh?n 4" },
+        { message: stage3Message1, title: "Tin nhắn 1" },
+        { message: stage3Message2, title: "Tin nhắn 2" },
+        { message: stage3Message3, title: "Tin nhắn 3" },
+        { message: stage3Message4, title: "Tin nhắn 4" },
       ],
     } : {}),
     ...(isBirthdayMagic ? {
@@ -735,6 +737,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
       drinkOptions,
       finalTitle: finalTitle,
       finalMessage: finalSubtitle,
+      signOffText,
       generalAudioUrl: generalAudioUrl,
       backgroundImage: stage1Background,
       backgroundColor: stage2Background,
@@ -804,6 +807,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
         customData,
         orderId: result.orderId,
         recipientName,
+        buyerName: senderName,
       }),
     });
     const data = await response.json().catch(() => ({}));
@@ -897,6 +901,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
     if (cd.finalTitle) setFinalTitle(cd.finalTitle);
     if (cd.finalSubtitle) setFinalSubtitle(cd.finalSubtitle);
     if (cd.finalMessage) setFinalSubtitle(cd.finalMessage);
+    if (cd.signOffText) setSignOffText(cd.signOffText);
     if (cd.locationOptions) setLocationOptions(cd.locationOptions);
     if (cd.foodOptions) setFoodOptions(cd.foodOptions);
     if (cd.drinkOptions) setDrinkOptions(cd.drinkOptions);
@@ -1025,6 +1030,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
                             setDrinkOptions(["Cà phê", "Trà", "Trà Sữa", "Trà Matcha", "Sinh tố", "Nước ép"]);
                             setFinalTitle("Đã xong! 💕");
                             setFinalSubtitle("Mình rất mong được gặp bạn! Buổi hẹn của chúng ta sẽ thật hoàn hảo.");
+                            setSignOffText("Thương mến");
                             setStage1Background(""); // backgroundImage
                             setStage2Background("#fff0f6"); // backgroundColor
                             setStage1Accent("#f43f5e"); // accentColor
@@ -1045,6 +1051,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
                             setGiftTitle("Thư Mời Hẹn Hò");
                             setFinalTitle("Happy Valentine's Day!");
                             setFinalSubtitle("Cảm ơn vì đã là ngoại lệ tuyệt vời nhất của nhau.");
+                            setSignOffText("Thương mến");
                             setStage1Background("#05020a");
                             setStage2Background("#05020a");
                             setStage1Accent("#ec4899");
@@ -1203,10 +1210,12 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
                 </Section>
                 <Section title="Bước 5: Vòng quay">
                   <TextInput label="Tiêu đề vòng quay" value={dating2Config.wheelTitle} onChange={(v) => setDating2Config({ ...dating2Config, wheelTitle: v })} />
-                  <TextInput label="Nút bấm sau khi quay" value={dating2Config.wheelBtn} onChange={(v) => setDating2Config({ ...dating2Config, wheelBtn: v })} />
-                  <div className="md:col-span-2">
-                     <ArrayInput label="Các tùy chọn trên vòng quay" values={dating2Config.wheelOptions} onChange={(v) => setDating2Config({ ...dating2Config, wheelOptions: v })} />
-                  </div>
+                  <ArrayInput label="Các tùy chọn trên vòng quay" values={dating2Config.wheelOptions} onChange={(v) => setDating2Config({ ...dating2Config, wheelOptions: v })} />
+                </Section>
+                <Section title="Bước cuối: Lời kết">
+                  <TextInput label="Tiêu đề Lời kết" value={dating1Config.finalTitle || "Hoàn tất! 🎉"} onChange={(v) => setDating1Config({ ...dating1Config, finalTitle: v })} />
+                  <TextInput label="Lời nhắn cuối" multiline value={dating1Config.finalMessage || "Mọi thứ đã chuẩn bị xong, hẹn em một ngày thật đẹp nhé!"} onChange={(v) => setDating1Config({ ...dating1Config, finalMessage: v })} />
+                  <TextInput label="Chữ ký (VD: Thương mến)" value={dating1Config.signOffText || "Thương mến"} onChange={(v) => setDating1Config({ ...dating1Config, signOffText: v })} />
                 </Section>
                 <Section title="Bước 6: Thời gian">
                   <TextInput label="Tiêu đề thời gian" value={dating2Config.dtTitle} onChange={(v) => setDating2Config({ ...dating2Config, dtTitle: v })} />
@@ -1348,6 +1357,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
                 <Section title="Bước 7: Chốt đơn">
                   <TextInput label="Tiêu đề kết thúc" onChange={setFinalTitle} value={finalTitle} />
                   <TextArea label="Lời nhắn cuối cùng" onChange={setFinalSubtitle} value={finalSubtitle} />
+                  <TextInput label="Chữ ký (VD: Thương mến)" onChange={setSignOffText} value={signOffText} />
                 </Section>
               </>
             ) : isValentine2 ? (

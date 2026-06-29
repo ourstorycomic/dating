@@ -69,6 +69,7 @@ export function WillYouDateMeExperience({
   drinkTitle?: string;
   finalTitle?: string;
   finalMessage?: string;
+  signOffText?: string;
   generalAudioUrl?: string;
   backgroundImage?: string;
   backgroundColor?: string;
@@ -93,7 +94,7 @@ export function WillYouDateMeExperience({
 }) {
   
   const displayQuestionTitle = questionTitle.replace("{recipientName}", recipientName);
-  const displayFinalMessage = finalMessage + (senderName ? `\n\nThương mến,\n${senderName}` : "");
+  const displayFinalMessage = finalMessage + (senderName ? `\n\n${signOffText || "Thương mến"},\n${senderName}` : "");
 
   const clickAudioRef = useRef<HTMLAudioElement>(null);
   const swooshAudioRef = useRef<HTMLAudioElement>(null);

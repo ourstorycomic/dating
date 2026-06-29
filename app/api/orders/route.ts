@@ -152,6 +152,7 @@ export async function PATCH(request: Request) {
   const orderId = String(body.orderId || "");
   const customData = body.customData ?? {};
   const recipientName = body.recipientName ?? customData.recipientName ?? null;
+  const buyerName = body.buyerName ?? null;
 
   if (!orderId) {
     return NextResponse.json({ error: "Thiếu mã đơn." }, { status: 400 });
@@ -181,6 +182,7 @@ export async function PATCH(request: Request) {
     .update({
       custom_data: customData,
       recipient_name: recipientName,
+      buyer_name: buyerName !== null ? buyerName : undefined,
     })
     .eq("id", order.id);
 

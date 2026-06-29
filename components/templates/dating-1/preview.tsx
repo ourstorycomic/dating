@@ -20,6 +20,7 @@ export function WillYouDateMePreview(props: TemplatePreviewProps) {
       drinkTitle={parsedConfig.drinkTitle as string | undefined}
       drinkOptions={parsedConfig.drinkOptions as string[] | undefined}
       finalMessage={parsedConfig.finalMessage as string | undefined}
+      signOffText={parsedConfig.signOffText as string | undefined}
       finalTitle={parsedConfig.finalTitle as string | undefined}
       foodTitle={parsedConfig.foodTitle as string | undefined}
       generalAudioUrl={parsedConfig.generalAudioUrl as string | undefined}
