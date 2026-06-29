@@ -248,8 +248,8 @@ function OrderDetailModal({ log, onClose }: { log: LogRow; onClose: () => void }
 
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 backdrop-blur-sm p-4" onClick={onClose}>
-      <div className="max-h-[92vh] w-full max-w-6xl overflow-y-auto rounded-3xl border border-pink-200 bg-pink-50 text-pink-950 shadow-2xl" onClick={(event) => event.stopPropagation()}>
-        <div className="sticky top-0 z-[60] flex items-start justify-between gap-4 border-b border-pink-200 bg-pink-50 p-5">
+      <div className="flex flex-col max-h-[92vh] w-full max-w-6xl overflow-hidden rounded-3xl border border-pink-200 bg-pink-50 text-pink-950 shadow-2xl" onClick={(event) => event.stopPropagation()}>
+        <div className="shrink-0 flex items-start justify-between gap-4 border-b border-pink-200 bg-pink-50 p-5">
           <div>
             <h2 className="text-2xl font-semibold text-pink-900">Đơn {order?.public_id ?? "N/A"}</h2>
             <p className="mt-1 text-sm text-pink-600">{log.action} - {time(log.created_at)}</p>
@@ -257,8 +257,8 @@ function OrderDetailModal({ log, onClose }: { log: LogRow; onClose: () => void }
           <button className="rounded-full bg-pink-100 px-4 py-2 text-sm font-medium text-pink-700 hover:bg-pink-200 transition" onClick={onClose} type="button">Đóng</button>
         </div>
 
-        <div className="grid items-start gap-5 p-5 lg:grid-cols-[0.95fr_1.05fr]">
-          <div className="grid content-start gap-4">
+        <div className="flex-1 overflow-hidden grid items-start gap-5 p-5 lg:grid-cols-[0.95fr_1.05fr]">
+          <div className="h-full overflow-y-auto pr-2 grid content-start gap-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <Info label="Người thao tác Log" value={`${log.users?.name ?? "Hệ thống"} ${log.users?.email ? `(${log.users.email})` : ""}`} />
               <Info label="Người tạo đơn (Nhân sự)" value={`${Array.isArray(order?.creator) ? order?.creator[0]?.name : (order?.creator?.name ?? "N/A")} ${Array.isArray(order?.creator) ? (order?.creator[0]?.email ? `(${order?.creator[0]?.email})` : "") : (order?.creator?.email ? `(${order?.creator?.email})` : "")}`} />
@@ -325,21 +325,23 @@ function OrderDetailModal({ log, onClose }: { log: LogRow; onClose: () => void }
             </details>
           </div>
 
-          <div className="sticky top-[90px] h-fit rounded-2xl border border-pink-200 bg-white/60 p-4">
-            <div className="mb-3 flex items-center justify-between gap-3">
+          <div className="h-full flex flex-col rounded-2xl border border-pink-200 bg-white/60 p-4 overflow-hidden">
+            <div className="mb-3 shrink-0 flex items-center justify-between gap-3">
               <h3 className="text-xl font-semibold text-pink-900">Live preview</h3>
               <span className="rounded-full border border-pink-200 bg-pink-100/50 px-3 py-1 text-xs font-medium text-pink-700">
                 {order?.templates?.name ?? "Template"}
               </span>
             </div>
-            <div className="mx-auto max-w-[430px]">
-              <InteractiveTemplatePreview
-                componentKey={componentKey}
-                customData={customData}
-                recipientName={recipientName}
-                senderName={senderName}
-                visualLabel={order?.templates?.visual_label}
-              />
+            <div className="flex-1 min-h-0 flex items-center justify-center w-full">
+              <div className="w-full h-full flex items-center justify-center max-w-[430px]">
+                <InteractiveTemplatePreview
+                  componentKey={componentKey}
+                  customData={customData}
+                  recipientName={recipientName}
+                  senderName={senderName}
+                  visualLabel={order?.templates?.visual_label}
+                />
+              </div>
             </div>
           </div>
         </div>
