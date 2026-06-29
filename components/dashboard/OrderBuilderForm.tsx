@@ -10,6 +10,15 @@ import { GACHA_DATA } from "@/components/templates/dating-3/config";
 import { toast } from "@/components/ui/Toast";
 import { ImageCropperModal } from "@/components/ui/ImageCropperModal";
 
+const SERVICE_PACKAGES = [
+  { id: "goi1-thuong", label: "GÓI 1: THEO MẪU (Làm thường - 59.000đ)", price: 59000 },
+  { id: "goi1-gap", label: "GÓI 1: THEO MẪU (Làm gấp - Từ 88.000đ)", price: 88000 },
+  { id: "goi2-thuong", label: "GÓI 2: CHỈNH CẢM XÚC (Làm thường - 99.000đ)", price: 99000 },
+  { id: "goi2-gap", label: "GÓI 2: CHỈNH CẢM XÚC (Làm gấp - Từ 128.000đ)", price: 128000 },
+  { id: "goi3-thuong", label: "GÓI 3: ĐẶC BIỆT (Làm thường - 149.000đ)", price: 149000 },
+  { id: "goi3-gap", label: "GÓI 3: ĐẶC BIỆT (Làm gấp - Từ 178.000đ)", price: 178000 },
+];
+
 type MyOrderRow = {
   amount: number;
   buyer_contact: string | null;
@@ -99,6 +108,7 @@ function ThemeMusicSelector({
       { label: "Dating - Nhạc 2", url: "/assets/songs/dating/dating-2.mp3" },
       { label: "Dating - Nhạc 3", url: "/assets/songs/dating/dating-3.mp3" },
       { label: "Dating - Nhạc 4", url: "/assets/songs/dating/dating-4.mp3" },
+      { label: "Dating - Nhạc 5", url: "/assets/songs/dating/dating-5.m4a" },
     ],
     birthday: [
       { label: "Sinh Nhật - Nhạc 1", url: "/assets/songs/birthday/birthday-1.mp3" },
@@ -378,6 +388,7 @@ function Section({
 export function OrderBuilderForm({ currentRole, myOrders, templates }: { currentRole: "ADMIN" | "STAFF" | "EMPLOYEE"; myOrders: MyOrderRow[]; templates: TemplateCatalogItem[] }) {
   const valentineOne = templates.find((template) => template.component_key.includes("constellation")) ?? templates[0];
   const [selectedTemplateId, setSelectedTemplateId] = useState(valentineOne?.id ?? "");
+  const [selectedPackage, setSelectedPackage] = useState(SERVICE_PACKAGES[2].id); // Mặc định gói phổ biến
   const [templateSearch, setTemplateSearch] = useState(valentineOne?.name ?? "");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [loadedTemplate, setLoadedTemplate] = useState<{ id: string; name: string; component_key: string } | null>(null);
@@ -637,6 +648,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
     giftTitle,
     introSubtitle: "",
     introTitle: "",
+    servicePackage: selectedPackage,
     question,
     recipientName,
     senderName,
@@ -743,7 +755,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        amount: selectedTemplate?.base_price ?? 459000,
+        amount: SERVICE_PACKAGES.find(p => p.id === selectedPackage)?.price ?? 99000,
         buyerContact,
         buyerName,
         customData,
@@ -761,7 +773,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
     }
 
     setResult({
-      amount: Number(data.amount ?? selectedTemplate?.base_price ?? 0),
+      amount: Number(data.amount ?? SERVICE_PACKAGES.find(p => p.id === selectedPackage)?.price ?? 0),
       giftLink: absoluteUrl(data.giftPath),
       orderId: data.orderId,
       paymentCode: data.paymentCode,
@@ -858,7 +870,10 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
       setSelectedTemplateId(order.template_id);
     }
     
+    // Nếu có package được lưu trong customData thì load lên
     const cd = order.custom_data || {};
+    if (cd.servicePackage) setSelectedPackage(cd.servicePackage);
+    
     if (cd.question) setQuestion(cd.question);
     if (cd.questionTitle) setStage1Instruction(cd.questionTitle);
     if (cd.connectInstruction) setStage1Instruction(cd.connectInstruction);
@@ -939,6 +954,22 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
         <Section title="Thông tin đơn" className="relative z-50">
           <TextInput label="Tên khách mua" onChange={setBuyerName} value={buyerName} />
           <TextInput label="TikTok / SĐT khách" onChange={setBuyerContact} value={buyerContact} />
+          
+          <label className="grid gap-2 text-sm md:col-span-2">
+            <span className="text-white/64">Gói dịch vụ (Tính giá)</span>
+            <select
+              className="rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3 outline-none focus:border-pink-300/50 text-white"
+              value={selectedPackage}
+              onChange={(e) => setSelectedPackage(e.target.value)}
+            >
+              {SERVICE_PACKAGES.map((pkg) => (
+                <option key={pkg.id} value={pkg.id} className="text-black">
+                  {pkg.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
           <div className="relative grid gap-2 text-sm md:col-span-2" ref={dropdownRef}>
             <span className="text-white/64">Mẫu giao diện</span>
             <input

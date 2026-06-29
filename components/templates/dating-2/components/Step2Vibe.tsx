@@ -19,7 +19,7 @@ export function Step2Vibe({ onNext , customData = {}}: { onNext: () => void , cu
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.5 }} className="absolute inset-0 z-10 flex flex-col items-center justify-center p-4">
       <h3 className="text-3xl font-bold text-pink-600 mb-10 text-center px-4 letter-font drop-shadow-md whitespace-pre-line">{(customData.vibeTitle || TPL_DATA.vibeTitle)}</h3>
-      <div className="flex flex-col gap-5 w-8/12 z-10">
+      <div className="flex flex-col gap-5 w-8/12 max-w-[320px] z-10">
         {(customData.vibeOptions || TPL_DATA.vibeOptions).map((opt: any, i: number) => {
             const label = typeof opt === "string" ? opt : opt.label;
             return (

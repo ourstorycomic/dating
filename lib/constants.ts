@@ -1,1 +1,1 @@
-export const FACEBOOK_URL = "https://web.facebook.com/lovoraofficial/";
+export const FACEBOOK_URL = "https://m.me/lovoraofficial";

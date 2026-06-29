@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { InteractiveTemplatePreview } from "@/components/templates/InteractiveTemplatePreview";
+import { PricingModal } from "@/components/PricingModal";
 import { FACEBOOK_URL } from "@/lib/constants";
 
 type HomeTemplate = {
@@ -88,6 +89,11 @@ export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
             {group.category?.name || group.slug}
           </button>
         ))}
+        
+        {/* Nút Xem bảng giá siêu nổi bật */}
+        <div className="ml-auto shrink-0 flex items-center pr-1">
+          <PricingModal />
+        </div>
       </div>
 
       <div className="grid gap-14">
@@ -102,12 +108,7 @@ export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
 
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {group.templates.map((template) => {
-                const screens = getScreens(template.sample_data);
-                const visibleScreens = (
-                  screens.length
-                    ? screens
-                    : ["Mở đầu", "Tương tác", "Ảnh", "Lá thư", "Phản hồi"]
-                ).slice(0, 4);
+
 
                 return (
                   <motion.div
@@ -125,7 +126,7 @@ export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
                       className="mb-5 block cursor-pointer" 
                       onClick={(e) => {
                         if (e.nativeEvent.isTrusted) {
-                          router.push(`/templates/${template.slug}/preview`);
+                          window.open(`/templates/${template.slug}/preview`, '_blank');
                         }
                       }}
                     >
@@ -143,47 +144,35 @@ export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
                         <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-[#c04b86]">
                           {group.category?.name}
                         </p>
-                        <Link href={`/templates/${template.slug}/preview`}>
+                        <Link href={`/templates/${template.slug}/preview`} target="_blank" rel="noopener noreferrer">
                           <h4 className="mt-2 text-2xl font-extrabold leading-tight text-[#321a32] hover:text-[#d53f8c]">
                             {template.name}
                           </h4>
                         </Link>
                       </div>
-                      <span className="shrink-0 rounded-full bg-[#fff0b8] px-3 py-1 text-sm font-black text-[#8d5c00] shadow-[0_10px_22px_rgba(255,211,111,0.24)]">
-                        {formatPrice(template.base_price)}
-                      </span>
+                      {/* BỎ GIÁ TIỀN SẢN PHẨM Ở ĐÂY NHƯ USER YÊU CẦU */}
                     </div>
 
                     <p className="mt-3 flex-grow text-sm leading-6 text-[#76556d]">
                       {template.tagline || template.description}
                     </p>
 
-                    <div className="mt-4 grid gap-2">
-                      <p className="text-xs font-extrabold text-[#c04b86]">
-                        Gồm {screens.length || 5} cảnh bên trong
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {visibleScreens.map((screen) => (
-                          <span
-                            className="rounded-full border border-[#f4bdd8] bg-white/68 px-3 py-1 text-[11px] font-semibold text-[#76556d]"
-                            key={screen}
-                          >
-                            {screen}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
+
 
                     <div className="mt-5 grid grid-cols-2 gap-3">
                       <Link
                         className="rounded-full border border-[#f4bdd8] bg-white/78 px-4 py-3 text-center text-sm font-extrabold text-[#b83276] transition hover:bg-white"
                         href={`/templates/${template.slug}/preview`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                       >
                         Mở preview
                       </Link>
                       <a
                         className="rounded-full bg-gradient-to-r from-[#ff7eb8] to-[#ffd36f] px-4 py-3 text-center text-sm font-extrabold text-[#fff] shadow-[0_14px_30px_rgba(255,126,184,0.28)] transition hover:scale-[1.02]"
                         href={facebookLink(template.slug)}
+                        target="_blank"
+                        rel="noopener noreferrer"
                       >
                         Chọn mẫu
                       </a>

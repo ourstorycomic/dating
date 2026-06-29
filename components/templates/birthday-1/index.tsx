@@ -440,7 +440,7 @@ function BirthdayScene({
               <HeroLightSwitch onClick={turnOnLights} signal={switchSignal} />
               <pointLight color="#fff6ff" distance={5} intensity={6.5} position={[0, 0.15, 1.1]} />
               <pointLight color="#ff8fd1" distance={3.5} intensity={3.2} position={[-0.45, 0.55, 0.7]} />
-              <ComicCallout exitSignal={switchSignal} fullscreen onClick={turnOnLights}>
+              <ComicCallout exitSignal={switchSignal} position={[0.75, 0.1, 0.2]} onClick={turnOnLights}>
                 Mở đèn!
               </ComicCallout>
             </>
@@ -550,7 +550,7 @@ function BirthdayScene({
 
 export function BirthdayMagicExperience(props: BirthdayMagicExperienceProps) {
   return (
-    <div className="relative h-[100dvh] w-full overflow-hidden bg-[#16081d]">
+    <div className="absolute inset-0 overflow-hidden bg-[#16081d]">
       <BirthdayScene
         age={props.age || 20}
         finalMessage={props.birthdayMessage || "Happy Birthday!"}

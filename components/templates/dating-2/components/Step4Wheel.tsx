@@ -66,7 +66,7 @@ export function Step4Wheel({ onNext , customData = {}}: { onNext: (result: strin
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.5 }} className="absolute inset-0 z-10 flex items-center justify-center p-4">
-      <div className="glass-panel w-11/12 rounded-3xl p-6 relative flex flex-col items-center shadow-2xl bg-white/40">
+      <div className="glass-panel w-11/12 max-w-[400px] rounded-3xl p-6 relative flex flex-col items-center shadow-2xl bg-white/40">
         <h3 className="text-3xl font-bold text-pink-600 drop-shadow-md mb-6 letter-font">{(customData.wheelTitle || TPL_DATA.wheelTitle)}</h3>
         
         <div className="relative w-64 h-64 mb-6">

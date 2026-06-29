@@ -260,14 +260,12 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
       {clickSfxUrl && <audio ref={clickAudioRef} src={clickSfxUrl} preload="auto" muted={compact && !autoPlay} />}
       {swooshSfxUrl && <audio ref={swooshAudioRef} src={swooshSfxUrl} preload="auto" muted={compact && !autoPlay} />}
       {yaySfxUrl && <audio ref={yayAudioRef} src={yaySfxUrl} preload="auto" muted={compact && !autoPlay} />}
-      {!compact && (
-        <>
-          <FloatingClouds />
-          <GlowingDust />
-          <FloatingHearts3D />
-          <HeartBurst trigger={burstTriggers} />
-        </>
-      )}
+      <>
+        <FloatingClouds />
+        <GlowingDust />
+        <FloatingHearts3D />
+        <HeartBurst trigger={burstTriggers} />
+      </>
 
       <AnimatePresence mode="wait">
         {stage === "question" && (
@@ -277,12 +275,12 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative z-10 mx-auto w-full max-w-md rounded-[2rem] border border-white/60 bg-white/70 p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
+            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
           >
             { questionImage ? (
               <img src={questionImage} alt="question" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
-              <img src="/assets/lovepics/1.jpg" alt="question" className="mb-4 h-32 w-32 object-cover mx-auto animate-bounce drop-shadow-xl rounded-full border-4 border-white" />
+              <img src="/assets/happy/cat-cute.webp" alt="question" className="mb-4 h-32 w-32 object-cover mx-auto animate-bounce drop-shadow-xl rounded-full border-4 border-white" />
             )}
             <h1 className="text-3xl font-extrabold drop-shadow-sm" style={{ color: accentColor }}>{displayQuestionTitle}</h1>
             <div className="mx-auto my-6 h-1 w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
@@ -318,12 +316,12 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative z-10 mx-auto w-full max-w-md rounded-[2rem] border border-white/60 bg-white/70 p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
+            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
           >
             { successImage ? (
               <img src={successImage} alt="success" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
-              <img src="/assets/lovepics/2.jpg" alt="success" className="mb-4 h-40 w-40 object-cover mx-auto animate-bounce drop-shadow-xl rounded-2xl border-4 border-white" />
+              <img src="/assets/happy/kiss-love.webp" alt="success" className="mb-4 h-40 w-40 object-cover mx-auto animate-bounce drop-shadow-xl rounded-2xl border-4 border-white" />
             )}
             <h1 className="text-4xl font-extrabold drop-shadow-sm" style={{ color: accentColor }}>{successTitle}</h1>
             <div className="mx-auto my-6 h-1 w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
@@ -345,22 +343,22 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative z-10 mx-auto w-full max-w-md rounded-[2rem] border border-white/60 bg-white/70 p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
+            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
           >
             { locationImage ? (
-              <img src={locationImage} alt="location" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
+              <img src={locationImage} alt="location" className="mb-2 h-16 w-16 sm:mb-4 sm:h-24 sm:w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
-              <img src="/assets/lovepics/3.jpg" alt="location" className="mb-4 h-32 w-32 object-cover mx-auto animate-bounce drop-shadow-xl rounded-2xl border-4 border-white" />
+              <img src="/assets/dumb/seal.webp" alt="location" className="mb-2 h-20 w-20 sm:mb-4 sm:h-32 sm:w-32 object-cover mx-auto animate-bounce drop-shadow-xl rounded-2xl border-4 border-white" />
             )}
-            <h1 className="text-2xl font-extrabold drop-shadow-sm" style={{ color: accentColor }}>{locationTitle}</h1>
-            <div className="mx-auto my-4 h-1 w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
+            <h1 className="text-xl sm:text-2xl font-extrabold drop-shadow-sm leading-tight" style={{ color: accentColor }}>{locationTitle}</h1>
+            <div className="mx-auto my-2 sm:my-4 h-1 w-16 sm:w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
             
-            <div className="grid grid-cols-2 gap-3 mb-6">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-3 sm:mb-6 w-full max-w-[280px] mx-auto">
               {locationOptions.map(loc => (
                 <button
                   key={loc}
                   onClick={() => toggleSelection("location", loc)}
-                  className={`rounded-2xl border-2 p-3 text-sm font-bold transition-all shadow-sm active:scale-95 ${selections.location.includes(loc) ? 'border-transparent text-white scale-105 shadow-md' : 'border-pink-100 text-gray-700 bg-white/80 hover:bg-white hover:border-pink-300'}`}
+                  className={`rounded-full border-2 px-3 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-sm font-bold transition-all shadow-sm active:scale-95 ${selections.location.includes(loc) ? 'border-transparent text-white scale-105 shadow-md' : 'border-pink-100 text-gray-700 bg-white/80 hover:bg-white hover:border-pink-300'}`}
                   style={{ backgroundColor: selections.location.includes(loc) ? accentColor : undefined }}
                 >
                   {loc}
@@ -373,7 +371,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
                 initial={{ opacity: 0, y: 10, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 onClick={() => setStage("datetime")}
-                className="w-full rounded-full px-8 py-3 text-lg font-bold shadow-xl transition-transform hover:scale-105 active:scale-95 hover:shadow-pink-300"
+                className="w-full rounded-full px-6 py-2.5 sm:px-8 sm:py-3 text-base sm:text-lg font-bold shadow-xl transition-transform hover:scale-105 active:scale-95 hover:shadow-pink-300"
                 style={{ backgroundColor: accentColor, color: "#fff" }}
               >
                 Tiếp tục nhé ♥
@@ -389,18 +387,18 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative z-10 mx-auto w-full max-w-md rounded-[2rem] border border-white/60 bg-white/70 p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
+            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
           >
             { datetimeImage ? (
-              <img src={datetimeImage} alt="datetime" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
+              <img src={datetimeImage} alt="datetime" className="mb-2 h-16 w-16 sm:mb-4 sm:h-24 sm:w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
-              <img src="/assets/lovepics/4.jpg" alt="datetime" className="mb-4 h-32 w-32 object-cover mx-auto animate-bounce drop-shadow-xl rounded-2xl border-4 border-white" />
+              <img src="/assets/happy/bubu-dudu-sseeyall.webp" alt="datetime" className="mb-2 h-20 w-20 sm:mb-4 sm:h-32 sm:w-32 object-cover mx-auto animate-bounce drop-shadow-xl rounded-2xl border-4 border-white" />
             )}
-            <h1 className="text-2xl font-extrabold drop-shadow-sm" style={{ color: accentColor }}>{datetimeTitle}</h1>
-            <div className="mx-auto my-4 h-1 w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
+            <h1 className="text-xl sm:text-2xl font-extrabold drop-shadow-sm leading-tight" style={{ color: accentColor }}>{datetimeTitle}</h1>
+            <div className="mx-auto my-2 sm:my-4 h-1 w-16 sm:w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
             
-            <div className="mb-5 text-left">
-              <p className="mb-2 text-sm font-bold text-gray-600">Ngày hẹn ✨</p>
+            <div className="mb-3 sm:mb-5 text-left">
+              <p className="mb-1 sm:mb-2 text-xs sm:text-sm font-bold text-gray-600">Ngày hẹn ✨</p>
               <CuteDatePicker 
                 selected={selections.date} 
                 onSelect={d => { setSelections(s => ({ ...s, date: d })); playClick(); }} 
@@ -408,8 +406,8 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
               />
             </div>
 
-            <div className="mb-8 text-left">
-              <p className="mb-2 text-sm font-bold text-gray-600">Giờ hẹn ✨</p>
+            <div className="mb-4 sm:mb-8 text-left">
+              <p className="mb-1 sm:mb-2 text-xs sm:text-sm font-bold text-gray-600">Giờ hẹn ✨</p>
               <CuteTimePicker 
                 selected={selections.time} 
                 onSelect={t => { setSelections(s => ({ ...s, time: t })); playClick(); }} 
@@ -422,7 +420,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
                 initial={{ opacity: 0, y: 10, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 onClick={() => setStage("food")}
-                className="w-full rounded-full px-8 py-3 text-lg font-bold shadow-xl transition-transform hover:scale-105 active:scale-95 hover:shadow-pink-300"
+                className="w-full rounded-full px-6 py-2.5 sm:px-8 sm:py-3 text-base sm:text-lg font-bold shadow-xl transition-transform hover:scale-105 active:scale-95 hover:shadow-pink-300"
                 style={{ backgroundColor: accentColor, color: "#fff" }}
               >
                 Giờ chọn đồ ăn nha ♥
@@ -438,22 +436,22 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative z-10 mx-auto w-full max-w-md rounded-[2rem] border border-white/60 bg-white/70 p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
+            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
           >
             { foodImage ? (
-              <img src={foodImage} alt="food" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
+              <img src={foodImage} alt="food" className="mb-2 h-16 w-16 sm:mb-4 sm:h-24 sm:w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
-              <img src="/assets/lovepics/5.jpg" alt="food" className="mb-4 h-32 w-32 object-cover mx-auto animate-bounce drop-shadow-xl rounded-2xl border-4 border-white" />
+              <img src="/assets/happy/ami-bụng-bự.webp" alt="food" className="mb-2 h-20 w-20 sm:mb-4 sm:h-32 sm:w-32 object-cover mx-auto animate-bounce drop-shadow-xl rounded-2xl border-4 border-white" />
             )}
-            <h1 className="text-2xl font-extrabold drop-shadow-sm" style={{ color: accentColor }}>{foodTitle}</h1>
-            <div className="mx-auto my-4 h-1 w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
+            <h1 className="text-xl sm:text-2xl font-extrabold drop-shadow-sm leading-tight" style={{ color: accentColor }}>{foodTitle}</h1>
+            <div className="mx-auto my-2 sm:my-4 h-1 w-16 sm:w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
             
-            <div className="grid grid-cols-2 gap-3 mb-6">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-3 sm:mb-6 w-full max-w-[280px] mx-auto">
               {foodOptions.map(f => (
                 <button
                   key={f}
                   onClick={() => toggleSelection("food", f)}
-                  className={`rounded-2xl border-2 p-3 text-sm font-bold transition-all shadow-sm active:scale-95 ${selections.food.includes(f) ? 'border-transparent text-white scale-105 shadow-md' : 'border-pink-100 text-gray-700 bg-white/80 hover:bg-white hover:border-pink-300'}`}
+                  className={`rounded-full border-2 px-3 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-sm font-bold transition-all shadow-sm active:scale-95 ${selections.food.includes(f) ? 'border-transparent text-white scale-105 shadow-md' : 'border-pink-100 text-gray-700 bg-white/80 hover:bg-white hover:border-pink-300'}`}
                   style={{ backgroundColor: selections.food.includes(f) ? accentColor : undefined }}
                 >
                   {f}
@@ -466,7 +464,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
                 initial={{ opacity: 0, y: 10, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 onClick={() => setStage("drink")}
-                className="w-full rounded-full px-8 py-3 text-lg font-bold shadow-xl transition-transform hover:scale-105 active:scale-95 hover:shadow-pink-300"
+                className="w-full rounded-full px-6 py-2.5 sm:px-8 sm:py-3 text-base sm:text-lg font-bold shadow-xl transition-transform hover:scale-105 active:scale-95 hover:shadow-pink-300"
                 style={{ backgroundColor: accentColor, color: "#fff" }}
               >
                 Tiếp tục chọn nước ♥
@@ -482,22 +480,22 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative z-10 mx-auto w-full max-w-md rounded-[2rem] border border-white/60 bg-white/70 p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
+            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
           >
             { drinkImage ? (
-              <img src={drinkImage} alt="drink" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
+              <img src={drinkImage} alt="drink" className="mb-2 h-16 w-16 sm:mb-4 sm:h-24 sm:w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
-              <img src="/assets/lovepics/1.jpg" alt="drink" className="mb-4 h-32 w-32 object-cover mx-auto animate-bounce drop-shadow-xl rounded-2xl border-4 border-white" />
+              <img src="/assets/happy/dudu-bubu.webp" alt="drink" className="mb-2 h-20 w-20 sm:mb-4 sm:h-32 sm:w-32 object-cover mx-auto animate-bounce drop-shadow-xl rounded-2xl border-4 border-white" />
             )}
-            <h1 className="text-2xl font-extrabold drop-shadow-sm" style={{ color: accentColor }}>{drinkTitle}</h1>
-            <div className="mx-auto my-4 h-1 w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
+            <h1 className="text-xl sm:text-2xl font-extrabold drop-shadow-sm leading-tight" style={{ color: accentColor }}>{drinkTitle}</h1>
+            <div className="mx-auto my-2 sm:my-4 h-1 w-16 sm:w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
             
-            <div className="grid grid-cols-2 gap-3 mb-6">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-3 sm:mb-6 w-full max-w-[280px] mx-auto">
               {drinkOptions.map(d => (
                 <button
                   key={d}
                   onClick={() => toggleSelection("drink", d)}
-                  className={`rounded-2xl border-2 p-3 text-sm font-bold transition-all shadow-sm active:scale-95 ${selections.drink.includes(d) ? 'border-transparent text-white scale-105 shadow-md' : 'border-pink-100 text-gray-700 bg-white/80 hover:bg-white hover:border-pink-300'}`}
+                  className={`rounded-full border-2 px-3 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-sm font-bold transition-all shadow-sm active:scale-95 ${selections.drink.includes(d) ? 'border-transparent text-white scale-105 shadow-md' : 'border-pink-100 text-gray-700 bg-white/80 hover:bg-white hover:border-pink-300'}`}
                   style={{ backgroundColor: selections.drink.includes(d) ? accentColor : undefined }}
                 >
                   {d}
@@ -510,7 +508,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
                 initial={{ opacity: 0, y: 10, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 onClick={finish}
-                className="w-full rounded-full px-8 py-3 text-lg font-bold shadow-xl transition-transform hover:scale-105 active:scale-95 hover:shadow-pink-300"
+                className="w-full rounded-full px-6 py-2.5 sm:px-8 sm:py-3 text-base sm:text-lg font-bold shadow-xl transition-transform hover:scale-105 active:scale-95 hover:shadow-pink-300"
                 style={{ backgroundColor: accentColor, color: "#fff" }}
               >
                 Hoàn thành! ♥
@@ -526,43 +524,43 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative z-10 mx-auto w-full max-w-md"
+            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden"
           >
             <div className="relative mx-auto w-full rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col border border-pink-200">
               {/* Ticket Header */}
-              <div className="bg-pink-500 text-white p-6 text-center border-b-4 border-dashed border-white relative">
-                 <h2 className="text-3xl font-black tracking-widest uppercase drop-shadow-md">Date Pass</h2>
+              <div className="bg-pink-500 text-white p-4 sm:p-6 text-center border-b-4 border-dashed border-white relative">
+                 <h2 className="text-xl sm:text-3xl font-black tracking-widest uppercase drop-shadow-md">Date Pass</h2>
                  <p className="text-pink-100 font-medium text-sm mt-1 uppercase tracking-widest">Admit Two</p>
                  <div className="absolute -bottom-4 -left-4 w-8 h-8 rounded-full" style={{ backgroundColor }}></div>
                  <div className="absolute -bottom-4 -right-4 w-8 h-8 rounded-full" style={{ backgroundColor }}></div>
               </div>
               {/* Ticket Body */}
-              <div className="p-6 bg-white relative">
-                 <h3 className="text-2xl font-bold mb-2 text-center" style={{ color: accentColor }}>{finalTitle}</h3>
-                 <p className="text-sm text-gray-600 mb-6 text-center whitespace-pre-wrap">{displayFinalMessage}</p>
+              <div className="p-4 sm:p-6 bg-white relative">
+                 <h3 className="text-xl sm:text-2xl font-bold mb-2 text-center" style={{ color: accentColor }}>{finalTitle}</h3>
+                 <p className="text-xs sm:text-sm text-gray-600 mb-4 sm:mb-6 text-center whitespace-pre-wrap">{displayFinalMessage}</p>
                  
-                 <div className="space-y-4 mb-6 bg-pink-50/50 p-5 rounded-xl border border-pink-100">
-                    <div className="flex justify-between items-center border-b border-pink-100 pb-3">
-                      <span className="text-xs font-bold text-pink-400 uppercase tracking-wider">Thời gian</span>
-                      <span className="text-sm font-black text-gray-700">{selections.time || "??:??"} • {selections.date || "??/??/????"}</span>
+                 <div className="space-y-2 sm:space-y-4 mb-4 sm:mb-6 bg-pink-50/50 p-3 sm:p-5 rounded-xl border border-pink-100">
+                    <div className="flex justify-between items-center border-b border-pink-100 pb-2 sm:pb-3">
+                      <span className="text-[10px] sm:text-xs font-bold text-pink-400 uppercase tracking-wider">Thời gian</span>
+                      <span className="text-xs sm:text-sm font-black text-gray-700">{selections.time || "??:??"} • {selections.date || "??/??/????"}</span>
                     </div>
-                    <div className="flex justify-between items-center border-b border-pink-100 pb-3">
-                      <span className="text-xs font-bold text-pink-400 uppercase tracking-wider">Địa điểm</span>
-                      <span className="text-sm font-bold text-gray-700 text-right">{selections.location.length ? selections.location.join(", ") : "Tùy chọn"}</span>
+                    <div className="flex justify-between items-center border-b border-pink-100 pb-2 sm:pb-3">
+                      <span className="text-[10px] sm:text-xs font-bold text-pink-400 uppercase tracking-wider">Địa điểm</span>
+                      <span className="text-xs sm:text-sm font-bold text-gray-700 text-right">{selections.location.length ? selections.location.join(", ") : "Tùy chọn"}</span>
                     </div>
-                    <div className="flex justify-between items-center border-b border-pink-100 pb-3">
-                      <span className="text-xs font-bold text-pink-400 uppercase tracking-wider">Món ăn</span>
-                      <span className="text-sm font-bold text-gray-700 text-right">{selections.food.length ? selections.food.join(", ") : "Tùy chọn"}</span>
+                    <div className="flex justify-between items-center border-b border-pink-100 pb-2 sm:pb-3">
+                      <span className="text-[10px] sm:text-xs font-bold text-pink-400 uppercase tracking-wider">Món ăn</span>
+                      <span className="text-xs sm:text-sm font-bold text-gray-700 text-right">{selections.food.length ? selections.food.join(", ") : "Tùy chọn"}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-xs font-bold text-pink-400 uppercase tracking-wider">Nước uống</span>
-                      <span className="text-sm font-bold text-gray-700 text-right">{selections.drink.length ? selections.drink.join(", ") : "Tùy chọn"}</span>
+                      <span className="text-[10px] sm:text-xs font-bold text-pink-400 uppercase tracking-wider">Nước uống</span>
+                      <span className="text-xs sm:text-sm font-bold text-gray-700 text-right">{selections.drink.length ? selections.drink.join(", ") : "Tùy chọn"}</span>
                     </div>
                  </div>
 
                  {/* QR Code Placeholder */}
-                 <div className="flex justify-center items-center pt-2">
-                    <div className="w-24 h-24 bg-white border-[3px] border-pink-200 rounded-xl flex items-center justify-center p-1.5 shadow-sm">
+                 <div className="flex justify-center items-center pt-1 sm:pt-2">
+                    <div className="w-16 h-16 sm:w-24 sm:h-24 bg-white border-[3px] border-pink-200 rounded-xl flex items-center justify-center p-1 sm:p-1.5 shadow-sm">
                       <svg className="w-full h-full text-pink-400" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v3h-3v-3zm-2 3h3v3h-3v-3zm3 3h3v3h-3v-3zm-5-3h3v3h-3v-3zm0-3h3v3h-3v-3zm-3 6h3v3h-3v-3zm0-6h3v3h-3v-3z" />
                       </svg>

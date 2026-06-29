@@ -118,8 +118,8 @@ export function Valentine2WatchParty({
     containerClass += `relative min-h-screen ${bgClass}`;
   } else {
     containerClass += isCinemaMode
-      ? `relative max-w-[1200px] w-[95vw] h-[85vh] min-h-[600px] rounded-3xl shadow-[0_0_50px_rgba(244,63,94,0.3)] border-2 border-[#f4c5d6]/50 ${bgClass}`
-      : `relative max-w-[400px] h-[800px] max-h-[90vh] rounded-[2.5rem] shadow-2xl border-[12px] border-[#f4c5d6] ${bgClass}`;
+      ? `relative max-w-[1200px] w-full h-full min-h-[600px] rounded-3xl shadow-[0_0_50px_rgba(244,63,94,0.3)] border-2 border-[#f4c5d6]/50 ${bgClass}`
+      : `relative w-full h-full min-h-[600px] rounded-[2rem] shadow-2xl ${bgClass}`;
   }
 
   return (

@@ -20,6 +20,7 @@ import Birthday3Preview from "./birthday-3/preview";
 type InteractiveTemplatePreviewProps = TemplatePreviewProps & {
   componentKey: string;
   roomId?: string;
+  noFrame?: boolean;
 };
 
 const previewRegistry = [
@@ -112,7 +113,20 @@ function BotAutoPlayer({ children, enabled }: { children: React.ReactNode; enabl
         setTimeout(() => ripple.remove(), 400);
       };
 
-      // 1. Try to find a primary 'next' or 'yes' button
+      // 1. Try to fill empty selects (for time pickers)
+      const selects = Array.from(containerRef.current.querySelectorAll('select'));
+      for (const select of selects) {
+        if (!select.value) {
+          const options = Array.from(select.options).filter(o => !o.disabled && o.value);
+          if (options.length > 0) {
+            const randomOpt = options[Math.floor(Math.random() * options.length)];
+            select.value = randomOpt.value;
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        }
+      }
+
+      // 2. Try to find a primary 'next' or 'yes' button
       for (const btn of buttons) {
         const text = btn.textContent || "";
         if (clickableTexts.some(t => text.toLowerCase().includes(t.toLowerCase()))) {
@@ -171,7 +185,7 @@ export function InteractiveTemplatePreview({
   }, []);
 
   const themeSongs: Record<string, string[]> = {
-    dating: ["/assets/songs/dating/dating-1.mp3", "/assets/songs/dating/dating-2.mp3", "/assets/songs/dating/dating-3.mp3", "/assets/songs/dating/dating-4.mp3"],
+    dating: ["/assets/songs/dating/dating-1.mp3", "/assets/songs/dating/dating-2.mp3", "/assets/songs/dating/dating-3.mp3", "/assets/songs/dating/dating-4.mp3", "/assets/songs/dating/dating-5.m4a"],
     birthday: ["/assets/songs/birthday/birthday-1.mp3", "/assets/songs/birthday/birthday-2.mp3", "/assets/songs/birthday/birthday-3.m4a"],
     valentine: ["/assets/songs/valentine/valentine-1.mp3", "/assets/songs/valentine/valentine-2.mp3", "/assets/songs/valentine/valentine-3.mp3"],
     sorry: ["/assets/songs/sorry/sorry-1.mp3", "/assets/songs/sorry/sorry-2.mp3"],
@@ -213,7 +227,13 @@ export function InteractiveTemplatePreview({
   if (preview) {
     const Component = preview.Component;
     if (props.compact) {
-      if (!props.isBuilderPreview) {
+      if (props.noFrame) {
+        return (
+          <div ref={containerRef} className="absolute inset-0" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+            <Component {...finalProps} roomId={roomId} compact={true} />
+          </div>
+        );
+      } else if (!props.isBuilderPreview) {
         return (
           <div 
             ref={containerRef} 

@@ -182,7 +182,7 @@ export function GachaTemplate({ compact, fullScreen, hideNavigation, isBuilderPr
     }
   };
 
-  let outerClass = `relative w-full shadow-2xl mx-auto rounded-[3rem] bg-pink-200 p-[10px] ${compact ? 'h-full max-w-[400px]' : 'min-h-[800px] max-w-[400px] max-h-[90vh]'}`;
+  let outerClass = compact ? `relative w-full shadow-2xl mx-auto rounded-[3rem] bg-pink-200 p-[10px] h-full max-w-[400px]` : `relative w-full h-full`;
   let containerClass = "gacha-container w-full h-full overflow-hidden transition-colors duration-[2000ms] mx-auto text-gray-800 select-none ";
   
   if (compact) {
@@ -190,7 +190,7 @@ export function GachaTemplate({ compact, fullScreen, hideNavigation, isBuilderPr
   } else if (fullScreen) {
     containerClass += `relative min-h-screen`;
   } else {
-    containerClass += `relative max-w-[400px] h-[800px] max-h-[90vh] rounded-[2.5rem] shadow-[0_20px_50px_rgba(255,105,180,0.3)] mx-auto border-[10px] border-pink-200`;
+    containerClass += `relative w-full h-full min-h-[600px] rounded-[2rem] shadow-[0_20px_50px_rgba(255,105,180,0.3)] mx-auto border-2 border-pink-200`;
   }
 
   if (!mounted) return <div className={outerClass} />;
@@ -198,10 +198,10 @@ export function GachaTemplate({ compact, fullScreen, hideNavigation, isBuilderPr
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: GachaStyles }} />
-      <div className={`w-full flex items-center justify-center ${compact ? 'h-full' : 'min-h-screen'} ${fullScreen || compact ? '' : 'p-4 bg-gray-100'}`}>
+      <div className={`w-full flex items-center justify-center ${compact ? 'h-full' : 'w-full h-full'} ${fullScreen || compact ? '' : 'p-0'}`}>
         <div className={outerClass}>
           <div id="preview-container" className={containerClass} style={{ backgroundImage: "url('/assets/bg/bg7.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
-            <div className={`absolute inset-0 bg-pink-100/60 backdrop-blur-sm pointer-events-none ${!compact && 'rounded-[2.4rem]'}`} />
+            <div className={`absolute inset-0 bg-pink-100/60 backdrop-blur-sm pointer-events-none ${!compact && 'rounded-[2rem]'}`} />
           
           {data.audioSrc ? (
             <audio ref={audioRef} loop muted={compact && !autoPlay}>

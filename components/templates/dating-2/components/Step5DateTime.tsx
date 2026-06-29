@@ -13,7 +13,7 @@ export function Step5DateTime({ onNext , customData = {}}: { onNext: (date: stri
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.5 }} className="absolute inset-0 z-10 flex flex-col items-center justify-center p-4">
       <h3 className="text-3xl font-bold text-pink-600 mb-6 letter-font drop-shadow-md">{(customData.dtTitle || TPL_DATA.dtTitle)}</h3>
-      <div className="w-11/12 mb-8 flex flex-col gap-4 max-h-[60vh] overflow-y-auto no-scrollbar pb-10">
+      <div className="w-11/12 max-w-[400px] mb-8 flex flex-col gap-4 max-h-[60vh] overflow-y-auto no-scrollbar pb-10">
         
         <p className="font-bold text-gray-700 text-lg flex items-center bg-white/70 py-2 px-4 rounded-full shadow-sm w-fit mx-auto">
             <svg className="w-5 h-5 text-pink-500 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm-8 4H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/></svg>

@@ -6,6 +6,8 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import { HomePageCatalog } from "@/components/HomePageCatalog";
 import { TiltPhonePreview } from "@/components/TiltPhonePreview";
 import { Footer } from "@/components/Footer";
+import { MessengerButton } from "@/components/MessengerButton";
+import { PricingModal } from "@/components/PricingModal";
 import { FACEBOOK_URL } from "@/lib/constants";
 import { getPublishedTemplates } from "@/lib/supabase/server";
 
@@ -105,6 +107,13 @@ export default async function Home() {
             </span>
           </Link>
           <nav className="ml-auto hidden items-center gap-5 text-sm font-bold text-[#7b536b] md:flex">
+            <PricingModal
+              customTrigger={
+                <span className="transition hover:text-[#ff6b9d] hover:-translate-y-1 inline-block">
+                  Bảng giá
+                </span>
+              }
+            />
             <a className="transition hover:text-[#ff6b9d] hover:-translate-y-1 inline-block" href="#quy-trinh">
               Quy trình
             </a>
@@ -116,6 +125,8 @@ export default async function Home() {
             <a
               className="rounded-full border-[2px] border-[#ffb6c1] bg-white px-5 py-2.5 text-sm font-bold text-[#ff6b9d] shadow-[0_8px_20px_rgba(255,182,193,0.3)] transition-all hover:bg-[#ff6b9d] hover:text-white hover:scale-105"
               href={facebookLink()}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               Nhắn Fanpage
             </a>
@@ -171,6 +182,8 @@ export default async function Home() {
                 <a
                   className="group rounded-[2rem] border-[4px] border-[#ffb6c1] bg-white/90 px-8 py-4 text-center text-lg font-black text-[#ff6b9d] shadow-[0_10px_20px_rgba(255,182,193,0.2)] backdrop-blur-xl transition-all hover:bg-pink-50 hover:scale-105 active:scale-95"
                   href={facebookLink()}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <span className="flex items-center justify-center gap-2">
                     Nhờ shop tư vấn xíu
@@ -215,6 +228,8 @@ export default async function Home() {
               <a
                 className="group w-fit rounded-[2rem] border-[3px] border-[#ffb6c1] bg-white/90 px-6 py-4 text-base font-black text-[#ff6b9d] shadow-[0_12px_28px_rgba(255,182,193,0.3)] transition-all hover:bg-[#ff6b9d] hover:text-white hover:scale-105 active:scale-95"
                 href={facebookLink()}
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 Tư vấn mẫu hợp nhất
               </a>
@@ -231,10 +246,13 @@ export default async function Home() {
         <a
           className="block rounded-[2rem] border-[3px] border-[#ffb6c1] bg-gradient-to-r from-[#ff7eb8] to-[#ffb347] px-6 py-4 text-center text-lg font-black text-white shadow-[0_15px_30px_rgba(255,126,184,0.5)] transition-transform active:scale-95 animate-bounce-slow"
           href={facebookLink()}
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Nhắn Fanpage shop tư vấn nha!
         </a>
       </div>
+      <MessengerButton />
     </div>
   );
 }

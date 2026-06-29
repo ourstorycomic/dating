@@ -436,23 +436,22 @@ export function CameraRig({
     let lerpSpeed = 1.2; let lookLerpSpeed = 1.5;
 
     if (phase === "dark") {
-      targetCameraPos.set(0, 0.35, 2.65); lookY.current = 0.02; lookX.current = 0;
+      targetCameraPos.set(0, 0.35, 3.8); lookY.current = 0.02; lookX.current = 0;
     } else if (phase === "music" || phase === "decorate-popup") {
-      targetCameraPos.set(0, musicActive ? 0.35 : 1.25, musicActive ? 3.85 : 5.25);
+      targetCameraPos.set(0, musicActive ? 0.85 : 1.85, musicActive ? 5.2 : 6.8);
       lookY.current = musicActive ? -0.25 : 0.05; lookX.current = 0;
     } else if (phase === "cake-messages") {
-      targetCameraPos.set(0, 1.2, 9.0); lookY.current = 0.5; lookX.current = 0;
+      targetCameraPos.set(0, 1.2, 11.0); lookY.current = 0.5; lookX.current = 0;
     } else if (phase === "match-ignite") {
-      // NHÌN THẲNG TÂM NGỌN LỬA (Y = 1.2)
-      targetCameraPos.set(0, 1.2, 2.5); lookY.current = 1.2; lookX.current = 0;
+      targetCameraPos.set(0, 1.2, 3.5); lookY.current = 1.2; lookX.current = 0;
     } else if (phase === "wish-record") {
-      targetCameraPos.set(0, 1.15, 2.2); lookY.current = 1.2; lookX.current = 0;
+      targetCameraPos.set(0, 1.15, 3.2); lookY.current = 1.2; lookX.current = 0;
     } else if (phase === "celebration") {
       if (celebrationZoom) {
-        targetCameraPos.set(1.6, -1.2, 4.2); lookY.current = -1.75; lookX.current = 1.6;
+        targetCameraPos.set(1.6, -1.2, 5.8); lookY.current = -1.75; lookX.current = 1.6;
         lerpSpeed = 2.0; lookLerpSpeed = 2.0;
       } else {
-        targetCameraPos.set(0, 0.5, 7.5); lookY.current = -0.5; lookX.current = 0;
+        targetCameraPos.set(0, 0.5, 10.0); lookY.current = -0.5; lookX.current = 0;
         lerpSpeed = 2.0; lookLerpSpeed = 2.0;
       }
     } else if (phase === "gift-reveal") {

@@ -100,11 +100,11 @@ export function LoveSpaceTemplate({ compact, fullScreen, hideNavigation, isBuild
 
   let containerClass = "journey-container relative w-full overflow-hidden ";
   if (compact) {
-    containerClass += "h-full";
+    containerClass += "h-full max-w-[400px] mx-auto";
   } else if (fullScreen) {
     containerClass += "h-[100dvh]";
   } else {
-    containerClass += "h-[800px] min-h-[750px] max-h-[90vh] sm:rounded-3xl shadow-2xl mx-auto border-8 border-white max-w-[400px]";
+    containerClass += "w-full h-full min-h-[600px] sm:rounded-3xl shadow-2xl mx-auto border-4 border-white";
   }
 
   const bgStyle = {
@@ -120,7 +120,7 @@ export function LoveSpaceTemplate({ compact, fullScreen, hideNavigation, isBuild
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: JourneyStyles }} />
-      <div className={`w-full flex items-center justify-center ${compact ? 'h-full' : 'min-h-screen'} ${fullScreen || compact ? '' : 'p-4 bg-gray-100'}`}>
+      <div className={`w-full flex items-center justify-center ${compact ? 'h-full' : 'w-full h-full'} ${fullScreen || compact ? '' : 'p-0'}`}>
         <div id="preview-container" className={containerClass} style={bgStyle}>
           
           <audio ref={audioRef} loop muted={compact && !autoPlay}>

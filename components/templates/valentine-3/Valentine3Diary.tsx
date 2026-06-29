@@ -44,11 +44,11 @@ export function Valentine3Diary({
   let containerClass = "w-full overflow-hidden transition-colors duration-[2000ms] mx-auto text-gray-800 select-none ";
   
   if (compact) {
-    containerClass += `absolute inset-0 border-[6px] border-pink-200 rounded-[2.5rem] shadow-[0_20px_50px_rgba(255,105,180,0.3)]`;
+    containerClass += `absolute inset-0 border-[6px] border-pink-200 rounded-[2.5rem] shadow-[0_20px_50px_rgba(255,105,180,0.3)] mx-auto max-w-[400px]`;
   } else if (fullScreen) {
-    containerClass += `relative min-h-screen`;
+    containerClass += `relative min-h-[100dvh]`;
   } else {
-    containerClass += `relative max-w-[400px] h-[800px] max-h-[90vh] rounded-[2.5rem] shadow-[0_20px_50px_rgba(255,105,180,0.3)] mx-auto border-[10px] border-pink-200`;
+    containerClass += `relative w-full h-full min-h-[600px] shadow-[0_20px_50px_rgba(255,105,180,0.3)] mx-auto sm:border-[10px] border-pink-200 sm:rounded-[2.5rem]`;
   }
 
   const mergedData = {
@@ -71,81 +71,83 @@ export function Valentine3Diary({
 
       {!compact && <FloatingParticles />}
 
-      <AnimatePresence mode="wait">
-        {step === 1 && (
-          <Step1Fingerprint
-            key="step1"
-            autoPlay={autoPlay}
-            onComplete={() => {
-              playMusic();
-              setStep(2);
-            }}
-          />
-        )}
-        
-        {step === 2 && (
-          <Step2TimeMachine
-            key="step2"
-            startDate={mergedData.startDate}
-            onNext={() => setStep(3)}
-            autoPlay={autoPlay}
-          />
-        )}
+      <div className="relative w-full h-full max-w-[400px] mx-auto">
+        <AnimatePresence mode="wait">
+          {step === 1 && (
+            <Step1Fingerprint
+              key="step1"
+              autoPlay={autoPlay}
+              onComplete={() => {
+                playMusic();
+                setStep(2);
+              }}
+            />
+          )}
+          
+          {step === 2 && (
+            <Step2TimeMachine
+              key="step2"
+              startDate={mergedData.startDate}
+              onNext={() => setStep(3)}
+              autoPlay={autoPlay}
+            />
+          )}
 
-        {step === 3 && (
-          <Step3Quiz
-            key="step3"
-            quiz={mergedData.quiz}
-            onComplete={() => setStep(4)}
-            autoPlay={autoPlay}
-          />
-        )}
+          {step === 3 && (
+            <Step3Quiz
+              key="step3"
+              quiz={mergedData.quiz}
+              onComplete={() => setStep(4)}
+              autoPlay={autoPlay}
+            />
+          )}
 
-        {step === 4 && (
-          <Step4Puzzle
-            key="step4"
-            image={mergedData.puzzleImage}
-            onComplete={() => setStep(5)}
-            autoPlay={autoPlay}
-          />
-        )}
+          {step === 4 && (
+            <Step4Puzzle
+              key="step4"
+              image={mergedData.puzzleImage}
+              onComplete={() => setStep(5)}
+              autoPlay={autoPlay}
+            />
+          )}
 
-        {step === 5 && (
-          <Step5FakeChat
-            key="step5"
-            chat={mergedData.fakeChat}
-            onComplete={() => setStep(6)}
-            autoPlay={autoPlay}
-          />
-        )}
+          {step === 5 && (
+            <Step5FakeChat
+              key="step5"
+              chat={mergedData.fakeChat}
+              onComplete={() => setStep(6)}
+              autoPlay={autoPlay}
+            />
+          )}
 
-        {step === 6 && (
-          <Step6PolaroidSwipe
-            key="step6"
-            photos={mergedData.photos}
-            onComplete={() => setStep(7)}
-            autoPlay={autoPlay}
-          />
-        )}
+          {step === 6 && (
+            <Step6PolaroidSwipe
+              key="step6"
+              photos={mergedData.photos}
+              onComplete={() => setStep(7)}
+              autoPlay={autoPlay}
+            />
+          )}
 
-        {step === 7 && (
-          <Step7Letter
-            key="step7"
-            title={mergedData.letterTitle}
-            content={mergedData.letterContent}
-            onComplete={() => setStep(8)}
-            autoPlay={autoPlay}
-          />
-        )}
+          {step === 7 && (
+            <Step7Letter
+              key="step7"
+              title={mergedData.letterTitle}
+              content={mergedData.letterContent}
+              onComplete={() => setStep(8)}
+              autoPlay={autoPlay}
+            />
+          )}
 
-        {step === 8 && (
-          <Step8Climax
-            key="step8"
-            onResponse={onResponse}
-            autoPlay={autoPlay}
-          />
-        )}
-      </AnimatePresence>
+          {step === 8 && (
+            <Step8Climax
+              key="step8"
+              onResponse={onResponse}
+              autoPlay={autoPlay}
+            />
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
