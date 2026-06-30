@@ -102,6 +102,14 @@ export function Valentine2WatchParty({
     }
   }, [step]);
 
+  useEffect(() => {
+    if (autoPlay) {
+      playMusic();
+    } else if (compact && !isBuilderPreview) {
+      audioRef.current?.pause();
+    }
+  }, [autoPlay, compact, isBuilderPreview]);
+
   // Remove the blind autoPlay interval. The children components will advance automatically using their callbacks when autoPlay is true.
   // We keep the container class.
 
