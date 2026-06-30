@@ -32,17 +32,27 @@ export function Stage4MeteorMic({
   revealTitle: string;
   onRecord?: (audioDataUrl: string) => void;
   autoPlay?: boolean;
+  onRecordingStart?: () => void;
+  onRecordingStop?: () => void;
 }) {
   const [caught, setCaught] = useState(false);
   const [blown, setBlown] = useState(false);
   const audioContextRef = useRef<AudioContext | null>(null);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+  const isHoldingRef = useRef(false);
 
   const startRecording = async () => {
     try {
       if (recorderRef.current && recorderRef.current.state === "recording") return;
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      
+      // If they let go of the button while answering the permission prompt, don't start recording!
+      if (!isHoldingRef.current) {
+        stream.getTracks().forEach(t => t.stop());
+        return;
+      }
+      
       chunksRef.current = [];
       const recorder = new MediaRecorder(stream);
       recorderRef.current = recorder;
@@ -63,6 +73,7 @@ export function Stage4MeteorMic({
       };
 
       recorder.start();
+      onRecordingStart?.();
     } catch (e) {
       console.warn("Mic auth failed, falling back.");
     }
@@ -71,8 +82,9 @@ export function Stage4MeteorMic({
   const stopRecording = () => {
     if (recorderRef.current && recorderRef.current.state === "recording") {
       recorderRef.current.stop();
+      setBlown(true);
+      onRecordingStop?.();
     }
-    setBlown(true);
   };
 
   useEffect(() => {
@@ -192,15 +204,18 @@ export function Stage4MeteorMic({
               <button 
                 onPointerDown={() => {
                   setIsHolding(true);
+                  isHoldingRef.current = true;
                   startRecording();
                 }}
                 onPointerUp={() => {
                   setIsHolding(false);
+                  isHoldingRef.current = false;
                   stopRecording();
                 }}
                 onPointerLeave={() => {
                   if (isHolding) {
                     setIsHolding(false);
+                    isHoldingRef.current = false;
                     stopRecording();
                   }
                 }}
