@@ -399,7 +399,7 @@ export function RoleManager({ initialRoles, templates }: { initialRoles: CustomR
                 </button>
                 {form.id ? (
                   <button
-                    className="rounded-full border border-red-300/30 bg-red-500/10 px-5 py-3 text-sm font-semibold text-red-100 disabled:opacity-50"
+                    className="rounded-full border border-red-200 bg-red-100 px-5 py-3 text-sm font-semibold text-red-600 hover:bg-red-200 transition disabled:opacity-50"
                     disabled={saving}
                     onClick={deleteRole}
                     type="button"

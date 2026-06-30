@@ -64,7 +64,6 @@ export function TemplateManager({ initialTemplates }: { initialTemplates: Templa
             <thead className="border-b border-pink-200/60 text-pink-800">
               <tr>
                 <th className="px-4 py-3 font-semibold">Tên (Slug)</th>
-                <th className="px-4 py-3 font-semibold">Giá</th>
                 <th className="px-4 py-3 font-semibold">Mô tả / Tagline</th>
                 <th className="px-4 py-3 font-semibold">Trạng thái</th>
                 <th className="px-4 py-3 font-semibold text-right">Thao tác</th>
@@ -76,9 +75,6 @@ export function TemplateManager({ initialTemplates }: { initialTemplates: Templa
                   <td className="px-4 py-4">
                     <p className="font-semibold text-pink-950">{template.name}</p>
                     <p className="text-xs text-pink-600">{template.slug}</p>
-                  </td>
-                  <td className="px-4 py-4 font-medium text-pink-900">
-                    {new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(template.base_price)}
                   </td>
                   <td className="px-4 py-4 max-w-[300px]">
                     <p className="truncate font-medium text-pink-800">{template.tagline}</p>
@@ -144,17 +140,7 @@ export function TemplateManager({ initialTemplates }: { initialTemplates: Templa
                 </label>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <label className="grid gap-2 text-sm">
-                  <span className="font-medium text-pink-800">Giá bán (VNĐ)</span>
-                  <input
-                    type="number"
-                    required
-                    className="rounded-xl border border-pink-200 bg-white px-4 py-2.5 outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400/50"
-                    value={editing.base_price}
-                    onChange={(e) => setEditing({ ...editing, base_price: Number(e.target.value) })}
-                  />
-                </label>
+              <div className="grid gap-4">
                 <label className="grid gap-2 text-sm">
                   <span className="font-medium text-pink-800">Hashtag / Tagline</span>
                   <input
