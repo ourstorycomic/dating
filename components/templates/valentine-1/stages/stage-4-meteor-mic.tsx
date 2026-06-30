@@ -19,6 +19,8 @@ export function Stage4MeteorMic({
   revealTitle,
   onRecord,
   autoPlay = false,
+  onRecordingStart,
+  onRecordingStop,
 }: {
   accent: string;
   fallbackButton: string;
