@@ -385,7 +385,7 @@ function Section({
   );
 }
 
-export function OrderBuilderForm({ currentRole, myOrders, templates }: { currentRole: "ADMIN" | "STAFF" | "EMPLOYEE"; myOrders: MyOrderRow[]; templates: TemplateCatalogItem[] }) {
+export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFree }: { currentRole: "ADMIN" | "STAFF" | "EMPLOYEE"; myOrders: MyOrderRow[]; templates: TemplateCatalogItem[]; canCreateFree?: boolean }) {
   const valentineOne = templates.find((template) => template.component_key.includes("constellation")) ?? templates[0];
   const [selectedTemplateId, setSelectedTemplateId] = useState(valentineOne?.id ?? "");
   const [selectedPackage, setSelectedPackage] = useState(SERVICE_PACKAGES[2].id); // Mặc định gói phổ biến
@@ -566,6 +566,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
   const [error, setError] = useState("");
   const [saveMessage, setSaveMessage] = useState("");
   const [copyMessage, setCopyMessage] = useState("");
+  const [isFreeOrder, setIsFreeOrder] = useState(false);
 
   const templateId = selectedTemplateId || (valentineOne?.id ?? "");
   const isConstellation = !!templateId && (templateId.includes("constellation") || templateId.includes("starry") || templateId.includes("valentine-1"));
@@ -764,6 +765,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
         customData,
         recipientName,
         templateId: selectedTemplate?.id,
+        isFreeOrder: canCreateFree ? isFreeOrder : false,
       }),
     });
 
@@ -1072,6 +1074,12 @@ export function OrderBuilderForm({ currentRole, myOrders, templates }: { current
           </div>
           <TextInput label="Người gửi" onChange={setSenderName} value={senderName} />
           <TextInput label="Người nhận" onChange={setRecipientName} value={recipientName} />
+          {canCreateFree && (
+            <label className="flex items-center gap-2 text-sm font-medium text-pink-300 md:col-span-2 mt-2">
+              <input type="checkbox" checked={isFreeOrder} onChange={(e) => setIsFreeOrder(e.target.checked)} className="w-4 h-4 accent-pink-500" />
+              Tạo đơn miễn phí (Không tính doanh thu & Không cần thanh toán)
+            </label>
+          )}
           <div className="md:col-span-2">
             {!result ? (
               <button className="w-full rounded-full bg-gradient-to-r from-pink-500 to-purple-500 px-6 py-3 text-sm font-semibold disabled:opacity-50" disabled={isSubmitting} onClick={createOrder} type="button">

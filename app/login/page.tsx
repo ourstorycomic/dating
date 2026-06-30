@@ -19,7 +19,7 @@ export default async function LoginPage({
         <h1 className="text-3xl font-bold">Đăng nhập</h1>
 
         {error ? (
-          <div className="mt-4 rounded-xl border border-rose-300/20 bg-rose-400/10 p-3 text-sm text-rose-100">
+          <div className="mt-4 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-600 font-semibold text-center">
             {errorMessages[error] ?? "Không thể đăng nhập."}
           </div>
         ) : null}

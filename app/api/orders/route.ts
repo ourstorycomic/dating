@@ -41,6 +41,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Bạn cần đăng nhập để tạo đơn." }, { status: 401 });
   }
 
+  const supabase = createServerSupabaseClient();
+  const { data: userRecord } = await supabase.from("users").select("role, custom_roles(permissions)").eq("id", session.userId).single();
+  const permissions = (userRecord?.custom_roles as any)?.permissions || [];
+  const canCreateFree = userRecord?.role === "ADMIN" || permissions.includes("orders:create_free");
+
   const body = await request.json();
   const templateId = body.templateId as string | undefined;
   const customData = body.customData ?? {};
@@ -72,12 +77,14 @@ export async function POST(request: Request) {
     }
   }
 
+  const isFreeOrder = Boolean(body.isFreeOrder) && canCreateFree;
+  
   // Cho phép client truyền giá (dùng cho các gói dịch vụ khác nhau)
-  const amount = body.amount && Number(body.amount) >= 2000 
-    ? Number(body.amount) 
-    : Number(finalTemplate?.base_price || 0);
+  const amount = isFreeOrder 
+    ? 0 
+    : (body.amount && Number(body.amount) >= 2000 ? Number(body.amount) : Number(finalTemplate?.base_price || 0));
 
-  if (!amount || amount < 2000) {
+  if (!isFreeOrder && (!amount || amount < 2000)) {
     return NextResponse.json({ error: "Giá không hợp lệ (tối thiểu 2,000đ)." }, { status: 400 });
   }
 
@@ -96,7 +103,7 @@ export async function POST(request: Request) {
       custom_data: customData,
       public_id: publicId,
       recipient_name: body.recipientName ?? customData.recipientName ?? null,
-      status: "PENDING_PAYMENT",
+      status: isFreeOrder ? "ACTIVE" : "PENDING_PAYMENT",
       template_id: templateId,
     })
     .select("id, public_id")
@@ -107,27 +114,30 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Không tạo được đơn trong database." }, { status: 500 });
   }
 
-  const { error: paymentError } = await supabase.from("payments").insert({
-    amount,
-    order_id: order.id,
-    payment_code: paymentCode,
-    provider: "VIETQR_BANKING",
-    qr_code_url: qrCodeUrl,
-    status: "PENDING",
-  });
+  if (!isFreeOrder) {
+    const { error: paymentError } = await supabase.from("payments").insert({
+      amount,
+      order_id: order.id,
+      payment_code: paymentCode,
+      provider: "VIETQR_BANKING",
+      qr_code_url: qrCodeUrl,
+      status: "PENDING",
+    });
 
-  if (paymentError) {
-    console.error("Failed to create payment", paymentError);
-    return NextResponse.json({ error: "Đã tạo đơn nhưng lỗi tạo thanh toán." }, { status: 500 });
+    if (paymentError) {
+      console.error("Failed to create payment", paymentError);
+      return NextResponse.json({ error: "Đã tạo đơn nhưng lỗi tạo thanh toán." }, { status: 500 });
+    }
   }
 
   await supabase.from("order_logs").insert({
     action: "ORDER_CREATED",
     actor_id: session.userId,
     metadata: {
-      paymentCode,
+      paymentCode: isFreeOrder ? "FREE" : paymentCode,
       source: "dashboard_order_builder",
       templateId,
+      isFreeOrder,
     },
     order_id: order.id,
   });
@@ -136,12 +146,12 @@ export async function POST(request: Request) {
     amount,
     giftPath: `/gift/${order.public_id}`,
     orderId: order.public_id,
-    paymentCode,
-    paymentStatus: "PENDING",
-    qrCodeUrl,
-    status: "PENDING_PAYMENT",
+    paymentCode: isFreeOrder ? "FREE" : paymentCode,
+    paymentStatus: isFreeOrder ? "PAID" : "PENDING",
+    qrCodeUrl: isFreeOrder ? null : qrCodeUrl,
+    status: isFreeOrder ? "ACTIVE" : "PENDING_PAYMENT",
     trackPath: `/track/${order.public_id}`,
-    unlocked: false,
+    unlocked: isFreeOrder,
   });
 }
 

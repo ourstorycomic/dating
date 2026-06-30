@@ -332,7 +332,7 @@ export async function getDashboardCounts() {
   const supabase = createServerSupabaseClient();
 
   const [orders, templates, users, logs] = await Promise.all([
-    supabase.from("orders").select("id", { count: "exact", head: true }),
+    supabase.from("orders").select("id", { count: "exact", head: true }).gt("amount", 0),
     supabase.from("templates").select("id", { count: "exact", head: true }),
     supabase.from("users").select("id", { count: "exact", head: true }),
     supabase.from("order_logs").select("id", { count: "exact", head: true }),
@@ -575,13 +575,16 @@ export async function getEmployeeDailyStats({ days = 14 }: { days?: number } = {
     const row = map.get(key);
     if (!row) continue;
 
-    row.createdOrders += 1;
-    if (order.status === "ACTIVE" || order.status === "RESPONDED") {
-      row.activeOrders += 1;
-      row.revenue += Number(order.amount ?? 0);
-    }
-    if (order.status === "PENDING_PAYMENT") {
-      row.pendingOrders += 1;
+    const amount = Number(order.amount ?? 0);
+    if (amount > 0) {
+      row.createdOrders += 1;
+      if (order.status === "ACTIVE" || order.status === "RESPONDED") {
+        row.activeOrders += 1;
+        row.revenue += amount;
+      }
+      if (order.status === "PENDING_PAYMENT") {
+        row.pendingOrders += 1;
+      }
     }
   }
 
@@ -678,12 +681,15 @@ export async function getEmployeeMonthlyStats({ months = 12 }: { months?: number
 
     const row = map.get(key);
     if (!row) continue;
-    row.createdOrders += 1;
-    if (order.status === "ACTIVE" || order.status === "RESPONDED") {
-      row.activeOrders += 1;
-      row.revenue += Number(order.amount ?? 0);
+    const amount = Number(order.amount ?? 0);
+    if (amount > 0) {
+      row.createdOrders += 1;
+      if (order.status === "ACTIVE" || order.status === "RESPONDED") {
+        row.activeOrders += 1;
+        row.revenue += amount;
+      }
+      if (order.status === "PENDING_PAYMENT") row.pendingOrders += 1;
     }
-    if (order.status === "PENDING_PAYMENT") row.pendingOrders += 1;
   }
 
   const { data: commissions } = await supabase
