@@ -1,6 +1,6 @@
 import { OrderBuilderForm } from "@/components/dashboard/OrderBuilderForm";
 import { getSession } from "@/lib/auth/session";
-import { getOrdersByCreator, getPublishedTemplates } from "@/lib/supabase/server";
+import { getOrdersByCreator, getPublishedTemplates, createServerSupabaseClient } from "@/lib/supabase/server";
 
 export default async function NewOrderPage() {
   const session = await getSession();
