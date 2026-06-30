@@ -124,7 +124,7 @@ export function Valentine2WatchParty({
 
   return (
     <div className={containerClass}>
-      {data.musicUrl ? <audio ref={audioRef} src={data.musicUrl} loop preload="auto" muted={compact && !autoPlay} /> : null}
+      {data.musicUrl ? <audio ref={audioRef} src={data.musicUrl} loop preload="auto" muted={compact && !isBuilderPreview && !autoPlay} /> : null}
 
       {/* Particles: romantic in scrapbook, subtle cinematic in movie steps */}
       {!compact && !isCinemaMode && <FloatingParticles fullWidth={fullScreen} cinema={false} />}
@@ -137,6 +137,7 @@ export function Valentine2WatchParty({
             onExtractLetter={() => setStep(5)}
             onFirstInteraction={playMusic}
             autoPlay={autoPlay}
+            compact={compact}
           />
         )}
 
@@ -184,7 +185,7 @@ export function Valentine2WatchParty({
             exit={{ opacity: 0 }}
             className="absolute inset-0 bg-slate-950 z-50 overflow-hidden rounded-[inherit]"
           >
-            {(roomId || compact || autoPlay) ? (
+            {(roomId || compact || autoPlay || !roomId || roomId === "preview-room") ? (
               <WatchRoom 
                 roomId={roomId || "preview-room"} 
                 movie={selectedMovie} 
@@ -194,6 +195,8 @@ export function Valentine2WatchParty({
                   setSelectedMovie(movie);
                   onResponse?.({ answer: "YES", message: JSON.stringify(movie) });
                 }}
+                compact={compact}
+                isPreview={!roomId || roomId === "preview-room"}
               />
             ) : (
               <div className="flex flex-col items-center justify-center h-full gap-6 p-6">

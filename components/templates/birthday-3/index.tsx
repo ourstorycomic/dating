@@ -5,6 +5,7 @@ import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { TemplateNavigator } from "../TemplateNavigator";
 import { ChevronDown, Gift, Image as ImageIcon, Flame, Maximize2, X, Heart } from "lucide-react";
 import confetti from "canvas-confetti";
+import { Step5DateTimePicker } from "../dating-3/components/Step5DateTimePicker";
 
 const BIRTHDAY_DATA = {
   name: "Cục Cưng",
@@ -63,11 +64,11 @@ export default function Birthday3Template({ autoPlay = false, compact = false, h
   const [step, setStep] = useState(1);
 
   const nextStep = useCallback(() => {
-    setStep(s => Math.min(s + 1, 8));
+    setStep(s => Math.min(s + 1, 9));
   }, []);
 
   return (
-    <div className={`relative w-full overflow-hidden text-gray-800 font-sans mx-auto ${compact ? 'h-full bg-transparent' : 'max-w-[400px] h-[800px] max-h-[90vh] bg-pink-50 rounded-[2.5rem] shadow-2xl border-[10px] border-pink-200'}`} style={{ backgroundImage: "url('/assets/bg/bg6.jpg')", backgroundSize: 'cover', backgroundBlendMode: 'overlay' }}>
+    <div className={`relative w-full overflow-hidden text-gray-800 font-sans mx-auto h-full ${compact ? 'bg-transparent' : 'bg-pink-50'}`} style={{ backgroundImage: "url('/assets/bg/bg6.jpg')", backgroundSize: 'cover', backgroundBlendMode: 'overlay' }}>
       <AnimatePresence mode="wait">
         {step === 1 && <Step1Knock key="step1" onNext={nextStep} autoPlay={autoPlay} config={config} />}
         {step === 2 && <Step2Surprise key="step2" onNext={nextStep} autoPlay={autoPlay} config={config} />}
@@ -76,13 +77,14 @@ export default function Birthday3Template({ autoPlay = false, compact = false, h
         {step === 5 && <Step5Cards key="step5" onNext={nextStep} autoPlay={autoPlay} config={config} />}
         {step === 6 && <Step6Memory key="step6" onNext={nextStep} autoPlay={autoPlay} config={config} />}
         {step === 7 && <Step7Unboxing key="step7" onNext={nextStep} autoPlay={autoPlay} config={config} />}
-        {step === 8 && <Step8Afterparty key="step8" autoPlay={autoPlay} config={config} />}
+        {step === 8 && <Step8Afterparty key="step8" autoPlay={autoPlay} config={config} onNext={nextStep} />}
+        {step === 9 && <Step5DateTimePicker key="step9" onConfirm={() => {}} autoPlay={autoPlay} />}
       </AnimatePresence>
       <TemplateNavigator
         currentIndex={step - 1}
-        totalSteps={8}
+        totalSteps={9}
         onPrev={() => setStep(s => Math.max(1, s - 1))}
-        onNext={() => setStep(s => Math.min(8, s + 1))}
+        onNext={() => setStep(s => Math.min(9, s + 1))}
         accentColor="#f43f5e"
         isHidden={hideNavigation || autoPlay}
       />
@@ -916,13 +918,14 @@ function Step7Unboxing({ onNext, autoPlay, config }: { onNext: () => void; autoP
 }
 
 // --- STEP 8: THE AFTERPARTY ---
-function Step8Afterparty({ autoPlay, config }: { autoPlay: boolean; config: any }) {
+function Step8Afterparty({ autoPlay, config, onNext }: { autoPlay: boolean; config: any; onNext?: () => void }) {
   const [showPopup, setShowPopup] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const handleClaim = () => {
     if (autoPlay) return;
-    setShowPopup(true);
+    if (onNext) onNext();
+    else setShowPopup(true);
   };
 
   useEffect(() => {
@@ -966,11 +969,13 @@ function Step8Afterparty({ autoPlay, config }: { autoPlay: boolean; config: any 
           Lên Đồ Thôi!
         </h2>
         
-        <div className="bg-rose-50 p-4 rounded-xl border border-rose-100 mb-8 overflow-hidden rounded-md relative flex justify-center">
-          {config?.giftImage ? (
+        <div className="bg-rose-50 p-4 rounded-xl border border-rose-100 mb-8 overflow-hidden relative flex flex-col justify-center items-center min-h-[100px]">
+          {config?.giftImage && (
             <img src={config.giftImage} alt="Gift" className="w-full h-32 object-cover rounded-md mb-2" />
-          ) : null}
-          <p className="font-bold text-rose-700 absolute bottom-2 left-0 right-0 bg-white/80 p-2 m-2 rounded-lg backdrop-blur-md">{config?.giftName || BIRTHDAY_DATA.giftText}</p>
+          )}
+          <p className={`font-bold text-rose-700 ${config?.giftImage ? 'absolute bottom-2 left-0 right-0 bg-white/90 p-2 m-2 rounded-lg backdrop-blur-md' : 'text-xl text-center px-2'}`}>
+            {config?.giftName || BIRTHDAY_DATA.giftText}
+          </p>
         </div>
 
         <motion.button

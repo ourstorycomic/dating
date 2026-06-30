@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { InteractiveTemplatePreview } from "@/components/templates/InteractiveTemplatePreview";
 import { GlassCard } from "@/components/ui/GlassCard";
@@ -64,6 +64,17 @@ export function LogManager({ initialLogs, isAdmin }: { initialLogs: LogRow[]; is
   const [statusFilter, setStatusFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const router = useRouter();
+
+  useEffect(() => {
+    if (openedLog) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [openedLog]);
 
   const visibleLogs = useMemo(() => {
     return logs.filter((log) => {
@@ -248,16 +259,20 @@ function OrderDetailModal({ log, onClose }: { log: LogRow; onClose: () => void }
 
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 backdrop-blur-sm p-4" onClick={onClose}>
-      <div className="flex flex-col max-h-[92vh] w-full max-w-6xl overflow-hidden rounded-3xl border border-pink-200 bg-pink-50 text-pink-950 shadow-2xl" onClick={(event) => event.stopPropagation()}>
-        <div className="shrink-0 flex items-start justify-between gap-4 border-b border-pink-200 bg-pink-50 p-5">
-          <div className="flex items-center gap-3">
-            <h2 className="text-2xl font-semibold text-pink-900">Đơn {order?.public_id ?? "N/A"}</h2>
-            <p className="mt-1 text-sm text-pink-600">{log.action} - {time(log.created_at)}</p>
+      <div className="flex flex-col max-h-[92vh] w-[1400px] max-w-[95vw] overflow-hidden rounded-3xl border border-pink-200 bg-pink-50 text-pink-950 shadow-2xl" onClick={(event) => event.stopPropagation()}>
+        <div className="shrink-0 flex items-center justify-between gap-4 border-b border-pink-200 bg-pink-50 p-5">
+          <div className="flex items-center gap-3 min-w-0">
+            <h2 className="text-lg md:text-xl font-semibold text-pink-900 truncate">
+              Đơn {order?.public_id ?? "N/A"}
+              <span className="ml-2 font-normal text-pink-600 text-sm md:text-base hidden sm:inline">
+                - {log.action} - {time(log.created_at)}
+              </span>
+            </h2>
           </div>
-          <button className="rounded-full bg-pink-100 px-4 py-2 text-sm font-medium text-pink-700 hover:bg-pink-200 transition" onClick={onClose} type="button">Đóng</button>
+          <button className="shrink-0 rounded-full bg-pink-100 px-4 py-2 text-sm font-medium text-pink-700 hover:bg-pink-200 transition" onClick={onClose} type="button">Đóng</button>
         </div>
 
-        <div className="flex-1 overflow-hidden grid items-start gap-5 p-5 lg:grid-cols-[0.95fr_1.05fr]">
+        <div className="flex-1 min-h-0 grid gap-5 p-5 lg:grid-cols-[0.95fr_1.05fr]">
           <div className="h-full overflow-y-auto pr-2 grid content-start gap-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <Info label="Người thao tác Log" value={`${log.users?.name ?? "Hệ thống"} ${log.users?.email ? `(${log.users.email})` : ""}`} />
@@ -325,24 +340,30 @@ function OrderDetailModal({ log, onClose }: { log: LogRow; onClose: () => void }
             </details>
           </div>
 
-          <div className="h-full flex flex-col rounded-2xl border border-pink-200 bg-white/60 p-4 overflow-hidden">
-            <div className="mb-3 shrink-0 flex items-center justify-between gap-3">
-              <h3 className="text-xl font-semibold text-pink-900">Live preview</h3>
+          <div className="h-full flex flex-col rounded-2xl border border-pink-200 bg-white/60 p-4 overflow-y-auto relative">
+            <div className="mb-4 shrink-0 flex items-center justify-between gap-3 bg-white p-3 rounded-xl z-30 shadow-sm border border-pink-100 relative">
+              <h3 className="text-xl font-semibold text-pink-900 ml-2">Live preview</h3>
               <span className="rounded-full border border-pink-200 bg-pink-100/50 px-3 py-1 text-xs font-medium text-pink-700">
                 {order?.templates?.name ?? "Template"}
               </span>
             </div>
-            <div className="flex-1 min-h-0 flex items-center justify-center w-full">
-              <div className="w-full h-full flex items-center justify-center max-w-[430px]">
-                <InteractiveTemplatePreview
-                  componentKey={componentKey}
-                  customData={customData}
-                  recipientName={recipientName}
-                  senderName={senderName}
-                  visualLabel={order?.templates?.visual_label}
-                  compact={true}
-                  isBuilderPreview={true}
-                />
+            <div className="flex-1 min-h-0 flex items-start justify-center w-full pt-4 pb-12">
+              <div className="relative flex flex-col items-center justify-center shrink-0 w-[380px] h-[780px]">
+                <div 
+                  className="w-full h-full rounded-[3.5rem] shadow-2xl border-[16px] border-[#150a21] bg-[#05020a] overflow-hidden ring-4 ring-pink-100/50 flex flex-col relative z-20"
+                  style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)', isolation: 'isolate' }}
+                >
+                  <InteractiveTemplatePreview
+                    componentKey={componentKey}
+                    customData={customData}
+                    recipientName={recipientName}
+                    senderName={senderName}
+                    visualLabel={order?.templates?.visual_label}
+                    compact={true}
+                    isBuilderPreview={true}
+                    noFrame={true}
+                  />
+                </div>
               </div>
             </div>
           </div>

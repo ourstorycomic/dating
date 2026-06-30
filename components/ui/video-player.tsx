@@ -62,6 +62,7 @@ export function VideoPlayer({
   introEnd = 0,
   requestResolutionKey,
   fullscreenOverlay,
+  compact = false,
 }: {
   src?: string;
   poster?: string;
@@ -76,6 +77,7 @@ export function VideoPlayer({
   introEnd?: number;
   requestResolutionKey?: string;
   fullscreenOverlay?: ReactNode;
+  compact?: boolean;
 }) {
   const ownRef = useRef<HTMLVideoElement | null>(null);
   const videoRef = externalRef ?? ownRef;
@@ -97,7 +99,9 @@ export function VideoPlayer({
   const [localRequest, setLocalRequest] = useState<(PlayerRequest & { id?: string }) | null>(null);
   const [controlsVisible, setControlsVisible] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isFakeFullscreen, setIsFakeFullscreen] = useState(false);
   const [isPictureInPicture, setIsPictureInPicture] = useState(false);
+  const [hoverProgress, setHoverProgress] = useState<number | null>(null);
   const [pictureInPictureSupported, setPictureInPictureSupported] = useState(false);
   const [streamError, setStreamError] = useState("");
   const hideTimerRef = useRef<number | null>(null);
@@ -354,6 +358,11 @@ export function VideoPlayer({
     seekTo(((event.clientX - rect.left) / rect.width) * (duration || 0));
   }
 
+  function handleTimelineHover(event: React.MouseEvent<HTMLDivElement>) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    setHoverProgress(Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)));
+  }
+
   function changeVolume(next: number) {
     const video = videoRef.current;
     if (!video) return;
@@ -373,18 +382,8 @@ export function VideoPlayer({
     setSpeed(next);
   }
 
-  async function toggleFullscreen() {
-    try {
-      if (document.fullscreenElement) {
-        await screen.orientation?.unlock?.();
-        await document.exitFullscreen();
-        return;
-      }
-      await containerRef.current?.requestFullscreen?.();
-      await (screen.orientation as LockableOrientation | undefined)?.lock?.("landscape").catch(() => undefined);
-    } catch {
-      setIsFullscreen(Boolean(document.fullscreenElement));
-    }
+  function toggleFullscreen() {
+    setIsFakeFullscreen((prev) => !prev);
   }
 
   async function togglePictureInPicture() {
@@ -432,7 +431,7 @@ export function VideoPlayer({
         .shell.idle .controls, .shell.idle .request-card { opacity: 0; transform: translateY(10px); pointer-events: none; }
         .timeline { height: 20px; cursor: pointer; display: flex; align-items: center; }
         .track { position: relative; height: 5px; flex: 1; border-radius: 999px; background: rgba(255,255,255,.22); }
-        .progress { height: 100%; width: 0%; border-radius: inherit; background: #67e8f9; box-shadow: 0 0 18px rgba(103,232,249,.65); }
+        .progress { height: 100%; width: 0%; border-radius: inherit; background: #f472b6; box-shadow: 0 0 18px rgba(244,114,182,.65); }
         .marker { display: none; position: absolute; top: 50%; height: 17px; width: 4px; transform: translateY(-50%); border-radius: 999px; background: #fcd34d; box-shadow: 0 0 16px rgba(252,211,77,.85); }
         .bubble { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); white-space: nowrap; border: 1px solid rgba(252,211,77,.28); background: rgba(0,0,0,.78); border-radius: 8px; padding: 7px 9px; font-size: 12px; color: #fef3c7; backdrop-filter: blur(14px); }
         .row { display: flex; align-items: center; gap: 10px; }
@@ -444,7 +443,7 @@ export function VideoPlayer({
         .accept { background: rgba(52,211,153,.78); color: #022c22; }
         .reject { background: rgba(244,63,94,.78); color: white; }
         .actions { display: none; gap: 6px; }
-        .loader { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: none; color: #67e8f9; animation: spin 1s linear infinite; pointer-events: none; }
+        .loader { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: none; color: #f472b6; animation: spin 1s linear infinite; pointer-events: none; }
         @keyframes spin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
       </style>
       <div class="shell">
@@ -580,15 +579,15 @@ export function VideoPlayer({
       onMouseMove={showControlsTemporarily}
       onMouseEnter={showControlsTemporarily}
       onTouchStart={showControlsTemporarily}
-      className={`pmovies-player group relative aspect-video overflow-hidden rounded-md bg-black shadow-2xl shadow-black/60 ${controlsVisible ? "cursor-auto" : "cursor-none"}`}
+      className={`pmovies-player group ${isFakeFullscreen ? "fixed inset-0 z-[9999] bg-black" : "relative aspect-video overflow-hidden rounded-md bg-black shadow-2xl shadow-black/60"} ${controlsVisible ? "cursor-auto" : "cursor-none"}`}
     >
       <div ref={videoSlotRef} className="absolute inset-0">
         <video ref={videoRef} poster={poster} playsInline muted={locked} preload="auto" className="h-full w-full object-contain" />
       </div>
       <button type="button" onClick={togglePlay} className="absolute inset-0 z-10" aria-label={locked ? "Request playback change" : "Toggle playback"} />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/15 opacity-100 transition" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/15 opacity-100 transition" />
       {(!ready || buffering) && !streamError && (
-        <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center text-cyan-300 drop-shadow-[0_0_12px_rgba(103,232,249,0.8)]">
+        <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center text-pink-400 drop-shadow-[0_0_12px_rgba(244,114,182,0.8)]">
           <Loader2 className="h-12 w-12 animate-spin" />
         </div>
       )}
@@ -604,7 +603,7 @@ export function VideoPlayer({
           <div className="rounded-md border border-white/10 bg-black/80 p-4 text-white shadow-2xl">
             <p className="font-bold">Resume from {formatTime(resumeTime)}?</p>
             <div className="mt-3 flex gap-2">
-              <button className="rounded-md bg-cyan-300 px-3 py-2 text-sm font-bold text-slate-950" onClick={() => { seekTo(resumeTime); setResumeTime(null); }}>Resume</button>
+              <button className="rounded-md bg-pink-400 px-3 py-2 text-sm font-bold text-slate-950" onClick={() => { seekTo(resumeTime); setResumeTime(null); }}>Resume</button>
               <button className="rounded-md bg-white/10 px-3 py-2 text-sm" onClick={() => setResumeTime(null)}>Start over</button>
             </div>
           </div>
@@ -637,20 +636,41 @@ export function VideoPlayer({
         <button
           type="button"
           onClick={() => seekTo(introEnd)}
-          className="absolute bottom-20 right-3 z-30 rounded-md border border-cyan-300/30 bg-black/70 px-3 py-2 text-xs font-bold text-cyan-100 shadow-xl backdrop-blur-xl hover:bg-cyan-300 hover:text-slate-950 sm:bottom-24 sm:right-4 sm:px-4 sm:text-sm"
+          className="absolute bottom-20 right-3 z-30 rounded-md border border-pink-400/30 bg-black/70 px-3 py-2 text-xs font-bold text-pink-100 shadow-xl backdrop-blur-xl hover:bg-pink-400 hover:text-slate-950 sm:bottom-24 sm:right-4 sm:px-4 sm:text-sm"
         >
           Skip intro
         </button>
       )}
+      
+      {/* ── Skip Ads Button ── */}
+      {currentTime >= 901 && currentTime < 934 && (
+        <button
+          type="button"
+          onClick={() => seekTo(934)}
+          className="absolute bottom-20 right-3 z-30 rounded-md border border-pink-400/30 bg-black/70 px-4 py-2 text-xs font-bold text-pink-100 shadow-xl backdrop-blur-xl hover:bg-pink-400 hover:text-slate-950 sm:bottom-24 sm:right-4 sm:px-5 sm:text-sm transition-all animate-in fade-in slide-in-from-right-4"
+        >
+          Skip Ad / Bỏ qua quảng cáo
+        </button>
+      )}
+
       {fullscreenOverlay && isFullscreen && (
         <div className={`pointer-events-none absolute right-3 top-3 z-30 hidden w-[min(340px,32vw)] transition duration-300 md:block ${controlsVisible ? "translate-x-0 opacity-100" : "translate-x-3 opacity-0"}`}>
           <div className="pointer-events-auto">{fullscreenOverlay}</div>
         </div>
       )}
       <div className={`absolute inset-x-0 bottom-0 z-20 space-y-2 p-2 transition duration-300 sm:space-y-3 sm:p-4 ${controlsVisible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0"}`}>
-        <div onClick={handleTimeline} className="h-7 cursor-pointer py-3 sm:h-6 sm:py-2">
-          <div className="relative h-1.5 rounded-full bg-white/20">
-            <div className="h-full rounded-full bg-cyan-300 shadow-[0_0_18px_rgba(103,232,249,.65)]" style={{ width: `${progress}%` }} />
+        <div onClick={handleTimeline} onMouseMove={handleTimelineHover} onMouseLeave={() => setHoverProgress(null)} className="group/timeline h-7 cursor-pointer py-3 sm:h-6 sm:py-2">
+          <div className="relative h-1.5 rounded-full bg-white/20 transition-transform group-hover/timeline:scale-y-[1.5]">
+            {hoverProgress !== null && (
+              <div
+                className="absolute bottom-full mb-2 -translate-x-1/2 rounded bg-pink-500 px-2.5 py-1 text-[10px] sm:text-xs font-bold text-white shadow-lg shadow-pink-500/30 transition-all pointer-events-none whitespace-nowrap"
+                style={{ left: `${hoverProgress * 100}%` }}
+              >
+                {formatTime(hoverProgress * duration)}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-pink-500"></div>
+              </div>
+            )}
+            <div className="h-full rounded-full bg-pink-400 shadow-[0_0_18px_rgba(244,114,182,.65)]" style={{ width: `${progress}%` }} />
             {requestProgress !== null && (
               <div className="absolute top-1/2 h-4 w-1 -translate-y-1/2 rounded-full bg-amber-300 shadow-[0_0_16px_rgba(252,211,77,.85)]" style={{ left: `${requestProgress}%` }}>
                 <div className="absolute bottom-5 left-1/2 w-44 -translate-x-1/2 rounded-md border border-amber-300/25 bg-black/75 p-2 text-xs text-amber-50 shadow-xl backdrop-blur-xl sm:w-52">
@@ -671,31 +691,38 @@ export function VideoPlayer({
             )}
           </div>
         </div>
-        <div className="flex items-center gap-2 text-rose-100 sm:gap-3">
-          <button type="button" onClick={togglePlay} className="shrink-0 rounded-md bg-white/10 p-2 hover:bg-rose-500 hover:text-white transition-colors">
-            {paused ? <Play size={18} /> : <Pause size={18} />}
+        <div className="flex flex-wrap items-center gap-1 sm:gap-2 text-white">
+          <button type="button" onClick={togglePlay} className={`shrink-0 rounded-md p-1.5 sm:p-2 transition-colors ${compact ? "bg-pink-500 hover:bg-pink-400" : "bg-pink-500/80 hover:bg-pink-500"}`}>
+            {paused ? <Play size={compact ? 14 : 16} fill="currentColor" /> : <Pause size={compact ? 14 : 16} fill="currentColor" />}
           </button>
-          <span className="min-w-[4.5rem] shrink-0 text-xs font-bold sm:min-w-24 sm:text-sm tracking-wide" style={{ color: "white", textShadow: "0px 2px 4px rgba(0,0,0,0.8), 0px 0px 10px rgba(0,0,0,0.6)" }}>{formatTime(currentTime)} <span className="hidden sm:inline" style={{ color: "rgba(255,255,255,0.7)" }}>/ {formatTime(duration)}</span></span>
-          <button type="button" onClick={() => { const video = videoRef.current; if (video) video.muted = !video.muted; }} className="shrink-0 rounded-md bg-white/10 p-2 hover:bg-rose-500 transition-colors">
-            {muted || volume === 0 ? <VolumeX size={18} /> : <Volume2 size={18} />}
+          <span className={`shrink-0 font-bold tracking-wide ${compact ? "min-w-[3rem] text-[9px]" : "min-w-[3.5rem] text-[10px] sm:text-[11px]"}`} style={{ color: "white", textShadow: "0px 2px 4px rgba(0,0,0,0.8), 0px 0px 10px rgba(0,0,0,0.6)" }}>
+            {formatTime(currentTime)} <span className="hidden sm:inline" style={{ color: "rgba(255,255,255,0.7)" }}>/ {formatTime(duration)}</span>
+          </span>
+          <button type="button" onClick={() => { const video = videoRef.current; if (video) video.muted = !video.muted; }} className={`shrink-0 rounded-md p-1.5 sm:p-2 transition-colors ${compact ? "bg-pink-500 hover:bg-pink-400" : "bg-pink-500/80 hover:bg-pink-500"}`}>
+            {muted || volume === 0 ? <VolumeX size={compact ? 14 : 16} /> : <Volume2 size={compact ? 14 : 16} />}
           </button>
-          <input type="range" min={0} max={1} step={0.05} value={muted ? 0 : volume} onChange={(event) => changeVolume(Number(event.target.value))} className="pmovies-range hidden w-20 sm:block lg:w-24" />
+          
+          <input type="range" min={0} max={1} step={0.05} value={muted ? 0 : volume} onChange={(event) => changeVolume(Number(event.target.value))} className={`pmovies-range accent-pink-500 w-16 ${compact ? "hidden" : "hidden md:block"}`} />
+          
           {!locked && (
-            <select value={speed} onChange={(event) => changeSpeed(Number(event.target.value))} className="hidden rounded-md border border-white/10 bg-black/60 px-2 py-1 text-xs sm:block sm:text-sm">
-              {[0.5, 0.75, 1, 1.25, 1.5, 2].map((item) => <option key={item} value={item}>{item}x</option>)}
+            <select value={speed} onChange={(event) => changeSpeed(Number(event.target.value))} className={`rounded-md bg-pink-500 hover:bg-pink-400 text-white font-bold appearance-none text-center px-1.5 py-1 text-[10px] sm:text-xs cursor-pointer shadow-sm ${compact ? "hidden" : "hidden sm:block"}`}>
+              {[0.5, 0.75, 1, 1.25, 1.5, 2].map((item) => <option key={item} value={item} className="bg-slate-900 text-white">{item}x</option>)}
             </select>
           )}
-          <select value={level} onChange={(event) => changeLevel(Number(event.target.value))} className="min-w-0 max-w-20 rounded-md border border-white/10 bg-black/60 px-1 py-1 text-xs sm:max-w-none sm:px-2 sm:text-sm">
-            <option value={-1}>Auto</option>
-            {levels.map((item) => <option key={item.index} value={item.index}>{item.height}p</option>)}
+          
+          <select value={level} onChange={(event) => changeLevel(Number(event.target.value))} className={`min-w-0 rounded-md bg-pink-500 hover:bg-pink-400 text-white font-bold appearance-none text-center px-1.5 py-1 text-[10px] sm:text-xs cursor-pointer shadow-sm ${compact ? "hidden" : "hidden md:block"}`}>
+            <option value={-1} className="bg-slate-900 text-white">Auto</option>
+            {levels.map((item) => <option key={item.index} value={item.index} className="bg-slate-900 text-white">{item.height}p</option>)}
           </select>
-          {pictureInPictureSupported && (
-            <button type="button" onClick={togglePictureInPicture} className="shrink-0 rounded-md bg-white/10 p-2 hover:bg-rose-500 transition-colors" title={isPictureInPicture ? "Close mini player" : "Mini player"}>
-              <PictureInPicture2 size={18} className={isPictureInPicture ? "text-rose-200" : undefined} />
+          
+          {pictureInPictureSupported && !compact && (
+            <button type="button" onClick={togglePictureInPicture} className="shrink-0 rounded-md p-1.5 sm:p-2 transition-colors bg-pink-500/80 hover:bg-pink-500 hidden sm:block" title={isPictureInPicture ? "Close mini player" : "Mini player"}>
+              <PictureInPicture2 size={16} className={isPictureInPicture ? "text-pink-200" : undefined} />
             </button>
           )}
-          <button type="button" onClick={toggleFullscreen} className="ml-auto shrink-0 rounded-md bg-white/10 p-2 hover:bg-rose-500 transition-colors">
-            {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
+          
+          <button type="button" onClick={toggleFullscreen} className={`ml-auto shrink-0 rounded-md p-1.5 sm:p-2 transition-colors ${compact ? "bg-pink-500 hover:bg-pink-400" : "bg-pink-500/80 hover:bg-pink-500"}`}>
+            {isFakeFullscreen ? <Minimize size={compact ? 14 : 16} /> : <Maximize size={compact ? 14 : 16} />}
           </button>
         </div>
       </div>

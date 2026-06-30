@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { motion, useAnimation, AnimatePresence } from "framer-motion";
 import { FloatingParticles } from "./FloatingParticles";
+import { playClick, playCoin } from "./soundFX";
 
 type GameStep = "insert" | "play" | "dropping" | "miss" | "success";
 
@@ -109,6 +110,7 @@ export function Valentine2ClawMachine({ onEggGrabbed, autoPlay = false }: { onEg
     );
     if (dist < 110) {
       // Fast vanish — no await so it doesn't freeze the UI
+      playCoin();
       coinControls.start({ scale: 0, opacity: 0, transition: { duration: 0.15 } });
       setTimeout(() => setStep("play"), 180);
     } else {
@@ -119,6 +121,7 @@ export function Valentine2ClawMachine({ onEggGrabbed, autoPlay = false }: { onEg
   // ── Move (single tap) ──
   const moveClaw = useCallback((dir: -1 | 1) => {
     if (step !== "play" || isAnimating) return;
+    playClick();
     setClawX(prev => {
       const next = Math.max(5, Math.min(90, prev + dir * 8));
       clawXRef.current = next;
@@ -170,7 +173,7 @@ export function Valentine2ClawMachine({ onEggGrabbed, autoPlay = false }: { onEg
     const nearest = EGGS.reduce((best, egg) =>
       Math.abs(egg.x - clawX) < Math.abs(best.x - clawX) ? egg : best
     );
-    const isHit = Math.abs(nearest.x - clawX) <= HIT_TOLERANCE;
+    const isHit = autoPlay || Math.abs(nearest.x - clawX) <= HIT_TOLERANCE;
 
     // 1) Drop down
     await clawControls.start({ y: 148, transition: { duration: 0.85, ease: "easeIn" } });
@@ -449,7 +452,7 @@ export function Valentine2ClawMachine({ onEggGrabbed, autoPlay = false }: { onEg
                 </div>
                 <div className="flex flex-col items-center gap-1.5 bg-indigo-900/60 rounded-2xl p-2 border border-indigo-700/50">
                   <div className="text-pink-300 font-bold text-[10px] tracking-wider">GẮP</div>
-                  <button onClick={grabEgg} disabled={step !== "play"}
+                  <button onClick={() => { playClick(); grabEgg(); }} disabled={step !== "play"}
                     className="w-full h-11 bg-gradient-to-r from-pink-500 to-rose-500 active:scale-95 rounded-full text-white font-black shadow-[0_4px_0_#9f1239] active:shadow-none active:translate-y-1 transition-all disabled:opacity-40 disabled:grayscale text-sm">
                     GẮP! 🎯
                   </button>

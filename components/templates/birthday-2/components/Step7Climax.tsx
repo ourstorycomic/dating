@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { Ticket } from "lucide-react";
@@ -78,7 +78,11 @@ export function Step7Climax({ autoPlay = false, onNext }: { autoPlay?: boolean; 
           transition={{ repeat: Infinity, duration: 1.5 }}
           className="w-full py-4 rounded-xl bg-indigo-900 text-amber-300 font-black text-xl uppercase tracking-wider hover:bg-indigo-800 transition-colors"
           onClick={() => {
-            // Usually we'd handle the final action here
+            if (autoPlay) return;
+            confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } });
+            if (onNext) {
+              setTimeout(onNext, 2000);
+            }
           }}
         >
           Lên đồ thôi! 🛵

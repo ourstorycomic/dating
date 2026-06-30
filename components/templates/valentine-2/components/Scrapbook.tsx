@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart } from "lucide-react";
+import { playPop, playTada, playSwoosh } from "./soundFX";
+import { Caveat, Dancing_Script } from "next/font/google";
+
+const caveatFont = Caveat({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-caveat" });
+const dancingScriptFont = Dancing_Script({ subsets: ["latin", "vietnamese"], weight: ["400", "700"], variable: "--font-dancing" });
 
 const slowFlipVariants = {
   initial: { rotateY: 0, zIndex: 10 },
@@ -11,7 +16,7 @@ const slowFlipVariants = {
   }
 };
 
-const PAPER_BG = "bg-[#fdfbf7] bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')]";
+const PAPER_BG = "bg-[#fdfbf7]";
 const LEFT_PAGE_SHADOW = "shadow-[inset_-15px_0_20px_rgba(0,0,0,0.05)]";
 const RIGHT_PAGE_SHADOW = "shadow-[inset_15px_0_20px_rgba(0,0,0,0.05)]";
 const NOTEBOOK_LINES = "bg-[linear-gradient(transparent_95%,_#cbd5e1_95%)] bg-[length:100%_2rem]";
@@ -21,12 +26,14 @@ export function Scrapbook({
   data, 
   onExtractLetter,
   onFirstInteraction,
-  autoPlay = false
+  autoPlay = false,
+  compact = false,
 }: { 
   data: any; 
   onExtractLetter: () => void;
   onFirstInteraction?: () => void;
   autoPlay?: boolean;
+  compact?: boolean;
 }) {
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -105,11 +112,16 @@ export function Scrapbook({
 
   const nextPage = () => {
     onFirstInteraction?.();
+    playSwoosh();
     if (currentPage < 3) setCurrentPage(p => p + 1);
   };
 
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center p-4 z-10 [perspective:1500px]">
+    <div className={`absolute inset-0 flex flex-col items-center justify-center p-4 z-10 [perspective:1500px] ${caveatFont.variable} ${dancingScriptFont.variable}`}>
+      <style>{`
+        .font-\\[Caveat\\] { font-family: var(--font-caveat) !important; }
+        .font-\\[Dancing_Script\\] { font-family: var(--font-dancing) !important; }
+      `}</style>
       {/* Book wrapper */}
       <motion.div 
         initial={{ y: 50, opacity: 0, x: 0 }}
@@ -150,6 +162,7 @@ export function Scrapbook({
                     // Activate ONLY when released past threshold (-130px)
                     if (info.offset.y < -130) {
                       setDragY({ y: info.offset.y, extracted: true });
+                      playTada();
                     } else {
                       setDragY({ y: 0, extracted: false }); // snap back
                     }
@@ -170,7 +183,7 @@ export function Scrapbook({
                       <div className="text-green-300 text-[9px] font-bold tracking-widest mt-auto mb-2 select-none">✓ THẢ!</div>
                     ) : (
                       <motion.div
-                        animate={{ y: [0, -4, 0] }}
+                        animate={compact ? undefined : { y: [0, -4, 0] }}
                         transition={{ repeat: Infinity, duration: 1, ease: "easeInOut" }}
                         className="text-white/50 text-[9px] font-bold tracking-widest mt-auto mb-2 select-none"
                       >KÉO ↑</motion.div>
@@ -228,7 +241,7 @@ export function Scrapbook({
                   Tớ có một món quà bí mật, nhưng cậu phải tự tay giành lấy nó nhé!
                 </p>
                 <button
-                  onClick={onExtractLetter}
+                  onClick={() => { playTada(); onExtractLetter(); }}
                   className="bg-gradient-to-r from-rose-500 to-pink-600 text-white font-bold py-3 px-8 rounded-full shadow-[0_10px_20px_rgba(225,29,72,0.4)] hover:scale-105 transition-transform"
                 >
                   Đi lấy quà 🕹️
@@ -377,7 +390,7 @@ export function Scrapbook({
         >
           {/* Front Face */}
           <div className="absolute inset-0 bg-[#8b5a2b] rounded-r-2xl p-6 flex flex-col items-center justify-center shadow-[inset_-10px_0_20px_rgba(0,0,0,0.4)] [backface-visibility:hidden] border-2 border-[#714820]">
-            <div className="absolute inset-0 opacity-40 bg-[url('https://www.transparenttextures.com/patterns/leather.png')] mix-blend-overlay" />
+
             
             <div className="w-3/4 aspect-square rounded-lg overflow-hidden border-[6px] border-[#fdfbf7] shadow-[0_10px_20px_rgba(0,0,0,0.5)] mb-12 relative z-10 rotate-[2deg]">
               <img src={data.coverImage || undefined} className="w-full h-full object-cover opacity-90 sepia-[0.2]" alt="Cover" />
@@ -389,7 +402,7 @@ export function Scrapbook({
             
             <button 
               onClick={nextPage} 
-              className="animate-pulse bg-[#fdfbf7]/90 text-slate-800 px-8 py-3 rounded border border-slate-300 font-serif font-bold tracking-widest shadow-[0_5px_15px_rgba(0,0,0,0.5)] hover:bg-white transition-colors relative z-10"
+              className={`${compact ? '' : 'animate-pulse'} bg-[#fdfbf7]/90 text-slate-800 px-8 py-3 rounded border border-slate-300 font-serif font-bold tracking-widest shadow-[0_5px_15px_rgba(0,0,0,0.5)] hover:bg-white transition-colors relative z-10`}
             >
               MỞ SỔ TAY
             </button>

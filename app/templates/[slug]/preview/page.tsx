@@ -19,9 +19,15 @@ export default async function TemplatePreviewPage({
   // Lấy các template cùng category
   const allTemplates = await getPublishedTemplates();
   const categorySlug = template.template_categories?.slug;
-  const relatedTemplates = allTemplates
-    .filter(t => t.template_categories?.slug === categorySlug && t.slug !== template.slug)
-    .slice(0, 4); // Lấy tối đa 4 mẫu gợi ý
+  let relatedTemplates = allTemplates
+    .filter(t => t.template_categories?.slug === categorySlug && t.slug !== template.slug);
+
+  if (relatedTemplates.length < 3) {
+    const otherTemplates = allTemplates.filter(t => t.template_categories?.slug !== categorySlug && t.slug !== template.slug);
+    relatedTemplates = [...relatedTemplates, ...otherTemplates];
+  }
+  
+  relatedTemplates = relatedTemplates.slice(0, 3);
 
   return <PreviewClient template={template} relatedTemplates={relatedTemplates} />;
 }

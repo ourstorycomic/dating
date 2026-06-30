@@ -18,7 +18,7 @@ export default function Birthday2Diary({ autoPlay = false, compact = false }: { 
 
   return (
     <div 
-      className={`relative w-full overflow-hidden text-slate-800 font-sans mx-auto ${compact ? 'h-full' : 'max-w-[400px] h-[800px] max-h-[90vh] rounded-[3rem] shadow-[0_20px_50px_rgba(236,72,153,0.3)] border-[12px] border-pink-200'}`}
+      className={`relative w-full overflow-hidden text-slate-800 font-sans mx-auto h-full bg-pink-50`}
       style={{ backgroundImage: "url('/assets/bg/bg2.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
       <div className="absolute inset-0 bg-pink-100/60 backdrop-blur-sm" />

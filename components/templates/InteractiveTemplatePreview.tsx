@@ -258,7 +258,7 @@ export function InteractiveTemplatePreview({
         return (
           <div 
             ref={containerRef} 
-            className="mx-auto flex aspect-[9/19] h-[calc(100dvh-140px)] max-h-[720px] w-auto max-w-[360px] shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative isolate z-0"
+            className="mx-auto flex aspect-[38/78] h-full max-h-[780px] w-auto max-w-[380px] shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative isolate z-0"
             style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)' }}
           >
             <Component {...finalProps} roomId={roomId} autoPlay={false} />

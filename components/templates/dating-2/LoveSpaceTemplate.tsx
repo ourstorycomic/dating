@@ -102,7 +102,7 @@ export function LoveSpaceTemplate({ compact, fullScreen, hideNavigation, isBuild
   if (compact) {
     containerClass += "h-full max-w-[400px] mx-auto";
   } else if (fullScreen) {
-    containerClass += "h-[100dvh]";
+    containerClass += "h-full";
   } else {
     containerClass += "w-full h-full min-h-[600px] sm:rounded-3xl shadow-2xl mx-auto border-4 border-white";
   }

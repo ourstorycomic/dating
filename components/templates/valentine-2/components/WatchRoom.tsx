@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { VideoPlayer, type PlayerPendingRequest } from "@/components/ui/video-player";
 import { createClient } from "@/lib/supabase/client";
 import { Send, ArrowLeft, ListVideo, Play } from "lucide-react";
+import { playClick } from "./soundFX";
 
 // ── Stable per-tab presence ID (survives re-renders, not page refreshes) ──────
 function getTabPresenceId(roomId: string): string {
@@ -43,6 +44,8 @@ export function WatchRoom({
   guestName = "Guest",
   onBackToLobby,
   onChangeMovie,
+  compact = false,
+  isPreview = false,
 }: {
   roomId: string;
   movie: { name: string; slug: string };
@@ -50,6 +53,8 @@ export function WatchRoom({
   guestName?: string;
   onBackToLobby?: () => void;
   onChangeMovie?: (movie: any) => void;
+  compact?: boolean;
+  isPreview?: boolean;
 }) {
   const supabase = useMemo(() => createClient(), []);
 
@@ -72,6 +77,21 @@ export function WatchRoom({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState("");
   const [showChat, setShowChat] = useState(true);
+  const [isIdle, setIsIdle] = useState(false);
+  const idleTimeoutRef = useRef<number | null>(null);
+
+  const resetIdle = () => {
+    setIsIdle(false);
+    if (idleTimeoutRef.current) window.clearTimeout(idleTimeoutRef.current);
+    idleTimeoutRef.current = window.setTimeout(() => setIsIdle(true), 3500);
+  };
+
+  useEffect(() => {
+    resetIdle();
+    return () => {
+      if (idleTimeoutRef.current) window.clearTimeout(idleTimeoutRef.current);
+    };
+  }, []);
 
   const [episodes, setEpisodes] = useState<{name: string, link_m3u8: string}[]>([]);
   const [currentEpIndex, setCurrentEpIndex] = useState(0);
@@ -119,6 +139,8 @@ export function WatchRoom({
 
   // ── Supabase Realtime channel ─────────────────────────────────────────────
   useEffect(() => {
+    if (isPreview) return;
+    
     const channel = supabase
       .channel(`watch-room:${roomId}`, {
         config: { presence: { key: myId } },
@@ -190,7 +212,7 @@ export function WatchRoom({
 
   // ── Host: broadcast playback state ───────────────────────────────────────
   useEffect(() => {
-    if (!isHost) return;
+    if (!isHost || isPreview) return;
     let lastSent = 0;
     let attachedVideo: HTMLVideoElement | null = null;
     let heartbeat: number | null = null;
@@ -234,14 +256,18 @@ export function WatchRoom({
 
   // ── Auto-scroll chat ──────────────────────────────────────────────────────
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (chatEndRef.current && chatEndRef.current.parentElement) {
+      chatEndRef.current.parentElement.scrollTop = chatEndRef.current.parentElement.scrollHeight;
+    }
   }, [messages]);
 
   // ── Send chat message ─────────────────────────────────────────────────────
   function sendChat(e: React.FormEvent) {
     e.preventDefault();
+    playClick();
     const text = chatInput.trim();
-    if (!text || !channelRef.current) return;
+    if (!text || (!channelRef.current && !isPreview)) return;
+    
     setChatInput("");
     const msg: ChatMessage = {
       id: crypto.randomUUID(),
@@ -250,8 +276,11 @@ export function WatchRoom({
       body: text,
       sentAt: Date.now(),
     };
+    
     setMessages((prev) => [...prev.slice(-99), msg]);
-    void channelRef.current.send({ type: "broadcast", event: "chat_message", payload: msg });
+    if (!isPreview && channelRef.current) {
+      void channelRef.current.send({ type: "broadcast", event: "chat_message", payload: msg });
+    }
   }
 
   // ── Control request helpers ───────────────────────────────────────────────
@@ -293,34 +322,42 @@ export function WatchRoom({
 
   function handleEpisodeChange(index: number) {
     if (!isHost) return;
+    playClick();
     setCurrentEpIndex(index);
     void channelRef.current?.send({ type: "broadcast", event: "change_episode", payload: { index } });
   }
 
   // ─────────────────────────────────────────────────────────────────────────
   return (
-    <div className="w-full h-full flex flex-col bg-[#05020a] overflow-y-auto custom-scrollbar text-rose-50">
+    <div 
+      className={`w-full h-full flex flex-col bg-[#05020a] overflow-y-auto custom-scrollbar text-rose-50 ${compact ? "p-0" : ""}`}
+      onMouseMove={resetIdle}
+      onTouchStart={resetIdle}
+      onMouseLeave={() => setIsIdle(true)}
+    >
       {/* ── Navbar ── */}
-      <div className="flex-shrink-0 h-14 bg-black/60 backdrop-blur-xl border-b border-white/10 flex items-center justify-between px-4 z-50 sticky top-0">
-        <div className="flex items-center gap-3">
+      <div className={`flex-shrink-0 bg-black/60 backdrop-blur-xl border-b border-white/10 flex items-center justify-between z-50 sticky top-0 transition-opacity duration-700 ${isIdle ? "opacity-0 pointer-events-none" : "opacity-100"} ${compact ? "h-12 px-2" : "h-14 px-4"}`}>
+        <div className={`flex items-center ${compact ? "gap-1.5" : "gap-3"}`}>
           {isHost && onBackToLobby && (
-            <button onClick={onBackToLobby} className="flex items-center gap-2 text-rose-300 hover:text-white transition-colors text-sm font-bold bg-white/10 hover:bg-white/20 px-4 py-1.5 rounded-full shadow-sm">
-              <ArrowLeft size={16} /> Quay lại sảnh
+            <button onClick={() => { playClick(); onBackToLobby(); }} className={`flex items-center text-white transition-all font-bold bg-gradient-to-r from-pink-500 to-rose-500 hover:scale-105 rounded-full shadow-md ${compact ? "text-xs px-3 py-1.5 gap-1" : "text-sm px-4 py-1.5 gap-2"}`}>
+              <ArrowLeft size={compact ? 14 : 16} /> {compact ? "Thoát" : "Quay lại sảnh"}
             </button>
           )}
           {!isHost && (
-            <div className="flex items-center gap-2 text-rose-300 text-sm font-bold bg-white/10 px-4 py-1.5 rounded-full shadow-sm">
-              🍿 Đang xem cùng Host
+            <div className={`flex items-center text-rose-300 font-bold bg-white/10 rounded-full shadow-sm ${compact ? "text-xs px-2 py-1 gap-1" : "text-sm px-4 py-1.5 gap-2"}`}>
+              🍿 {compact ? "Xem chung" : "Đang xem cùng Host"}
             </div>
           )}
         </div>
-        <div className="flex items-center gap-3">
-          <span className="text-rose-300/80 text-xs font-bold hidden sm:inline-block">
-            {viewerCount} người trong phòng
-          </span>
+        <div className="flex items-center gap-2">
+          {!isPreview && (
+            <span className={`text-rose-300/80 font-bold ${compact ? "hidden" : "hidden sm:inline-block text-xs"}`}>
+              {viewerCount} người
+            </span>
+          )}
           <button
-            onClick={() => setShowChat(v => !v)}
-            className="text-xs font-bold px-4 py-1.5 rounded-full bg-rose-600/80 text-white shadow-lg shadow-rose-900/50 hover:bg-rose-500 transition-colors border border-rose-500/50"
+            onClick={() => { playClick(); setShowChat(v => !v); }}
+            className={`font-bold rounded-full bg-rose-600/80 text-white shadow-lg shadow-rose-900/50 hover:bg-rose-500 transition-colors border border-rose-500/50 ${compact ? "text-[10px] px-2.5 py-1" : "text-xs px-4 py-1.5"}`}
           >
             💬 Chat {showChat ? "▲" : "▼"}
           </button>
@@ -328,13 +365,13 @@ export function WatchRoom({
       </div>
 
       {/* ── Main Layout ── */}
-      <div className="w-full max-w-[1800px] mx-auto p-2 sm:p-4 lg:p-6 flex flex-col gap-4 lg:gap-6 z-10">
+      <div className={`w-full max-w-[1800px] mx-auto flex flex-col z-10 ${compact ? "p-2 gap-2" : "p-4 lg:p-6 gap-4 lg:gap-6"}`}>
         
         {/* ── TOP ROW: Video/Info & Chat ── */}
-        <div className="flex flex-col xl:flex-row gap-4 lg:gap-6 items-stretch">
+        <div className={`flex items-stretch ${compact ? "flex-col gap-2" : "flex-col xl:flex-row gap-4 lg:gap-6"}`}>
           
           {/* Left Column: Video & Info */}
-          <div className="flex-[3] min-w-0 flex flex-col gap-4 lg:gap-6">
+          <div className={`flex-[3] min-w-0 flex flex-col ${compact ? "gap-2" : "gap-4 lg:gap-6"}`}>
             
             {/* Video Container - Make it huge */}
             <div className="w-full aspect-video bg-black rounded-xl sm:rounded-2xl lg:rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.8)] overflow-hidden border border-white/10 relative ring-1 ring-white/5">
@@ -347,18 +384,21 @@ export function WatchRoom({
                 pendingRequest={isHost ? (pendingRequest as PlayerPendingRequest | null) : null}
                 onRespondRequest={respondToRequest}
                 requestResolutionKey={requestResolutionKey}
+                compact={compact}
               />
             </div>
 
             {/* Info bar & Episodes */}
-            <div className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-xl sm:rounded-2xl lg:rounded-3xl shadow-2xl overflow-hidden flex flex-col">
-              <div className="px-5 py-4 flex items-center gap-3 bg-gradient-to-r from-white/[0.05] to-transparent">
+            <div className={`bg-slate-900/50 backdrop-blur-md border border-white/10 shadow-2xl overflow-hidden flex flex-col ${compact ? "rounded-xl" : "rounded-2xl lg:rounded-3xl"}`}>
+              <div className={`flex items-center bg-gradient-to-r from-white/[0.05] to-transparent ${compact ? "px-3 py-2 gap-2" : "px-5 py-4 gap-3"}`}>
                 <div className="flex-1 min-w-0 flex flex-col justify-center">
-                  <p className="text-white font-black text-xl lg:text-3xl truncate drop-shadow-md">{movie.name}</p>
-                  <div className="text-xs mt-3 flex flex-wrap items-center gap-2">
-                    <span className={`font-bold px-3 py-1.5 rounded-md shadow-sm border ${isHost ? "bg-rose-600/80 border-rose-500 text-white" : "bg-fuchsia-600/80 border-fuchsia-500 text-white"}`}>
-                      {isHost ? "HOST" : "GUEST"}
-                    </span>
+                  <p className={`text-rose-50 font-black truncate drop-shadow-[0_2px_10px_rgba(255,255,255,0.3)] ${compact ? "text-base" : "text-xl lg:text-3xl"}`}>{movie.name}</p>
+                  <div className={`flex flex-wrap items-center ${compact ? "gap-1.5 mt-1.5" : "gap-2 mt-3"}`}>
+                    {!isPreview && (
+                      <span className={`font-bold rounded-md shadow-sm border ${compact ? "px-2 py-0.5 text-[10px]" : "px-3 py-1.5 text-xs"} ${isHost ? "bg-rose-600/80 border-rose-500 text-white" : "bg-fuchsia-600/80 border-fuchsia-500 text-white"}`}>
+                        {isHost ? "HOST" : "GUEST"}
+                      </span>
+                    )}
                     {episodes.length > 1 && (
                       <>
                         <span className="text-rose-400/50">•</span>
@@ -393,14 +433,16 @@ export function WatchRoom({
 
           {/* Right Column: Chat */}
           {showChat && (
-            <div className="w-full xl:w-[400px] flex-[1] flex-shrink-0 flex flex-col">
-              <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-xl sm:rounded-2xl lg:rounded-3xl shadow-2xl flex flex-col h-[500px] xl:h-full overflow-hidden relative">
+            <div className={`w-full flex-[1] flex-shrink-0 flex flex-col ${compact ? "h-[300px]" : "xl:w-[400px]"}`}>
+              <div className={`bg-white/[0.03] backdrop-blur-xl border border-white/10 shadow-2xl flex flex-col overflow-hidden relative ${compact ? "rounded-xl h-full" : "rounded-2xl lg:rounded-3xl h-[500px] xl:h-full"}`}>
                 {/* Chat header */}
-                <div className="px-5 py-4 border-b border-white/10 flex-shrink-0 bg-gradient-to-r from-white/[0.05] to-transparent">
-                  <h3 className="text-rose-100 font-black text-base">💬 Trò chuyện</h3>
-                  <p className="text-rose-300/80 text-xs mt-1 font-medium">
-                    {isHost ? "Chỉ Host mới điều khiển phim" : "Yêu cầu Host để tua/dừng"}
-                  </p>
+                <div className={`border-b border-white/10 flex-shrink-0 bg-gradient-to-r from-white/[0.05] to-transparent ${compact ? "px-3 py-2" : "px-5 py-4"}`}>
+                  <h3 className={`text-rose-100 font-black ${compact ? "text-sm" : "text-base"}`}>💬 Trò chuyện</h3>
+                  {!isPreview && (
+                    <p className={`text-rose-300/80 font-medium ${compact ? "text-[10px] mt-0.5" : "text-xs mt-1"}`}>
+                      {isHost ? "Chỉ Host mới điều khiển phim" : "Yêu cầu Host để tua/dừng"}
+                    </p>
+                  )}
                 </div>
 
                 {/* Messages */}
@@ -429,19 +471,19 @@ export function WatchRoom({
                 </div>
 
                 {/* Input */}
-                <form onSubmit={sendChat} className="flex-shrink-0 flex gap-2 p-4 border-t border-white/10 bg-black/20">
+                <form onSubmit={sendChat} className={`flex-shrink-0 flex border-t border-white/10 bg-black/20 ${compact ? "p-2 gap-1.5" : "p-4 gap-2"}`}>
                   <input
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
                     placeholder="Nhắn gì đó..."
-                    className="flex-1 min-w-0 bg-white/5 border border-white/10 rounded-full px-5 py-3 text-sm text-white placeholder:text-white/40 outline-none focus:border-rose-500 focus:bg-white/10 transition-all shadow-inner"
+                    className={`flex-1 min-w-0 bg-pink-50 border border-pink-200 rounded-full text-rose-950 placeholder:text-rose-400 outline-none focus:border-rose-400 focus:bg-white transition-all shadow-inner font-medium ${compact ? "px-3 py-1.5 text-xs" : "px-5 py-3 text-sm"}`}
                   />
                   <button
                     type="submit"
                     disabled={!chatInput.trim()}
-                    className="flex-shrink-0 w-11 h-11 rounded-full bg-gradient-to-br from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 disabled:opacity-40 flex items-center justify-center text-white transition-all shadow-[0_4px_12px_rgba(225,29,72,0.4)] disabled:shadow-none"
+                    className={`flex-shrink-0 rounded-full bg-gradient-to-br from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 disabled:opacity-40 flex items-center justify-center text-white transition-all shadow-[0_4px_12px_rgba(225,29,72,0.4)] disabled:shadow-none ${compact ? "w-8 h-8" : "w-11 h-11"}`}
                   >
-                    <Send size={18} className="-ml-0.5" />
+                    <Send size={compact ? 14 : 18} className="-ml-0.5" />
                   </button>
                 </form>
               </div>
@@ -451,16 +493,16 @@ export function WatchRoom({
 
         {/* ── BOTTOM ROW: Suggested Movies ── */}
         {isHost && suggestedMovies.length > 0 && onChangeMovie && (
-          <div className="w-full bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-xl sm:rounded-2xl lg:rounded-3xl shadow-2xl p-5 mb-10">
-            <p className="text-white text-lg font-black mb-4 flex items-center gap-3">
-              <span className="w-1.5 h-6 bg-rose-600 rounded-full inline-block"></span>
+          <div className={`w-full bg-slate-900/50 backdrop-blur-xl border border-white/10 shadow-2xl mb-10 ${compact ? "rounded-xl p-3" : "rounded-2xl lg:rounded-3xl p-5"}`}>
+            <p className={`text-rose-50 font-black flex items-center gap-2 drop-shadow-[0_2px_10px_rgba(255,255,255,0.3)] ${compact ? "text-sm mb-3" : "text-lg mb-4 gap-3"}`}>
+              <span className={`bg-rose-600 rounded-full inline-block ${compact ? "w-1 h-4" : "w-1.5 h-6"}`}></span>
               Phim đề xuất cho bạn
             </p>
             <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar custom-scrollbar snap-x">
               {suggestedMovies.map((m) => (
                 <div
                   key={m._id}
-                  onClick={() => onChangeMovie(m)}
+                  onClick={() => { playClick(); onChangeMovie(m); }}
                   className="flex-shrink-0 w-36 lg:w-44 cursor-pointer group snap-start"
                 >
                   <div className="w-full aspect-[2/3] rounded-xl overflow-hidden shadow-lg mb-3 relative border border-white/10 ring-1 ring-black/50">

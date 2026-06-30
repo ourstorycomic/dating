@@ -14,7 +14,7 @@ export default async function LoginPage({
   const { next = "/dashboard", error } = await searchParams;
 
   return (
-    <div className="grid min-h-screen place-items-center px-4 py-8 text-white">
+    <div className="grid min-h-screen place-items-center px-4 py-8 text-white bg-[#05020a]">
       <GlassCard glow hover={false} className="w-full max-w-md p-5 sm:p-6">
         <h1 className="text-3xl font-bold">Đăng nhập</h1>
 

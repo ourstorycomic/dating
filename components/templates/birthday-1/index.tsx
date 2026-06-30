@@ -385,6 +385,7 @@ function BirthdayScene({
 
       <div className="absolute inset-0 z-10">
         <Canvas
+          resize={{ offsetSize: true }}
           camera={{ fov: 42, position: [0, 0.35, 2.65] }}
           shadows
           gl={{ alpha: false, antialias: true }}
@@ -550,28 +551,30 @@ function BirthdayScene({
 
 export function BirthdayMagicExperience(props: BirthdayMagicExperienceProps) {
   return (
-    <div className="absolute inset-0 overflow-hidden bg-[#16081d]">
-      <BirthdayScene
-        age={props.age || 20}
-        finalMessage={props.birthdayMessage || "Happy Birthday!"}
-        memories={props.memories || []}
-        messages={props.birthdayMessage ? [
-          "Chúc cậu tuổi mới ngập tràn niềm vui và hạnh phúc! ✨",
-          "Mong rằng mọi điều ước hôm nay đều sẽ thành sự thật! 💖",
-          "Hãy trân trọng từng giây phút ngọt ngào này nhé! 🥰",
-          "Và giờ... hãy đón nhận món quà bí mật tiếp theo! 🎁",
-        ] : [
-          "Chúc cậu tuổi mới ngập tràn niềm vui và hạnh phúc! ✨",
-          "Mong rằng mọi điều ước hôm nay đều sẽ thành sự thật! 💖",
-          "Hãy trân trọng từng giây phút ngọt ngào này nhé! 🥰",
-          "Và giờ... hãy đón nhận món quà bí mật tiếp theo! 🎁",
-        ]}
-        musicUrl={props.musicUrl}
-        recipientName={props.recipientName || "Bạn"}
-        compact={props.compact}
-        autoPlay={props.autoPlay}
-        isBuilderPreview={props.isBuilderPreview}
-      />
+    <div className="relative h-full w-full overflow-hidden bg-black font-sans selection:bg-pink-500/30">
+      <div className="absolute inset-0 w-full h-full">
+        <BirthdayScene
+          age={props.age || 20}
+          finalMessage={props.birthdayMessage || "Happy Birthday!"}
+          memories={props.memories || []}
+          messages={props.birthdayMessage ? [
+            "Chúc cậu tuổi mới ngập tràn niềm vui và hạnh phúc! ✨",
+            "Mong rằng mọi điều ước hôm nay đều sẽ thành sự thật! 💖",
+            "Hãy trân trọng từng giây phút ngọt ngào này nhé! 🥰",
+            "Và giờ... hãy đón nhận món quà bí mật tiếp theo! 🎁",
+          ] : [
+            "Chúc cậu tuổi mới ngập tràn niềm vui và hạnh phúc! ✨",
+            "Mong rằng mọi điều ước hôm nay đều sẽ thành sự thật! 💖",
+            "Hãy trân trọng từng giây phút ngọt ngào này nhé! 🥰",
+            "Và giờ... hãy đón nhận món quà bí mật tiếp theo! 🎁",
+          ]}
+          musicUrl={props.musicUrl}
+          recipientName={props.recipientName || "Bạn"}
+          compact={props.compact}
+          autoPlay={props.autoPlay}
+          isBuilderPreview={props.isBuilderPreview}
+        />
+      </div>
     </div>
   );
 }

@@ -23,7 +23,7 @@ const APOLOGY_DATA = {
     "/assets/lovepics/2.jpg",
     "/assets/lovepics/3.jpg"
   ],
-  letter: "Anh biết lỗi rồi. Anh đã quá vô tâm và trẻ con. Anh hứa sẽ không bao giờ như vậy nữa. Tha lỗi cho anh nha, chiều nay tớ qua đón đi ăn đền tội, chịu không? ❤️",
+  letter: "Anh biết lỗi rồi. Anh đã quá vô tâm và trẻ con. Anh hứa sẽ không bao giờ như vậy nữa. Tha lỗi cho anh nha, chiều nay anh qua đón đi ăn đền tội, chịu không?",
   choiceTitle: "Trả lời thế nào đây?",
   acceptText: "ĐỒNG Ý (CÓ TRÀ SỮA) 🧋",
   rejectText: "KHÔNG THA 😤",
@@ -492,7 +492,7 @@ function Step3DinoRun({ onNext, autoPlay, config }: { onNext: () => void; autoPl
                 obs.emoji = ''; // Hide heart
                 st.score += 1;
                 setScore(st.score);
-                if (st.score >= 5 && !st.isWon) {
+                if (st.score >= 3 && !st.isWon) {
                    st.isWon = true;
                    setGameState("won");
                    setTimeout(onNext, 2500);
@@ -637,7 +637,7 @@ function Step3DinoRun({ onNext, autoPlay, config }: { onNext: () => void; autoPl
       }}
     >
       <div className="absolute top-10 right-10 text-lg font-bold bg-pink-200/50 text-pink-700 px-3 py-1 rounded-full backdrop-blur-sm shadow-sm z-20 flex items-center gap-1">
-        ❤️ {score}/5
+        ❤️ {score}/3
       </div>
       
       <div className="absolute bottom-10 w-full flex justify-center gap-4 z-20 opacity-80 text-xs px-6">

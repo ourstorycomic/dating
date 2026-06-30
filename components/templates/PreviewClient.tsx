@@ -170,9 +170,11 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                           className="shrink-0 relative w-[80px] h-[140px] rounded-2xl overflow-hidden border-2 border-pink-100 hover:border-pink-400 hover:shadow-[0_10px_20px_-5px_rgba(255,192,203,0.5)] transition-all group snap-start bg-white"
                         >
                           {/* Scaled down interactive preview as thumbnail */}
-                          <div className="absolute top-0 left-0 origin-top-left w-[320px] h-[560px] pointer-events-none" style={{ transform: "scale(0.25)" }}>
+                          <div className="absolute top-0 left-0 origin-top-left w-[320px] h-[560px] pointer-events-none bg-[#05020a]" style={{ transform: "scale(0.25)" }}>
                             <InteractiveTemplatePreview
                               compact
+                              noFrame
+                              isBuilderPreview
                               componentKey={relTemplate.component_key}
                               gradient={relTemplate.gradient}
                               visualLabel={relTemplate.visual_label}
@@ -190,7 +192,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
             </div>
 
             {/* Right Column: The Phone / PC Preview */}
-            <div className="shrink-0 flex flex-col items-center justify-center relative">
+            <div className="shrink-0 flex flex-col items-center justify-start relative pt-8">
                
                {/* Mode Toggles */}
                <div className="flex items-center bg-white rounded-full p-1.5 border-2 border-pink-100 shadow-md mb-6 relative z-20">
@@ -212,29 +214,26 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
 
                {/* Scaled Preview Frame */}
                <div 
-                 className="relative"
-                 style={mode === "mobile" ? { 
-                   width: `${380 * phoneScale}px`, 
-                   height: `${780 * phoneScale}px` 
-                 } : {
-                   width: `${800 * Math.min(1, phoneScale * 1.2)}px`,
-                   height: `${600 * Math.min(1, phoneScale * 1.2)}px`
+                 className="relative shrink-0 flex items-center justify-center"
+                 style={{ 
+                   width: (mode === "mobile" ? 380 : 800) * (mode === "mobile" ? phoneScale : Math.min(1, phoneScale * 1.2)), 
+                   height: (mode === "mobile" ? 780 : 600) * (mode === "mobile" ? phoneScale : Math.min(1, phoneScale * 1.2)),
                  }}
                >
                  <div
-                   className="absolute top-0 left-0 origin-top-left"
-                   style={mode === "mobile" ? {
-                     transform: `scale(${phoneScale})`,
-                     width: '380px',
-                     height: '780px'
-                   } : {
-                     transform: `scale(${Math.min(1, phoneScale * 1.2)})`,
-                     width: '800px',
-                     height: '600px'
+                   className="absolute top-0 left-0 origin-top-left transition-all duration-300"
+                   style={{ 
+                     width: mode === "mobile" ? '380px' : '800px', 
+                     height: mode === "mobile" ? '780px' : '600px',
+                     transform: `scale(${mode === "mobile" ? phoneScale : Math.min(1, phoneScale * 1.2)})`,
                    }}
                  >
+                   <div className="relative w-full h-full">
                    {mode === "mobile" ? (
-                     <div className="w-full h-full rounded-[3.5rem] shadow-[0_30px_80px_-20px_rgba(255,192,203,0.8)] border-[16px] border-white bg-white overflow-hidden ring-4 ring-pink-100 flex flex-col relative z-20">
+                     <div 
+                       className="w-full h-full rounded-[3.5rem] shadow-[0_30px_80px_-20px_rgba(255,192,203,0.8)] border-[16px] border-white bg-white overflow-hidden ring-4 ring-pink-100 flex flex-col relative z-20"
+                       style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)', isolation: 'isolate' }}
+                     >
                        <InteractiveTemplatePreview
                          compact={true}
                          isBuilderPreview={true}
@@ -251,7 +250,10 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                        />
                      </div>
                    ) : (
-                     <div className="w-full h-full rounded-[2rem] shadow-[0_30px_80px_-20px_rgba(255,192,203,0.8)] border-[12px] border-white bg-white overflow-hidden ring-4 ring-pink-100 flex flex-col relative z-20">
+                     <div 
+                       className="w-full h-full rounded-[2rem] shadow-[0_30px_80px_-20px_rgba(255,192,203,0.8)] border-[12px] border-white bg-white overflow-hidden ring-4 ring-pink-100 flex flex-col relative z-20"
+                       style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)', isolation: 'isolate' }}
+                     >
                        <InteractiveTemplatePreview
                          compact={false}
                          isBuilderPreview={true}
@@ -270,9 +272,9 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                    )}
                  </div>
                </div>
-               
+              </div>
             </div>
-         </div>
+            </div>
       </main>
 
       <MessengerButton />

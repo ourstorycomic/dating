@@ -39,17 +39,10 @@ export function Stage4MeteorMic({
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
 
-  const startMicListener = async () => {
+  const startRecording = async () => {
     try {
+      if (recorderRef.current && recorderRef.current.state === "recording") return;
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const analyser = audioContextRef.current.createAnalyser();
-      const source = audioContextRef.current.createMediaStreamSource(stream);
-      source.connect(analyser);
-      analyser.fftSize = 256;
-      const bufferLength = analyser.frequencyBinCount;
-      const dataArray = new Uint8Array(bufferLength);
-
       chunksRef.current = [];
       const recorder = new MediaRecorder(stream);
       recorderRef.current = recorder;
@@ -66,47 +59,20 @@ export function Stage4MeteorMic({
           onRecord?.(url);
         };
         reader.readAsDataURL(blob);
+        stream.getTracks().forEach(t => t.stop());
       };
 
       recorder.start();
-
-      setTimeout(() => {
-        if (recorder.state === "recording") {
-          setBlown(true);
-          recorder.stop();
-          stream.getTracks().forEach(t => t.stop());
-          if (audioContextRef.current && audioContextRef.current.state !== 'closed') audioContextRef.current.close();
-        }
-      }, 30000);
-
-      let blownFrames = 0;
-      const checkVolume = () => {
-        if (blown) return;
-        analyser.getByteFrequencyData(dataArray);
-        let sum = 0;
-        for(let i = 0; i < bufferLength; i++) { sum += dataArray[i]; }
-        const avg = sum / bufferLength;
-        
-        if (avg > 70) { 
-          blownFrames++;
-        } else {
-          blownFrames = 0;
-        }
-
-        // Require 15 consecutive frames (about 250ms) of high volume
-        if (blownFrames > 15) { 
-          setBlown(true);
-          recorder.stop();
-          stream.getTracks().forEach(t => t.stop());
-          if (audioContextRef.current && audioContextRef.current.state !== 'closed') audioContextRef.current.close();
-        } else {
-          requestAnimationFrame(checkVolume);
-        }
-      };
-      checkVolume();
     } catch (e) {
       console.warn("Mic auth failed, falling back.");
     }
+  };
+
+  const stopRecording = () => {
+    if (recorderRef.current && recorderRef.current.state === "recording") {
+      recorderRef.current.stop();
+    }
+    setBlown(true);
   };
 
   useEffect(() => {
@@ -126,18 +92,17 @@ export function Stage4MeteorMic({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoPlay, caught, blown]);
 
+  const [isHolding, setIsHolding] = useState(false);
+
   useEffect(() => {
     if (caught && !blown && !autoPlay) {
-      startMicListener();
+      // Don't auto start. Wait for user to hold.
     }
   }, [caught, blown, autoPlay]);
 
   const handleCatch = () => {
     setCaught(true);
     if (navigator.vibrate) navigator.vibrate(50);
-    if (!autoPlay) {
-      startMicListener();
-    }
   };
 
   return (
@@ -224,8 +189,24 @@ export function Stage4MeteorMic({
               <p className="text-[15px] text-white/80 leading-relaxed">
                 <span style={{ color: accent }}>{micInstruction}</span>
               </p>
-              <button onClick={() => setBlown(true)} className="mt-10 px-6 py-2 text-xs text-white/50 border border-white/20 rounded-full bg-white/5 hover:bg-white/10 transition">
-                {fallbackButton}
+              <button 
+                onPointerDown={() => {
+                  setIsHolding(true);
+                  startRecording();
+                }}
+                onPointerUp={() => {
+                  setIsHolding(false);
+                  stopRecording();
+                }}
+                onPointerLeave={() => {
+                  if (isHolding) {
+                    setIsHolding(false);
+                    stopRecording();
+                  }
+                }}
+                className={`mt-10 px-8 py-4 text-sm font-bold text-white rounded-full transition-all shadow-[0_0_30px_rgba(236,72,153,0.5)] touch-none select-none ${isHolding ? 'scale-95 bg-pink-600' : 'scale-100 bg-pink-500 hover:bg-pink-400 animate-pulse'}`}
+              >
+                {isHolding ? 'Đang thu âm... thả ra để gửi' : 'Giữ để thu âm'}
               </button>
             </motion.div>
           ) : (

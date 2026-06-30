@@ -135,3 +135,77 @@ export async function PATCH(request: Request) {
 
   return NextResponse.json({ ok: true, user });
 }
+
+export async function DELETE(request: Request) {
+  const session = await getSession();
+  if (!session || session.role !== "ADMIN") {
+    return NextResponse.json({ error: "Chỉ admin mới được xóa nhân sự." }, { status: 403 });
+  }
+
+  const { searchParams } = new URL(request.url);
+  const userId = searchParams.get("id");
+  if (!userId) return NextResponse.json({ error: "Thiếu ID nhân sự." }, { status: 400 });
+
+  const supabase = createServerSupabaseClient();
+  
+  const { data: profile } = await supabase.from("users").select("auth_user_id, name").eq("id", userId).single();
+  if (!profile) return NextResponse.json({ error: "Không tìm thấy nhân sự." }, { status: 404 });
+
+  if (profile.auth_user_id) {
+    const adminAuthClient = createClient(supabaseUrl!, serviceRoleKey!, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+    await adminAuthClient.auth.admin.deleteUser(profile.auth_user_id);
+  }
+
+  const { error } = await supabase.from("users").delete().eq("id", userId);
+  if (error) return NextResponse.json({ error: "Không xóa được hồ sơ." }, { status: 500 });
+
+  await supabase.from("order_logs").insert({
+    action: "USER_DELETED",
+    actor_id: session.userId,
+    metadata: { targetUserId: userId, name: profile.name },
+  });
+
+  return NextResponse.json({ ok: true });
+}
+
+export async function PUT(request: Request) {
+  const session = await getSession();
+  if (!session || session.role !== "ADMIN") {
+    return NextResponse.json({ error: "Chỉ admin mới được đổi mật khẩu." }, { status: 403 });
+  }
+
+  const body = await request.json();
+  const userId = String(body.userId || "");
+  const password = String(body.password || "");
+
+  if (!userId || password.length < 6) {
+    return NextResponse.json({ error: "Thiếu ID hoặc mật khẩu quá ngắn." }, { status: 400 });
+  }
+
+  const supabase = createServerSupabaseClient();
+  const { data: profile } = await supabase.from("users").select("auth_user_id").eq("id", userId).single();
+  
+  if (!profile?.auth_user_id) {
+    return NextResponse.json({ error: "Không tìm thấy tài khoản auth." }, { status: 404 });
+  }
+
+  const adminAuthClient = createClient(supabaseUrl!, serviceRoleKey!, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+
+  const { error } = await adminAuthClient.auth.admin.updateUserById(profile.auth_user_id, { password });
+
+  if (error) {
+    return NextResponse.json({ error: "Không đổi được mật khẩu." }, { status: 500 });
+  }
+
+  await supabase.from("order_logs").insert({
+    action: "USER_PASSWORD_CHANGED",
+    actor_id: session.userId,
+    metadata: { targetUserId: userId },
+  });
+
+  return NextResponse.json({ ok: true });
+}

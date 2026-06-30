@@ -72,9 +72,13 @@ export async function POST(request: Request) {
     }
   }
 
-  const amount = Number(finalTemplate?.base_price || 0);
-  if (!amount || amount <= 0) {
-    return NextResponse.json({ error: "Giá template không hợp lệ." }, { status: 400 });
+  // Cho phép client truyền giá (dùng cho các gói dịch vụ khác nhau)
+  const amount = body.amount && Number(body.amount) >= 2000 
+    ? Number(body.amount) 
+    : Number(finalTemplate?.base_price || 0);
+
+  if (!amount || amount < 2000) {
+    return NextResponse.json({ error: "Giá không hợp lệ (tối thiểu 2,000đ)." }, { status: 400 });
   }
 
   const publicId = randomCode("LOVE");

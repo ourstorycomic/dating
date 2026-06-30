@@ -146,7 +146,7 @@ export function Stage3InfinityVoice({
             >
               {/* Real Video Player */}
               <div className="relative aspect-video bg-black flex items-center justify-center overflow-hidden">
-                <MediaFrame alt="Ảnh hoặc video sau khi nối chòm sao" mediaType={mediaType || "video/mp4"} src={mediaUrl || "https://www.w3schools.com/html/mov_bbb.mp4"} />
+                <MediaFrame alt="Ảnh sau khi nối chòm sao" mediaType={mediaType || "image/jpeg"} src={mediaUrl || "/assets/lovepics/3.jpg"} />
               </div>
             </motion.div>
             <button onClick={onNext} className="px-8 py-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold transition">

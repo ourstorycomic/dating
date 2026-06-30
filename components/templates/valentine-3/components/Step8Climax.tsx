@@ -87,7 +87,7 @@ export function Step8Climax({ onResponse, autoPlay = false }: { onResponse?: (re
         <>
           <div className="mt-20 text-center">
             <h2 className="text-3xl font-black text-rose-600 mb-4 drop-shadow-sm">Thế tóm lại là...</h2>
-            <p className="text-rose-500 font-semibold text-lg">Cậu có chịu làm người yêu tớ không? 🥺</p>
+            <p className="text-rose-500 font-semibold text-lg">Cuối tuần này cậu có rảnh không, đi chơi với tớ nhé? 🥺</p>
           </div>
 
           <div className="relative flex-1 w-full mt-12">

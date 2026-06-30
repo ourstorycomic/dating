@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Play, Star, ChevronLeft, ChevronRight, Film, SlidersHorizontal, Check } from "lucide-react";
 import type { MovieData } from "../Valentine2WatchParty";
+import { playClick, playSwoosh } from "./soundFX";
 
 const ITEMS_PER_PAGE = 24;
 
@@ -59,6 +60,7 @@ export function Step7Lobby({ onSelectMovie, compact: propCompact, fullScreen, au
   }, []);
 
   const handleSearch = () => {
+    playClick();
     if (!keyword.trim()) {
       setIsSearchMode(false);
       setPage(1);
@@ -71,6 +73,7 @@ export function Step7Lobby({ onSelectMovie, compact: propCompact, fullScreen, au
   };
   const goToPage = (p: number) => {
     if (p < 1 || p > totalPages) return;
+    playClick();
     setPage(p);
     if (isSearchMode) {
       fetchMovies({ searchQuery: keyword, pg: p });
@@ -204,7 +207,7 @@ export function Step7Lobby({ onSelectMovie, compact: propCompact, fullScreen, au
                   key={movie._id}
                   whileHover={{ scale: 1.03, y: -4 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => onSelectMovie(movie)}
+                  onClick={() => { playSwoosh(); onSelectMovie(movie); }}
                   className="relative rounded-2xl overflow-hidden cursor-pointer group aspect-[2/3] bg-white/5 shadow-xl shadow-rose-900/10 border border-white/40 ring-1 ring-inset ring-white/20"
                 >
                   <img

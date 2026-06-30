@@ -34,6 +34,7 @@ const permissionOptions = [
   { key: "logs:delete", label: "Xóa nhật ký" },
   { key: "analytics:view", label: "Xem thống kê" },
   { key: "commissions:edit", label: "Chỉnh hoa hồng" },
+  { key: "templates:edit", label: "Quản lý kho template" },
 ];
 
 const emptyForm = {
@@ -100,7 +101,7 @@ function mergeRoles(initialRoles: CustomRole[]) {
 }
 
 function inferBaseRole(permissions: string[]) {
-  if (permissions.includes("users:edit") || permissions.includes("logs:delete") || permissions.includes("commissions:edit")) {
+  if (permissions.includes("users:edit") || permissions.includes("logs:delete") || permissions.includes("commissions:edit") || permissions.includes("templates:edit")) {
     return "ADMIN";
   }
 

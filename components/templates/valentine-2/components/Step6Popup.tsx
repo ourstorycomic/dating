@@ -3,6 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { Ticket } from "lucide-react";
 import { FloatingParticles } from "./FloatingParticles";
+import { playPop, playTada, playSwoosh } from "./soundFX";
+import { Dancing_Script } from "next/font/google";
+
+const dancingScriptFont = Dancing_Script({ subsets: ["latin", "vietnamese"], weight: ["400", "700"], variable: "--font-dancing" });
 
 export function Step6Popup({ confession, onComplete, compact, autoPlay = false, eggColor = "from-pink-400 to-rose-500" }: { confession: string; onComplete: () => void; compact?: boolean; autoPlay?: boolean; eggColor?: string }) {
   const [noHoverCount, setNoHoverCount] = useState(0);
@@ -20,9 +24,10 @@ export function Step6Popup({ confession, onComplete, compact, autoPlay = false, 
 
   useEffect(() => {
     if (phase === 0) {
+      playSwoosh();
       setTimeout(() => setPhase(0.5), 1000);
     } else if (phase === 0.5) {
-      setTimeout(() => setPhase(1), 1800);
+      setTimeout(() => { playTada(); setPhase(1); }, 1800);
     } else if (phase === 1) {
       setTimeout(() => setPhase(2), 2200);
     } else if (phase === 2) {
@@ -52,6 +57,7 @@ export function Step6Popup({ confession, onComplete, compact, autoPlay = false, 
   const handleNoHover = () => {
     if (isMoving.current) return;
     isMoving.current = true;
+    playPop();
     setTimeout(() => { isMoving.current = false; }, 80);
 
     const side = Math.random() > 0.5 ? 1 : -1;
@@ -64,6 +70,7 @@ export function Step6Popup({ confession, onComplete, compact, autoPlay = false, 
 
   const handleAccept = () => {
     setPhase(3); // Phase 3: Accepted -> show ticket
+    playTada();
     if (!compact && canvasRef.current) {
       const myConfetti = confetti.create(canvasRef.current, { resize: true, useWorker: true });
       myConfetti({ particleCount: 100, spread: 120, origin: { y: 0.8 }, colors: ['#f43f5e', '#ec4899', '#fbcfe8'], gravity: 0.3, ticks: 300 });
@@ -86,11 +93,14 @@ export function Step6Popup({ confession, onComplete, compact, autoPlay = false, 
 
   return (
     <motion.div 
-      className="absolute inset-0 flex flex-col items-center justify-center p-6 z-20 bg-slate-900/80 backdrop-blur-sm [perspective:1500px]"
+      className={`absolute inset-0 flex flex-col items-center justify-center p-6 z-20 bg-slate-900/80 backdrop-blur-sm [perspective:1500px] ${dancingScriptFont.variable}`}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, transition: { duration: 1.5, ease: "easeInOut" } }}
     >
+      <style>{`
+        .font-\\[Dancing_Script\\] { font-family: var(--font-dancing) !important; }
+      `}</style>
       <FloatingParticles />
       <canvas ref={canvasRef} className="absolute inset-0 z-50 pointer-events-none w-full h-full" />
 

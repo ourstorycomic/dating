@@ -56,6 +56,7 @@ export function UserManager({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
+  const [passwordModal, setPasswordModal] = useState<{ open: boolean; userId: string; newPassword: string }>({ open: false, userId: "", newPassword: "" });
   const router = useRouter();
 
   const activeRoles = useMemo(() => initialRoles.filter((role) => role.is_active), [initialRoles]);
@@ -143,6 +144,52 @@ export function UserManager({
     router.refresh();
   }
 
+  async function deleteUser(user: UserRow) {
+    if (!confirm(`Xóa nhân sự ${user.name}? Hành động này không thể hoàn tác.`)) return;
+    
+    setSaving(true);
+    setError("");
+    
+    const response = await fetch(`/api/admin/users?id=${user.id}`, { method: "DELETE" });
+    const data = await response.json().catch(() => ({}));
+    
+    setSaving(false);
+    
+    if (!response.ok) {
+      alert(data.error ?? "Không xóa được nhân sự.");
+      return;
+    }
+    
+    setUsers((current) => current.filter((item) => item.id !== user.id));
+    router.refresh();
+  }
+
+  async function changePassword() {
+    if (passwordModal.newPassword.length < 6) {
+      alert("Mật khẩu phải có ít nhất 6 ký tự.");
+      return;
+    }
+    
+    setSaving(true);
+    
+    const response = await fetch("/api/admin/users", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: passwordModal.userId, password: passwordModal.newPassword }),
+    });
+    const data = await response.json();
+    
+    setSaving(false);
+    
+    if (!response.ok) {
+      alert(data.error ?? "Không đổi được mật khẩu.");
+      return;
+    }
+    
+    alert("Đổi mật khẩu thành công!");
+    setPasswordModal({ open: false, userId: "", newPassword: "" });
+  }
+
   return (
     <div className="grid gap-6">
       <header className="glass-panel rounded-2xl p-5 sm:p-6">
@@ -180,6 +227,7 @@ export function UserManager({
                 <th className="px-5 py-4 font-medium">Quản lý</th>
                 <th className="px-5 py-4 font-medium">Trạng thái</th>
                 <th className="px-5 py-4 font-medium">Ngày tạo</th>
+                {currentRole === "ADMIN" && <th className="px-5 py-4 font-medium text-right">Hành động</th>}
               </tr>
             </thead>
             <tbody>
@@ -254,6 +302,24 @@ export function UserManager({
                       )}
                     </td>
                     <td className="px-5 py-4 text-white/58">{new Date(user.created_at).toLocaleString("vi-VN")}</td>
+                    {currentRole === "ADMIN" && (
+                      <td className="px-5 py-4 text-right">
+                        <div className="flex justify-end gap-2">
+                          <button
+                            onClick={() => setPasswordModal({ open: true, userId: user.id, newPassword: "" })}
+                            className="rounded-lg bg-white/10 px-3 py-1.5 text-xs font-medium hover:bg-white/20 transition"
+                          >
+                            Đổi MK
+                          </button>
+                          <button
+                            onClick={() => deleteUser(user)}
+                            className="rounded-lg bg-red-500/20 px-3 py-1.5 text-xs font-medium text-red-200 hover:bg-red-500/40 transition"
+                          >
+                            Xóa
+                          </button>
+                        </div>
+                      </td>
+                    )}
                   </tr>
                 );
               })}
@@ -328,6 +394,33 @@ export function UserManager({
                 type="button"
               >
                 {saving ? "Đang tạo..." : "Tạo tài khoản"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {passwordModal.open ? (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 backdrop-blur-sm p-4" onMouseDown={() => setPasswordModal({ open: false, userId: "", newPassword: "" })}>
+          <div className="w-full max-w-sm overflow-hidden rounded-3xl border border-pink-200 bg-pink-50 text-pink-950 shadow-2xl" onMouseDown={(event) => event.stopPropagation()}>
+            <div className="flex items-center justify-between border-b border-pink-200 p-5">
+              <h2 className="text-xl font-semibold text-pink-900">Đổi mật khẩu</h2>
+              <button className="text-pink-400 hover:text-pink-700 transition" onClick={() => setPasswordModal({ open: false, userId: "", newPassword: "" })}>Đóng</button>
+            </div>
+            <div className="grid gap-4 p-5">
+              <Input 
+                label="Mật khẩu mới" 
+                type="password" 
+                onChange={(v) => setPasswordModal(curr => ({ ...curr, newPassword: v }))} 
+                value={passwordModal.newPassword} 
+              />
+              <button
+                className="mt-2 rounded-full bg-gradient-to-r from-pink-400 to-fuchsia-400 px-5 py-3 text-sm font-semibold text-white disabled:opacity-50"
+                disabled={saving}
+                onClick={changePassword}
+                type="button"
+              >
+                {saving ? "Đang xử lý..." : "Xác nhận đổi"}
               </button>
             </div>
           </div>

@@ -131,8 +131,9 @@ export function Stage5Supernova({
           {/* Scroll Hợp đồng */}
           <div className="w-full bg-orange-50 p-8 rounded-b-3xl rounded-t-sm shadow-2xl relative border-t-8 border-orange-200 text-slate-800">
             <div className="absolute top-0 inset-x-0 h-full bg-[url('https://www.transparenttextures.com/patterns/aged-paper.png')] opacity-50 pointer-events-none" />
-            <h2 className="text-2xl font-black text-center mb-6 uppercase tracking-widest text-amber-950 drop-shadow-none">{contractTitle}</h2>
-            <p className="font-serif text-lg leading-relaxed text-center mb-8 font-medium text-slate-800 whitespace-pre-wrap">
+            <div className="absolute top-0 inset-x-0 h-full bg-[url('https://www.transparenttextures.com/patterns/aged-paper.png')] opacity-50 pointer-events-none" />
+            <h2 className="text-2xl font-black text-center mb-6 uppercase tracking-widest drop-shadow-none" style={{ color: '#451a03' }}>{contractTitle}</h2>
+            <p className="font-serif text-lg leading-relaxed text-center mb-8 font-medium whitespace-pre-wrap" style={{ color: '#0f172a' }}>
               {contractBody}
             </p>
 
@@ -159,7 +160,7 @@ export function Stage5Supernova({
                   {/* Quét radar line */}
                   {holding && <motion.div className="absolute inset-x-0 h-1 bg-red-500 shadow-[0_0_10px_red]" animate={{ y: [-40, 40, -40] }} transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }} />}
                 </div>
-                <p className="text-center text-xs font-bold mt-4 uppercase tracking-widest text-red-600 drop-shadow-none">{contractHoldInstruction}</p>
+                <p className="text-center text-xs font-bold mt-4 uppercase tracking-widest drop-shadow-none" style={{ color: '#dc2626' }}>{contractHoldInstruction}</p>
                 
                 {/* Progress Circle (around the fingerprint) */}
                 <svg className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-24 pointer-events-none transform -rotate-90">
