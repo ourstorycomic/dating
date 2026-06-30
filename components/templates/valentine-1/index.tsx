@@ -180,8 +180,14 @@ export function ConstellationVaultExperience({
     }
   }, [forceStage]);
 
+  // If it's on the homepage catalog (compact and not builder preview), we must mute it
+  // so the BotAutoPlayer doesn't cause a cacophony of sounds.
+  const isMuted = compact && !isBuilderPreview && !autoPlay;
+
   const changeStage = (newStage: number) => {
-    playSwoosh();
+    if (!isMuted) {
+      playSwoosh();
+    }
     setStage(newStage);
   };
 
@@ -221,8 +227,8 @@ export function ConstellationVaultExperience({
     <div className={`template-preview-surface relative ${fullScreen ? "w-full min-h-[640px] sm:min-h-[85vh] rounded-2xl" : compact ? "min-h-56 h-full" : "min-h-[640px] h-full sm:h-[800px] sm:max-h-[85vh] sm:rounded-2xl border border-white/10"} w-full overflow-hidden text-white font-sans selection:bg-pink-500/30 transition-colors duration-1000`} style={{ background: stage === 5 ? finalBackground : [stage1Background, stage2Background, stage3Background, stage4Background][stage - 1] ?? "#0a0514" }}>
       {mounted && (
         <>
-          {generalAudioUrl && <audio ref={generalAudioRef} src={generalAudioUrl} loop className="hidden" />}
-          {stage3AudioUrl && <audio ref={stage3AudioRef} src={stage3AudioUrl} className="hidden" />}
+          {generalAudioUrl && <audio ref={generalAudioRef} src={generalAudioUrl} loop className="hidden" muted={isMuted} />}
+          {stage3AudioUrl && <audio ref={stage3AudioRef} src={stage3AudioUrl} className="hidden" muted={isMuted} />}
           {/* Nền vũ trụ chung (Dạng chấm trắng mượt mà) */}
           {stage > 1 && stage < 5 && !compact && (
             <div className="absolute inset-0 pointer-events-none" style={{ background: [stage1Background, stage2Background, stage3Background, stage4Background][stage - 1] ?? "#05020a" }}>

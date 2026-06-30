@@ -64,10 +64,14 @@ export function Valentine3Diary({
 
   // Auto play music logic could be placed here if needed, but Step 1 handles user interaction
 
+  // Mute on the homepage catalog to avoid bot auto-play sounds,
+  // but allow it on the showcase preview (isBuilderPreview)
+  const isMuted = compact && !isBuilderPreview && !autoPlay;
+
   return (
     <div className={containerClass} style={{ backgroundImage: "url('/assets/bg/bg5.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
       <div className="absolute inset-0 bg-pink-50/70 backdrop-blur-[2px] pointer-events-none" />
-      {mergedData.musicUrl && <audio ref={audioRef} src={mergedData.musicUrl} loop preload="auto" muted={compact && !autoPlay} />}
+      {mergedData.musicUrl && <audio ref={audioRef} src={mergedData.musicUrl} loop preload="auto" muted={isMuted} />}
 
       {!compact && <FloatingParticles />}
 
