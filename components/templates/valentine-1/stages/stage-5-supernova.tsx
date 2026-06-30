@@ -128,12 +128,23 @@ export function Stage5Supernova({
         <motion.div className="w-full max-w-sm px-6 flex flex-col items-center relative"
           initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1 }}
         >
+          <style>{`
+            @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&display=swap');
+            #supernova-contract-container h2,
+            #supernova-contract-container p.contract-body-text {
+              color: #451a03 !important;
+              -webkit-text-fill-color: #451a03 !important;
+            }
+            #supernova-contract-container p.contract-red-text {
+              color: #dc2626 !important;
+              -webkit-text-fill-color: #dc2626 !important;
+            }
+          `}</style>
           {/* Scroll Hợp đồng */}
-          <div className="w-full bg-orange-50 p-8 rounded-b-3xl rounded-t-sm shadow-2xl relative border-t-8 border-orange-200 text-slate-800">
-            <div className="absolute top-0 inset-x-0 h-full bg-[url('https://www.transparenttextures.com/patterns/aged-paper.png')] opacity-50 pointer-events-none" />
-            <div className="absolute top-0 inset-x-0 h-full bg-[url('https://www.transparenttextures.com/patterns/aged-paper.png')] opacity-50 pointer-events-none" />
-            <h2 className="text-2xl font-black text-center mb-6 uppercase tracking-widest drop-shadow-none" style={{ color: '#451a03' }}>{contractTitle}</h2>
-            <p className="font-serif text-lg leading-relaxed text-center mb-8 font-medium whitespace-pre-wrap" style={{ color: '#0f172a' }}>
+          <div id="supernova-contract-container" className="w-full bg-orange-50 p-8 rounded-b-3xl rounded-t-sm shadow-2xl relative border-t-8 border-orange-200 text-slate-800">
+            <div className="absolute top-0 inset-x-0 h-full bg-[url('https://www.transparenttextures.com/patterns/aged-paper.png')] opacity-50 pointer-events-none z-0" />
+            <h2 className="text-3xl font-bold text-center mb-6 drop-shadow-sm relative z-10" style={{ fontFamily: "'Dancing Script', cursive" }}>{contractTitle}</h2>
+            <p className="text-2xl leading-relaxed text-center mb-8 relative z-10 font-semibold contract-body-text" style={{ fontFamily: "'Dancing Script', cursive" }}>
               {contractBody}
             </p>
 
@@ -160,7 +171,7 @@ export function Stage5Supernova({
                   {/* Quét radar line */}
                   {holding && <motion.div className="absolute inset-x-0 h-1 bg-red-500 shadow-[0_0_10px_red]" animate={{ y: [-40, 40, -40] }} transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }} />}
                 </div>
-                <p className="text-center text-xs font-bold mt-4 uppercase tracking-widest drop-shadow-none" style={{ color: '#dc2626' }}>{contractHoldInstruction}</p>
+                <p className="text-center text-sm font-bold mt-4 uppercase tracking-widest drop-shadow-none relative z-10 contract-red-text">{contractHoldInstruction}</p>
                 
                 {/* Progress Circle (around the fingerprint) */}
                 <svg className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-24 pointer-events-none transform -rotate-90">

@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { Stage1Telescope, Stage2Orbit, Stage3InfinityVoice, Stage4MeteorMic, Stage5Supernova } from "./stages";
 import { TemplateNavigator } from "../TemplateNavigator";
+import { playSwoosh } from "../valentine-2/components/soundFX";
 
 export function ConstellationVaultExperience({
   senderName = "Anh",
@@ -179,6 +180,11 @@ export function ConstellationVaultExperience({
     }
   }, [forceStage]);
 
+  const changeStage = (newStage: number) => {
+    playSwoosh();
+    setStage(newStage);
+  };
+
   useEffect(() => setMounted(true), []);
 
   useEffect(() => {
@@ -215,8 +221,8 @@ export function ConstellationVaultExperience({
     <div className={`template-preview-surface relative ${fullScreen ? "w-full min-h-[640px] sm:min-h-[85vh] rounded-2xl" : compact ? "min-h-56 h-full" : "min-h-[640px] h-full sm:h-[800px] sm:max-h-[85vh] sm:rounded-2xl border border-white/10"} w-full overflow-hidden text-white font-sans selection:bg-pink-500/30 transition-colors duration-1000`} style={{ background: stage === 5 ? finalBackground : [stage1Background, stage2Background, stage3Background, stage4Background][stage - 1] ?? "#0a0514" }}>
       {mounted && (
         <>
-          {generalAudioUrl && <audio ref={generalAudioRef} src={generalAudioUrl} loop className="hidden" muted={compact && !autoPlay} />}
-          {stage3AudioUrl && <audio ref={stage3AudioRef} src={stage3AudioUrl} className="hidden" muted={compact && !autoPlay} />}
+          {generalAudioUrl && <audio ref={generalAudioRef} src={generalAudioUrl} loop className="hidden" />}
+          {stage3AudioUrl && <audio ref={stage3AudioRef} src={stage3AudioUrl} className="hidden" />}
           {/* Nền vũ trụ chung (Dạng chấm trắng mượt mà) */}
           {stage > 1 && stage < 5 && !compact && (
             <div className="absolute inset-0 pointer-events-none" style={{ background: [stage1Background, stage2Background, stage3Background, stage4Background][stage - 1] ?? "#05020a" }}>
@@ -233,17 +239,17 @@ export function ConstellationVaultExperience({
           )}
 
           <AnimatePresence mode="wait">
-            {stage === 1 && <Stage1Telescope accent={stage1Accent} connectInstruction={connectInstruction} imageUrl={stage1ImageUrl} mediaType={stage1MediaType} introSubtitle={introSubtitle} introTitle={introTitle} key="stage1" onNext={() => setStage(2)} revealBody={stage1RevealBody} revealButton={stage1RevealButton} revealTitle={stage1RevealTitle} autoPlay={autoPlay} />}
-            {stage === 2 && <Stage2Orbit accent={stage2Accent} imageCaption={stage2ImageCaption} imageUrl={stage2ImageUrl} mediaType={stage2MediaType} nextButton={stage2NextButton} key="stage2" onNext={() => setStage(3)} quote={stage2Quote} subtitle={stage2Subtitle} title={stage2Title} autoPlay={autoPlay} />}
-            {stage === 3 && <Stage3InfinityVoice accent={stage3Accent} key="stage3" mediaType={stage3MediaType} mediaUrl={stage3MediaUrl} musicLabel={stage3MusicLabel} nextButton={stage3NextButton} points={constellationPoints} messages={constellationMessages} onNext={() => setStage(4)} subtitle={stage3Subtitle} title={stage3Title} autoPlay={autoPlay} />}
-            {stage === 4 && <Stage4MeteorMic accent={stage4Accent} fallbackButton={stage4FallbackButton} imageUrl={stage4ImageUrl} mediaType={stage4MediaType} key="stage4" micInstruction={stage4MicInstruction} onNext={() => setStage(5)} prompt={stage4Prompt} revealBody={stage4RevealBody} revealButton={stage4RevealButton} revealTitle={stage4RevealTitle} onRecord={(url) => setRecordedAudio(url)} autoPlay={autoPlay} />}
+            {stage === 1 && <Stage1Telescope accent={stage1Accent} connectInstruction={connectInstruction} imageUrl={stage1ImageUrl} mediaType={stage1MediaType} introSubtitle={introSubtitle} introTitle={introTitle} key="stage1" onNext={() => changeStage(2)} revealBody={stage1RevealBody} revealButton={stage1RevealButton} revealTitle={stage1RevealTitle} autoPlay={autoPlay} />}
+            {stage === 2 && <Stage2Orbit accent={stage2Accent} imageCaption={stage2ImageCaption} imageUrl={stage2ImageUrl} mediaType={stage2MediaType} nextButton={stage2NextButton} key="stage2" onNext={() => changeStage(3)} quote={stage2Quote} subtitle={stage2Subtitle} title={stage2Title} autoPlay={autoPlay} />}
+            {stage === 3 && <Stage3InfinityVoice accent={stage3Accent} key="stage3" mediaType={stage3MediaType} mediaUrl={stage3MediaUrl} musicLabel={stage3MusicLabel} nextButton={stage3NextButton} points={constellationPoints} messages={constellationMessages} onNext={() => changeStage(4)} subtitle={stage3Subtitle} title={stage3Title} autoPlay={autoPlay} />}
+            {stage === 4 && <Stage4MeteorMic accent={stage4Accent} fallbackButton={stage4FallbackButton} imageUrl={stage4ImageUrl} mediaType={stage4MediaType} key="stage4" micInstruction={stage4MicInstruction} onNext={() => changeStage(5)} prompt={stage4Prompt} revealBody={stage4RevealBody} revealButton={stage4RevealButton} revealTitle={stage4RevealTitle} onRecord={(url) => setRecordedAudio(url)} autoPlay={autoPlay} />}
             {stage === 5 && <Stage5Supernova contractBody={contractBody} contractHoldInstruction={contractHoldInstruction} contractRejectButton={contractRejectButton} contractTitle={contractTitle} finalAccent={finalAccent} finalBackground={finalBackground} finalCta={finalCta} finalSubtitle={finalSubtitle} finalTitle={finalTitle} giftAcceptButton={giftAcceptButton} giftAcceptedBody={giftAcceptedBody} giftAcceptedTitle={giftAcceptedTitle} giftBackButton={giftBackButton} giftBody={giftBody} giftDeclineButton={giftDeclineButton} giftDeclinedBody={giftDeclinedBody} giftDeclinedTitle={giftDeclinedTitle} giftRescheduleButton={giftRescheduleButton} giftTitle={giftTitle} key="stage5" onResponse={(answer, date) => onResponse?.({ answer, date, audioDataUrl: recordedAudio })} proposedDate={proposedDate} autoPlay={autoPlay} />}
           </AnimatePresence>
           <TemplateNavigator
             currentIndex={stage - 1}
             totalSteps={5}
-            onPrev={() => setStage((current) => Math.max(1, current - 1))}
-            onNext={() => setStage((current) => Math.min(5, current + 1))}
+            onPrev={() => changeStage(Math.max(1, stage - 1))}
+            onNext={() => changeStage(Math.min(5, stage + 1))}
             accentColor={stage === 5 ? finalAccent : [stage1Accent, stage2Accent, stage3Accent, stage4Accent][stage - 1] ?? "#fff"}
             isHidden={hideNavigation || autoPlay}
           />
