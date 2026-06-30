@@ -54,7 +54,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Thiếu template." }, { status: 400 });
   }
 
-  const supabase = createServerSupabaseClient();
   const { data: template, error: templateError } = await supabase
     .from("templates")
     .select("id, base_price, is_published")
