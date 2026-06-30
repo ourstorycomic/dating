@@ -78,7 +78,7 @@ export default function Birthday3Template({ autoPlay = false, compact = false, h
         {step === 6 && <Step6Memory key="step6" onNext={nextStep} autoPlay={autoPlay} config={config} />}
         {step === 7 && <Step7Unboxing key="step7" onNext={nextStep} autoPlay={autoPlay} config={config} />}
         {step === 8 && <Step8Afterparty key="step8" autoPlay={autoPlay} config={config} onNext={nextStep} />}
-        {step === 9 && <Step5DateTimePicker key="step9" onConfirm={() => {}} autoPlay={autoPlay} />}
+        {step === 9 && <Step5DateTimePicker key="step9" onNext={() => {}} autoPlay={autoPlay} data={config} />}
       </AnimatePresence>
       <TemplateNavigator
         currentIndex={step - 1}
