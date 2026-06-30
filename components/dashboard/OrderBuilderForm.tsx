@@ -10,6 +10,22 @@ import { GACHA_DATA } from "@/components/templates/dating-3/config";
 import { toast } from "@/components/ui/Toast";
 import { ImageCropperModal } from "@/components/ui/ImageCropperModal";
 
+const GENERAL_SONGS = [
+  "/assets/songs/general/Da LAB - Từ Ngày Em Đến (Official Music Video)_128k.mp3",
+  "/assets/songs/general/GREY D - hoá ra….mp3",
+  "/assets/songs/general/GREY D - yêu em như…_128k.mp3",
+  "/assets/songs/general/GREY D - đôi mắt kẻ tình si.mp3",
+  "/assets/songs/general/HAN SARA _ TỚ THÍCH CẬU FT H.H.N _ OFFICIAL MUSIC VIDEO_128k.mp3",
+  "/assets/songs/general/HIEUTHUHAI - Nghe Như Tình Yêu (prod. by Kewtiie)  [Official Lyric Video]_128k.mp3",
+  "/assets/songs/general/HIEUTHUHAI - Người Im Lặng Gặp Người Hay Nói (prod. by Kewtiie) l Official Music Video_128k.mp3",
+  "/assets/songs/general/SEANPOET _ EM THÍCH ft. LỬA _ OFFICIAL MV LYRIC_128k.mp3",
+  "/assets/songs/general/Soulloom - Dance in the Rain.m4a",
+  "/assets/songs/general/TÌNH CỜ YÊU EM  Kuun Đức Nam ft. Linh Thộn Official Music Video  KEY ENTERTAINMENT.mp3.mp3",
+  "/assets/songs/general/dính - bồ em_128k.mp3",
+  "/assets/songs/general/nân. x Ngơ - tình đắng như ly cà phê _ tas release_128k.mp3",
+  "/assets/songs/general/tlinh - Thích Quá Rùi Nà (ft. Trung Trần) _ OFFICIAL LYRICS VIDEO_128k.mp3",
+];
+
 const SERVICE_PACKAGES = [
   { id: "goi1-thuong", label: "GÓI 1: THEO MẪU (Làm thường - 59.000đ)", price: 59000 },
   { id: "goi1-gap", label: "GÓI 1: THEO MẪU (Làm gấp - Từ 88.000đ)", price: 88000 },
@@ -1074,6 +1090,23 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
           </div>
           <TextInput label="Người gửi" onChange={setSenderName} value={senderName} />
           <TextInput label="Người nhận" onChange={setRecipientName} value={recipientName} />
+          
+          <div className="md:col-span-2">
+            <label className="mb-2 block text-sm font-semibold opacity-90">Nhạc nền (General)</label>
+            <select
+              className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 outline-none focus:border-pink-500/50"
+              value={generalAudioUrl}
+              onChange={(e) => setGeneralAudioUrl(e.target.value)}
+            >
+              <option value="" className="text-gray-900">Mặc định (Random theo template)</option>
+              {GENERAL_SONGS.map(song => (
+                <option key={song} value={song} className="text-gray-900">
+                  {song.split('/').pop()?.replace('_128k.mp3', '').replace('.mp3', '')}
+                </option>
+              ))}
+            </select>
+          </div>
+
           {canCreateFree && (
             <label className="flex items-center gap-2 text-sm font-medium text-pink-300 md:col-span-2 mt-2">
               <input type="checkbox" checked={isFreeOrder} onChange={(e) => setIsFreeOrder(e.target.checked)} className="w-4 h-4 accent-pink-500" />

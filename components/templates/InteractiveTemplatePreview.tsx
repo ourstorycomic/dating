@@ -184,12 +184,21 @@ export function InteractiveTemplatePreview({
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const themeSongs: Record<string, string[]> = {
-    dating: ["/assets/songs/dating/dating-1.mp3", "/assets/songs/dating/dating-2.mp3", "/assets/songs/dating/dating-3.mp3", "/assets/songs/dating/dating-4.mp3", "/assets/songs/dating/dating-5.m4a"],
-    birthday: ["/assets/songs/birthday/birthday-1.mp3", "/assets/songs/birthday/birthday-2.mp3", "/assets/songs/birthday/birthday-3.m4a"],
-    valentine: ["/assets/songs/valentine/valentine-1.mp3", "/assets/songs/valentine/valentine-2.mp3", "/assets/songs/valentine/valentine-3.mp3"],
-    sorry: ["/assets/songs/sorry/sorry-1.mp3", "/assets/songs/sorry/sorry-2.mp3"],
-  };
+  const GENERAL_SONGS = [
+    "/assets/songs/general/Da LAB - Từ Ngày Em Đến (Official Music Video)_128k.mp3",
+    "/assets/songs/general/GREY D - hoá ra….mp3",
+    "/assets/songs/general/GREY D - yêu em như…_128k.mp3",
+    "/assets/songs/general/GREY D - đôi mắt kẻ tình si.mp3",
+    "/assets/songs/general/HAN SARA _ TỚ THÍCH CẬU FT H.H.N _ OFFICIAL MUSIC VIDEO_128k.mp3",
+    "/assets/songs/general/HIEUTHUHAI - Nghe Như Tình Yêu (prod. by Kewtiie)  [Official Lyric Video]_128k.mp3",
+    "/assets/songs/general/HIEUTHUHAI - Người Im Lặng Gặp Người Hay Nói (prod. by Kewtiie) l Official Music Video_128k.mp3",
+    "/assets/songs/general/SEANPOET _ EM THÍCH ft. LỬA _ OFFICIAL MV LYRIC_128k.mp3",
+    "/assets/songs/general/Soulloom - Dance in the Rain.m4a",
+    "/assets/songs/general/TÌNH CỜ YÊU EM  Kuun Đức Nam ft. Linh Thộn Official Music Video  KEY ENTERTAINMENT.mp3.mp3",
+    "/assets/songs/general/dính - bồ em_128k.mp3",
+    "/assets/songs/general/nân. x Ngơ - tình đắng như ly cà phê _ tas release_128k.mp3",
+    "/assets/songs/general/tlinh - Thích Quá Rùi Nà (ft. Trung Trần) _ OFFICIAL LYRICS VIDEO_128k.mp3",
+  ];
 
   const [randomMusicUrl, setRandomMusicUrl] = useState("");
 
@@ -197,15 +206,7 @@ export function InteractiveTemplatePreview({
     const passedMusic = props.musicUrl || props.generalAudioUrl || props.customData?.musicUrl || props.customData?.generalAudioUrl;
     if (passedMusic) return; // If provided, don't randomize
 
-    const k = componentKey.toLowerCase();
-    let theme = "valentine";
-    if (k.includes("birthday")) theme = "birthday";
-    else if (k.includes("sorry")) theme = "sorry";
-    else if (k.includes("dating") || k.includes("will")) theme = "dating";
-    else if (k.includes("val") || k.includes("starry")) theme = "valentine";
-
-    const songs = themeSongs[theme] || themeSongs.valentine;
-    const randomSong = songs[Math.floor(Math.random() * songs.length)];
+    const randomSong = GENERAL_SONGS[Math.floor(Math.random() * GENERAL_SONGS.length)];
     setRandomMusicUrl(randomSong);
   }, [componentKey, props.musicUrl, props.generalAudioUrl, props.customData?.musicUrl, props.customData?.generalAudioUrl]);
 
