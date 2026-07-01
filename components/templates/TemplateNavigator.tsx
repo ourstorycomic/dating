@@ -18,9 +18,9 @@ export function TemplateNavigator({
   if (isHidden) return null;
 
   return (
-    <div className="absolute bottom-4 left-4 right-4 z-[9999] flex items-center justify-between gap-3 rounded-full border-2 border-white/20 bg-white p-2 shadow-xl transition-all">
+    <div className="absolute bottom-4 left-4 right-4 z-[9999] flex items-center justify-between gap-1 sm:gap-2 rounded-full border border-white/40 bg-white/95 backdrop-blur-md p-1.5 sm:p-2 shadow-2xl transition-all">
       <button
-        className="rounded-full px-6 py-3 text-sm font-bold shadow-md transition-all active:scale-95 disabled:shadow-none disabled:active:scale-100 disabled:cursor-not-allowed"
+        className="rounded-full px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-bold shadow-md transition-all active:scale-95 disabled:opacity-50 disabled:shadow-none disabled:active:scale-100 disabled:cursor-not-allowed"
         style={{ backgroundColor: accentColor, color: "#ffffff" }}
         disabled={currentIndex <= 0}
         onClick={onPrev}
@@ -28,11 +28,16 @@ export function TemplateNavigator({
       >
         Lùi
       </button>
-      <span className="text-xs font-bold uppercase tracking-widest" style={{ color: accentColor }}>
-        Đoạn {currentIndex + 1}/{totalSteps}
-      </span>
+      <div className="flex flex-col items-center justify-center leading-tight whitespace-nowrap">
+        <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest opacity-60" style={{ color: accentColor }}>
+          Đoạn
+        </span>
+        <span className="text-[13px] sm:text-sm font-black tracking-widest" style={{ color: accentColor }}>
+          {currentIndex + 1}/{totalSteps}
+        </span>
+      </div>
       <button
-        className="rounded-full px-6 py-3 text-sm font-bold shadow-md transition-all active:scale-95 disabled:shadow-none disabled:active:scale-100 disabled:cursor-not-allowed"
+        className="rounded-full px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-bold shadow-md transition-all active:scale-95 disabled:opacity-50 disabled:shadow-none disabled:active:scale-100 disabled:cursor-not-allowed"
         style={{ backgroundColor: accentColor, color: "#ffffff" }}
         disabled={currentIndex >= totalSteps - 1}
         onClick={onNext}

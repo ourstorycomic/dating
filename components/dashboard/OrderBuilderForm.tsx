@@ -61,7 +61,8 @@ function mediaPreview(file?: File | null) {
 }
 
 function money(value: number) {
-  return `${Number(value || 0).toLocaleString("vi-VN")}?`;
+  if (value === null || value === undefined || isNaN(Number(value))) return "0đ";
+  return `${Number(value || 0).toLocaleString("vi-VN")}đ`;
 }
 
 function getRelationOne<T>(value: T | T[] | null | undefined) {
@@ -587,6 +588,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const ordersPerPage = 5;
   const [isLocked, setIsLocked] = useState(false);
   const [editUnlockCount, setEditUnlockCount] = useState(0);
+  const [confirmModal, setConfirmModal] = useState<{ open: boolean; type: "LOCK" | "UNLOCK"; title: string; desc: string; onConfirm: () => void } | null>(null);
 
   const templateId = selectedTemplateId || (valentineOne?.id ?? "");
   const isConstellation = !!templateId && (templateId.includes("constellation") || templateId.includes("starry") || templateId.includes("valentine-1"));
@@ -900,28 +902,39 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     return 0;
   }
 
-  async function handleLock() {
-    if (!confirm("Bạn có chắc chắn muốn khóa đơn này? Khóa xong sẽ không thể chỉnh sửa trừ khi mở khóa (có thể tốn phí).")) return;
-    setIsLocked(true);
-    await saveOrderEdits({ isLocked: true });
-    toast.success("Đã khóa đơn thành công!");
+  function handleLock() {
+    setConfirmModal({
+      open: true,
+      type: "LOCK",
+      title: "Xác nhận khóa đơn",
+      desc: "Bạn có chắc chắn muốn khóa đơn này? Khóa xong sẽ không thể chỉnh sửa trừ khi mở khóa (có thể tốn phí).",
+      onConfirm: async () => {
+        setIsLocked(true);
+        await saveOrderEdits({ isLocked: true });
+        toast.success("Đã khóa đơn thành công!");
+      }
+    });
   }
 
-  async function handleUnlock() {
+  function handleUnlock() {
     const freeEdits = getFreeEdits(selectedPackage);
     const hasFreeEdit = editUnlockCount < freeEdits;
     
-    if (hasFreeEdit) {
-      if (!confirm(`Bạn còn ${freeEdits - editUnlockCount} lần mở khóa miễn phí.\n\nXác nhận mở khóa?`)) return;
-    } else {
-      if (!confirm(`Đơn này ĐÃ HẾT lượt sửa miễn phí.\n\nViệc mở khóa sửa tiếp sẽ TÍNH PHÍ THÊM 19K (Vui lòng thu phí 19K từ khách).\n\nBạn có chắc chắn mở khóa?`)) return;
-    }
-
-    const newCount = editUnlockCount + 1;
-    setIsLocked(false);
-    setEditUnlockCount(newCount);
-    await saveOrderEdits({ isLocked: false, editUnlockCount: newCount });
-    toast.success(hasFreeEdit ? "Đã mở khóa sửa miễn phí!" : "Đã mở khóa sửa (Đã ghi nhận phí 19K)!");
+    setConfirmModal({
+      open: true,
+      type: "UNLOCK",
+      title: hasFreeEdit ? "Mở khóa miễn phí" : "Mở khóa tính phí",
+      desc: hasFreeEdit 
+        ? `Bạn còn ${freeEdits - editUnlockCount} lần mở khóa miễn phí.\n\nXác nhận mở khóa?`
+        : `Đơn này ĐÃ HẾT lượt sửa miễn phí.\n\nViệc mở khóa sửa tiếp sẽ TÍNH PHÍ THÊM 19K (Vui lòng thu phí 19K từ khách).\n\nBạn có chắc chắn mở khóa?`,
+      onConfirm: async () => {
+        const newCount = editUnlockCount + 1;
+        setIsLocked(false);
+        setEditUnlockCount(newCount);
+        await saveOrderEdits({ isLocked: false, editUnlockCount: newCount });
+        toast.success(hasFreeEdit ? "Đã mở khóa sửa miễn phí!" : "Đã mở khóa sửa (Đã ghi nhận phí 19K)!");
+      }
+    });
   }
 
   function loadOrder(order: any) {
@@ -1205,12 +1218,17 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                         <p className="mt-1 text-xs text-white/48">{template?.name ?? "Chưa rõ mẫu"}</p>
                       </div>
                       <div className="flex items-center gap-2">
+                        {order.custom_data?.isLocked ? (
+                          <div className="flex items-center justify-center rounded-full border border-yellow-500/20 bg-yellow-500/10 px-3 py-1 text-[11px] leading-none font-bold text-yellow-600 dark:text-yellow-500">
+                            🔒 Đã chốt
+                          </div>
+                        ) : null}
                         {paid ? (
                           <div
                             onClick={() => loadOrder(order)}
                             className="cursor-pointer flex items-center justify-center rounded-full bg-pink-500/10 border border-pink-500/20 px-3 py-1 text-[11px] leading-none font-bold text-pink-500 hover:bg-pink-500/20 transition-colors"
                           >
-                            Sửa
+                            {order.custom_data?.isLocked ? "Sửa tiếp" : "Sửa"}
                           </div>
                         ) : null}
                         <div className={`flex items-center justify-center rounded-full border px-3 py-1 text-[11px] leading-none font-bold ${paid ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "border-yellow-500/20 bg-yellow-500/10 text-yellow-600 dark:text-yellow-500"}`}>
@@ -1811,6 +1829,34 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
         </div>
       </aside>
       ) : null}
+
+      {/* Lock/Unlock Confirm Modal */}
+      {confirmModal && (
+        <div className="fixed inset-0 z-[99999] grid place-items-center bg-black/60 backdrop-blur-sm p-4" onClick={() => setConfirmModal(null)}>
+          <div className="w-full max-w-sm rounded-3xl border border-pink-200 bg-[#fff5fb] p-6 text-center text-pink-950 shadow-2xl animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
+            <div className="text-5xl mb-4 drop-shadow-md">{confirmModal.type === "LOCK" ? "🔒" : "🔓"}</div>
+            <h2 className="text-xl font-black text-pink-900 mb-3">{confirmModal.title}</h2>
+            <p className="text-sm text-pink-800/80 mb-8 whitespace-pre-line leading-relaxed font-medium">{confirmModal.desc}</p>
+            <div className="grid grid-cols-2 gap-3">
+              <button 
+                className="rounded-full bg-pink-100 py-3.5 text-sm font-bold text-pink-700 hover:bg-pink-200 transition-colors"
+                onClick={() => setConfirmModal(null)}
+              >
+                Hủy
+              </button>
+              <button 
+                className="rounded-full bg-gradient-to-r from-pink-500 to-purple-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-pink-500/30 hover:opacity-90 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                onClick={() => {
+                  confirmModal.onConfirm();
+                  setConfirmModal(null);
+                }}
+              >
+                Đồng ý
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
