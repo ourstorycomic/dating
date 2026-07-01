@@ -34,14 +34,14 @@ function createVietQrUrl({
   return `https://img.vietqr.io/image/${bankCode}-${accountNo}-compact2.png?${params.toString()}`;
 }
 
-export async function POST(request: Request, { params }: { params: { orderId: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ orderId: string }> }) {
   const session = await getSession();
 
   if (!session) {
     return NextResponse.json({ error: "Bạn cần đăng nhập." }, { status: 401 });
   }
 
-  const { orderId } = params;
+  const { orderId } = await params;
   if (!orderId) {
     return NextResponse.json({ error: "Thiếu mã đơn." }, { status: 400 });
   }
