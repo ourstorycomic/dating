@@ -583,6 +583,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const [saveMessage, setSaveMessage] = useState("");
   const [copyMessage, setCopyMessage] = useState("");
   const [builderVolume, setBuilderVolume] = useState(0.5);
+  const [orderPage, setOrderPage] = useState(1);
+  const ordersPerPage = 5;
 
   const templateId = selectedTemplateId || (valentineOne?.id ?? "");
   const isConstellation = !!templateId && (templateId.includes("constellation") || templateId.includes("starry") || templateId.includes("valentine-1"));
@@ -1143,8 +1145,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                 {myOrders.length} đơn
               </span>
             </div>
-            <div className="mt-4 max-h-[390px] space-y-3 overflow-y-auto pr-2">
-              {myOrders.length ? myOrders.map((order) => {
+            <div className="mt-4 space-y-3 pr-2">
+              {myOrders.length ? myOrders.slice((orderPage - 1) * ordersPerPage, orderPage * ordersPerPage).map((order) => {
                 const payment = getRelationOne(order.payments);
                 const template = getRelationOne(order.templates);
                 const paid = order.status === "ACTIVE" || payment?.status === "PAID";
@@ -1190,6 +1192,30 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                 </div>
               )}
             </div>
+            
+            {myOrders.length > ordersPerPage && (
+              <div className="mt-5 flex items-center justify-center gap-3 border-t border-white/5 pt-4">
+                <button 
+                  onClick={() => setOrderPage(p => Math.max(1, p - 1))}
+                  disabled={orderPage === 1}
+                  className="rounded-full bg-white/10 px-4 py-2 text-xs font-semibold hover:bg-white/20 disabled:opacity-30 disabled:pointer-events-none transition"
+                  type="button"
+                >
+                  Trước
+                </button>
+                <span className="text-xs text-white/60 font-medium">
+                  Trang {orderPage} / {Math.ceil(myOrders.length / ordersPerPage)}
+                </span>
+                <button 
+                  onClick={() => setOrderPage(p => Math.min(Math.ceil(myOrders.length / ordersPerPage), p + 1))}
+                  disabled={orderPage >= Math.ceil(myOrders.length / ordersPerPage)}
+                  className="rounded-full bg-white/10 px-4 py-2 text-xs font-semibold hover:bg-white/20 disabled:opacity-30 disabled:pointer-events-none transition"
+                  type="button"
+                >
+                  Tiếp
+                </button>
+              </div>
+            )}
           </section>
         ) : null}
 
