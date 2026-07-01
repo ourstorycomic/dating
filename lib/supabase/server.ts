@@ -438,20 +438,66 @@ export async function getCustomRoles() {
   return data ?? [];
 }
 
-export async function getOrderLogs() {
+export async function getOrderLogs(page = 1, limit = 10, filters?: { query?: string; status?: string; date?: string }) {
   const supabase = createServerSupabaseClient();
-  const { data, error } = await supabase
+  
+  // Since we need to search across relations (users, orders, templates) which is complex in Supabase JS,
+  // and we want exact pagination, we fetch up to 1000 logs if there's a search query to filter in memory.
+  // If no search query, we do direct DB pagination for performance.
+  
+  let dbQuery = supabase
     .from("order_logs")
-    .select("id, action, metadata, created_at, users(name, email), orders(id, public_id, buyer_name, buyer_contact, recipient_name, amount, status, custom_data, created_at, templates(name, component_key, visual_label), payments(payment_code, amount, status, qr_code_url, paid_at), creator:users!orders_created_by_id_fkey(name, email))")
-    .order("created_at", { ascending: false })
-    .limit(50);
+    .select("id, action, metadata, created_at, users(name, email), orders(id, public_id, buyer_name, buyer_contact, recipient_name, amount, status, custom_data, created_at, templates(name, component_key, visual_label), payments(payment_code, amount, status, qr_code_url, paid_at), creator:users!orders_created_by_id_fkey(name, email))", { count: 'exact' })
+    .order("created_at", { ascending: false });
+
+  // Status and date can be partially pushed to DB or filtered in memory
+  // DB level date filter
+  if (filters?.date) {
+    dbQuery = dbQuery.gte("created_at", `${filters.date}T00:00:00.000Z`).lte("created_at", `${filters.date}T23:59:59.999Z`);
+  }
+
+  // Fetch data
+  const hasComplexSearch = !!(filters?.query || filters?.status);
+  
+  if (!hasComplexSearch) {
+    // Pure DB pagination
+    dbQuery = dbQuery.range((page - 1) * limit, page * limit - 1);
+  } else {
+    // Fetch up to 1000 items and filter in memory for complex search
+    dbQuery = dbQuery.limit(1000);
+  }
+
+  const { data, error, count } = await dbQuery;
 
   if (error) {
     console.error("Failed to load order logs", error);
-    return [];
+    return { logs: [], totalCount: 0 };
   }
 
-  return data ?? [];
+  let result = data ?? [];
+
+  if (hasComplexSearch) {
+    const keyword = (filters?.query || "").trim().toLowerCase();
+    
+    result = result.filter((log: any) => {
+      const order = log.orders;
+      
+      if (keyword) {
+        const textToSearch = `${log.action} ${log.users?.name ?? ""} ${log.users?.email ?? ""} ${order?.public_id ?? ""} ${order?.buyer_name ?? ""} ${order?.buyer_contact ?? ""} ${order?.recipient_name ?? ""} ${order?.templates?.name ?? ""}`.toLowerCase();
+        if (!textToSearch.includes(keyword)) return false;
+      }
+
+      if (filters?.status && order?.status !== filters.status) return false;
+
+      return true;
+    });
+    
+    const totalCount = result.length;
+    result = result.slice((page - 1) * limit, page * limit);
+    return { logs: result, totalCount };
+  }
+
+  return { logs: result, totalCount: count ?? 0 };
 }
 
 export async function getOrderByPublicId(publicId: string) {

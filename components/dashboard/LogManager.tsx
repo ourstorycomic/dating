@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { InteractiveTemplatePreview } from "@/components/templates/InteractiveTemplatePreview";
 import { GlassCard } from "@/components/ui/GlassCard";
 
@@ -55,22 +55,41 @@ function textFrom(data: Record<string, unknown>, key: string, fallback = "") {
   return typeof value === "string" && value.trim() ? value : fallback;
 }
 
-export function LogManager({ initialLogs, isAdmin }: { initialLogs: LogRow[]; isAdmin: boolean }) {
+export function LogManager({ initialLogs, totalCount, isAdmin, initialPage = 1, initialQuery = "", initialStatus = "", initialDate = "" }: { initialLogs: LogRow[]; totalCount: number; isAdmin: boolean; initialPage?: number; initialQuery?: string; initialStatus?: string; initialDate?: string }) {
   const [logs, setLogs] = useState(initialLogs);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [openedLog, setOpenedLog] = useState<LogRow | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-  const [dateFilter, setDateFilter] = useState("");
-  const [logPage, setLogPage] = useState(1);
+  const [query, setQuery] = useState(initialQuery);
+  const [statusFilter, setStatusFilter] = useState(initialStatus);
+  const [dateFilter, setDateFilter] = useState(initialDate);
   const logsPerPage = 10;
+  
   const router = useRouter();
+  const pathname = usePathname();
 
-  // Reset page when filters change
   useEffect(() => {
-    setLogPage(1);
-  }, [query, statusFilter, dateFilter]);
+    setLogs(initialLogs);
+  }, [initialLogs]);
+
+  function applyFilters(page: number, q: string, s: string, d: string) {
+    const params = new URLSearchParams();
+    if (page > 1) params.set("page", page.toString());
+    if (q) params.set("query", q);
+    if (s) params.set("status", s);
+    if (d) params.set("date", d);
+    router.push(`${pathname}?${params.toString()}`);
+  }
+
+  // Debounce search query
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (query !== initialQuery) {
+        applyFilters(1, query, statusFilter, dateFilter);
+      }
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [query]);
 
   useEffect(() => {
     if (openedLog) {
@@ -83,26 +102,7 @@ export function LogManager({ initialLogs, isAdmin }: { initialLogs: LogRow[]; is
     };
   }, [openedLog]);
 
-  const visibleLogs = useMemo(() => {
-    return logs.filter((log) => {
-      const order = log.orders;
-      
-      const keyword = query.trim().toLowerCase();
-      if (keyword) {
-        const textToSearch = `${log.action} ${log.users?.name ?? ""} ${log.users?.email ?? ""} ${order?.public_id ?? ""} ${order?.buyer_name ?? ""} ${order?.buyer_contact ?? ""} ${order?.recipient_name ?? ""} ${order?.templates?.name ?? ""}`.toLowerCase();
-        if (!textToSearch.includes(keyword)) return false;
-      }
-
-      if (statusFilter && order?.status !== statusFilter) return false;
-
-      if (dateFilter) {
-        const logDate = log.created_at.split("T")[0];
-        if (logDate !== dateFilter) return false;
-      }
-
-      return true;
-    });
-  }, [logs, query, statusFilter, dateFilter]);
+  const visibleLogs = logs;
 
   function toggleSelect(id: string) {
     const next = new Set(selectedIds);
@@ -172,7 +172,10 @@ export function LogManager({ initialLogs, isAdmin }: { initialLogs: LogRow[]; is
           <select 
             className="rounded-xl border border-white/10 bg-[#170d24] px-4 py-3 text-sm outline-none"
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            onChange={(e) => {
+              setStatusFilter(e.target.value);
+              applyFilters(1, query, e.target.value, dateFilter);
+            }}
           >
             <option value="">Tất cả trạng thái</option>
             <option value="ACTIVE">Thành công (ACTIVE)</option>
@@ -183,7 +186,10 @@ export function LogManager({ initialLogs, isAdmin }: { initialLogs: LogRow[]; is
              type="date"
              className="rounded-xl border border-white/10 bg-[#170d24] px-4 py-3 text-sm outline-none [color-scheme:dark]"
              value={dateFilter}
-             onChange={(e) => setDateFilter(e.target.value)}
+             onChange={(e) => {
+               setDateFilter(e.target.value);
+               applyFilters(1, query, statusFilter, e.target.value);
+             }}
           />
         </div>
 
@@ -200,7 +206,7 @@ export function LogManager({ initialLogs, isAdmin }: { initialLogs: LogRow[]; is
         )}
 
         <div className="grid gap-3">
-          {visibleLogs.length ? visibleLogs.slice((logPage - 1) * logsPerPage, logPage * logsPerPage).map((log) => {
+          {visibleLogs.length ? visibleLogs.map((log) => {
             const order = log.orders;
             const payment = getPayment(order);
             return (
@@ -248,22 +254,22 @@ export function LogManager({ initialLogs, isAdmin }: { initialLogs: LogRow[]; is
           )}
         </div>
         
-        {visibleLogs.length > logsPerPage && (
+        {totalCount > logsPerPage && (
           <div className="mt-5 flex items-center justify-center gap-3 border-t border-white/5 pt-4">
             <button 
-              onClick={() => setLogPage(p => Math.max(1, p - 1))}
-              disabled={logPage === 1}
+              onClick={() => applyFilters(Math.max(1, initialPage - 1), query, statusFilter, dateFilter)}
+              disabled={initialPage <= 1}
               className="rounded-full bg-white/10 px-4 py-2 text-xs font-semibold hover:bg-white/20 disabled:opacity-30 disabled:pointer-events-none transition"
               type="button"
             >
               Trước
             </button>
             <span className="text-xs text-white/60 font-medium">
-              Trang {logPage} / {Math.ceil(visibleLogs.length / logsPerPage)}
+              Trang {initialPage} / {Math.ceil(totalCount / logsPerPage)}
             </span>
             <button 
-              onClick={() => setLogPage(p => Math.min(Math.ceil(visibleLogs.length / logsPerPage), p + 1))}
-              disabled={logPage >= Math.ceil(visibleLogs.length / logsPerPage)}
+              onClick={() => applyFilters(initialPage + 1, query, statusFilter, dateFilter)}
+              disabled={initialPage >= Math.ceil(totalCount / logsPerPage)}
               className="rounded-full bg-white/10 px-4 py-2 text-xs font-semibold hover:bg-white/20 disabled:opacity-30 disabled:pointer-events-none transition"
               type="button"
             >
