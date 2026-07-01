@@ -115,6 +115,16 @@ export function PricingModal({ customTrigger }: { customTrigger?: React.ReactNod
                         <td className="px-6 py-6 text-lg font-black text-[#ff59ab]">149K</td>
                         <td className="px-6 py-6 text-lg font-black text-[#ff59ab]">Từ 178K</td>
                       </tr>
+                      <tr className="transition-all bg-yellow-50/50 hover:bg-white hover:shadow-[0_4px_15px_rgba(255,182,193,0.15)] group relative border-t-2 border-dashed border-pink-200">
+                        <td className="px-6 py-5 pr-4" colSpan={3}>
+                          <p className="text-sm font-black flex items-center gap-2 text-[#7b536b]">
+                            ⚠️ LƯU Ý VỀ CHỈNH SỬA
+                          </p>
+                          <p className="mt-1 text-sm font-medium text-[#76556d] leading-relaxed">
+                            Mỗi gói có giới hạn số lần sửa miễn phí (Gói 1: 0 lần, Gói 2: 1 lần, Gói 3: 2 lần). Sau khi chốt đơn, mọi yêu cầu chỉnh sửa thêm sẽ tính phí <b className="text-[#ff59ab]">19K / lần</b>.
+                          </p>
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>

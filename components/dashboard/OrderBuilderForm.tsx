@@ -585,6 +585,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const [builderVolume, setBuilderVolume] = useState(0.5);
   const [orderPage, setOrderPage] = useState(1);
   const ordersPerPage = 5;
+  const [isLocked, setIsLocked] = useState(false);
+  const [editUnlockCount, setEditUnlockCount] = useState(0);
 
   const templateId = selectedTemplateId || (valentineOne?.id ?? "");
   const isConstellation = !!templateId && (templateId.includes("constellation") || templateId.includes("starry") || templateId.includes("valentine-1"));
@@ -772,6 +774,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     } : {
       forceStage: valentine1Stage,
     }),
+    isLocked,
+    editUnlockCount,
     ...dynamicData
   };
 
@@ -824,6 +828,9 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
       trackLink: absoluteUrl(data.trackPath),
       unlocked: Boolean(data.unlocked),
     });
+    
+    setIsLocked(false);
+    setEditUnlockCount(0);
   }
 
   function showCopyMessage(message: string) {
@@ -831,18 +838,20 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     window.setTimeout(() => setCopyMessage(""), 1800);
   }
 
-  async function saveOrderEdits() {
+  async function saveOrderEdits(overrideData?: Record<string, any>) {
     if (!result?.orderId) return;
 
     setIsSavingEdits(true);
     setSaveMessage("");
     setError("");
+    
+    const mergedData = overrideData ? { ...customData, ...overrideData } : customData;
 
     const response = await fetch("/api/orders", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        customData,
+        customData: mergedData,
         orderId: result.orderId,
         recipientName,
         buyerName: senderName,
@@ -883,6 +892,36 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
       status: "ACTIVE",
       unlocked: true,
     } : current);
+  }
+  
+  function getFreeEdits(pkgId: string) {
+    if (pkgId?.startsWith("goi3")) return 2;
+    if (pkgId?.startsWith("goi2")) return 1;
+    return 0;
+  }
+
+  async function handleLock() {
+    if (!confirm("Bạn có chắc chắn muốn khóa đơn này? Khóa xong sẽ không thể chỉnh sửa trừ khi mở khóa (có thể tốn phí).")) return;
+    setIsLocked(true);
+    await saveOrderEdits({ isLocked: true });
+    toast.success("Đã khóa đơn thành công!");
+  }
+
+  async function handleUnlock() {
+    const freeEdits = getFreeEdits(selectedPackage);
+    const hasFreeEdit = editUnlockCount < freeEdits;
+    
+    if (hasFreeEdit) {
+      if (!confirm(`Bạn còn ${freeEdits - editUnlockCount} lần mở khóa miễn phí.\n\nXác nhận mở khóa?`)) return;
+    } else {
+      if (!confirm(`Đơn này ĐÃ HẾT lượt sửa miễn phí.\n\nViệc mở khóa sửa tiếp sẽ TÍNH PHÍ THÊM 19K (Vui lòng thu phí 19K từ khách).\n\nBạn có chắc chắn mở khóa?`)) return;
+    }
+
+    const newCount = editUnlockCount + 1;
+    setIsLocked(false);
+    setEditUnlockCount(newCount);
+    await saveOrderEdits({ isLocked: false, editUnlockCount: newCount });
+    toast.success(hasFreeEdit ? "Đã mở khóa sửa miễn phí!" : "Đã mở khóa sửa (Đã ghi nhận phí 19K)!");
   }
 
   function loadOrder(order: any) {
@@ -986,6 +1025,9 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     if (cd.greetingCardSignature) setBirthdayGreetingCardSignature(cd.greetingCardSignature);
     if (cd.final3DSignature) setBirthdayFinal3DSignature(cd.final3DSignature);
     setDynamicData(cd);
+    
+    setIsLocked(cd.isLocked ?? false);
+    setEditUnlockCount(cd.editUnlockCount ?? 0);
 
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -1002,9 +1044,10 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
           <label className="grid gap-2 text-sm md:col-span-2">
             <span className="text-white/64">Gói dịch vụ (Tính giá)</span>
             <select
-              className="rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3 outline-none focus:border-pink-300/50 text-white"
+              className="rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3 outline-none focus:border-pink-300/50 text-white disabled:opacity-50"
               value={selectedPackage}
               onChange={(e) => setSelectedPackage(e.target.value)}
+              disabled={result?.unlocked}
             >
               {SERVICE_PACKAGES.map((pkg) => (
                 <option key={pkg.id} value={pkg.id} className="text-black">
@@ -1220,6 +1263,19 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
         ) : null}
 
         {canEditTemplate ? (
+          isLocked ? (
+            <Section title="Trạng thái Đơn: ĐÃ KHÓA">
+              <div className="rounded-xl border border-yellow-400/20 bg-yellow-500/10 p-8 text-center flex flex-col items-center">
+                <div className="text-4xl mb-4">🔒</div>
+                <h3 className="text-xl font-bold text-yellow-500">Đơn đã bị khóa!</h3>
+                <p className="mt-2 text-sm text-yellow-100/70 mb-6 max-w-sm">Đơn này đã được chốt xong và khóa lại để tránh chỉnh sửa nhầm. Nếu muốn tiếp tục sửa, bạn phải mở khóa đơn.</p>
+                
+                <button type="button" onClick={handleUnlock} className="rounded-full bg-gradient-to-r from-yellow-500 to-orange-500 text-yellow-950 px-8 py-3 text-sm font-bold hover:scale-105 active:scale-95 transition-all shadow-lg shadow-yellow-500/20">
+                  Mở khóa để sửa
+                </button>
+              </div>
+            </Section>
+          ) : (
           <>
             {isBirthdayMagic ? (
               <>
@@ -1606,17 +1662,26 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               </>
             )}
             
-            <div className="sticky bottom-4 z-50 mt-8">
+            <div className="sticky bottom-4 z-50 mt-8 grid grid-cols-2 gap-4">
               <button
                 className="w-full rounded-full bg-gradient-to-r from-pink-500 to-purple-500 py-4 text-base font-bold text-white shadow-lg shadow-pink-500/25 hover:scale-[1.02] hover:shadow-pink-500/40 active:scale-[0.98] transition-all disabled:opacity-50"
                 disabled={isSavingEdits}
-                onClick={saveOrderEdits}
+                onClick={() => saveOrderEdits()}
                 type="button"
               >
-                {isSavingEdits ? "Đang lưu..." : "Lưu chỉnh sửa template"}
+                {isSavingEdits ? "Đang lưu..." : "Lưu chỉnh sửa"}
+              </button>
+              <button
+                className="w-full rounded-full bg-black/50 backdrop-blur-md border border-white/20 py-4 text-base font-bold text-white shadow-lg hover:scale-[1.02] hover:bg-black/70 active:scale-[0.98] transition-all disabled:opacity-50"
+                disabled={isSavingEdits}
+                onClick={handleLock}
+                type="button"
+              >
+                🔒 Khóa Đơn (Đã chốt)
               </button>
             </div>
           </>
+          )
         ) : null}
 
         {result ? (
