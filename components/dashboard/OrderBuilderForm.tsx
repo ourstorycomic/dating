@@ -49,6 +49,7 @@ type MyOrderRow = {
   recipient_name: string | null;
   status: string;
   templates: { name: string } | { name: string }[] | null;
+  custom_data?: any;
 };
 
 function absoluteUrl(path: string) {
