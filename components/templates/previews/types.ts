@@ -20,6 +20,7 @@ export type TemplatePreviewProps = {
     anniversaryCode?: string;
     generalAudioUrl?: string;
     musicUrl?: string;
+    audioSrc?: string;
     introTitle?: string;
     introSubtitle?: string;
     passwordLabel?: string;

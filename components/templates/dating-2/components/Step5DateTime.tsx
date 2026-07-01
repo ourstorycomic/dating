@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { TPL_DATA } from "../config";
 import { CuteDatePicker } from "../../dating-1/components/CuteDatePicker";
