@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className={`scroll-smooth ${beVietnam.variable}`}>
+    <html lang="vi" data-scroll-behavior="smooth" className={`scroll-smooth ${beVietnam.variable}`}>
       <body>
         <div className="fixed inset-0 -z-10 overflow-hidden bg-romance-dark">
           <div className="absolute inset-0 dreamy-sky" />

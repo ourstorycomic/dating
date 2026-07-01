@@ -69,18 +69,16 @@ export async function POST(request: Request, { params }: { params: Promise<{ ord
   const paymentCode = randomCode("PAY", 6);
   const qrCodeUrl = createVietQrUrl({ amount, paymentCode });
 
-  const { error: paymentError } = await supabase.from("payments").insert({
-    amount,
-    order_id: order.id,
+  const { error: paymentError } = await supabase.from("payments").update({
+    amount: 19000,
     payment_code: paymentCode,
-    provider: "VIETQR_BANKING",
     qr_code_url: qrCodeUrl,
     status: "PENDING",
-  });
+  }).eq("order_id", order.id);
 
   if (paymentError) {
-    console.error("Failed to create payment", paymentError);
-    return NextResponse.json({ error: "Lỗi tạo thanh toán." }, { status: 500 });
+    console.error("Failed to update payment", paymentError);
+    return NextResponse.json({ error: "Lỗi tạo thanh toán (Update)." }, { status: 500 });
   }
 
   // Update order status back to PENDING_PAYMENT and update amount + unlock count
