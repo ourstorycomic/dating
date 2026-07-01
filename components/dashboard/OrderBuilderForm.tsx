@@ -618,16 +618,6 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     return "val-starry-constellation-01";
   }, [selectedTemplate]);
 
-  // Control audio volume inside the preview
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-    const audios = document.querySelectorAll("#builder-preview audio");
-    audios.forEach((audio: any) => {
-      audio.volume = builderVolume;
-      audio.play().catch(() => {});
-    });
-  }, [generalAudioUrl, builderVolume, selectedTemplateId, selectedComponentKey, customData]);
-
   const isWillYouDateMe = selectedComponentKey === "will-you-date-me" || selectedComponentKey === "dating-1" || selectedComponentKey === "dating #1";
   const isBirthdayMagic = selectedComponentKey === "birthday-magic" || selectedComponentKey === "birthday-1" || selectedComponentKey === "birthday #1";
   const isDating2 = selectedComponentKey === "dating-2" || selectedComponentKey === "dating #2";
@@ -782,6 +772,16 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     }),
     ...dynamicData
   };
+
+  // Control audio volume inside the preview
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const audios = document.querySelectorAll("#builder-preview audio");
+    audios.forEach((audio: any) => {
+      audio.volume = builderVolume;
+      audio.play().catch(() => {});
+    });
+  }, [generalAudioUrl, builderVolume, selectedTemplateId, selectedComponentKey, customData]);
 
   async function createOrder() {
     setIsSubmitting(true);
