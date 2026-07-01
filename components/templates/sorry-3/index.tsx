@@ -899,7 +899,7 @@ function Step7Inbox({ onNext, autoPlay, compact, config }: { onNext: () => void;
 
   return (
     <>
-    <audio ref={msgSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !isBuilderPreview && !autoPlay} />
+    <audio ref={msgSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay} />
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
