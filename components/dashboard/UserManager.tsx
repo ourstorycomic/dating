@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { toast } from "@/components/ui/Toast";
 
 type BaseRole = "ADMIN" | "STAFF" | "EMPLOYEE";
 
@@ -156,7 +157,7 @@ export function UserManager({
     setSaving(false);
     
     if (!response.ok) {
-      alert(data.error ?? "Không xóa được nhân sự.");
+      toast.error(data.error ?? "Không xóa được nhân sự.");
       return;
     }
     
@@ -166,7 +167,7 @@ export function UserManager({
 
   async function changePassword() {
     if (passwordModal.newPassword.length < 6) {
-      alert("Mật khẩu phải có ít nhất 6 ký tự.");
+      toast.error("Mật khẩu phải có ít nhất 6 ký tự.");
       return;
     }
     
@@ -182,11 +183,11 @@ export function UserManager({
     setSaving(false);
     
     if (!response.ok) {
-      alert(data.error ?? "Không đổi được mật khẩu.");
+      toast.error(data.error ?? "Không đổi được mật khẩu.");
       return;
     }
     
-    alert("Đổi mật khẩu thành công!");
+    toast.success("Đổi mật khẩu thành công!");
     setPasswordModal({ open: false, userId: "", newPassword: "" });
   }
 

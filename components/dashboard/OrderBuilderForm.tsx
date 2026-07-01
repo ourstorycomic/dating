@@ -582,7 +582,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const [error, setError] = useState("");
   const [saveMessage, setSaveMessage] = useState("");
   const [copyMessage, setCopyMessage] = useState("");
-  const [isFreeOrder, setIsFreeOrder] = useState(false);
+  const [builderVolume, setBuilderVolume] = useState(0.5);
 
   const templateId = selectedTemplateId || (valentineOne?.id ?? "");
   const isConstellation = !!templateId && (templateId.includes("constellation") || templateId.includes("starry") || templateId.includes("valentine-1"));
@@ -595,6 +595,13 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
         : templates.find((template) => template.id === selectedTemplateId) ?? valentineOne,
     [selectedTemplateId, templates, valentineOne, loadedTemplate],
   );
+
+  const dating3ConfigMemo = useMemo(() => {
+    const keyword = templateSearch.trim().toLowerCase();
+    return keyword
+      ? templates.filter((template) => `${template.name} ${template.tagline ?? ""} ${template.description ?? ""}`.toLowerCase().includes(keyword))
+      : templates;
+  }, [templateSearch, templates]);
   const filteredTemplates = useMemo(() => {
     const keyword = templateSearch.trim().toLowerCase();
     return keyword
@@ -610,6 +617,16 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     if (templateName.includes("birthday")) return "birthday-magic";
     return "val-starry-constellation-01";
   }, [selectedTemplate]);
+
+  // Control audio volume inside the preview
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const audios = document.querySelectorAll("#builder-preview audio");
+    audios.forEach((audio: any) => {
+      audio.volume = builderVolume;
+      audio.play().catch(() => {});
+    });
+  }, [generalAudioUrl, builderVolume, selectedTemplateId, selectedComponentKey, customData]);
 
   const isWillYouDateMe = selectedComponentKey === "will-you-date-me" || selectedComponentKey === "dating-1" || selectedComponentKey === "dating #1";
   const isBirthdayMagic = selectedComponentKey === "birthday-magic" || selectedComponentKey === "birthday-1" || selectedComponentKey === "birthday #1";
@@ -781,7 +798,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
         customData,
         recipientName,
         templateId: selectedTemplate?.id,
-        isFreeOrder: canCreateFree ? isFreeOrder : false,
+        isFreeOrder: canCreateFree,
       }),
     });
 
@@ -789,9 +806,10 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     setIsSubmitting(false);
 
     if (!response.ok) {
-      setError(data.error ?? "Không tạo được link. Kiểm tra đăng nhập và dữ liệu.");
+      toast.error(data.error ?? "Không tạo được link. Kiểm tra đăng nhập và dữ liệu.");
       return;
     }
+    toast.success("Tạo đơn thành công!");
 
     setResult({
       amount: Number(data.amount ?? SERVICE_PACKAGES.find(p => p.id === selectedPackage)?.price ?? 0),
@@ -832,11 +850,11 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     setIsSavingEdits(false);
 
     if (!response.ok) {
-      setError(data.error ?? "Không lưu được chỉnh sửa.");
+      toast.error(data.error ?? "Không lưu được chỉnh sửa.");
       return;
     }
 
-    setSaveMessage("Đã lưu chỉnh sửa template cho đơn này.");
+    toast.success("Đã lưu chỉnh sửa template cho đơn này.");
   }
 
   async function confirmPaymentManually() {
@@ -852,9 +870,10 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     setIsConfirmingPayment(false);
 
     if (!response.ok) {
-      setError(data.error ?? "Không xác nhận được thanh toán.");
+      toast.error(data.error ?? "Không xác nhận được thanh toán.");
       return;
     }
+    toast.success("Đã xác nhận thanh toán.");
 
     setResult((current) => current ? {
       ...current,
@@ -1107,20 +1126,12 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
             </select>
           </div>
 
-          {canCreateFree && (
-            <label className="flex items-center gap-2 text-sm font-medium text-pink-300 md:col-span-2 mt-2">
-              <input type="checkbox" checked={isFreeOrder} onChange={(e) => setIsFreeOrder(e.target.checked)} className="w-4 h-4 accent-pink-500" />
-              Tạo đơn miễn phí (Không tính doanh thu & Không cần thanh toán)
-            </label>
-          )}
           <div className="md:col-span-2">
             {!result ? (
               <button className="w-full rounded-full bg-gradient-to-r from-pink-500 to-purple-500 px-6 py-3 text-sm font-semibold disabled:opacity-50" disabled={isSubmitting} onClick={createOrder} type="button">
                 {isSubmitting ? "Đang tạo đơn..." : "Tạo đơn"}
               </button>
             ) : null}
-            {error ? <p className="mt-4 rounded-xl border border-red-400/20 bg-red-500/10 p-3 text-sm text-red-100">{error}</p> : null}
-            {saveMessage ? <p className="mt-4 rounded-xl border border-emerald-400/20 bg-emerald-500/10 p-3 text-sm text-emerald-100">{saveMessage}</p> : null}
           </div>
         </Section>
 
@@ -1687,11 +1698,17 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
 
       {showSetupWorkspace ? (
       <aside className="glass-panel-soft rounded-2xl p-4 xl:sticky xl:top-5 xl:h-[calc(100dvh-40px)] flex flex-col w-full xl:w-[450px]">
-        <div className="px-1 pb-4 shrink-0">
-          <h2 className="text-2xl font-semibold">Live Preview</h2>
-          <p className="mt-1 text-sm text-white/54">Xem trước hiển thị ở đây.</p>
+        <div className="px-1 pb-4 shrink-0 flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-semibold">Live Preview</h2>
+            <p className="mt-1 text-sm text-white/54">Xem trước hiển thị ở đây.</p>
+          </div>
+          <div className="flex flex-col gap-1 items-end">
+            <span className="text-xs text-white/64">Âm lượng</span>
+            <input type="range" min="0" max="1" step="0.05" value={builderVolume} onChange={(e) => setBuilderVolume(Number(e.target.value))} className="w-24 accent-pink-500" />
+          </div>
         </div>
-        <div className="flex-1 w-full flex items-center justify-center">
+        <div id="builder-preview" className="flex-1 w-full flex items-center justify-center">
             <InteractiveTemplatePreview
               componentKey={selectedComponentKey}
               customData={customData}
