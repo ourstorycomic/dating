@@ -66,8 +66,16 @@ function money(value: number) {
   return `${Number(value || 0).toLocaleString("vi-VN")}đ`;
 }
 
-function getRelationOne<T>(value: T | T[] | null | undefined) {
-  return Array.isArray(value) ? value[0] ?? null : value ?? null;
+function getRelationOne<T>(value: T | T[] | null | undefined): T | null {
+  if (Array.isArray(value)) {
+    // If it's payments, we want the most recent one. The DB usually orders by created_at desc, but let's be safe.
+    // Or we can just get the last element if it's ordered ASC. 
+    // Actually, Supabase returns array. We'll return the FIRST element assuming it's DESC, or we can find the PENDING one.
+    const pending = (value as any[]).find(v => v && v.status === "PENDING");
+    if (pending) return pending as T;
+    return value[0] ?? null;
+  }
+  return value ?? null;
 }
 
 async function copyText(value: string) {
@@ -917,7 +925,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     });
   }
 
-  function handleUnlock() {
+  async function handleUnlock() {
     const freeEdits = getFreeEdits(selectedPackage);
     const hasFreeEdit = editUnlockCount < freeEdits;
     
@@ -930,10 +938,48 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
         : `Đơn này ĐÃ HẾT lượt sửa miễn phí.\n\nViệc mở khóa sửa tiếp sẽ TÍNH PHÍ THÊM 19K (Vui lòng thu phí 19K từ khách).\n\nBạn có chắc chắn mở khóa?`,
       onConfirm: async () => {
         const newCount = editUnlockCount + 1;
-        setIsLocked(false);
-        setEditUnlockCount(newCount);
-        await saveOrderEdits({ isLocked: false, editUnlockCount: newCount });
-        toast.success(hasFreeEdit ? "Đã mở khóa sửa miễn phí!" : "Đã mở khóa sửa (Đã ghi nhận phí 19K)!");
+        
+        if (hasFreeEdit) {
+          setIsLocked(false);
+          setEditUnlockCount(newCount);
+          await saveOrderEdits({ isLocked: false, editUnlockCount: newCount });
+          toast.success("Đã mở khóa sửa miễn phí!");
+        } else {
+          // Trả phí: Gọi API tạo thanh toán mở khóa
+          setIsSavingEdits(true);
+          try {
+            const res = await fetch(`/api/orders/${result?.orderId}/unlock`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ editUnlockCount: newCount })
+            });
+            const data = await res.json();
+            
+            if (!res.ok) {
+              toast.error(data.error || "Không thể tạo thanh toán mở khóa.");
+            } else {
+              toast.success("Vui lòng thanh toán phí 19K để mở khóa!");
+              setIsLocked(false);
+              setEditUnlockCount(newCount);
+              // Cập nhật lại UI hiển thị QR code
+              setResult({
+                ...result!,
+                status: "PENDING_PAYMENT",
+                unlocked: false,
+                paymentCode: data.paymentCode,
+                paymentStatus: "PENDING",
+                qrCodeUrl: data.qrCodeUrl,
+                amount: data.amount,
+              });
+              
+              // Cập nhật custom_data local
+              setCustomData(prev => ({ ...prev, isLocked: false, editUnlockCount: newCount }));
+            }
+          } catch (e) {
+            toast.error("Đã xảy ra lỗi.");
+          }
+          setIsSavingEdits(false);
+        }
       }
     });
   }
@@ -1283,17 +1329,20 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
 
         {canEditTemplate ? (
           isLocked ? (
-            <Section title="Trạng thái Đơn: ĐÃ KHÓA">
-              <div className="rounded-xl border border-yellow-400/20 bg-yellow-500/10 p-8 text-center flex flex-col items-center">
-                <div className="text-4xl mb-4">🔒</div>
-                <h3 className="text-xl font-bold text-yellow-500">Đơn đã bị khóa!</h3>
-                <p className="mt-2 text-sm text-yellow-100/70 mb-6 max-w-sm">Đơn này đã được chốt xong và khóa lại để tránh chỉnh sửa nhầm. Nếu muốn tiếp tục sửa, bạn phải mở khóa đơn.</p>
-                
-                <button type="button" onClick={handleUnlock} className="rounded-full bg-gradient-to-r from-yellow-500 to-orange-500 text-yellow-950 px-8 py-3 text-sm font-bold hover:scale-105 active:scale-95 transition-all shadow-lg shadow-yellow-500/20">
-                  Mở khóa để sửa
-                </button>
-              </div>
-            </Section>
+            <div className="rounded-3xl border border-yellow-400/30 bg-yellow-500/10 p-8 md:p-12 text-center flex flex-col items-center shadow-lg backdrop-blur-sm mx-auto max-w-2xl mt-4">
+              <div className="text-6xl mb-6 drop-shadow-md">🔒</div>
+              <h3 className="text-2xl md:text-3xl font-black text-yellow-500 tracking-tight">Đơn đã bị khóa!</h3>
+              <p className="mt-4 text-sm md:text-base text-yellow-600/90 font-medium max-w-md leading-relaxed mb-8">
+                Đơn này đã được chốt xong và khóa lại để tránh chỉnh sửa nhầm. Nếu muốn tiếp tục sửa, bạn phải mở khóa đơn.
+              </p>
+              <button
+                className="rounded-full bg-gradient-to-b from-yellow-400 to-orange-500 px-10 py-4 text-sm font-bold text-white shadow-xl shadow-orange-500/30 hover:scale-105 active:scale-95 transition-all"
+                onClick={handleUnlock}
+                type="button"
+              >
+                Mở khóa để sửa
+              </button>
+            </div>
           ) : (
           <>
             {isBirthdayMagic ? (

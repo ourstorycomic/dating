@@ -58,6 +58,7 @@ export function UserManager({
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [passwordModal, setPasswordModal] = useState<{ open: boolean; userId: string; newPassword: string }>({ open: false, userId: "", newPassword: "" });
+  const [confirmModal, setConfirmModal] = useState<{ open: boolean; title: string; desc: string; onConfirm: () => void } | null>(null);
   const router = useRouter();
 
   const activeRoles = useMemo(() => initialRoles.filter((role) => role.is_active), [initialRoles]);
@@ -145,24 +146,31 @@ export function UserManager({
     router.refresh();
   }
 
-  async function deleteUser(user: UserRow) {
-    if (!confirm(`Xóa nhân sự ${user.name}? Hành động này không thể hoàn tác.`)) return;
-    
-    setSaving(true);
-    setError("");
-    
-    const response = await fetch(`/api/admin/users?id=${user.id}`, { method: "DELETE" });
-    const data = await response.json().catch(() => ({}));
-    
-    setSaving(false);
-    
-    if (!response.ok) {
-      toast.error(data.error ?? "Không xóa được nhân sự.");
-      return;
-    }
-    
-    setUsers((current) => current.filter((item) => item.id !== user.id));
-    router.refresh();
+  function deleteUser(user: UserRow) {
+    if (confirmModal) return;
+    setConfirmModal({
+      open: true,
+      title: "Xác nhận xóa nhân sự",
+      desc: `Bạn có chắc chắn muốn xóa nhân sự "${user.name}"? Hành động này không thể hoàn tác.`,
+      onConfirm: async () => {
+        setSaving(true);
+        setError("");
+        
+        const response = await fetch(`/api/admin/users?id=${user.id}`, { method: "DELETE" });
+        const data = await response.json().catch(() => ({}));
+        
+        setSaving(false);
+        
+        if (!response.ok) {
+          toast.error(data.error ?? "Không xóa được nhân sự.");
+          return;
+        }
+        
+        setUsers((current) => current.filter((item) => item.id !== user.id));
+        toast.success("Đã xóa nhân sự thành công!");
+        router.refresh();
+      }
+    });
   }
 
   async function changePassword() {
@@ -316,7 +324,7 @@ export function UserManager({
                           </button>
                           <button
                             onClick={() => deleteUser(user)}
-                            className="rounded-lg bg-red-100 px-3 py-1.5 text-xs font-bold text-red-600 hover:bg-red-200 transition"
+                            className="rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-1.5 text-xs font-bold text-red-500 hover:bg-red-500/20 transition-colors"
                           >
                             Xóa
                           </button>
@@ -430,6 +438,33 @@ export function UserManager({
           </div>
         </div>
       ) : null}
+
+      {confirmModal && (
+        <div className="fixed inset-0 z-[99999] grid place-items-center bg-black/60 backdrop-blur-sm p-4" onClick={() => setConfirmModal(null)}>
+          <div className="w-full max-w-sm rounded-3xl border border-pink-200 bg-[#fff5fb] p-6 text-center text-pink-950 shadow-2xl animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
+            <div className="text-5xl mb-4 drop-shadow-md">⚠️</div>
+            <h2 className="text-xl font-black text-pink-900 mb-3">{confirmModal.title}</h2>
+            <p className="text-sm text-pink-800/80 mb-8 whitespace-pre-line leading-relaxed font-medium">{confirmModal.desc}</p>
+            <div className="grid grid-cols-2 gap-3">
+              <button 
+                className="rounded-full bg-pink-100 py-3.5 text-sm font-bold text-pink-700 hover:bg-pink-200 transition-colors"
+                onClick={() => setConfirmModal(null)}
+              >
+                Hủy
+              </button>
+              <button 
+                className="rounded-full bg-gradient-to-r from-red-500 to-rose-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-red-500/30 hover:opacity-90 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                onClick={() => {
+                  confirmModal.onConfirm();
+                  setConfirmModal(null);
+                }}
+              >
+                Đồng ý
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
