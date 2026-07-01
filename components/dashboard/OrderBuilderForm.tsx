@@ -9,6 +9,7 @@ import { FormStepNavigator } from "./FormStepNavigator";
 import { GACHA_DATA } from "@/components/templates/dating-3/config";
 import { toast } from "@/components/ui/Toast";
 import { ImageCropperModal } from "@/components/ui/ImageCropperModal";
+import imageCompression from "browser-image-compression";
 
 const GENERAL_SONGS = [
   "/assets/songs/general/Da LAB - Từ Ngày Em Đến (Official Music Video)_128k.mp3",
@@ -287,8 +288,25 @@ function MediaInput({
   const uploadFile = async (file: File) => {
     setIsUploading(true);
     try {
+      let fileToUpload = file;
+      // Nén ảnh nếu là định dạng hình ảnh (bỏ qua gif, video, audio)
+      if (file.type.startsWith("image/") && file.type !== "image/gif") {
+        const options = {
+          maxSizeMB: 0.3, // Nén xuống tối đa 300KB
+          maxWidthOrHeight: 1920, // Kích thước tối đa
+          useWebWorker: true,
+          initialQuality: 0.8
+        };
+        try {
+          fileToUpload = await imageCompression(file, options);
+          console.log(`Đã nén ảnh từ ${(file.size / 1024 / 1024).toFixed(2)}MB xuống ${(fileToUpload.size / 1024 / 1024).toFixed(2)}MB`);
+        } catch (error) {
+          console.error("Lỗi nén ảnh, tiếp tục up ảnh gốc", error);
+        }
+      }
+
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("file", fileToUpload);
       
       const res = await fetch("/api/upload", {
         method: "POST",
