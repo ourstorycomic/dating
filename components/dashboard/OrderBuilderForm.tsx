@@ -1549,9 +1549,6 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                 <div className="md:col-span-2 hidden">
                 </div>
 
-                <Section title="Thiết lập chung của mẫu">
-                  <ThemeMusicSelector theme={getThemeFromComponentKey(selectedComponentKey)} label="Nhạc nền tổng" value={generalAudioUrl} onChange={(url) => setGeneralAudioUrl(url)} />
-                </Section>
 
                   <Section title="Đoạn 1 - Ống kính dò chòm sao">
                     <TextInput label="Hướng dẫn thao tác" onChange={setStage1Instruction} value={stage1Instruction} />

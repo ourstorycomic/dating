@@ -63,7 +63,14 @@ export function LogManager({ initialLogs, isAdmin }: { initialLogs: LogRow[]; is
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
+  const [logPage, setLogPage] = useState(1);
+  const logsPerPage = 10;
   const router = useRouter();
+
+  // Reset page when filters change
+  useEffect(() => {
+    setLogPage(1);
+  }, [query, statusFilter, dateFilter]);
 
   useEffect(() => {
     if (openedLog) {
@@ -193,7 +200,7 @@ export function LogManager({ initialLogs, isAdmin }: { initialLogs: LogRow[]; is
         )}
 
         <div className="grid gap-3">
-          {visibleLogs.length ? visibleLogs.map((log) => {
+          {visibleLogs.length ? visibleLogs.slice((logPage - 1) * logsPerPage, logPage * logsPerPage).map((log) => {
             const order = log.orders;
             const payment = getPayment(order);
             return (
@@ -240,6 +247,30 @@ export function LogManager({ initialLogs, isAdmin }: { initialLogs: LogRow[]; is
             <p className="rounded-2xl border border-white/10 bg-white/[0.05] p-4 text-sm text-white/58">Chưa có nhật ký.</p>
           )}
         </div>
+        
+        {visibleLogs.length > logsPerPage && (
+          <div className="mt-5 flex items-center justify-center gap-3 border-t border-white/5 pt-4">
+            <button 
+              onClick={() => setLogPage(p => Math.max(1, p - 1))}
+              disabled={logPage === 1}
+              className="rounded-full bg-white/10 px-4 py-2 text-xs font-semibold hover:bg-white/20 disabled:opacity-30 disabled:pointer-events-none transition"
+              type="button"
+            >
+              Trước
+            </button>
+            <span className="text-xs text-white/60 font-medium">
+              Trang {logPage} / {Math.ceil(visibleLogs.length / logsPerPage)}
+            </span>
+            <button 
+              onClick={() => setLogPage(p => Math.min(Math.ceil(visibleLogs.length / logsPerPage), p + 1))}
+              disabled={logPage >= Math.ceil(visibleLogs.length / logsPerPage)}
+              className="rounded-full bg-white/10 px-4 py-2 text-xs font-semibold hover:bg-white/20 disabled:opacity-30 disabled:pointer-events-none transition"
+              type="button"
+            >
+              Tiếp
+            </button>
+          </div>
+        )}
       </GlassCard>
 
       {openedLog ? (

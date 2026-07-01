@@ -215,6 +215,8 @@ export function UserManager({
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Tìm nhân sự theo tên, email hoặc vai trò..."
             value={query}
+            autoComplete="off"
+            name="search-user-query"
           />
         </div>
         <div className="overflow-x-auto">
@@ -314,7 +316,7 @@ export function UserManager({
                           </button>
                           <button
                             onClick={() => deleteUser(user)}
-                            className="rounded-lg bg-red-500/20 px-3 py-1.5 text-xs font-medium text-red-200 hover:bg-red-500/40 transition"
+                            className="rounded-lg bg-red-100 px-3 py-1.5 text-xs font-bold text-red-600 hover:bg-red-200 transition"
                           >
                             Xóa
                           </button>
@@ -339,7 +341,7 @@ export function UserManager({
             <div className="grid gap-4 p-5">
               <Input label="Tên" onChange={(name) => setForm((current) => ({ ...current, name }))} value={form.name} />
               <Input label="Email đăng nhập" onChange={(email) => setForm((current) => ({ ...current, email }))} value={form.email} />
-              <Input label="Mật khẩu" onChange={(password) => setForm((current) => ({ ...current, password }))} type="password" value={form.password} />
+              <Input label="Mật khẩu" onChange={(password) => setForm((current) => ({ ...current, password }))} type="password" value={form.password} autoComplete="new-password" />
               <label className="grid gap-2 text-sm">
                 <span className="font-medium text-pink-800">Vai trò tuỳ chỉnh</span>
                 <select
@@ -414,6 +416,7 @@ export function UserManager({
                 type="password" 
                 onChange={(v) => setPasswordModal(curr => ({ ...curr, newPassword: v }))} 
                 value={passwordModal.newPassword} 
+                autoComplete="new-password"
               />
               <button
                 className="mt-2 rounded-full bg-gradient-to-r from-pink-400 to-fuchsia-400 px-5 py-3 text-sm font-semibold text-white disabled:opacity-50"
@@ -436,21 +439,46 @@ function Input({
   onChange,
   type = "text",
   value,
+  autoComplete,
 }: {
   label: string;
   onChange: (value: string) => void;
   type?: string;
   value: string;
+  autoComplete?: string;
 }) {
+  const [showPassword, setShowPassword] = useState(false);
+  const isPasswordField = type === "password";
+  const actualType = isPasswordField && showPassword ? "text" : type;
+
   return (
-    <label className="grid gap-2 text-sm">
+    <label className="grid gap-2 text-sm relative">
       <span className="font-medium text-pink-800">{label}</span>
       <input
         className="rounded-xl border border-pink-200 bg-white px-4 py-3 outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400/50 text-pink-950 placeholder-pink-300"
         onChange={(event) => onChange(event.target.value)}
-        type={type}
+        type={actualType}
         value={value}
+        autoComplete={autoComplete}
       />
+      {isPasswordField && (
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute right-4 top-[38px] text-pink-500 hover:text-pink-700 focus:outline-none opacity-60 hover:opacity-100 transition"
+        >
+          {showPassword ? (
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+            </svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          )}
+        </button>
+      )}
     </label>
   );
 }
