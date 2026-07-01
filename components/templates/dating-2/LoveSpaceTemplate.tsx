@@ -98,9 +98,18 @@ export function LoveSpaceTemplate({ compact, fullScreen, hideNavigation, isBuild
 
   useEffect(() => { setMounted(true); }, []);
 
+  useEffect(() => {
+    if (autoPlay && audioRef.current) {
+      audioRef.current.volume = 0.4;
+      audioRef.current.play().catch(() => {});
+    } else if (compact && !isBuilderPreview && audioRef.current) {
+      audioRef.current.pause();
+    }
+  }, [autoPlay, compact, isBuilderPreview, customData.audioSrc]);
+
   let containerClass = "journey-container relative w-full overflow-hidden ";
-  if (compact) {
-    containerClass += "h-full max-w-[400px] mx-auto";
+  if (compact || isBuilderPreview) {
+    containerClass += "h-full";
   } else if (fullScreen) {
     containerClass += "h-full";
   } else {
@@ -123,22 +132,24 @@ export function LoveSpaceTemplate({ compact, fullScreen, hideNavigation, isBuild
       <div className={`w-full flex items-center justify-center ${compact ? 'h-full' : 'w-full h-full'} ${fullScreen || compact ? '' : 'p-0'}`}>
         <div id="preview-container" className={containerClass} style={bgStyle}>
           
-          <audio ref={audioRef} loop muted={compact && !autoPlay}>
-            <source src={customData.audioSrc || TPL_DATA.audioSrc} type="audio/mpeg" />
-          </audio>
+          {customData.audioSrc ? (
+            <audio ref={audioRef} src={customData.audioSrc} autoPlay={autoPlay} loop muted={compact && !autoPlay} />
+          ) : (
+            <audio ref={audioRef} src={TPL_DATA.audioSrc} autoPlay={autoPlay} loop muted={compact && !autoPlay} />
+          )}
 
           {!compact && <BackgroundDecorations />}
 
           <canvas id="confetti-canvas" className="absolute inset-0 w-full h-full pointer-events-none z-50"></canvas>
 
           <AnimatePresence mode="wait">
-            {step === 1 && <Step1Login key="step1" customData={customData} onNext={() => setStep(1.5)} />}
-            {step === 1.5 && <Step1_5Radio key="step1-5" customData={customData} audioRef={audioRef} onNext={() => setStep(2)} />}
-            {step === 2 && <Step2Vibe key="step2" customData={customData} onNext={() => setStep(3)} />}
-            {step === 3 && <Step3Scratch key="step3" customData={customData} onNext={() => setStep(4)} />}
-            {step === 4 && <Step4Wheel key="step4" customData={customData} onNext={(res) => { setWheelResult(res); setStep(5); }} />}
-            {step === 5 && <Step5DateTime key="step5" customData={customData} onNext={(d, t) => { setDateTime({date: d, time: t}); setStep(6); }} />}
-            {step === 6 && <Step6Finale key="step6" customData={customData} dateTime={dateTime} wheelResult={wheelResult} onComplete={() => onComplete?.({ answer: "YES", message: "Date Set!" })} />}
+            {step === 1 && <Step1Login key="step1" customData={customData} onNext={() => setStep(1.5)} autoPlay={autoPlay} />}
+            {step === 1.5 && <Step1_5Radio key="step1-5" customData={customData} audioRef={audioRef} onNext={() => setStep(2)} autoPlay={autoPlay} />}
+            {step === 2 && <Step2Vibe key="step2" customData={customData} onNext={() => setStep(3)} autoPlay={autoPlay} />}
+            {step === 3 && <Step3Scratch key="step3" customData={customData} onNext={() => setStep(4)} autoPlay={autoPlay} />}
+            {step === 4 && <Step4Wheel key="step4" customData={customData} onNext={(res) => { setWheelResult(res); setStep(5); }} autoPlay={autoPlay} />}
+            {step === 5 && <Step5DateTime key="step5" customData={customData} onNext={(d, t) => { setDateTime({date: d, time: t}); setStep(6); }} autoPlay={autoPlay} />}
+            {step === 6 && <Step6Finale key="step6" customData={customData} dateTime={dateTime} wheelResult={wheelResult} onComplete={() => onComplete?.({ answer: "YES", message: "Date Set!" })} autoPlay={autoPlay} />}
           </AnimatePresence>
 
           <TemplateNavigator

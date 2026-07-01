@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TPL_DATA } from "../config";
 
-export function Step2Vibe({ onNext , customData = {}}: { onNext: () => void , customData?: any}) {
+export function Step2Vibe({ onNext , customData = {}, autoPlay}: { onNext: () => void , customData?: any, autoPlay?: boolean}) {
   const [showTooltip, setShowTooltip] = useState(false);
   const [selectedOpt, setSelectedOpt] = useState<number | null>(null);
 

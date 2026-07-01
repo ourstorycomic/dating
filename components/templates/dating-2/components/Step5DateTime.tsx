@@ -4,11 +4,21 @@ import { TPL_DATA } from "../config";
 import { CuteDatePicker } from "../../dating-1/components/CuteDatePicker";
 import { CuteTimePicker } from "../../dating-1/components/CuteTimePicker";
 
-export function Step5DateTime({ onNext , customData = {}}: { onNext: (date: string, time: string) => void , customData?: any}) {
+export function Step5DateTime({ onNext , customData = {}, autoPlay}: { onNext: (date: string, time: string) => void , customData?: any, autoPlay?: boolean}) {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
 
   const canNext = selectedDate !== "" && selectedTime !== "";
+
+  useEffect(() => {
+    if (autoPlay) {
+      const t = setTimeout(() => {
+        setSelectedDate("2024-02-14");
+        setSelectedTime("19:00");
+      }, 2500);
+      return () => clearTimeout(t);
+    }
+  }, [autoPlay]);
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.5 }} className="absolute inset-0 z-10 flex flex-col items-center justify-center p-4">

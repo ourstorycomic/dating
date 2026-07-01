@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-export function Step4Capsule({ onOpened, autoPlay, data }: { onOpened: () => void, autoPlay?: boolean, data?: any }) {
+export function Step4Capsule({ onOpened, autoPlay, compact, data }: { onOpened: () => void, autoPlay?: boolean, compact?: boolean, data?: any }) {
   const [isShaking, setIsShaking] = useState(false);
   const [opened, setOpened] = useState(false);
+  const popSoundRef = React.useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     if (autoPlay) {
@@ -18,6 +19,10 @@ export function Step4Capsule({ onOpened, autoPlay, data }: { onOpened: () => voi
     setTimeout(() => {
         setIsShaking(false);
         setOpened(true);
+        if (popSoundRef.current && !compact) {
+          popSoundRef.current.currentTime = 0;
+          popSoundRef.current.play().catch(() => {});
+        }
         if (autoPlay) {
           setTimeout(() => {
             onOpened();
@@ -27,6 +32,8 @@ export function Step4Capsule({ onOpened, autoPlay, data }: { onOpened: () => voi
   };
 
   return (
+    <>
+    <audio ref={popSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay} />
     <div className="absolute inset-0 bg-black/70 backdrop-blur-md z-40 flex flex-col items-center justify-center">
       <h3 className={`text-2xl font-bold !text-white mb-12 drop-shadow-lg text-center px-4 anim-spring-up transition-opacity duration-300 ${opened ? 'opacity-0' : 'opacity-100'}`} style={{ color: '#ffffff' }}>
         {data?.step4Title}
@@ -57,5 +64,6 @@ export function Step4Capsule({ onOpened, autoPlay, data }: { onOpened: () => voi
         )}
       </div>
     </div>
+    </>
   );
 }

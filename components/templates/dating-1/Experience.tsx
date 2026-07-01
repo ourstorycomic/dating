@@ -45,7 +45,7 @@ export function WillYouDateMeExperience({
   datetimeImage,
   foodImage,
   drinkImage,
-  clickSfxUrl = "/dating-1/vfx/touch.mp3",
+  clickSfxUrl = "/assets/vfx/touch.mp3",
   swooshSfxUrl = "",
   yaySfxUrl = "",
   hideNavigation = false,
@@ -102,21 +102,21 @@ export function WillYouDateMeExperience({
   const yayAudioRef = useRef<HTMLAudioElement>(null);
 
   const playClick = () => {
-    if (clickAudioRef.current) {
+    if (clickAudioRef.current && !(compact && !autoPlay)) {
       clickAudioRef.current.currentTime = 0;
       clickAudioRef.current.play().catch(() => {});
     }
   };
 
   const playSwoosh = () => {
-    if (swooshAudioRef.current) {
+    if (swooshAudioRef.current && !(compact && !autoPlay)) {
       swooshAudioRef.current.currentTime = 0;
       swooshAudioRef.current.play().catch(() => {});
     }
   };
 
   const playYay = () => {
-    if (yayAudioRef.current) {
+    if (yayAudioRef.current && !(compact && !autoPlay)) {
       yayAudioRef.current.currentTime = 0;
       yayAudioRef.current.play().catch(() => {});
     }
@@ -257,7 +257,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
 
       {/* Background Elements */}
       {generalAudioUrl && (
-        <audio ref={audioRef} src={generalAudioUrl} loop preload="auto" muted={compact && !autoPlay} />
+        <audio ref={audioRef} src={generalAudioUrl} loop preload="auto" autoPlay={autoPlay} muted={compact && !autoPlay} />
       )}
       {clickSfxUrl && <audio ref={clickAudioRef} src={clickSfxUrl} preload="auto" muted={compact && !autoPlay} />}
       {swooshSfxUrl && <audio ref={swooshAudioRef} src={swooshSfxUrl} preload="auto" muted={compact && !autoPlay} />}

@@ -1,12 +1,22 @@
 "use client";
 
-import { useState, useEffect as import_react_useEffect } from "react";
+import { useState, useRef, useEffect as import_react_useEffect } from "react";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, Info, Phone, Video, Pointer, ArrowDown } from "lucide-react";
 
-export function Step2FakeChat({ messages, onNext, autoPlay = false }: { messages: string[]; onNext: () => void; autoPlay?: boolean }) {
+export function Step2FakeChat({ messages, onNext, autoPlay = false, compact = false }: { messages: string[]; onNext: () => void; autoPlay?: boolean; compact?: boolean }) {
   const [visibleCount, setVisibleCount] = useState(0);
+  const msgSoundRef = useRef<HTMLAudioElement>(null);
+  
+  import_react_useEffect(() => {
+    if (visibleCount > 0 && visibleCount <= messages.length) {
+      if (msgSoundRef.current && !(compact && !autoPlay)) {
+        msgSoundRef.current.currentTime = 0;
+        msgSoundRef.current.play().catch(() => {});
+      }
+    }
+  }, [visibleCount, messages.length]);
 
   const handleClick = () => {
     if (visibleCount < messages.length) {
@@ -35,6 +45,7 @@ export function Step2FakeChat({ messages, onNext, autoPlay = false }: { messages
       className="absolute inset-0 flex flex-col bg-white text-black z-20"
       onClick={handleClick}
     >
+      <audio ref={msgSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay} />
       {/* iOS style header */}
       <div className="flex items-center justify-between px-4 pt-12 pb-3 bg-gray-100/80 backdrop-blur-md border-b border-gray-200">
         <div className="flex items-center gap-2 text-blue-500">

@@ -136,6 +136,7 @@ export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
                         gradient={template.gradient}
                         visualLabel={template.visual_label}
                         hideNavigation={true}
+                        forceRandomMusic={true}
                       />
                     </div>
 

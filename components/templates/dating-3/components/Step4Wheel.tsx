@@ -42,7 +42,7 @@ export function Step4Wheel({ onNext, autoPlay, data }: { onNext: (location: stri
 
   useEffect(() => {
     if (autoPlay && !spinning && !result) {
-      const timer = setTimeout(() => spinWheel(), 1000);
+      const timer = setTimeout(() => spinWheel(), 2500);
       return () => clearTimeout(timer);
     }
     if (autoPlay && result) {

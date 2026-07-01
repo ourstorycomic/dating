@@ -154,8 +154,17 @@ function BackgroundEffects({ step }: { step: number }) {
   );
 }
 
-export default function Sorry3Template({ autoPlay = false, compact = false, hideNavigation = false, isBuilderPreview = false, config = {} }: { autoPlay?: boolean; compact?: boolean; hideNavigation?: boolean; isBuilderPreview?: boolean; config?: any }) {
+export default function Sorry3Template({ autoPlay = false, compact = false, hideNavigation = false, isBuilderPreview = false, config = {}, generalAudioUrl }: { autoPlay?: boolean; compact?: boolean; hideNavigation?: boolean; isBuilderPreview?: boolean; config?: any; generalAudioUrl?: string }) {
   const [step, setStep] = useState(1);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    if (autoPlay && audioRef.current) {
+      audioRef.current.play().catch(() => {});
+    } else if (compact && !isBuilderPreview && audioRef.current) {
+      audioRef.current.pause();
+    }
+  }, [autoPlay, compact, isBuilderPreview, generalAudioUrl]);
 
   const nextStep = () => setStep((s) => Math.min(s + 1, 8));
 
@@ -175,10 +184,11 @@ export default function Sorry3Template({ autoPlay = false, compact = false, hide
 
   return (
     <div 
-      className={`relative w-full overflow-hidden text-gray-800 font-sans mx-auto ${compact ? 'h-full' : 'max-w-[400px] h-[800px] max-h-[90vh] rounded-[2.5rem] shadow-2xl border-[10px] border-pink-200'}`}
+      className={`relative w-full overflow-hidden text-gray-800 font-sans mx-auto ${compact || isBuilderPreview ? 'h-full' : 'max-w-[400px] h-[800px] max-h-[90vh] rounded-[2.5rem] shadow-2xl border-[10px] border-pink-200'}`}
       style={{ backgroundImage: "url('/assets/bg/bg5.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
       <div className={`absolute inset-0 transition-colors duration-1000 backdrop-blur-[2px] pointer-events-none ${getContainerBg()}`} />
+      {generalAudioUrl && <audio ref={audioRef} src={generalAudioUrl} autoPlay loop muted={compact && !isBuilderPreview && !autoPlay} />}
       <div className="absolute inset-0 pointer-events-none z-0">
         {step >= 3 && <BackgroundEffects step={step} />}
         {step >= 3 && <FloatingParticles step={step} />}
@@ -190,7 +200,7 @@ export default function Sorry3Template({ autoPlay = false, compact = false, hide
         {step === 4 && <Step4Confession key="step4" onNext={nextStep} autoPlay={autoPlay} config={config} />}
         {step === 5 && <Step5RecycleBin key="step5" onNext={nextStep} autoPlay={autoPlay} config={config} />}
         {step === 6 && <Step6Reinstalling key="step6" onNext={nextStep} autoPlay={autoPlay} config={config} />}
-        {step === 7 && <Step7Inbox key="step7" onNext={nextStep} autoPlay={autoPlay} config={config} />}
+        {step === 7 && <Step7Inbox key="step7" onNext={nextStep} autoPlay={autoPlay} compact={compact} config={config} />}
         {step === 8 && <Step8FinalChoice key="step8" autoPlay={autoPlay} config={config} />}
       </AnimatePresence>
 
@@ -864,8 +874,15 @@ function Step6Reinstalling({ onNext, autoPlay, config }: { onNext: () => void; a
 }
 
 // --- STEP 7: INBOX ---
-function Step7Inbox({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
+function Step7Inbox({ onNext, autoPlay, compact, config }: { onNext: () => void; autoPlay: boolean; compact?: boolean; config: any }) {
   const [typedChars, setTypedChars] = useState(0);
+  const msgSoundRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    if (msgSoundRef.current && !(compact && !autoPlay)) {
+      msgSoundRef.current.play().catch(() => {});
+    }
+  }, [compact, autoPlay]);
 
   useEffect(() => {
     const text = config?.letter || APOLOGY_DATA.letter;
@@ -881,6 +898,8 @@ function Step7Inbox({ onNext, autoPlay, config }: { onNext: () => void; autoPlay
   }, [typedChars, autoPlay, onNext]);
 
   return (
+    <>
+    <audio ref={msgSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !isBuilderPreview && !autoPlay} />
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -934,6 +953,7 @@ function Step7Inbox({ onNext, autoPlay, config }: { onNext: () => void; autoPlay
         </AnimatePresence>
       </div>
     </motion.div>
+    </>
   );
 }
 

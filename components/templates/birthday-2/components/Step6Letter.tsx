@@ -1,11 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function Step6Letter({ letter, onNext, autoPlay = false, compact = false }: { letter: string; onNext: () => void; autoPlay?: boolean; compact?: boolean }) {
   const [displayedText, setDisplayedText] = useState("");
   const [isTypingFinished, setIsTypingFinished] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    if (autoPlay && audioRef.current) {
+      audioRef.current.play().catch(() => {});
+    }
+  }, [autoPlay]);
 
   useEffect(() => {
     let i = 0;
@@ -37,7 +44,7 @@ export function Step6Letter({ letter, onNext, autoPlay = false, compact = false 
       transition={{ duration: 1.5 }}
       className="absolute inset-0 flex flex-col items-center justify-center bg-[#050505] p-6 z-50"
     >
-      <audio autoPlay loop src="https://assets.mixkit.co/sfx/preview/mixkit-soft-piano-melody-2972.mp3" muted={compact && !autoPlay} />
+      <audio ref={audioRef} autoPlay loop src="https://assets.mixkit.co/sfx/preview/mixkit-soft-piano-melody-2972.mp3" muted={compact && !autoPlay} />
 
       <motion.div
         initial={{ y: -50, opacity: 0 }}

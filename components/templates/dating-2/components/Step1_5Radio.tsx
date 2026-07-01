@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TPL_DATA } from "../config";
 
-export function Step1_5Radio({ onNext, audioRef , customData = {}}: { onNext: () => void, audioRef: React.RefObject<HTMLAudioElement> , customData?: any}) {
+export function Step1_5Radio({ onNext, audioRef , customData = {}, autoPlay}: { onNext: () => void, audioRef: React.RefObject<HTMLAudioElement> , customData?: any, autoPlay?: boolean}) {
   const [clicked, setClicked] = useState(false);
   const [notes, setNotes] = useState<{id: number, left: number, delay: number}[]>([]);
 
@@ -17,6 +17,13 @@ export function Step1_5Radio({ onNext, audioRef , customData = {}}: { onNext: ()
         setNotes(newNotes);
     }
   }, [clicked]);
+
+  useEffect(() => {
+    if (autoPlay && !clicked) {
+      const t = setTimeout(activateRadio, 2500);
+      return () => clearTimeout(t);
+    }
+  }, [autoPlay, clicked]);
 
   const activateRadio = () => {
     if(clicked) return;

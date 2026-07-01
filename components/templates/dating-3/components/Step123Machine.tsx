@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, useAnimation } from "framer-motion";
 
-export function Step123Machine({ onEggDropped, autoPlay, data }: { onEggDropped: () => void, autoPlay?: boolean, data?: any }) {
+export function Step123Machine({ onEggDropped, autoPlay, compact, data }: { onEggDropped: () => void, autoPlay?: boolean, compact?: boolean, data?: any }) {
   const [step, setStep] = useState(1); // 1: Idle, 1.5: Dropped, 2: Inserted, 3: Spinning
   const [isDragging, setIsDragging] = useState(false);
   const slotRef = useRef<HTMLDivElement>(null);
   const coinRef = useRef<HTMLDivElement>(null);
   const coinControls = useAnimation();
+  const coinDropSoundRef = useRef<HTMLAudioElement>(null);
+  const eggDropSoundRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     if (step === 1 && !autoPlay) {
@@ -37,6 +39,10 @@ export function Step123Machine({ onEggDropped, autoPlay, data }: { onEggDropped:
         await coinControls.start({
           scale: 0.2, opacity: 0, transition: { duration: 0.3 }
         });
+        if (coinDropSoundRef.current && !compact) {
+          coinDropSoundRef.current.currentTime = 0;
+          coinDropSoundRef.current.play().catch(() => {});
+        }
         setTimeout(() => setStep(2), 300);
       }, 1000);
     } else if (step === 2) {
@@ -64,6 +70,10 @@ export function Step123Machine({ onEggDropped, autoPlay, data }: { onEggDropped:
       await coinControls.start({
         scale: 0, opacity: 0, transition: { duration: 0.4, ease: [0.175, 0.885, 0.32, 1.275] }
       });
+      if (coinDropSoundRef.current && !(compact && !autoPlay)) {
+        coinDropSoundRef.current.currentTime = 0;
+        coinDropSoundRef.current.play().catch(() => {});
+      }
       setTimeout(() => setStep(2), 400);
     } else {
       coinControls.start({ x: 0, y: 0, transition: { type: "spring", stiffness: 300, damping: 20 } }).then(() => {
@@ -81,11 +91,18 @@ export function Step123Machine({ onEggDropped, autoPlay, data }: { onEggDropped:
     if (step !== 2) return;
     setStep(3);
     setTimeout(() => {
+        if (eggDropSoundRef.current && !(compact && !autoPlay)) {
+          eggDropSoundRef.current.currentTime = 0;
+          eggDropSoundRef.current.play().catch(() => {});
+        }
         onEggDropped();
     }, 2000);
   };
 
   return (
+    <>
+    <audio ref={coinDropSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay} />
+    <audio ref={eggDropSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay} />
     <div className="absolute inset-0 flex flex-col items-center z-10 p-4">
       <div className={`absolute top-10 left-0 w-full text-center z-20 px-6 transition-opacity duration-500 ${step >= 3 ? 'opacity-0' : 'opacity-100'}`}>
         <h2 className={`text-white text-2xl font-extrabold drop-shadow-md anim-spring-up ${step >= 2 ? 'text-pink-200' : ''}`}>
@@ -162,5 +179,6 @@ export function Step123Machine({ onEggDropped, autoPlay, data }: { onEggDropped:
       )}
 
     </div>
+    </>
   );
 }

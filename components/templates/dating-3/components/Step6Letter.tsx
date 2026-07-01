@@ -6,16 +6,24 @@ export function Step6Letter({ onNext, autoPlay, data }: { onNext: () => void, au
   const [phase, setPhase] = useState(0);
 
   useEffect(() => {
-    let timer1 = setTimeout(() => setPhase(1), 500);  // Open flap
+    let timer1 = setTimeout(() => {
+        setPhase(1);
+        const audio = new Audio("/assets/vfx/touch.mp3");
+        if (!(data?.compact && !autoPlay)) audio.play().catch(()=>{});
+    }, 500);  // Open flap
     let timer2 = setTimeout(() => setPhase(2), 1200); // Slide letter up
-    let timer3 = setTimeout(() => setPhase(3), 2000); // Pop letter up & center
+    let timer3 = setTimeout(() => {
+        setPhase(3);
+        const audio = new Audio("/assets/vfx/you-found-bojuka_2.mp3");
+        if (!(data?.compact && !autoPlay)) audio.play().catch(()=>{});
+    }, 2000); // Pop letter up & center
     let timer4 = setTimeout(startTypewriter, 3000);   // Start typing
     return () => { clearTimeout(timer1); clearTimeout(timer2); clearTimeout(timer3); clearTimeout(timer4); }
   }, []);
 
   useEffect(() => {
     if (autoPlay && done) {
-      const timer = setTimeout(() => onNext(), 2000);
+      const timer = setTimeout(() => onNext(), 4000);
       return () => clearTimeout(timer);
     }
   }, [autoPlay, done, onNext]);

@@ -3,7 +3,7 @@ import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
 import { TPL_DATA } from "../config";
 
-export function Step3Scratch({ onNext , customData = {}}: { onNext: () => void , customData?: any}) {
+export function Step3Scratch({ onNext , customData = {}, autoPlay}: { onNext: () => void , customData?: any, autoPlay?: boolean}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [revealed, setRevealed] = useState(false);
 
@@ -56,9 +56,13 @@ export function Step3Scratch({ onNext , customData = {}}: { onNext: () => void ,
         setRevealed(true);
         canvas.style.transition = 'opacity 0.8s ease';
         canvas.style.opacity = '0';
-        
         const myConfetti = confetti.create(document.getElementById('confetti-canvas') as HTMLCanvasElement, { resize: true });
         myConfetti({ particleCount: 50, spread: 60, origin: { y: 0.8 }, zIndex: 100 });
+        
+        const audio = new Audio("/assets/vfx/you-found-bojuka_2.mp3");
+        if (!(autoPlay === false)) {
+            audio.play().catch(()=>{});
+        }
       }
     };
 
@@ -78,6 +82,20 @@ export function Step3Scratch({ onNext , customData = {}}: { onNext: () => void ,
       window.removeEventListener('touchend', end);
     };
   }, [revealed]);
+
+  useEffect(() => {
+    if (autoPlay && !revealed && canvasRef.current) {
+      const t = setTimeout(() => {
+        setRevealed(true);
+        canvasRef.current!.style.transition = 'opacity 0.8s ease';
+        canvasRef.current!.style.opacity = '0';
+        
+        const audio = new Audio("/assets/vfx/you-found-bojuka_2.mp3");
+        audio.play().catch(()=>{});
+      }, 3000);
+      return () => clearTimeout(t);
+    }
+  }, [autoPlay, revealed]);
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.5 }} className="absolute inset-0 z-10 flex items-center justify-center p-4">

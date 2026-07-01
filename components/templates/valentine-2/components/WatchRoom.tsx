@@ -264,7 +264,7 @@ export function WatchRoom({
   // ── Send chat message ─────────────────────────────────────────────────────
   function sendChat(e: React.FormEvent) {
     e.preventDefault();
-    playClick();
+    playClick(compact);
     const text = chatInput.trim();
     if (!text || (!channelRef.current && !isPreview)) return;
     
@@ -322,7 +322,7 @@ export function WatchRoom({
 
   function handleEpisodeChange(index: number) {
     if (!isHost) return;
-    playClick();
+    playClick(compact);
     setCurrentEpIndex(index);
     void channelRef.current?.send({ type: "broadcast", event: "change_episode", payload: { index } });
   }
@@ -339,7 +339,7 @@ export function WatchRoom({
       <div className={`flex-shrink-0 bg-black/60 backdrop-blur-xl border-b border-white/10 flex items-center justify-between z-50 sticky top-0 transition-opacity duration-700 ${isIdle ? "opacity-0 pointer-events-none" : "opacity-100"} ${compact ? "h-12 px-2" : "h-14 px-4"}`}>
         <div className={`flex items-center ${compact ? "gap-1.5" : "gap-3"}`}>
           {isHost && onBackToLobby && (
-            <button onClick={() => { playClick(); onBackToLobby(); }} className={`flex items-center text-white transition-all font-bold bg-gradient-to-r from-pink-500 to-rose-500 hover:scale-105 rounded-full shadow-md ${compact ? "text-xs px-3 py-1.5 gap-1" : "text-sm px-4 py-1.5 gap-2"}`}>
+            <button onClick={() => { playClick(compact); onBackToLobby(); }} className={`flex items-center text-white transition-all font-bold bg-gradient-to-r from-pink-500 to-rose-500 hover:scale-105 rounded-full shadow-md ${compact ? "text-xs px-3 py-1.5 gap-1" : "text-sm px-4 py-1.5 gap-2"}`}>
               <ArrowLeft size={compact ? 14 : 16} /> {compact ? "Thoát" : "Quay lại sảnh"}
             </button>
           )}
@@ -356,7 +356,7 @@ export function WatchRoom({
             </span>
           )}
           <button
-            onClick={() => { playClick(); setShowChat(v => !v); }}
+            onClick={() => { playClick(compact); setShowChat(v => !v); }}
             className={`font-bold rounded-full bg-rose-600/80 text-white shadow-lg shadow-rose-900/50 hover:bg-rose-500 transition-colors border border-rose-500/50 ${compact ? "text-[10px] px-2.5 py-1" : "text-xs px-4 py-1.5"}`}
           >
             💬 Chat {showChat ? "▲" : "▼"}
@@ -502,7 +502,7 @@ export function WatchRoom({
               {suggestedMovies.map((m) => (
                 <div
                   key={m._id}
-                  onClick={() => { playClick(); onChangeMovie(m); }}
+                  onClick={() => { playClick(compact); onChangeMovie(m); }}
                   className="flex-shrink-0 w-36 lg:w-44 cursor-pointer group snap-start"
                 >
                   <div className="w-full aspect-[2/3] rounded-xl overflow-hidden shadow-lg mb-3 relative border border-white/10 ring-1 ring-black/50">

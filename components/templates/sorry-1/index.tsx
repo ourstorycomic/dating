@@ -49,17 +49,22 @@ function FloatingParticles() {
 }
 
 // --- STEP 1: BREAK THE ICE ---
-function Step1Ice({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
+function Step1Ice({ onNext, autoPlay, config, isMuted }: { onNext: () => void; autoPlay: boolean; config: any; isMuted: boolean }) {
   const [cracks, setCracks] = useState(0);
+  const crackAudioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     if (autoPlay && cracks < 3) {
       const t = setInterval(() => {
         setCracks(c => Math.min(c + 1, 3));
+        if (crackAudioRef.current && !isMuted) {
+          crackAudioRef.current.currentTime = 0;
+          crackAudioRef.current.play().catch(() => {});
+        }
       }, 300);
       return () => clearInterval(t);
     }
-  }, [autoPlay, cracks]);
+  }, [autoPlay, cracks, isMuted]);
 
   useEffect(() => {
     if (cracks >= 3) {
@@ -71,11 +76,17 @@ function Step1Ice({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: 
   const handleTap = () => {
     if (cracks < 3) {
       setCracks(c => Math.min(c + 1, 3));
+      if (crackAudioRef.current && !isMuted) {
+        crackAudioRef.current.currentTime = 0;
+        crackAudioRef.current.play().catch(() => {});
+      }
     }
   };
 
   return (
-    <motion.div
+    <>
+      <audio ref={crackAudioRef} src="/assets/vfx/glass-break.mp3" preload="auto" muted={isMuted} />
+      <motion.div
       key="step1"
       exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
       transition={{ duration: 1 }}
@@ -105,6 +116,7 @@ function Step1Ice({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: 
         </p>
       </motion.div>
     </motion.div>
+    </>
   );
 }
 
@@ -173,7 +185,7 @@ function Step2Confession({ onNext, autoPlay, config }: { onNext: () => void; aut
 }
 
 // --- STEP 3: PENALTY WHEEL ---
-function Step3Wheel({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
+function Step3Wheel({ onNext, autoPlay, config, isMuted }: { onNext: () => void; autoPlay: boolean; config: any; isMuted?: boolean }) {
   const options = [
     config?.wheelOpt1 || "Trà sữa 1 tuần", 
     config?.wheelOpt2 || "Đấm 3 cái", 
@@ -185,10 +197,15 @@ function Step3Wheel({ onNext, autoPlay, config }: { onNext: () => void; autoPlay
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [rotation, setRotation] = useState(0);
+  const spinAudioRef = useRef<HTMLAudioElement>(null);
 
   const spin = () => {
     if (spinning || result) return;
     setSpinning(true);
+    if (spinAudioRef.current && !autoPlay) {
+      spinAudioRef.current.currentTime = 0;
+      spinAudioRef.current.play().catch(() => {});
+    }
     const spins = Math.floor(Math.random() * 5) + 5; // 5-10 full spins
     const targetIndex = Math.floor(Math.random() * options.length);
     const degreePerOpt = 360 / options.length;
@@ -220,6 +237,8 @@ function Step3Wheel({ onNext, autoPlay, config }: { onNext: () => void; autoPlay
   }, [autoPlay, result, onNext]);
 
   return (
+    <>
+    <audio ref={spinAudioRef} src="/assets/vfx/spinning-wheel.mp3" preload="auto" muted={isMuted} />
     <motion.div
       key="step3"
       initial={{ opacity: 0, x: 50 }}
@@ -280,6 +299,7 @@ function Step3Wheel({ onNext, autoPlay, config }: { onNext: () => void; autoPlay
         </motion.div>
       )}
     </motion.div>
+    </>
   );
 }
 
@@ -506,9 +526,35 @@ function Step6Treaty({ onNext, autoPlay, config }: { onNext: () => void; autoPla
 }
 
 // --- MAIN TEMPLATE COMPONENT ---
-export default function Sorry1Template({ compact = false, autoPlay = false, hideNavigation = false, isBuilderPreview = false, config }: { compact?: boolean; autoPlay?: boolean; hideNavigation?: boolean; isBuilderPreview?: boolean; config?: any }) {
+export default function Sorry1Template({ compact = false, autoPlay = false, hideNavigation = false, isBuilderPreview = false, config, generalAudioUrl }: { compact?: boolean; autoPlay?: boolean; hideNavigation?: boolean; isBuilderPreview?: boolean; config?: any; generalAudioUrl?: string }) {
   const [step, setStep] = useState(1);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const btnAudioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    if (autoPlay && audioRef.current) {
+      audioRef.current.play().catch(() => {});
+    } else if (compact && !isBuilderPreview && audioRef.current) {
+      audioRef.current.pause();
+    } else if (!compact && audioRef.current) {
+      audioRef.current.play().catch(() => {});
+    }
+  }, [autoPlay, compact, isBuilderPreview, generalAudioUrl]);
+
+  useEffect(() => {
+    const playAudio = () => {
+      if (audioRef.current && !compact && !autoPlay) {
+        audioRef.current.play().catch(() => {});
+      }
+    };
+    document.addEventListener('click', playAudio, { once: true });
+    document.addEventListener('touchstart', playAudio, { once: true });
+    return () => {
+      document.removeEventListener('click', playAudio);
+      document.removeEventListener('touchstart', playAudio);
+    };
+  }, [compact, autoPlay]);
 
   // Background image and color mapping
   const bgImages = [
@@ -564,6 +610,11 @@ export default function Sorry1Template({ compact = false, autoPlay = false, hide
   };
 
   const handleNext = () => {
+    if (btnAudioRef.current && !(compact && !autoPlay)) {
+      btnAudioRef.current.currentTime = 0;
+      btnAudioRef.current.play().catch(() => {});
+    }
+
     if (step === 6) {
       triggerConfetti();
       setStep(7);
@@ -577,16 +628,18 @@ export default function Sorry1Template({ compact = false, autoPlay = false, hide
 
   return (
     <div 
-      className={`relative w-full overflow-hidden transition-all duration-1000 text-slate-800 mx-auto ${compact ? 'h-full' : 'max-w-[400px] h-[800px] max-h-[90vh] rounded-[3rem] shadow-2xl border-[10px] border-pink-200'}`}
+      className={`relative w-full overflow-hidden transition-all duration-1000 text-slate-800 mx-auto ${compact || isBuilderPreview ? 'h-full' : 'max-w-[400px] h-[800px] max-h-[90vh] rounded-[3rem] shadow-2xl border-[10px] border-pink-200'}`}
       style={{ backgroundImage: currentImg, backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
+      <audio ref={btnAudioRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !isBuilderPreview && !autoPlay} />
       <div className={`absolute inset-0 bg-gradient-to-b ${currentBg} backdrop-blur-[2px]`} />
+      {generalAudioUrl && <audio ref={audioRef} src={generalAudioUrl} autoPlay loop muted={compact && !isBuilderPreview && !autoPlay} />}
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-50" />
       <FloatingParticles />
       <AnimatePresence mode="wait">
-        {step === 1 && <Step1Ice key="s1" onNext={handleNext} autoPlay={autoPlay} config={config} />}
+        {step === 1 && <Step1Ice key="s1" onNext={handleNext} autoPlay={autoPlay} config={config} isMuted={compact && !isBuilderPreview && !autoPlay} />}
         {step === 2 && <Step2Confession key="s2" onNext={handleNext} autoPlay={autoPlay} config={config} />}
-        {step === 3 && <Step3Wheel key="s3" onNext={handleNext} autoPlay={autoPlay} config={config} />}
+        {step === 3 && <Step3Wheel key="s3" onNext={handleNext} autoPlay={autoPlay} config={config} isMuted={compact && !isBuilderPreview && !autoPlay} />}
         {step === 4 && <Step4Nostalgia key="s4" onNext={handleNext} autoPlay={autoPlay} config={config} />}
         {step === 5 && <Step5Apology key="s5" onNext={handleNext} autoPlay={autoPlay} config={config} />}
         {step === 6 && <Step6Treaty key="s6" onNext={handleNext} autoPlay={autoPlay} config={config} />}

@@ -23,17 +23,24 @@ const APPS = [
   { icon: Heart, color: "bg-white text-rose-500", name: "Health" }
 ];
 
-export function Step3Delivery({ onNext, autoPlay = false, photos = [] }: { onNext: () => void; autoPlay?: boolean; photos?: { url: string }[] }) {
+export function Step3Delivery({ onNext, autoPlay = false, compact = false, photos = [] }: { onNext: () => void; autoPlay?: boolean; compact?: boolean; photos?: { url: string }[] }) {
   const [showPopup, setShowPopup] = useState(false);
   const [showSignPad, setShowSignPad] = useState(false);
   const [isSigned, setIsSigned] = useState(false);
+  const popupSoundRef = useRef<HTMLAudioElement>(null);
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isDrawing = useRef(false);
 
   useEffect(() => {
     // Show popup shortly after entering this step (as if interrupted)
-    const t = setTimeout(() => setShowPopup(true), 800);
+    const t = setTimeout(() => {
+      setShowPopup(true);
+      if (popupSoundRef.current && !(compact && !autoPlay)) {
+        popupSoundRef.current.currentTime = 0;
+        popupSoundRef.current.play().catch(() => {});
+      }
+    }, 800);
     return () => clearTimeout(t);
   }, []);
 
@@ -93,6 +100,8 @@ export function Step3Delivery({ onNext, autoPlay = false, photos = [] }: { onNex
   };
 
   return (
+    <>
+    <audio ref={popupSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay} />
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -198,5 +207,6 @@ export function Step3Delivery({ onNext, autoPlay = false, photos = [] }: { onNex
         )}
       </AnimatePresence>
     </motion.div>
+    </>
   );
 }

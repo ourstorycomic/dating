@@ -19,7 +19,7 @@ export function Step7Verification({ location, date, time, onNext, autoPlay, data
 
   useEffect(() => {
     if (autoPlay) {
-      const timer = setTimeout(() => onNext(), 2000);
+      const timer = setTimeout(() => onNext(), 4000);
       return () => clearTimeout(timer);
     }
   }, [autoPlay, onNext]);

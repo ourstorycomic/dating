@@ -159,6 +159,15 @@ export function GachaTemplate({ compact, fullScreen, hideNavigation, isBuilderPr
 
   useEffect(() => { setMounted(true); }, []);
 
+  useEffect(() => {
+    if (autoPlay && audioRef.current) {
+      audioRef.current.volume = 0.4;
+      audioRef.current.play().catch(() => {});
+    } else if (compact && !isBuilderPreview && audioRef.current) {
+      audioRef.current.pause();
+    }
+  }, [autoPlay, compact, isBuilderPreview, data.audioSrc]);
+
   // AutoPlay orchestration logic
   useEffect(() => {
     if (!autoPlay || !mounted) return;
@@ -182,10 +191,10 @@ export function GachaTemplate({ compact, fullScreen, hideNavigation, isBuilderPr
     }
   };
 
-  let outerClass = compact ? `relative w-full shadow-2xl mx-auto rounded-[3rem] bg-pink-200 p-[10px] h-full max-w-[400px]` : `relative w-full h-full`;
+  let outerClass = compact && !isBuilderPreview ? `relative w-full shadow-2xl mx-auto rounded-[3rem] bg-pink-200 p-[10px] h-full max-w-[400px]` : `relative w-full h-full`;
   let containerClass = "gacha-container w-full h-full overflow-hidden transition-colors duration-[2000ms] mx-auto text-gray-800 select-none ";
   
-  if (compact) {
+  if (compact || isBuilderPreview) {
     containerClass += `absolute inset-0`;
   } else if (fullScreen) {
     containerClass += `relative min-h-screen`;
@@ -203,21 +212,17 @@ export function GachaTemplate({ compact, fullScreen, hideNavigation, isBuilderPr
           <div id="preview-container" className={containerClass} style={{ backgroundImage: "url('/assets/bg/bg7.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
             <div className={`absolute inset-0 bg-pink-100/60 backdrop-blur-sm pointer-events-none ${!compact && 'rounded-[2rem]'}`} />
           
-          {data.audioSrc ? (
-            <audio ref={audioRef} loop muted={compact && !autoPlay}>
-              <source src={data.audioSrc} type="audio/mpeg" />
-            </audio>
-          ) : null}
+          <audio ref={audioRef} src={data.audioSrc || GACHA_DATA.audioSrc} loop autoPlay={autoPlay} muted={compact && !isBuilderPreview && !autoPlay} />
 
           {!compact && <FloatingHearts3D />}
           
           <AnimatePresence>
             {(step === 1 || step === 2 || step === 3) && (
-              <Step123Machine key="step123" onEggDropped={() => setStep(4)} autoPlay={autoPlay} data={data} />
+              <Step123Machine key="step123" onEggDropped={() => setStep(4)} autoPlay={autoPlay} compact={compact} data={data} />
             )}
             
             {step === 4 && (
-              <Step4Capsule key="step4" onOpened={() => setStep(5)} autoPlay={autoPlay} data={data} />
+              <Step4Capsule key="step4" onOpened={() => setStep(5)} autoPlay={autoPlay} compact={compact} data={data} />
             )}
 
             {step === 5 && (

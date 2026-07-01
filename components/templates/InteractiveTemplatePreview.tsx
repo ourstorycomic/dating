@@ -21,6 +21,7 @@ type InteractiveTemplatePreviewProps = TemplatePreviewProps & {
   componentKey: string;
   roomId?: string;
   noFrame?: boolean;
+  forceRandomMusic?: boolean;
 };
 
 const previewRegistry = [
@@ -73,13 +74,12 @@ function BotAutoPlayer({ children, enabled }: { children: React.ReactNode; enabl
     if (!enabled || isMobile) return;
 
     let isActive = true;
-    const interval = setInterval(() => {
+
+    const performClick = () => {
       if (!isActive || !containerRef.current) return;
       
       const buttons = Array.from(containerRef.current.querySelectorAll('button'));
       const clickableTexts = ["CÓ", "YES", "Tiếp tục", "Chọn", "Mở", "Xem Tiếp", "Lên đồ", "Hoàn thành", "Bắt đầu", "Click", "Tiếp", "Next", "Đáng đòn", "Quay", "Bớt giận", "Chốt hạ", "Ký tên", "Đưa nó ra", "xả giận", "Giải thích", "Đọc tiếp", "Chốt kèo", "THA THỨ"];
-      
-      let clicked = false;
       
       // Visual click effect
       const showClick = (btn: HTMLElement) => {
@@ -127,6 +127,7 @@ function BotAutoPlayer({ children, enabled }: { children: React.ReactNode; enabl
       }
 
       // 2. Try to find a primary 'next' or 'yes' button
+      let clicked = false;
       for (const btn of buttons) {
         const text = btn.textContent || "";
         if (clickableTexts.some(t => text.toLowerCase().includes(t.toLowerCase()))) {
@@ -138,7 +139,7 @@ function BotAutoPlayer({ children, enabled }: { children: React.ReactNode; enabl
         }
       }
       
-      // 2. If no clear 'next' button, just click a random option (useful for selecting food/movie/etc)
+      // 3. If no clear 'next' button, just click a random option (useful for selecting food/movie/etc)
       if (!clicked && buttons.length > 0) {
         const enabledButtons = buttons.filter(b => !b.disabled);
         if (enabledButtons.length > 0) {
@@ -148,10 +149,14 @@ function BotAutoPlayer({ children, enabled }: { children: React.ReactNode; enabl
         }
       }
       
-    }, 4500); // Increased interval slightly to reduce resource spikes
+    };
+
+    const initialTimeout = setTimeout(performClick, 800);
+    const interval = setInterval(performClick, 3000); // 3s interval to prevent annoying spam
 
     return () => {
       isActive = false;
+      clearTimeout(initialTimeout);
       clearInterval(interval);
     };
   }, [enabled, isMobile]);
@@ -203,21 +208,24 @@ export function InteractiveTemplatePreview({
   const [randomMusicUrl, setRandomMusicUrl] = useState("");
 
   useEffect(() => {
-    const passedMusic = props.musicUrl || props.generalAudioUrl || props.customData?.musicUrl || props.customData?.generalAudioUrl;
-    if (passedMusic) return; // If provided, don't randomize
+    if (!props.forceRandomMusic) {
+      const passedMusic = props.musicUrl || props.generalAudioUrl || props.customData?.musicUrl || props.customData?.generalAudioUrl || props.customData?.audioSrc;
+      if (passedMusic) return; // If provided, don't randomize
+    }
 
     const randomSong = GENERAL_SONGS[Math.floor(Math.random() * GENERAL_SONGS.length)];
     setRandomMusicUrl(randomSong);
-  }, [componentKey, props.musicUrl, props.generalAudioUrl, props.customData?.musicUrl, props.customData?.generalAudioUrl]);
+  }, [componentKey, props.musicUrl, props.generalAudioUrl, props.customData?.musicUrl, props.customData?.generalAudioUrl, props.customData?.audioSrc, props.forceRandomMusic]);
 
   const finalProps = {
     ...props,
-    musicUrl: props.musicUrl || props.customData?.musicUrl || randomMusicUrl,
-    generalAudioUrl: props.generalAudioUrl || props.customData?.generalAudioUrl || randomMusicUrl,
+    musicUrl: (props.forceRandomMusic ? randomMusicUrl : props.musicUrl || props.customData?.musicUrl) || randomMusicUrl,
+    generalAudioUrl: (props.forceRandomMusic ? randomMusicUrl : props.generalAudioUrl || props.customData?.generalAudioUrl) || randomMusicUrl,
     customData: {
       ...props.customData,
-      musicUrl: props.customData?.musicUrl || randomMusicUrl,
-      generalAudioUrl: props.customData?.generalAudioUrl || randomMusicUrl,
+      musicUrl: (props.forceRandomMusic ? randomMusicUrl : props.customData?.musicUrl) || randomMusicUrl,
+      generalAudioUrl: (props.forceRandomMusic ? randomMusicUrl : props.customData?.generalAudioUrl) || randomMusicUrl,
+      audioSrc: (props.forceRandomMusic ? randomMusicUrl : props.customData?.audioSrc) || randomMusicUrl,
     }
   };
 

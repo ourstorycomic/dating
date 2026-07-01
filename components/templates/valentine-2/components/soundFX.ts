@@ -1,4 +1,5 @@
-export const playPop = () => {
+export const playPop = (compact?: boolean) => {
+  if (compact) return;
   // Cute bubble pop (water droplet style)
   try {
     const AC = window.AudioContext || (window as any).webkitAudioContext;
@@ -23,7 +24,8 @@ export const playPop = () => {
   } catch (_) {}
 };
 
-export const playClick = () => {
+export const playClick = (compact?: boolean) => {
+  if (compact) return;
   // Soft, cute "boop"
   try {
     const AC = window.AudioContext || (window as any).webkitAudioContext;
@@ -46,7 +48,8 @@ export const playClick = () => {
   } catch (_) {}
 };
 
-export const playSwoosh = () => {
+export const playSwoosh = (compact?: boolean) => {
+  if (compact) return;
   // Gentle cute "whoosh" (like a small magic wand wave)
   try {
     const AC = window.AudioContext || (window as any).webkitAudioContext;
@@ -70,7 +73,8 @@ export const playSwoosh = () => {
   } catch (_) {}
 };
 
-export const playCoin = () => {
+export const playCoin = (compact?: boolean) => {
+  if (compact) return;
   // Cute "bling bling" (two-tone magic bell)
   try {
     const AC = window.AudioContext || (window as any).webkitAudioContext;
@@ -108,7 +112,8 @@ export const playCoin = () => {
   } catch (_) {}
 };
 
-export const playTada = () => {
+export const playTada = (compact?: boolean) => {
+  if (compact) return;
   // Cute arpeggio (Tada! - C Major Chord)
   try {
     const AC = window.AudioContext || (window as any).webkitAudioContext;
@@ -137,7 +142,8 @@ export const playTada = () => {
   } catch (_) {}
 };
 
-export const playMiss = () => {
+export const playMiss = (compact?: boolean) => {
+  if (compact) return;
   // Cute "womp womp" (slide whistle down)
   try {
     const AC = window.AudioContext || (window as any).webkitAudioContext;

@@ -123,7 +123,7 @@ export default async function Home() {
           </nav>
           <div className="ml-auto flex items-center gap-2 md:ml-0">
             <a
-              className="rounded-full border-[2px] border-pink-200 bg-white px-5 py-2.5 text-sm font-bold text-pink-500 shadow-md transition-all hover:bg-pink-500 hover:text-white hover:scale-105"
+              className="rounded-full border-[2px] border-pink-200 bg-white px-5 py-2.5 text-sm font-bold text-pink-500 shadow-md transition-all hover:bg-pink-50 hover:text-pink-600 hover:scale-105"
               href={facebookLink()}
               target="_blank"
               rel="noopener noreferrer"

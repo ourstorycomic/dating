@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TPL_DATA } from "../config";
 
-export function Step4Wheel({ onNext , customData = {}}: { onNext: (result: string) => void , customData?: any}) {
+export function Step4Wheel({ onNext , customData = {}, autoPlay}: { onNext: (result: string) => void , customData?: any, autoPlay?: boolean}) {
   const [spinning, setSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [result, setResult] = useState("Bấm tim để quay nhé!");
@@ -63,6 +63,13 @@ export function Step4Wheel({ onNext , customData = {}}: { onNext: (result: strin
       setDone(true);
     }, 4000);
   };
+
+  useEffect(() => {
+    if (autoPlay && !spinning && !done) {
+      const t = setTimeout(spin, 2500);
+      return () => clearTimeout(t);
+    }
+  }, [autoPlay, spinning, done]);
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.5 }} className="absolute inset-0 z-10 flex items-center justify-center p-4">

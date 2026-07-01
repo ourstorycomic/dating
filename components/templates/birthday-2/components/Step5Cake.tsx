@@ -3,11 +3,12 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export function Step5Cake({ onNext, autoPlay = false }: { onNext: () => void; autoPlay?: boolean }) {
+export function Step5Cake({ onNext, autoPlay = false, compact = false }: { onNext: () => void; autoPlay?: boolean; compact?: boolean }) {
   const [holding, setHolding] = useState(false);
   const [progress, setProgress] = useState(0);
   const [blown, setBlown] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const blowSoundRef = useRef<HTMLAudioElement>(null);
 
   const startHold = () => {
     if (blown) return;
@@ -36,6 +37,10 @@ export function Step5Cake({ onNext, autoPlay = false }: { onNext: () => void; au
   const handleBlow = () => {
     setBlown(true);
     setHolding(false);
+    if (blowSoundRef.current) {
+      blowSoundRef.current.currentTime = 0;
+      blowSoundRef.current.play().catch(() => {});
+    }
     if (navigator.vibrate) navigator.vibrate([100, 50, 200]);
     setTimeout(() => {
       onNext();
@@ -56,6 +61,8 @@ export function Step5Cake({ onNext, autoPlay = false }: { onNext: () => void; au
   }, [autoPlay]);
 
   return (
+    <>
+    <audio ref={blowSoundRef} src="/assets/vfx/partyblower.mp3" preload="auto" muted={compact && !autoPlay} />
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -147,5 +154,6 @@ export function Step5Cake({ onNext, autoPlay = false }: { onNext: () => void; au
         </div>
       </div>
     </motion.div>
+    </>
   );
 }

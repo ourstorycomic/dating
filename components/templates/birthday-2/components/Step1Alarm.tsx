@@ -29,6 +29,12 @@ export function Step1Alarm({ onNext, autoPlay = false, compact = false }: { onNe
   }, []);
 
   useEffect(() => {
+    if (autoPlay && audioRef.current) {
+      audioRef.current.play().catch(() => {});
+    }
+  }, [autoPlay]);
+
+  useEffect(() => {
     let isMounted = true;
     if (autoPlay) {
       const t = setTimeout(async () => {
@@ -122,6 +128,7 @@ export function Step1Alarm({ onNext, autoPlay = false, compact = false }: { onNe
           </motion.div>
         </div>
       </div>
+
     </motion.div>
   );
 }

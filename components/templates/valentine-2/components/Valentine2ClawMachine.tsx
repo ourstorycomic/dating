@@ -21,7 +21,8 @@ const EGGS = [
 // X % inside glass box where the chute opening center is
 const CHUTE_X = 9;
 
-function playMissSound() {
+function playMissSound(compact?: boolean) {
+  if (compact) return;
   try {
     const AC = window.AudioContext || (window as any).webkitAudioContext;
     const ctx = new AC(); const osc = ctx.createOscillator(); const gain = ctx.createGain();
@@ -34,7 +35,8 @@ function playMissSound() {
   } catch (_) {}
 }
 
-function playSuccessSound() {
+function playSuccessSound(compact?: boolean) {
+  if (compact) return;
   try {
     const AC = window.AudioContext || (window as any).webkitAudioContext;
     const ctx = new AC(); const osc = ctx.createOscillator(); const gain = ctx.createGain();
@@ -49,7 +51,7 @@ function playSuccessSound() {
   } catch (_) {}
 }
 
-export function Valentine2ClawMachine({ onEggGrabbed, autoPlay = false }: { onEggGrabbed: (colorClass: string) => void; autoPlay?: boolean }) {
+export function Valentine2ClawMachine({ onEggGrabbed, autoPlay = false, compact }: { onEggGrabbed: (colorClass: string) => void; autoPlay?: boolean; compact?: boolean }) {
   const [step,          setStep]          = useState<GameStep>("insert");
   const [clawX,         setClawX]         = useState(50);
   const [showMiss,      setShowMiss]      = useState(false);
@@ -85,7 +87,7 @@ export function Valentine2ClawMachine({ onEggGrabbed, autoPlay = false }: { onEg
     
     if (step === "insert") {
       const t = setTimeout(() => {
-        coinControls.start({ scale: 0, opacity: 0, transition: { duration: 0.15 } });
+        try { coinControls.start({ scale: 0, opacity: 0, transition: { duration: 0.15 } }); } catch (e) {}
         setStep("play");
       }, 1500);
       return () => clearTimeout(t);
@@ -110,18 +112,18 @@ export function Valentine2ClawMachine({ onEggGrabbed, autoPlay = false }: { onEg
     );
     if (dist < 110) {
       // Fast vanish — no await so it doesn't freeze the UI
-      playCoin();
-      coinControls.start({ scale: 0, opacity: 0, transition: { duration: 0.15 } });
+      playCoin(compact && !autoPlay);
+      try { coinControls.start({ scale: 0, opacity: 0, transition: { duration: 0.15 } }); } catch(e) {}
       setTimeout(() => setStep("play"), 180);
     } else {
-      coinControls.start({ x: 0, y: 0, transition: { type: "spring", stiffness: 320, damping: 22 } });
+      try { coinControls.start({ x: 0, y: 0, transition: { type: "spring", stiffness: 320, damping: 22 } }); } catch(e) {}
     }
   }, [step, coinControls]);
 
   // ── Move (single tap) ──
   const moveClaw = useCallback((dir: -1 | 1) => {
     if (step !== "play" || isAnimating) return;
-    playClick();
+    playClick(compact && !autoPlay);
     setClawX(prev => {
       const next = Math.max(5, Math.min(90, prev + dir * 8));
       clawXRef.current = next;
@@ -150,10 +152,12 @@ export function Valentine2ClawMachine({ onEggGrabbed, autoPlay = false }: { onEg
     }
     if (step !== "play") return;
     const deg = dir * 12;
-    clawControls.start({
-      rotate: [0, deg, 0],
-      transition: { duration: 0.45, times: [0, 0.5, 1], ease: "easeInOut" },
-    });
+    try {
+      clawControls.start({
+        rotate: [0, deg, 0],
+        transition: { duration: 0.45, times: [0, 0.5, 1], ease: "easeInOut" },
+      });
+    } catch(e) {}
   }, [step, clawControls]);
 
   // ── Leave (onPointerLeave): only stop interval, NO animation ──
@@ -170,68 +174,72 @@ export function Valentine2ClawMachine({ onEggGrabbed, autoPlay = false }: { onEg
     setIsAnimating(true);
     setStep("dropping");
 
-    const nearest = EGGS.reduce((best, egg) =>
-      Math.abs(egg.x - clawX) < Math.abs(best.x - clawX) ? egg : best
-    );
-    const isHit = autoPlay || Math.abs(nearest.x - clawX) <= HIT_TOLERANCE;
+    try {
+      const nearest = EGGS.reduce((best, egg) =>
+        Math.abs(egg.x - clawX) < Math.abs(best.x - clawX) ? egg : best
+      );
+      const isHit = autoPlay || Math.abs(nearest.x - clawX) <= HIT_TOLERANCE;
 
-    // 1) Drop down
-    await clawControls.start({ y: 148, transition: { duration: 0.85, ease: "easeIn" } });
+      // 1) Drop down
+      await clawControls.start({ y: 148, transition: { duration: 0.85, ease: "easeIn" } });
 
-    if (isHit) {
-      // 2) Snap horizontally to egg (px)
-      await clawControls.start({ x: pxX(nearest.x), transition: { duration: 0.15 } });
-      // 3) Close claws & show egg on claw
-      setGrabbedEggId(nearest.id);
-      setClawCarrying(true);
-      await new Promise<void>(r => setTimeout(r, 300));
+      if (isHit) {
+        // 2) Snap horizontally to egg (px)
+        await clawControls.start({ x: pxX(nearest.x), transition: { duration: 0.15 } });
+        // 3) Close claws & show egg on claw
+        setGrabbedEggId(nearest.id);
+        setClawCarrying(true);
+        await new Promise<void>(r => setTimeout(r, 300));
 
-      // 4) Pull up with egg
-      await clawControls.start({ y: 0, transition: { duration: 0.9, ease: "easeOut" } });
+        // 4) Pull up with egg
+        await clawControls.start({ y: 0, transition: { duration: 0.9, ease: "easeOut" } });
 
-      // 5) Glide to above chute (px)
-      await clawControls.start({
-        x: pxX(CHUTE_X),
-        transition: { duration: 0.85, ease: "easeInOut", delay: 0.1 },
-      });
+        // 5) Glide to above chute (px)
+        await clawControls.start({
+          x: pxX(CHUTE_X),
+          transition: { duration: 0.85, ease: "easeInOut", delay: 0.1 },
+        });
 
-      // 6) Lower into chute
-      await clawControls.start({ y: 110, transition: { duration: 0.55, ease: "easeIn" } });
+        // 6) Lower into chute
+        await clawControls.start({ y: 110, transition: { duration: 0.55, ease: "easeIn" } });
 
-      // 7) Open claws → egg drops
-      setClawCarrying(false);
-      setEggInChute(true);
-      playSuccessSound();
-      await new Promise<void>(r => setTimeout(r, 350));
+        // 7) Open claws → egg drops
+        setClawCarrying(false);
+        setEggInChute(true);
+        playSuccessSound(compact && !autoPlay);
+        await new Promise<void>(r => setTimeout(r, 350));
 
-      // 8) Pull claw back up
-      await clawControls.start({ y: 0, transition: { duration: 0.6, ease: "easeOut" } });
-      await new Promise<void>(r => setTimeout(r, 400));
+        // 8) Pull claw back up
+        await clawControls.start({ y: 0, transition: { duration: 0.6, ease: "easeOut" } });
+        await new Promise<void>(r => setTimeout(r, 400));
 
-      // 9) Success!
-      setIsAnimating(false);
-      setStep("success");
-      setTimeout(() => onEggGrabbed(nearest.gradientClass), 1600);
+        // 9) Success!
+        setIsAnimating(false);
+        setStep("success");
+        setTimeout(() => onEggGrabbed(nearest.gradientClass), 1600);
 
-    } else {
-      // MISS
-      await clawControls.start({ y: 0, transition: { duration: 0.7, ease: "easeOut", delay: 0.3 } });
-      await clawControls.start({
-        x: [pxX(clawX), pxX(clawX+5), pxX(clawX-5), pxX(clawX)],
-        transition: { duration: 0.35, times: [0, 0.33, 0.66, 1] },
-      });
-      await clawControls.start({ x: pxX(50), transition: { duration: 0.5 } });
-      playMissSound();
-      setShowMiss(true);
-      setStep("miss");
-      await new Promise<void>(r => setTimeout(r, 1000));
-      setShowMiss(false);
-      setClawX(50);
-      setStep("play");
-      setIsAnimating(false);
+      } else {
+        // MISS
+        await clawControls.start({ y: 0, transition: { duration: 0.7, ease: "easeOut", delay: 0.3 } });
+        await clawControls.start({
+          x: [pxX(clawX), pxX(clawX+5), pxX(clawX-5), pxX(clawX)],
+          transition: { duration: 0.35, times: [0, 0.33, 0.66, 1] },
+        });
+        await clawControls.start({ x: pxX(50), transition: { duration: 0.5 } });
+        playMissSound(compact && !autoPlay);
+        setShowMiss(true);
+        setStep("miss");
+        await new Promise<void>(r => setTimeout(r, 1000));
+        setShowMiss(false);
+        setClawX(50);
+        setStep("play");
+        setIsAnimating(false);
+      }
+    } catch (e) {
+      console.log("Animation interrupted");
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step, isAnimating, clawX, clawControls, onEggGrabbed]);
+  }, [step, isAnimating, clawX, clawControls, onEggGrabbed, autoPlay]);
 
   // Claws CLOSED when claw is carrying an egg
   const clawClosed = clawCarrying;
@@ -452,7 +460,7 @@ export function Valentine2ClawMachine({ onEggGrabbed, autoPlay = false }: { onEg
                 </div>
                 <div className="flex flex-col items-center gap-1.5 bg-indigo-900/60 rounded-2xl p-2 border border-indigo-700/50">
                   <div className="text-pink-300 font-bold text-[10px] tracking-wider">GẮP</div>
-                  <button onClick={() => { playClick(); grabEgg(); }} disabled={step !== "play"}
+                  <button onClick={() => { playClick(compact && !autoPlay); grabEgg(); }} disabled={step !== "play"}
                     className="w-full h-11 bg-gradient-to-r from-pink-500 to-rose-500 active:scale-95 rounded-full text-white font-black shadow-[0_4px_0_#9f1239] active:shadow-none active:translate-y-1 transition-all disabled:opacity-40 disabled:grayscale text-sm">
                     GẮP! 🎯
                   </button>

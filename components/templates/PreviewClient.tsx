@@ -235,7 +235,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                        style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)', isolation: 'isolate' }}
                      >
                        <InteractiveTemplatePreview
-                         compact={true}
+                         compact={false}
                          isBuilderPreview={true}
                          noFrame={true}
                          componentKey={template.component_key}

@@ -102,6 +102,7 @@ export function Scrapbook({
     } else if (currentPage === 3) {
       const t = setTimeout(() => {
         setDragY({ y: -150, extracted: true });
+        playTada(compact && !autoPlay);
         setTimeout(() => {
           onExtractLetter();
         }, 1500);
@@ -112,7 +113,7 @@ export function Scrapbook({
 
   const nextPage = () => {
     onFirstInteraction?.();
-    playSwoosh();
+    playSwoosh(compact && !autoPlay);
     if (currentPage < 3) setCurrentPage(p => p + 1);
   };
 
@@ -162,7 +163,7 @@ export function Scrapbook({
                     // Activate ONLY when released past threshold (-130px)
                     if (info.offset.y < -130) {
                       setDragY({ y: info.offset.y, extracted: true });
-                      playTada();
+                      playTada(compact && !autoPlay);
                     } else {
                       setDragY({ y: 0, extracted: false }); // snap back
                     }
@@ -241,7 +242,7 @@ export function Scrapbook({
                   Tớ có một món quà bí mật, nhưng cậu phải tự tay giành lấy nó nhé!
                 </p>
                 <button
-                  onClick={() => { playTada(); onExtractLetter(); }}
+                  onClick={() => { playTada(compact && !autoPlay); onExtractLetter(); }}
                   className="bg-gradient-to-r from-rose-500 to-pink-600 text-white font-bold py-3 px-8 rounded-full shadow-[0_10px_20px_rgba(225,29,72,0.4)] hover:scale-105 transition-transform"
                 >
                   Đi lấy quà 🕹️

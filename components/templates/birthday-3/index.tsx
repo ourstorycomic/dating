@@ -60,8 +60,17 @@ function BackgroundSparkles() {
   );
 }
 
-export default function Birthday3Template({ autoPlay = false, compact = false, hideNavigation = false, isBuilderPreview = false, config = {} }: { autoPlay?: boolean; compact?: boolean; hideNavigation?: boolean; isBuilderPreview?: boolean; config?: any }) {
+export default function Birthday3Template({ autoPlay = false, compact = false, hideNavigation = false, isBuilderPreview = false, config = {}, generalAudioUrl }: { autoPlay?: boolean; compact?: boolean; hideNavigation?: boolean; isBuilderPreview?: boolean; config?: any; generalAudioUrl?: string }) {
   const [step, setStep] = useState(1);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    if (autoPlay && audioRef.current) {
+      audioRef.current.play().catch(() => {});
+    } else if (compact && !isBuilderPreview && audioRef.current) {
+      audioRef.current.pause();
+    }
+  }, [autoPlay, compact, isBuilderPreview, generalAudioUrl]);
 
   const nextStep = useCallback(() => {
     setStep(s => Math.min(s + 1, 9));
@@ -69,9 +78,10 @@ export default function Birthday3Template({ autoPlay = false, compact = false, h
 
   return (
     <div className={`relative w-full overflow-hidden text-gray-800 font-sans mx-auto h-full ${compact ? 'bg-transparent' : 'bg-pink-50'}`} style={{ backgroundImage: "url('/assets/bg/bg6.jpg')", backgroundSize: 'cover', backgroundBlendMode: 'overlay' }}>
+      {generalAudioUrl && <audio ref={audioRef} src={generalAudioUrl} autoPlay loop muted={compact && !autoPlay} />}
       <AnimatePresence mode="wait">
-        {step === 1 && <Step1Knock key="step1" onNext={nextStep} autoPlay={autoPlay} config={config} />}
-        {step === 2 && <Step2Surprise key="step2" onNext={nextStep} autoPlay={autoPlay} config={config} />}
+        {step === 1 && <Step1Knock key="step1" onNext={nextStep} autoPlay={autoPlay} compact={compact} config={config} />}
+        {step === 2 && <Step2Surprise key="step2" onNext={nextStep} autoPlay={autoPlay} compact={compact} config={config} />}
         {step === 3 && <Step3Balloons key="step3" onNext={nextStep} autoPlay={autoPlay} config={config} />}
         {step === 4 && <Step4Cake key="step4" onNext={nextStep} autoPlay={autoPlay} config={config} />}
         {step === 5 && <Step5Cards key="step5" onNext={nextStep} autoPlay={autoPlay} config={config} />}
@@ -144,12 +154,17 @@ function FloatingParticles({ step }: { step: number }) {
 }
 
 // --- STEP 1: THE KNOCK ---
-function Step1Knock({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
+function Step1Knock({ onNext, autoPlay, compact, config }: { onNext: () => void; autoPlay: boolean; compact?: boolean; config: any }) {
   const [knocks, setKnocks] = useState(0);
+  const knockSoundRef = useRef<HTMLAudioElement>(null);
 
   const handleKnock = () => {
     if (knocks < 3 && !autoPlay) {
       setKnocks(prev => prev + 1);
+      if (knockSoundRef.current && !(compact && !autoPlay)) {
+        knockSoundRef.current.currentTime = 0;
+        knockSoundRef.current.play().catch(() => {});
+      }
     }
   };
 
@@ -174,6 +189,8 @@ function Step1Knock({ onNext, autoPlay, config }: { onNext: () => void; autoPlay
   }, [autoPlay]);
 
   return (
+    <>
+    <audio ref={knockSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay} />
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -253,17 +270,23 @@ function Step1Knock({ onNext, autoPlay, config }: { onNext: () => void; autoPlay
         )}
       </AnimatePresence>
     </motion.div>
+    </>
   );
 }
 
 // --- STEP 2: THE SURPRISE (LIGHT SWITCH) ---
-function Step2Surprise({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
+function Step2Surprise({ onNext, autoPlay, compact, config }: { onNext: () => void; autoPlay: boolean; compact?: boolean; config: any }) {
   const [isOn, setIsOn] = useState(false);
   const [leverY, setLeverY] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const hornSoundRef = useRef<HTMLAudioElement>(null);
 
   const triggerSurprise = () => {
     setIsOn(true);
+    if (hornSoundRef.current && !(compact && !autoPlay)) {
+      hornSoundRef.current.currentTime = 0;
+      hornSoundRef.current.play().catch(() => {});
+    }
     if (canvasRef.current) {
       const myConfetti = confetti.create(canvasRef.current, { resize: true, useWorker: true });
       myConfetti({
@@ -277,6 +300,12 @@ function Step2Surprise({ onNext, autoPlay, config }: { onNext: () => void; autoP
 
   const handleDragEnd = (e: any, info: any) => {
     if (info.offset.y > 50 && !autoPlay && !isOn) {
+      // Play switch click sound
+      const audio = new Audio("/assets/vfx/touch.mp3");
+      if (!(compact && !autoPlay)) {
+        audio.play().catch(() => {});
+      }
+      
       triggerSurprise();
       setTimeout(onNext, 3000);
     }
@@ -299,6 +328,8 @@ function Step2Surprise({ onNext, autoPlay, config }: { onNext: () => void; autoP
   }, [autoPlay, onNext]);
 
   return (
+    <>
+    <audio ref={hornSoundRef} src="/assets/vfx/partyblower.mp3" preload="auto" muted={compact && !autoPlay} />
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, backgroundColor: isOn ? "#fff7ed" : "#0f172a" }}
@@ -422,6 +453,7 @@ function Step2Surprise({ onNext, autoPlay, config }: { onNext: () => void; autoP
         </motion.div>
       )}
     </motion.div>
+    </>
   );
 }
 
@@ -448,6 +480,13 @@ function Step3Balloons({ onNext, autoPlay, config }: { onNext: () => void; autoP
   const handlePop = (id: number) => {
     setBalloons(prev => prev.map(b => b.id === id ? { ...b, popped: true } : b));
     setPoppedCount(prev => prev + 1);
+    
+    // Play pop sound
+    const audio = new Audio("/assets/vfx/touch.mp3");
+    if (!(config.compact && !config.autoPlay)) {
+      audio.play().catch(() => {});
+    }
+
     if (canvasRef.current) {
       const myConfetti = confetti.create(canvasRef.current, { resize: true, useWorker: true });
       myConfetti({

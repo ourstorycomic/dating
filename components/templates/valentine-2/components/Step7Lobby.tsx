@@ -60,7 +60,7 @@ export function Step7Lobby({ onSelectMovie, compact: propCompact, fullScreen, au
   }, []);
 
   const handleSearch = () => {
-    playClick();
+    playClick(compact && !autoPlay);
     if (!keyword.trim()) {
       setIsSearchMode(false);
       setPage(1);
@@ -73,7 +73,7 @@ export function Step7Lobby({ onSelectMovie, compact: propCompact, fullScreen, au
   };
   const goToPage = (p: number) => {
     if (p < 1 || p > totalPages) return;
-    playClick();
+    playClick(compact && !autoPlay);
     setPage(p);
     if (isSearchMode) {
       fetchMovies({ searchQuery: keyword, pg: p });
@@ -207,7 +207,7 @@ export function Step7Lobby({ onSelectMovie, compact: propCompact, fullScreen, au
                   key={movie._id}
                   whileHover={{ scale: 1.03, y: -4 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => { playSwoosh(); onSelectMovie(movie); }}
+                  onClick={() => { playSwoosh(compact && !autoPlay); onSelectMovie(movie); }}
                   className="relative rounded-2xl overflow-hidden cursor-pointer group aspect-[2/3] bg-white/5 shadow-xl shadow-rose-900/10 border border-white/40 ring-1 ring-inset ring-white/20"
                 >
                   <img

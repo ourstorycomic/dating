@@ -7,9 +7,9 @@ export function Step5DateTimePicker({ onNext, autoPlay, data }: { onNext: (date:
 
   useEffect(() => {
     if (autoPlay) {
-      const timer1 = setTimeout(() => setSelectedDate("Cuối Tuần"), 1000);
-      const timer2 = setTimeout(() => setSelectedTime("Tối"), 2000);
-      const timer3 = setTimeout(() => onNext("Cuối Tuần", "Tối"), 3500);
+      const timer1 = setTimeout(() => setSelectedDate("Cuối Tuần"), 1500);
+      const timer2 = setTimeout(() => setSelectedTime("Tối"), 3000);
+      const timer3 = setTimeout(() => onNext("Cuối Tuần", "Tối"), 4500);
       return () => { clearTimeout(timer1); clearTimeout(timer2); clearTimeout(timer3); }
     }
   }, [autoPlay, onNext]);

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { TPL_DATA } from "../config";
 
-export function Step6Finale({ dateTime, wheelResult, onComplete, customData = {} }: { dateTime: {date: string, time: string}, wheelResult?: string, onComplete: () => void, customData?: any }) {
+export function Step6Finale({ dateTime, wheelResult, onComplete, customData = {}, autoPlay }: { dateTime: {date: string, time: string}, wheelResult?: string, onComplete: () => void, customData?: any, autoPlay?: boolean }) {
   const [typedText, setTypedText] = useState("");
   const [done, setDone] = useState(false);
   const [noPos, setNoPos] = useState({ x: 30, y: 30 }); // relative absolute left/bottom initially
@@ -25,6 +25,13 @@ export function Step6Finale({ dateTime, wheelResult, onComplete, customData = {}
     }, 40);
     return () => clearInterval(interval);
   }, [content]);
+
+  useEffect(() => {
+    if (autoPlay && done && !isAccepted && !isRejected) {
+      const t = setTimeout(acceptFinal, 2500);
+      return () => clearTimeout(t);
+    }
+  }, [autoPlay, done, isAccepted, isRejected]);
 
   const acceptFinal = () => {
     if(isAccepted) return;

@@ -1,10 +1,21 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { motion, Variants } from "framer-motion";
 import { PackageOpen } from "lucide-react";
 
-export function Step4Unbox({ photos, onNext, autoPlay = false }: { photos: { url: string; note: string }[]; onNext: () => void; autoPlay?: boolean }) {
+export function Step4Unbox({ photos, onNext, autoPlay = false, compact = false }: { photos: { url: string; note: string }[]; onNext: () => void; autoPlay?: boolean; compact?: boolean }) {
+  const popSoundRef = useRef<HTMLAudioElement>(null);
+  
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (popSoundRef.current && !(compact && !autoPlay)) {
+        popSoundRef.current.currentTime = 0;
+        popSoundRef.current.play().catch(() => {});
+      }
+    }, 1000);
+    return () => clearTimeout(t);
+  }, []);
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -42,6 +53,7 @@ export function Step4Unbox({ photos, onNext, autoPlay = false }: { photos: { url
       transition={{ duration: 0.8 }}
       className="absolute inset-0 bg-gradient-to-br from-amber-100 via-orange-50 to-orange-100 flex flex-col items-center justify-center p-6 z-40 overflow-hidden"
     >
+      <audio ref={popSoundRef} src="/assets/vfx/you-found-bojuka_2.mp3" preload="auto" muted={compact && !autoPlay} />
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none" />
 
       {/* The box at the bottom */}
@@ -84,7 +96,13 @@ export function Step4Unbox({ photos, onNext, autoPlay = false }: { photos: { url
         className="absolute bottom-32 z-30 w-full px-8"
       >
         <button
-          onClick={onNext}
+          onClick={() => {
+            if (popSoundRef.current) {
+              popSoundRef.current.currentTime = 0;
+              popSoundRef.current.play().catch(() => {});
+            }
+            onNext();
+          }}
           className="w-full py-4 rounded-full bg-orange-800 text-white font-bold text-lg shadow-[0_10px_20px_rgba(154,52,18,0.3)] hover:scale-105 active:scale-95 transition-transform"
         >
           Xem Tiếp ✨

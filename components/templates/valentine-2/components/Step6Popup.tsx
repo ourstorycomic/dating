@@ -24,10 +24,10 @@ export function Step6Popup({ confession, onComplete, compact, autoPlay = false, 
 
   useEffect(() => {
     if (phase === 0) {
-      playSwoosh();
+      playSwoosh(compact && !autoPlay);
       setTimeout(() => setPhase(0.5), 1000);
     } else if (phase === 0.5) {
-      setTimeout(() => { playTada(); setPhase(1); }, 1800);
+      setTimeout(() => { playTada(compact && !autoPlay); setPhase(1); }, 1800);
     } else if (phase === 1) {
       setTimeout(() => setPhase(2), 2200);
     } else if (phase === 2) {
@@ -57,7 +57,7 @@ export function Step6Popup({ confession, onComplete, compact, autoPlay = false, 
   const handleNoHover = () => {
     if (isMoving.current) return;
     isMoving.current = true;
-    playPop();
+    playPop(compact && !autoPlay);
     setTimeout(() => { isMoving.current = false; }, 80);
 
     const side = Math.random() > 0.5 ? 1 : -1;
@@ -70,7 +70,7 @@ export function Step6Popup({ confession, onComplete, compact, autoPlay = false, 
 
   const handleAccept = () => {
     setPhase(3); // Phase 3: Accepted -> show ticket
-    playTada();
+    playTada(compact && !autoPlay);
     if (!compact && canvasRef.current) {
       const myConfetti = confetti.create(canvasRef.current, { resize: true, useWorker: true });
       myConfetti({ particleCount: 100, spread: 120, origin: { y: 0.8 }, colors: ['#f43f5e', '#ec4899', '#fbcfe8'], gravity: 0.3, ticks: 300 });

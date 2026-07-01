@@ -157,6 +157,7 @@ export function Valentine2WatchParty({
               setStep(6);
             }}
             autoPlay={autoPlay}
+            compact={compact}
           />
         )}
 

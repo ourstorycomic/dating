@@ -125,21 +125,25 @@ function BirthdayScene({
 
   // Sound triggers
   const playTouch = useCallback(() => {
+    if (compact && !autoPlay) return;
     touchAudioRef.current && (touchAudioRef.current.currentTime = 0);
     touchAudioRef.current?.play().catch(() => { });
-  }, []);
+  }, [compact, autoPlay]);
   const playMagic = useCallback(() => {
+    if (compact && !autoPlay) return;
     magicAudioRef.current && (magicAudioRef.current.currentTime = 0);
     magicAudioRef.current?.play().catch(() => { });
-  }, []);
+  }, [compact, autoPlay]);
   const playMeow = useCallback(() => {
+    if (compact && !autoPlay) return;
     meowAudioRef.current && (meowAudioRef.current.currentTime = 0);
     meowAudioRef.current?.play().catch(() => { });
-  }, []);
+  }, [compact, autoPlay]);
   const playPat = useCallback(() => {
+    if (compact && !autoPlay) return;
     patAudioRef.current && (patAudioRef.current.currentTime = 0);
     patAudioRef.current?.play().catch(() => { });
-  }, []);
+  }, [compact, autoPlay]);
 
   // Force reset everything on mount
   useEffect(() => {
@@ -375,13 +379,11 @@ function BirthdayScene({
         )}
       </AnimatePresence>
 
-      <audio loop preload="auto" ref={audioRef} muted={compact && !autoPlay && !isBuilderPreview}>
-        <source src={musicUrl || DEFAULT_BIRTHDAY_MUSIC} type="audio/mp4" />
-      </audio>
-      <audio preload="auto" ref={touchAudioRef} src={TOUCH_SOUND} muted={compact && !autoPlay && !isBuilderPreview} />
-      <audio preload="auto" ref={magicAudioRef} src={MAGIC_WAND_SOUND} muted={compact && !autoPlay && !isBuilderPreview} />
-      <audio preload="auto" ref={meowAudioRef} src="/birthday-1/vfx/meow.mp3" muted={compact && !autoPlay && !isBuilderPreview} />
-      <audio preload="auto" ref={patAudioRef} src="/birthday-1/vfx/lopi.ogg" muted={compact && !autoPlay && !isBuilderPreview} />
+      <audio src={musicUrl || DEFAULT_BIRTHDAY_MUSIC} loop preload="auto" ref={audioRef} muted={compact && !autoPlay} />
+      <audio preload="auto" ref={touchAudioRef} src={TOUCH_SOUND} muted={compact && !autoPlay} />
+      <audio preload="auto" ref={magicAudioRef} src={MAGIC_WAND_SOUND} muted={compact && !autoPlay} />
+      <audio preload="auto" ref={meowAudioRef} src="/assets/vfx/meow-1.mp3" muted={compact && !autoPlay} />
+      <audio preload="auto" ref={patAudioRef} src="/assets/vfx/lopi.mp3" muted={compact && !autoPlay} />
 
       <div className="absolute inset-0 z-10">
         <Canvas

@@ -212,13 +212,14 @@ function Step2Weapon({ onNext, autoPlay, setWeapon, config }: { onNext: () => vo
 }
 
 // --- STEP 3: WHACK-A-LOVER ---
-function Step3Whack({ onNext, autoPlay, weapon, config }: { onNext: () => void; autoPlay: boolean; weapon: string; config: any }) {
+function Step3Whack({ onNext, autoPlay, weapon, compact, config }: { onNext: () => void; autoPlay: boolean; weapon: string; compact?: boolean; config: any }) {
   const [activeHole, setActiveHole] = useState<number>(-1);
   const [health, setHealth] = useState(0);
   const [floatingTexts, setFloatingTexts] = useState<{ id: number, text: string, x: number, y: number }[]>([]);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [showCursor, setShowCursor] = useState(false);
   const [whacking, setWhacking] = useState(false);
+  const hitSoundRef = useRef<HTMLAudioElement>(null);
   
   const maxHealth = parseInt(config?.gameTarget) || 10;
 
@@ -260,6 +261,11 @@ function Step3Whack({ onNext, autoPlay, weapon, config }: { onNext: () => void; 
   const handleHit = (index: number, cx: number, cy: number) => {
     if (index !== activeHole || health >= maxHealth) return;
 
+    if (hitSoundRef.current && !(compact && !autoPlay)) {
+      hitSoundRef.current.currentTime = 0;
+      hitSoundRef.current.play().catch(() => {});
+    }
+
     // Add floating text
     const randomText = WHACK_DATA.hitVoices[Math.floor(Math.random() * WHACK_DATA.hitVoices.length)];
     const newId = Date.now();
@@ -281,6 +287,8 @@ function Step3Whack({ onNext, autoPlay, weapon, config }: { onNext: () => void; 
   };
 
   return (
+    <>
+    <audio ref={hitSoundRef} src="/assets/vfx/glass-break.mp3" preload="auto" muted={compact && !isBuilderPreview && !autoPlay} />
     <motion.div
       key="step3"
       initial={{ opacity: 0 }}
@@ -376,6 +384,7 @@ function Step3Whack({ onNext, autoPlay, weapon, config }: { onNext: () => void; 
         </motion.div>
       )}
     </motion.div>
+    </>
   );
 }
 
@@ -673,10 +682,19 @@ function Step7Verdict({ onNext, autoPlay, config }: { onNext: () => void; autoPl
 }
 
 // --- MAIN TEMPLATE ---
-export default function Sorry2Template({ compact = false, autoPlay = false, hideNavigation = false, isBuilderPreview = false, config }: { compact?: boolean; autoPlay?: boolean; hideNavigation?: boolean; isBuilderPreview?: boolean; config?: any }) {
+export default function Sorry2Template({ compact = false, autoPlay = false, hideNavigation = false, isBuilderPreview = false, config, generalAudioUrl }: { compact?: boolean; autoPlay?: boolean; hideNavigation?: boolean; isBuilderPreview?: boolean; config?: any; generalAudioUrl?: string }) {
   const [step, setStep] = useState(1);
   const [weapon, setWeapon] = useState("🔨");
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    if (autoPlay && audioRef.current) {
+      audioRef.current.play().catch(() => {});
+    } else if (compact && !isBuilderPreview && audioRef.current) {
+      audioRef.current.pause();
+    }
+  }, [autoPlay, compact, isBuilderPreview, generalAudioUrl]);
 
   const bgImages = [
     "url('/assets/bg/bg1.jpg')",
@@ -731,17 +749,18 @@ export default function Sorry2Template({ compact = false, autoPlay = false, hide
 
   return (
     <div 
-      className={`relative w-full overflow-hidden transition-colors duration-1000 text-slate-800 mx-auto ${compact ? 'h-full' : 'max-w-[400px] h-[800px] max-h-[90vh] rounded-[3rem] shadow-2xl border-[10px] border-pink-200'}`}
+      className={`relative w-full overflow-hidden transition-colors duration-1000 text-slate-800 mx-auto ${compact || isBuilderPreview ? 'h-full' : 'max-w-[400px] h-[800px] max-h-[90vh] rounded-[3rem] shadow-2xl border-[10px] border-pink-200'}`}
       style={{ backgroundImage: currentImg, backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
       <div className={`absolute inset-0 bg-gradient-to-b ${currentBg} backdrop-blur-sm bg-opacity-80`} />
+      {generalAudioUrl && <audio ref={audioRef} src={generalAudioUrl} loop autoPlay={autoPlay} muted={compact && !isBuilderPreview && !autoPlay} />}
       <FloatingParticles step={step} />
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-50" />
 
       <AnimatePresence mode="wait">
         {step === 1 && <Step1Trigger key="s1" onNext={handleNext} autoPlay={autoPlay} config={config} />}
         {step === 2 && <Step2Weapon key="s2" onNext={handleNext} autoPlay={autoPlay} setWeapon={setWeapon} config={config} />}
-        {step === 3 && <Step3Whack key="s3" onNext={handleNext} autoPlay={autoPlay} weapon={weapon} config={config} />}
+        {step === 3 && <Step3Whack key="s3" onNext={handleNext} autoPlay={autoPlay} weapon={weapon} compact={compact} config={config} />}
         {step === 4 && <Step4Bandaged key="s4" onNext={handleNext} autoPlay={autoPlay} config={config} />}
         {step === 5 && <Step5Confession key="s5" onNext={handleNext} autoPlay={autoPlay} config={config} />}
         {step === 6 && <Step6Promise key="s6" onNext={handleNext} autoPlay={autoPlay} config={config} />}
