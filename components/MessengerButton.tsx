@@ -45,7 +45,7 @@ export function MessengerButton() {
 
       {/* Chat Window Popup */}
       <div 
-        className={`fixed bottom-24 right-4 sm:bottom-24 sm:right-6 z-[100] w-[calc(100vw-2rem)] sm:w-[350px] bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden transition-all duration-300 origin-bottom-right ${
+        className={`hidden sm:flex flex-col fixed bottom-24 right-4 sm:bottom-24 sm:right-6 z-[100] w-[calc(100vw-2rem)] sm:w-[350px] bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden transition-all duration-300 origin-bottom-right ${
           isOpen ? "scale-100 opacity-100 pointer-events-auto translate-y-0" : "scale-90 opacity-0 pointer-events-none translate-y-4"
         }`}
       >
@@ -126,7 +126,7 @@ export function MessengerButton() {
       {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-24 right-4 sm:bottom-6 sm:right-6 z-[100] group flex items-center justify-center animate-bounce-slow"
+        className="hidden sm:flex fixed bottom-24 right-4 sm:bottom-6 sm:right-6 z-[100] group items-center justify-center animate-bounce-slow"
         aria-label="Mở khung chat"
       >
         <div className={`relative flex items-center justify-center w-14 h-14 bg-gradient-to-tr from-pink-400 to-rose-500 rounded-full shadow-xl transition-all duration-300 ${isOpen ? 'scale-0 opacity-0 rotate-90' : 'scale-100 opacity-100 rotate-0 group-hover:scale-110'}`}>

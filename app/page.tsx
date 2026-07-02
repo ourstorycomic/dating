@@ -148,6 +148,21 @@ export default async function Home() {
                   50% { transform: translateY(-3px); }
                 }
                 .animate-bounce-slow { animation: bounce-slow 2s infinite; }
+                @keyframes pulse-glow {
+                  0%, 100% { box-shadow: 0 0 15px rgba(255,107,157,0.5); transform: scale(1); }
+                  50% { box-shadow: 0 0 25px rgba(255,107,157,0.8); transform: scale(1.02); }
+                }
+                .animate-pulse-glow { animation: pulse-glow 2.5s ease-in-out infinite; }
+                @keyframes shimmer {
+                  0% { transform: translateX(-150%) skewX(-15deg); }
+                  100% { transform: translateX(250%) skewX(-15deg); }
+                }
+                .animate-shimmer { animation: shimmer 2.5s infinite; }
+                @keyframes gradient-x {
+                  0%, 100% { background-position: 0% 50%; }
+                  50% { background-position: 100% 50%; }
+                }
+                .animate-gradient-x { animation: gradient-x 3s ease infinite; }
               `}</style>
               
               {/* Cute floating images - Positioned in empty spaces */}
@@ -244,12 +259,16 @@ export default async function Home() {
 
       <div className="phone-safe-bottom fixed inset-x-4 bottom-4 z-50 sm:hidden">
         <a
-          className="block rounded-[2rem] border-[3px] border-[#ffb6c1] bg-gradient-to-r from-[#ff7eb8] to-[#ffb347] px-6 py-4 text-center text-lg font-black text-white shadow-[0_15px_30px_rgba(255,126,184,0.5)] transition-transform active:scale-95 animate-bounce-slow"
+          className="group relative flex items-center justify-center gap-2.5 overflow-hidden rounded-[2rem] border-[2px] border-white/60 bg-gradient-to-r from-[#ff59ab] via-[#ff7eb8] to-[#ffb347] bg-[length:200%_auto] px-6 py-4 text-center text-lg font-black text-white backdrop-blur-md transition-all active:scale-95 animate-gradient-x shadow-[0_12px_25px_rgba(255,107,157,0.4)]"
           href={facebookLink()}
           target="_blank"
           rel="noopener noreferrer"
         >
-          Nhắn Fanpage shop tư vấn nha!
+          <div className="absolute top-0 bottom-0 left-0 w-[50%] bg-gradient-to-r from-transparent via-white/50 to-transparent animate-shimmer" />
+          <svg className="h-7 w-7 animate-bounce-slow drop-shadow-md" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.13 2 11.23c0 2.92 1.48 5.48 3.79 7.12V22l3.47-1.92c.87.24 1.79.37 2.74.37 5.52 0 10-4.13 10-9.22S17.52 2 12 2zm1.61 12.35l-2.47-2.63-4.8 2.63 5.27-5.59 2.53 2.61 4.75-2.63-5.28 5.61z" />
+          </svg>
+          <span className="relative z-10 drop-shadow-md tracking-wide">Nhắn Fanpage shop tư vấn nha!</span>
         </a>
       </div>
       <MessengerButton />
