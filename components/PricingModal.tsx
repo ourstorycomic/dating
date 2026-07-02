@@ -121,7 +121,7 @@ export function PricingModal({ customTrigger }: { customTrigger?: React.ReactNod
                             ⚠️ LƯU Ý VỀ CHỈNH SỬA
                           </p>
                           <p className="mt-1 text-sm font-medium text-[#76556d] leading-relaxed">
-                            Mỗi gói có giới hạn số lần sửa miễn phí (Gói 1: 0 lần, Gói 2: 1 lần, Gói 3: 2 lần). Sau khi chốt đơn, mọi yêu cầu chỉnh sửa thêm sẽ tính phí <b className="text-[#ff59ab]">19K / lần</b>.
+                            Mỗi gói có giới hạn số lần sửa miễn phí. Sau khi chốt đơn, mọi yêu cầu chỉnh sửa thêm sẽ tính phí <b className="text-[#ff59ab]">19K / lần</b>.
                           </p>
                         </td>
                       </tr>
