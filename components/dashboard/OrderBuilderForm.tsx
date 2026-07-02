@@ -1744,20 +1744,26 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
             
             <div className="sticky bottom-4 z-50 mt-8 grid grid-cols-2 gap-4">
               <button
-                className="w-full rounded-full bg-gradient-to-r from-pink-500 to-purple-500 py-4 text-base font-bold text-white shadow-lg shadow-pink-500/25 hover:scale-[1.02] hover:shadow-pink-500/40 active:scale-[0.98] transition-all disabled:opacity-50"
+                className="group relative w-full overflow-hidden rounded-[2rem] border-[2px] border-white/20 bg-gradient-to-r from-[#ff477e] via-[#ff7eb8] to-[#ff477e] bg-[length:200%_auto] py-4 text-base font-black !text-white shadow-[0_10px_25px_rgba(255,71,126,0.4)] backdrop-blur-md transition-all animate-gradient-x hover:scale-[1.02] hover:shadow-[0_15px_35px_rgba(255,71,126,0.6)] active:scale-95 disabled:opacity-50"
                 disabled={isSavingEdits}
                 onClick={() => saveOrderEdits()}
                 type="button"
               >
-                {isSavingEdits ? "Đang lưu..." : "Lưu chỉnh sửa"}
+                <div className="absolute inset-0 bg-white/20 opacity-0 transition-opacity group-hover:opacity-100" />
+                <span className="relative z-10 drop-shadow-md tracking-wide">
+                  {isSavingEdits ? "Đang lưu..." : "Lưu chỉnh sửa"}
+                </span>
               </button>
               <button
-                className="w-full rounded-full bg-black/50 backdrop-blur-md border border-white/20 py-4 text-base font-bold text-white shadow-lg hover:scale-[1.02] hover:bg-black/70 active:scale-[0.98] transition-all disabled:opacity-50"
+                className="group relative w-full overflow-hidden rounded-[2rem] border-[2px] border-white/20 bg-gradient-to-r from-[#ff9100] via-[#ffb347] to-[#ff9100] bg-[length:200%_auto] py-4 text-base font-black !text-white shadow-[0_10px_25px_rgba(255,145,0,0.4)] backdrop-blur-md transition-all animate-gradient-x hover:scale-[1.02] hover:shadow-[0_15px_35px_rgba(255,145,0,0.6)] active:scale-95 disabled:opacity-50"
                 disabled={isSavingEdits}
                 onClick={handleLock}
                 type="button"
               >
-                🔒 Khóa Đơn (Đã chốt)
+                <div className="absolute inset-0 bg-white/20 opacity-0 transition-opacity group-hover:opacity-100" />
+                <span className="relative z-10 drop-shadow-md tracking-wide">
+                  Khóa đơn
+                </span>
               </button>
             </div>
           </>
