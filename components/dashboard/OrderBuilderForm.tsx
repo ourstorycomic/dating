@@ -989,9 +989,6 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                 qrCodeUrl: data.qrCodeUrl,
                 amount: data.amount,
               });
-              
-              // Cập nhật custom_data local
-              setCustomData(prev => ({ ...prev, isLocked: false, editUnlockCount: newCount }));
             }
           } catch (e) {
             toast.error("Đã xảy ra lỗi.");
