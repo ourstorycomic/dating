@@ -1125,7 +1125,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               className="rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3 outline-none focus:border-pink-300/50 text-white disabled:opacity-50"
               value={selectedPackage}
               onChange={(e) => setSelectedPackage(e.target.value)}
-              disabled={result?.unlocked}
+              disabled={!!result}
             >
               {SERVICE_PACKAGES.map((pkg) => (
                 <option key={pkg.id} value={pkg.id} className="text-black">
