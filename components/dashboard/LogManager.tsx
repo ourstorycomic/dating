@@ -56,21 +56,31 @@ function textFrom(data: Record<string, unknown>, key: string, fallback = "") {
 }
 
 export function LogManager({ initialLogs, totalCount, isAdmin, initialPage = 1, initialQuery = "", initialStatus = "", initialDate = "" }: { initialLogs: LogRow[]; totalCount: number; isAdmin: boolean; initialPage?: number; initialQuery?: string; initialStatus?: string; initialDate?: string }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const currentPage = parseInt(searchParams.get("page") || "1");
+  const currentQuery = searchParams.get("query") || "";
+  const currentStatus = searchParams.get("status") || "";
+  const currentDate = searchParams.get("date") || "";
+
   const [logs, setLogs] = useState(initialLogs);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [openedLog, setOpenedLog] = useState<LogRow | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [query, setQuery] = useState(initialQuery);
-  const [statusFilter, setStatusFilter] = useState(initialStatus);
-  const [dateFilter, setDateFilter] = useState(initialDate);
-  const logsPerPage = 10;
   
-  const router = useRouter();
-  const pathname = usePathname();
+  const [query, setQuery] = useState(currentQuery);
+  const [statusFilter, setStatusFilter] = useState(currentStatus);
+  const [dateFilter, setDateFilter] = useState(currentDate);
+  const logsPerPage = 10;
 
   useEffect(() => {
     setLogs(initialLogs);
-  }, [initialLogs]);
+    setQuery(currentQuery);
+    setStatusFilter(currentStatus);
+    setDateFilter(currentDate);
+  }, [initialLogs, currentQuery, currentStatus, currentDate]);
 
   function applyFilters(page: number, q: string, s: string, d: string) {
     const params = new URLSearchParams();
@@ -84,7 +94,7 @@ export function LogManager({ initialLogs, totalCount, isAdmin, initialPage = 1, 
   // Debounce search query
   useEffect(() => {
     const handler = setTimeout(() => {
-      if (query !== initialQuery) {
+      if (query !== currentQuery) {
         applyFilters(1, query, statusFilter, dateFilter);
       }
     }, 500);
@@ -257,19 +267,19 @@ export function LogManager({ initialLogs, totalCount, isAdmin, initialPage = 1, 
         {totalCount > logsPerPage && (
           <div className="mt-5 flex items-center justify-center gap-3 border-t border-white/5 pt-4">
             <button 
-              onClick={() => applyFilters(Math.max(1, initialPage - 1), query, statusFilter, dateFilter)}
-              disabled={initialPage <= 1}
+              onClick={() => applyFilters(Math.max(1, currentPage - 1), query, statusFilter, dateFilter)}
+              disabled={currentPage <= 1}
               className="rounded-full bg-white/10 px-4 py-2 text-xs font-semibold hover:bg-white/20 disabled:opacity-30 disabled:pointer-events-none transition"
               type="button"
             >
               Trước
             </button>
             <span className="text-xs text-white/60 font-medium">
-              Trang {initialPage} / {Math.ceil(totalCount / logsPerPage)}
+              Trang {currentPage} / {Math.ceil(totalCount / logsPerPage)}
             </span>
             <button 
-              onClick={() => applyFilters(initialPage + 1, query, statusFilter, dateFilter)}
-              disabled={initialPage >= Math.ceil(totalCount / logsPerPage)}
+              onClick={() => applyFilters(currentPage + 1, query, statusFilter, dateFilter)}
+              disabled={currentPage >= Math.ceil(totalCount / logsPerPage)}
               className="rounded-full bg-white/10 px-4 py-2 text-xs font-semibold hover:bg-white/20 disabled:opacity-30 disabled:pointer-events-none transition"
               type="button"
             >

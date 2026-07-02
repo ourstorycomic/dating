@@ -2,6 +2,8 @@ import { getOrderLogs } from "@/lib/supabase/server";
 import { LogManager } from "@/components/dashboard/LogManager";
 import { getSession } from "@/lib/auth/session";
 
+export const dynamic = "force-dynamic";
+
 export default async function LogsPage({ searchParams }: { searchParams: Promise<{ page?: string, query?: string, status?: string, date?: string }> }) {
   const resolvedParams = await searchParams;
   const page = parseInt(resolvedParams.page || "1");
