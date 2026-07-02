@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { InteractiveTemplatePreview } from "@/components/templates/InteractiveTemplatePreview";
 import { MessengerButton } from "@/components/MessengerButton";
@@ -17,6 +17,24 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
   const [isMobileDevice, setIsMobileDevice] = useState(false);
   const [phoneScale, setPhoneScale] = useState(1);
   const [mounted, setMounted] = useState(false);
+
+  const particles = useMemo(() => Array.from({ length: 15 }).map((_, i) => ({
+    id: i,
+    width: Math.random() * 20 + 10,
+    height: Math.random() * 20 + 10,
+    left: Math.random() * 100,
+    top: Math.random() * 100,
+    duration: Math.random() * 10 + 10,
+    delay: Math.random() * 10,
+  })), []);
+
+  const hearts = useMemo(() => Array.from({ length: 10 }).map((_, i) => ({
+    id: i,
+    left: Math.random() * 100,
+    top: Math.random() * 100,
+    duration: Math.random() * 8 + 8,
+    delay: Math.random() * 8,
+  })), []);
 
   useEffect(() => {
     setMounted(true);
@@ -75,29 +93,29 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
          {/* Cute Particle Background */}
          {mounted && (
            <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-             {Array.from({ length: 15 }).map((_, i) => (
+             {particles.map((p) => (
                <div
-                 key={`particle-${i}`}
+                 key={`particle-${p.id}`}
                  className="absolute rounded-full bg-pink-300/30 blur-[2px]"
                  style={{
-                   width: Math.random() * 20 + 10 + 'px',
-                   height: Math.random() * 20 + 10 + 'px',
-                   left: Math.random() * 100 + '%',
-                   top: Math.random() * 100 + '%',
-                   animation: `float ${Math.random() * 10 + 10}s linear infinite`,
-                   animationDelay: `-${Math.random() * 10}s`,
+                   width: p.width + 'px',
+                   height: p.height + 'px',
+                   left: p.left + '%',
+                   top: p.top + '%',
+                   animation: `float ${p.duration}s linear infinite`,
+                   animationDelay: `-${p.delay}s`,
                  }}
                />
              ))}
-             {Array.from({ length: 10 }).map((_, i) => (
+             {hearts.map((h) => (
                <div
-                 key={`heart-${i}`}
+                 key={`heart-${h.id}`}
                  className="absolute text-pink-200/40 text-xl select-none"
                  style={{
-                   left: Math.random() * 100 + '%',
-                   top: Math.random() * 100 + '%',
-                   animation: `float-up ${Math.random() * 8 + 8}s linear infinite`,
-                   animationDelay: `-${Math.random() * 8}s`,
+                   left: h.left + '%',
+                   top: h.top + '%',
+                   animation: `float-up ${h.duration}s linear infinite`,
+                   animationDelay: `-${h.delay}s`,
                  }}
                >
                  ❤
@@ -138,19 +156,19 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
          <div className="w-full h-full max-w-7xl flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 z-10">
 
             {/* Left Column: Info Box */}
-            <div className={`w-full max-w-[450px] shrink-0 bg-white/90 backdrop-blur-xl p-8 lg:p-10 rounded-[2.5rem] border-4 border-pink-100 shadow-[0_20px_60px_-15px_rgba(255,192,203,0.6)] flex flex-col items-center text-center max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:hidden ${isRotated ? "hidden" : "block"}`}>
-                <div className="bg-pink-100 text-pink-500 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-4">
+            <div className={`w-full max-w-[420px] shrink-0 bg-white/90 backdrop-blur-xl p-7 lg:p-8 rounded-[2.5rem] border-4 border-pink-100 shadow-[0_20px_60px_-15px_rgba(255,192,203,0.6)] flex flex-col items-start text-left max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:hidden ${isRotated ? "hidden" : "block"}`}>
+                <div className="bg-pink-100 text-pink-500 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-3">
                   {template.template_categories?.name || "Mẫu HOT"}
                 </div>
-                <h1 className="text-4xl lg:text-5xl font-black text-pink-500 mb-6 drop-shadow-sm leading-tight">
+                <h1 className="text-3xl lg:text-4xl font-black text-pink-500 mb-3 drop-shadow-sm leading-tight">
                   {template.name}
                 </h1>
-                <p className="text-gray-600 text-base lg:text-lg font-medium leading-relaxed mb-10 px-4">
-                  {template.tagline || template.description || "Gửi gắm yêu thương qua mẫu thiệp xịn xò này. Chắc chắn người ấy sẽ rất bất ngờ và hạnh phúc!"}
+                <p className="text-gray-600 text-sm font-medium leading-relaxed mb-6">
+                  {template.description || "Gửi gắm yêu thương qua mẫu thiệp xịn xò này. Chắc chắn người ấy sẽ rất bất ngờ và hạnh phúc!"}
                 </p>
 
                 <a
-                  className="w-full rounded-full bg-gradient-to-r from-pink-400 to-rose-400 px-6 py-5 text-lg font-black shadow-xl hover:shadow-rose-300/50 hover:scale-[1.02] active:scale-95 transition-all text-white border-4 border-white ring-4 ring-pink-100"
+                  className="w-full rounded-full bg-gradient-to-r from-pink-400 to-rose-400 px-6 py-4 text-base font-black shadow-xl hover:shadow-rose-300/50 hover:scale-[1.02] active:scale-95 transition-all text-white text-center"
                   href={facebookLink(template.slug)}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -160,17 +178,16 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
 
                 {/* Suggestions Box to fill space */}
                 {relatedTemplates.length > 0 && (
-                  <div className="mt-8 w-full border-t border-pink-100 pt-6">
-                    <h3 className="text-xs font-bold text-pink-300 mb-4 uppercase tracking-widest text-center">Gợi ý mẫu cùng chủ đề:</h3>
-                    <div className="flex items-center justify-center gap-4 overflow-x-auto pb-2 [&::-webkit-scrollbar]:hidden snap-x">
+                  <div className="mt-6 w-full border-t border-pink-100 pt-5">
+                    <h3 className="text-xs font-bold text-pink-300 mb-3 uppercase tracking-widest">Gợi ý mẫu cùng chủ đề:</h3>
+                    <div className="flex items-center gap-3 overflow-x-auto pb-2 [&::-webkit-scrollbar]:hidden snap-x">
                       {relatedTemplates.map((relTemplate) => (
-                        <Link 
-                          href={`/templates/${relTemplate.slug}/preview`} 
-                          key={relTemplate.id} 
-                          className="shrink-0 relative w-[80px] h-[140px] rounded-2xl overflow-hidden border-2 border-pink-100 hover:border-pink-400 hover:shadow-[0_10px_20px_-5px_rgba(255,192,203,0.5)] transition-all group snap-start bg-white"
+                        <Link
+                          href={`/templates/${relTemplate.slug}/preview`}
+                          key={relTemplate.id}
+                          className="shrink-0 relative w-[70px] h-[120px] rounded-2xl overflow-hidden border-2 border-pink-100 hover:border-pink-400 hover:shadow-[0_10px_20px_-5px_rgba(255,192,203,0.5)] transition-all group snap-start bg-white"
                         >
-                          {/* Scaled down interactive preview as thumbnail */}
-                          <div className="absolute top-0 left-0 origin-top-left w-[320px] h-[560px] pointer-events-none bg-[#05020a]" style={{ transform: "scale(0.25)" }}>
+                          <div className="absolute top-0 left-0 origin-top-left w-[280px] h-[480px] pointer-events-none bg-[#05020a]" style={{ transform: "scale(0.25)" }}>
                             <InteractiveTemplatePreview
                               compact
                               noFrame
@@ -181,7 +198,6 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                               hideNavigation={true}
                             />
                           </div>
-                          
                           <div className="absolute inset-0 bg-gradient-to-t from-pink-900/90 via-pink-900/10 to-transparent pointer-events-none"></div>
                           <span className="absolute bottom-2 left-2 right-2 text-white font-bold text-[10px] leading-tight drop-shadow-md z-10 pointer-events-none truncate text-left">{relTemplate.name}</span>
                         </Link>
@@ -189,6 +205,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                     </div>
                   </div>
                 )}
+
             </div>
 
             {/* Right Column: The Phone / PC Preview */}

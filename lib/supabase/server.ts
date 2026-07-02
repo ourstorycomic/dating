@@ -71,7 +71,7 @@ const allowedTemplateMatches = [
   "birthday #3",
 ];
 
-export const MOCK_TEMPLATES = [
+export const MOCK_TEMPLATES: any[] = [
   {
     id: "sorry-1-mock",
     slug: "sorry-1",
@@ -300,15 +300,27 @@ export async function getPublishedTemplates() {
   }
 
   const dbTemplates = (data ?? []).map(normalizeTemplateRelations).filter(isSupportedTemplate);
-  return [...dbTemplates, ...MOCK_TEMPLATES] as any[];
+  
+  // Gộp data_schema từ mock vào DB nếu DB chưa có, và tránh nhân bản
+  const result = dbTemplates.map(dbTemp => {
+    const mock = MOCK_TEMPLATES.find(m => m.slug === dbTemp.slug);
+    if (mock) {
+      return {
+        ...dbTemp,
+        data_schema: dbTemp.data_schema || mock.data_schema,
+        sample_data: dbTemp.sample_data || mock.sample_data
+      };
+    }
+    return dbTemp;
+  });
+
+  const dbSlugs = new Set(result.map(t => t.slug));
+  const missingMocks = MOCK_TEMPLATES.filter(m => !dbSlugs.has(m.slug));
+
+  return [...result, ...missingMocks] as any[];
 }
 
 export async function getTemplateBySlug(slug: string) {
-  console.log("getTemplateBySlug called with:", slug);
-  const mock = MOCK_TEMPLATES.find(m => m.slug === slug);
-  console.log("Found mock:", mock ? mock.slug : "NONE");
-  if (mock) return mock;
-
   const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
     .from("templates")
@@ -320,11 +332,24 @@ export async function getTemplateBySlug(slug: string) {
     .maybeSingle();
 
   if (error || !data) {
-    if (error) console.error("Failed to load template", error);
+    // Fallback to mock if not in DB
+    const mock = MOCK_TEMPLATES.find(m => m.slug === slug);
+    if (mock) return mock;
     return null;
   }
 
-  const template = normalizeTemplateRelations(data);
+  let template = normalizeTemplateRelations(data);
+  
+  // Merge schema from mock if DB is missing it
+  const mock = MOCK_TEMPLATES.find(m => m.slug === template.slug);
+  if (mock) {
+    template = {
+      ...template,
+      data_schema: template.data_schema || mock.data_schema,
+      sample_data: template.sample_data || mock.sample_data
+    };
+  }
+
   return isSupportedTemplate(template) ? template : null;
 }
 

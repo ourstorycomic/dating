@@ -32,6 +32,8 @@ export function EmployeeStatsPanel({
   const [mode, setMode] = useState<"day" | "month">("day");
   const [employeeFilter, setEmployeeFilter] = useState("all");
   const [periodFilter, setPeriodFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
 
   const employeeOptions = useMemo(() => {
     const map = new Map<string, { email: string; name: string }>();
@@ -58,6 +60,8 @@ export function EmployeeStatsPanel({
     return true;
   });
 
+  const paginatedRows = rows.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
   const totals = useMemo(() => {
     return rows.reduce(
       (acc, row) => {
@@ -82,6 +86,7 @@ export function EmployeeStatsPanel({
             onChange={(event) => {
               setMode(event.target.value as "day" | "month");
               setPeriodFilter("all");
+              setCurrentPage(1);
             }}
             value={mode}
           >
@@ -90,7 +95,7 @@ export function EmployeeStatsPanel({
           </select>
           <select
             className="rounded-full border border-white/10 bg-white/[0.08] px-4 py-2 text-sm font-semibold outline-none"
-            onChange={(event) => setPeriodFilter(event.target.value)}
+            onChange={(event) => { setPeriodFilter(event.target.value); setCurrentPage(1); }}
             value={periodFilter}
           >
             <option value="all">Tất cả {mode === "day" ? "ngày" : "tháng"}</option>
@@ -102,7 +107,7 @@ export function EmployeeStatsPanel({
           </select>
           <select
             className="rounded-full border border-white/10 bg-white/[0.08] px-4 py-2 text-sm font-semibold outline-none"
-            onChange={(event) => setEmployeeFilter(event.target.value)}
+            onChange={(event) => { setEmployeeFilter(event.target.value); setCurrentPage(1); }}
             value={employeeFilter}
           >
             <option value="all">Tất cả nhân viên</option>
@@ -129,7 +134,7 @@ export function EmployeeStatsPanel({
             </tr>
           </thead>
           <tbody>
-            {rows.length ? rows.map((row) => (
+            {paginatedRows.length ? paginatedRows.map((row) => (
               <tr className="border-b border-white/8" key={`${"date" in row ? row.date : row.month}-${row.employeeId}`}>
                 <td className="py-3 pr-4 font-semibold">{"date" in row ? row.date : row.month}</td>
                 <td className="py-3 pr-4">
@@ -167,6 +172,30 @@ export function EmployeeStatsPanel({
             </tfoot>
           )}
         </table>
+        
+        {rows.length > rowsPerPage && (
+          <div className="mt-5 flex items-center justify-center gap-3 border-t border-white/5 pt-4 pb-2">
+            <button 
+              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+              disabled={currentPage <= 1}
+              className="rounded-full bg-white/10 px-4 py-2 text-xs font-semibold hover:bg-white/20 disabled:opacity-30 disabled:pointer-events-none transition"
+              type="button"
+            >
+              Trước
+            </button>
+            <span className="text-xs text-white/60 font-medium">
+              Trang {currentPage} / {Math.ceil(rows.length / rowsPerPage)}
+            </span>
+            <button 
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage >= Math.ceil(rows.length / rowsPerPage)}
+              className="rounded-full bg-white/10 px-4 py-2 text-xs font-semibold hover:bg-white/20 disabled:opacity-30 disabled:pointer-events-none transition"
+              type="button"
+            >
+              Tiếp
+            </button>
+          </div>
+        )}
       </div>
     </GlassCard>
   );

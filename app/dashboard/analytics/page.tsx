@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { CommissionRulesForm } from "@/components/dashboard/CommissionRulesForm";
 import { EmployeeStatsPanel } from "@/components/dashboard/EmployeeStatsPanel";
+import { CommissionListPanel } from "@/components/dashboard/CommissionListPanel";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { getSession } from "@/lib/auth/session";
 import {
@@ -71,36 +72,7 @@ export default async function AnalyticsPage() {
         </GlassCard>
       ) : null}
 
-      <GlassCard hover={false}>
-        <h2 className="text-2xl font-semibold">Hoa hồng gần đây</h2>
-        <div className="mt-5 grid gap-3">
-          {commissions.length ? commissions.map((commission) => {
-            const user = Array.isArray(commission.users) ? commission.users[0] : commission.users;
-            const affiliate = Array.isArray(commission.affiliates) ? commission.affiliates[0] : commission.affiliates;
-            const order = Array.isArray(commission.orders) ? commission.orders[0] : commission.orders;
-            return (
-              <div className="grid gap-2 rounded-2xl border border-white/10 bg-white/[0.05] p-4 md:grid-cols-[1fr_150px_150px]" key={commission.id}>
-                <div>
-                  {commission.user_id ? (
-                    <Link href={`/dashboard/users/${commission.user_id}`} className="font-semibold transition-colors hover:text-pink-300 hover:underline">
-                      {user?.name ?? "Không rõ"}
-                    </Link>
-                  ) : (
-                    <p className="font-semibold">{affiliate?.name ?? "Không rõ"}</p>
-                  )}
-                  <p className="text-xs text-white/48">Đơn {order?.public_id ?? "N/A"} - {commission.recipient_type}</p>
-                </div>
-                <p className="text-sm text-white/68">{Number(commission.percentage).toLocaleString("vi-VN")}%</p>
-                <p className="font-semibold text-pink-100">{money(Number(commission.amount))}</p>
-              </div>
-            );
-          }) : (
-            <p className="rounded-2xl border border-white/10 bg-white/[0.05] p-4 text-sm text-white/58">
-              Chưa có hoa hồng.
-            </p>
-          )}
-        </div>
-      </GlassCard>
+      <CommissionListPanel commissions={commissions as any} />
     </div>
   );
 }

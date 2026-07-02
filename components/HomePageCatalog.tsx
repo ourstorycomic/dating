@@ -154,13 +154,11 @@ export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
                       {/* BỎ GIÁ TIỀN SẢN PHẨM Ở ĐÂY NHƯ USER YÊU CẦU */}
                     </div>
 
-                    <p className="mt-3 flex-grow text-sm leading-6 text-[#76556d]">
-                      {template.tagline || template.description}
-                    </p>
-
-
-
-                    <div className="mt-5 grid grid-cols-2 gap-3">
+                    <div className="mt-3 flex-grow">
+                      <p className="text-sm leading-6 text-[#76556d] whitespace-pre-wrap line-clamp-3">
+                        {template.description || "Đang cập nhật mô tả..."}
+                      </p>
+                    </div>                    <div className="mt-5 grid grid-cols-2 gap-3">
                       <Link
                         className="rounded-full border border-[#f4bdd8] bg-white/78 px-4 py-3 text-center text-sm font-extrabold text-[#b83276] transition hover:bg-white"
                         href={`/templates/${template.slug}/preview`}
