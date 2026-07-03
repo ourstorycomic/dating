@@ -101,6 +101,11 @@ export function Stage4MeteorMic({
           setBlown(true);
         }, 1500);
         return () => clearTimeout(t);
+      } else {
+        const t = setTimeout(() => {
+          onNext();
+        }, 3000);
+        return () => clearTimeout(t);
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

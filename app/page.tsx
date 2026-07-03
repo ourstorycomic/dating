@@ -173,8 +173,8 @@ export default async function Home() {
                 Web tặng người yêu, mở ra là rụng tim!
               </p>
               
-              <h1 className="mt-6 max-w-4xl text-5xl font-black leading-[1.15] tracking-tight text-[#ff6b9d] sm:text-6xl lg:text-7xl drop-shadow-sm">
-                Gói trọn lời yêu <br/>
+              <h1 className="mt-6 max-w-4xl text-[2.75rem] font-black leading-[1.15] tracking-tight text-[#ff6b9d] sm:text-6xl lg:text-7xl drop-shadow-sm">
+                Gói trọn lời yêu <br className="hidden sm:block" />
                 vào chiếc web <span className="text-[#ffa07a] inline-block hover:scale-105 transition-transform cursor-pointer">siêu cuthée!</span>
               </h1>
               

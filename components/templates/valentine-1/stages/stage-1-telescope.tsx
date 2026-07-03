@@ -84,6 +84,9 @@ export function Stage1Telescope({
     setTimeout(() => setDrawing(true), 120);
     setTimeout(() => setMrBeanShrink(true), 1700);
     setTimeout(() => setShowReveal(true), 2600);
+    if (autoPlay) {
+      setTimeout(onNext, 5000);
+    }
   };
 
   const handleDrag = (e: any, info: any) => {
