@@ -805,10 +805,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     }),
     isLocked,
     editUnlockCount,
-    ...dynamicData
   };
-
-  const [isFreeOrder, setIsFreeOrder] = useState(false);
 
   // Control audio volume inside the preview
   useEffect(() => {
@@ -835,7 +832,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
         customData,
         recipientName,
         templateId: selectedTemplate?.id,
-        isFreeOrder: canCreateFree && isFreeOrder,
+        isFreeOrder: canCreateFree,
       }),
     });
 
@@ -1249,17 +1246,6 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
           </div>
 
           <div className="md:col-span-2">
-            {canCreateFree && (
-              <label className="mb-4 flex items-center gap-2 text-sm text-pink-300 font-medium cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={isFreeOrder}
-                  onChange={(e) => setIsFreeOrder(e.target.checked)}
-                  className="rounded border-white/20 bg-white/10 accent-pink-500 w-4 h-4"
-                />
-                Tạo đơn miễn phí (Không cần thanh toán)
-              </label>
-            )}
             {!result ? (
               <button className="w-full rounded-full bg-gradient-to-r from-pink-500 to-purple-500 px-6 py-3 text-sm font-semibold disabled:opacity-50" disabled={isSubmitting} onClick={createOrder} type="button">
                 {isSubmitting ? "Đang tạo đơn..." : "Tạo đơn"}
