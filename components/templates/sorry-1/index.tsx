@@ -253,7 +253,7 @@ function Step3Wheel({ onNext, autoPlay, config, isMuted }: { onNext: () => void;
       exit={{ opacity: 0, scale: 0.9 }}
       className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10"
     >
-      <img src="/assets/dumb/hm.webp" className="w-24 h-24 object-contain mx-auto mb-2 drop-shadow-md" alt="dumb" />
+      <img src="/assets/sad/tisramissu.webp" className="w-24 h-24 object-contain mx-auto mb-2 drop-shadow-md" alt="dumb" />
       <h2 className="text-2xl font-bold text-slate-800 mb-2">{config?.wheelTitle || "Vòng Quay Đền Tội"}</h2>
       <p className="text-sm font-medium text-slate-600 mb-8 bg-white/50 p-2 rounded-xl backdrop-blur-sm">{config?.wheelSubtitle || "Trước khi tha lỗi, cho cậu quyền phạt tớ đấy! Quay đi, tớ chịu hết!"}</p>
 
@@ -261,7 +261,6 @@ function Step3Wheel({ onNext, autoPlay, config, isMuted }: { onNext: () => void;
         <div className="absolute top-0 left-1/2 -translate-x-1/2 -mt-4 z-20 text-rose-500 drop-shadow-md">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21l-12-18h24z"/></svg>
         </div>
-        <img src="/assets/sad/tisramissu.webp" className="absolute -bottom-4 -left-8 w-16 h-16 object-contain drop-shadow-lg z-30" alt="decor" />
         <motion.div
           animate={{ rotate: rotation }}
           transition={{ duration: 10, ease: [0.2, 0.8, 0.2, 1] }}
@@ -499,7 +498,7 @@ function Step6Treaty({ onNext, autoPlay, config }: { onNext: () => void; autoPla
           transition={{ repeat: Infinity, duration: 1.5 }}
           className="px-6 py-4 bg-gradient-to-r from-rose-400 to-pink-500 text-[#ffffff] rounded-full font-bold shadow-xl border-2 border-white flex items-center justify-center gap-2 z-20"
         >
-          <CheckCircle2 size={20} /> {config?.treatyBtnYes || "KÝ TÊN, THA MẠNG CHÓ 🐾"}
+          <CheckCircle2 size={20} /> {config?.treatyBtnYes || "Ký tên, tha mạng"}
         </motion.button>
 
         <motion.button
