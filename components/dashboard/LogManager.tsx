@@ -160,7 +160,7 @@ export function LogManager({ initialLogs, totalCount, isAdmin, initialPage = 1, 
           <h1 className="text-3xl font-semibold sm:text-4xl">Nhật ký đơn</h1>
           {isAdmin ? (
             <button
-              className="rounded-full border border-rose-300/20 bg-rose-400/10 px-5 py-3 text-sm font-semibold text-rose-100 disabled:opacity-50"
+              className="rounded-full border border-rose-200 bg-rose-500 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-rose-600 disabled:opacity-50"
               disabled={selectedIds.size === 0 || isDeleting}
               onClick={deleteSelected}
               type="button"
