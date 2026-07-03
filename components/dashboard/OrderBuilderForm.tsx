@@ -492,6 +492,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const [buyerContact, setBuyerContact] = useState("");
   const [senderName, setSenderName] = useState("Anh");
   const [recipientName, setRecipientName] = useState("Em");
+  const [qrTimeLeft, setQrTimeLeft] = useState(600);
+  const [qrKey, setQrKey] = useState<number>(0);
   const [anniversaryCode, setAnniversaryCode] = useState("1402");
   const [question, setQuestion] = useState("Em có đồng ý cùng anh viết tiếp câu chuyện này không?");
   const [generalAudioUrl, setGeneralAudioUrl] = useState("");
@@ -803,9 +805,23 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     } : {
       forceStage: valentine1Stage,
     }),
-    isLocked,
-    editUnlockCount,
   };
+
+  useEffect(() => {
+    if (!result || result.unlocked || !result.qrCodeUrl) return;
+
+    const interval = setInterval(() => {
+      setQrTimeLeft((prev) => {
+        if (prev <= 1) {
+          setQrKey(Date.now());
+          return 600; // Reset to 10 minutes
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [result]);
 
   // Control audio volume inside the preview
   useEffect(() => {
@@ -857,6 +873,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
       unlocked: Boolean(data.unlocked),
     });
     
+    setQrTimeLeft(600);
+    setQrKey(Date.now());
     setIsLocked(false);
     setEditUnlockCount(0);
   }
@@ -1014,6 +1032,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
       trackLink: absoluteUrl(`/track/${order.public_id}`),
       unlocked: paid,
     });
+    setQrTimeLeft(600);
+    setQrKey(Date.now());
 
     setBuyerName(order.buyer_name || "");
     setBuyerContact(order.buyer_contact || "");
@@ -1785,8 +1805,14 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               {!result.unlocked ? (
                 <div className="grid gap-4 rounded-2xl border border-pink-200 bg-white p-5 md:grid-cols-[160px_1fr] shadow-sm">
                 {result.qrCodeUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img alt="QR chuyển khoản" className="h-40 w-40 rounded-2xl bg-white object-contain p-2" src={result.qrCodeUrl} />
+                  <div className="flex flex-col items-center justify-center gap-2 relative">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img alt="QR chuyển khoản" className="h-40 w-40 rounded-2xl bg-white object-contain p-2" src={`${result.qrCodeUrl}${result.qrCodeUrl.includes("?") ? "&" : "?"}_t=${qrKey}`} />
+                    <span className="text-[11px] font-medium text-pink-600 bg-pink-50 px-2.5 py-1 rounded-full border border-pink-200 shadow-sm flex items-center gap-1.5 whitespace-nowrap">
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                      Làm mới sau: {Math.floor(qrTimeLeft / 60)}:{String(qrTimeLeft % 60).padStart(2, '0')}
+                    </span>
+                  </div>
                 ) : (
                   <div className="grid h-40 w-40 place-items-center rounded-2xl border border-white/10 bg-white/[0.04] text-center text-xs text-white/50">
                     Chưa cấu hình tài khoản nhận tiền
