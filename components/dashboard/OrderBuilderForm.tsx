@@ -1319,7 +1319,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                             Xem QR / Thanh toán
                           </div>
                         )}
-                        <div className={`flex items-center justify-center rounded-full border px-3 py-1 text-[11px] leading-none font-bold ${paid ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "border-white/10 bg-white/5 text-white/50"}`}>
+                        <div className={`flex items-center justify-center rounded-full border px-3 py-1 text-[11px] leading-none font-bold ${paid ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "border-pink-200 bg-pink-50 text-pink-500 dark:border-pink-500/20 dark:bg-pink-500/10"}`}>
                           {paid ? "Đã thanh toán" : "Chờ thanh toán"}
                         </div>
                       </div>
