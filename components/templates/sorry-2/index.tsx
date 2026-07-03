@@ -621,7 +621,7 @@ function Step7Verdict({ onNext, autoPlay, config }: { onNext: () => void; autoPl
     }
   }, [autoPlay, onNext]);
 
-  const yesScale = 1 + noClickCount * 0.3;
+  const yesScale = Math.min(1.4, 1 + noClickCount * 0.15);
   const noScale = Math.max(0, 1 - noClickCount * 0.25);
   const showNo = noClickCount < 4;
 
@@ -647,19 +647,23 @@ function Step7Verdict({ onNext, autoPlay, config }: { onNext: () => void; autoPl
         <img src="/assets/dumb/auau.webp" className="w-24 h-24 object-contain mx-auto drop-shadow-xl" alt="verdict" />
       </motion.div>
       <h2 className="text-4xl font-black text-rose-600 mb-4 uppercase tracking-wider drop-shadow-sm">Tòa Tuyên Án</h2>
-      <p className="text-slate-700 font-bold mb-12 bg-white/60 backdrop-blur-sm px-6 py-3 rounded-full shadow-sm border border-white/50">
+      <p className="text-slate-700 font-bold mb-8 bg-white/60 backdrop-blur-sm px-6 py-3 rounded-full shadow-sm border border-white/50">
         Bị cáo đã nhận tội, quan tòa phán quyết sao đây?
       </p>
 
-      <div className="flex flex-col gap-6 w-full max-w-xs relative h-[180px] justify-center items-center">
+      <div className="flex flex-col gap-6 w-full max-w-[320px] relative items-center justify-center min-h-[200px]">
         <motion.button
           onClick={onNext}
           animate={{ scale: [yesScale, yesScale * 1.05, yesScale], boxShadow: ["0px 0px 0px rgba(244,63,94,0)", "0px 0px 30px rgba(244,63,94,0.8)", "0px 0px 0px rgba(244,63,94,0)"] }}
           transition={{ repeat: Infinity, duration: 1.5 }}
-          className="px-6 py-5 bg-gradient-to-r from-orange-400 to-rose-500 text-[#ffffff] rounded-full font-black shadow-2xl border-4 border-white flex items-center justify-center gap-2 z-20 origin-center whitespace-nowrap"
+          className="px-6 py-5 bg-gradient-to-r from-orange-400 to-rose-500 text-[#ffffff] rounded-3xl font-black shadow-2xl border-4 border-white flex flex-col items-center justify-center gap-2 z-20 origin-center max-w-[90vw]"
           style={{ width: "100%" }}
         >
-          <img src="/assets/happy/love-valentines.webp" className="w-6 h-6 object-contain" alt="heart" /> THA THỨ (KÈM TRÀ SỮA) 🧋
+          <div className="flex items-center gap-2">
+            <img src="/assets/happy/love-valentines.webp" className="w-6 h-6 object-contain" alt="heart" />
+            <span className="text-lg">THA THỨ</span>
+          </div>
+          <span className="text-sm opacity-90">(KÈM TRÀ SỮA) 🧋</span>
         </motion.button>
 
         {showNo && (
@@ -667,7 +671,7 @@ function Step7Verdict({ onNext, autoPlay, config }: { onNext: () => void; autoPl
             animate={{ scale: noScale }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={handleNoClick}
-            className="px-6 py-4 bg-slate-800 text-[#ffffff] rounded-full font-bold border-4 border-slate-700 flex items-center justify-center gap-2 z-10 transition-colors shadow-[0_5px_15px_rgba(0,0,0,0.3)] absolute w-full bottom-0 origin-center"
+            className="px-6 py-4 bg-slate-800 text-[#ffffff] rounded-full font-bold border-4 border-slate-700 flex items-center justify-center gap-2 z-10 transition-colors shadow-[0_5px_15px_rgba(0,0,0,0.3)] w-full origin-center"
           >
             ĐÁNH TIẾP 🔨
           </motion.button>
