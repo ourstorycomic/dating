@@ -86,8 +86,11 @@ export function Step3Delivery({ onNext, autoPlay = false, compact = false, photo
       clientY = e.clientY;
     }
 
-    const x = clientX - rect.left;
-    const y = clientY - rect.top;
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    const x = (clientX - rect.left) * scaleX;
+    const y = (clientY - rect.top) * scaleY;
 
     ctx.lineWidth = 3;
     ctx.lineCap = "round";
