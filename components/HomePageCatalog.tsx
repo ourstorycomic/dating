@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { InteractiveTemplatePreview } from "@/components/templates/InteractiveTemplatePreview";
@@ -20,6 +19,7 @@ type HomeTemplate = {
   tagline?: string | null;
   description?: string | null;
   sample_data?: unknown;
+  thumbnail_url?: string | null;
 };
 
 type HomeTemplateGroup = {
@@ -31,14 +31,6 @@ type HomeTemplateGroup = {
   templates: HomeTemplate[];
 };
 
-function formatPrice(value: number) {
-  return `${Math.round(value / 1000).toLocaleString("vi-VN")}K`;
-}
-
-function getScreens(sampleData: unknown) {
-  const data = sampleData as { screens?: string[] } | undefined;
-  return data?.screens ?? [];
-}
 
 function facebookLink(templateSlug?: string) {
   const text = templateSlug
@@ -47,9 +39,122 @@ function facebookLink(templateSlug?: string) {
   return `${FACEBOOK_URL}?text=${encodeURIComponent(text)}`;
 }
 
+/**
+ * Returns { webp, png } thumbnail URLs.
+ * Priority: DB thumbnail_url > slug-based convention fallback.
+ * The <img> onError handler will fall through to live preview if none exist.
+ */
+function getThumbnailSrcs(
+  slug: string,
+  _componentKey: string,
+  thumbnailUrl?: string | null
+): { webp: string; png: string } {
+  if (thumbnailUrl) {
+    // DB url — use as-is for both (Supabase serves the actual format)
+    return { webp: thumbnailUrl, png: thumbnailUrl };
+  }
+  // Fallback: try slug-based convention files in /public/thumbnails/
+  return {
+    webp: `/thumbnails/${slug}.webp`,
+    png: `/thumbnails/${slug}.png`,
+  };
+}
+
+
+// ─── Per-card hover logic ─────────────────────────────────────────────────────
+
+function TemplatePreviewArea({ template }: { template: HomeTemplate }) {
+  const [hovered, setHovered] = useState(false);
+  // Lazy-mount live preview: once hovered keep it mounted to avoid re-init
+  const [everHovered, setEverHovered] = useState(false);
+  const thumbSrcs = getThumbnailSrcs(template.slug, template.component_key, template.thumbnail_url);
+  // Optimistic: assume thumbnail exists; onError on the <img> fallback sets false
+  const [thumbnailExists, setThumbnailExists] = useState(true);
+
+  const handleMouseEnter = () => {
+    setHovered(true);
+    setEverHovered(true);
+  };
+  const handleMouseLeave = () => setHovered(false);
+
+  // Phone frame shared style
+  const phoneFrameCls =
+    "mx-auto flex aspect-[9/19] w-full max-w-[340px] shrink-0 overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl";
+
+  return (
+    <div
+      className="relative mb-5 cursor-pointer"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onClick={(e) => {
+        if (e.nativeEvent.isTrusted) {
+          window.open(`/templates/${template.slug}/preview`, "_blank");
+        }
+      }}
+    >
+      {thumbSrcs && thumbnailExists ? (
+        <>
+          {/* ── Static thumbnail — visible when NOT hovered ── */}
+          <div
+            className={`${phoneFrameCls} relative transition-opacity duration-300`}
+            style={{ opacity: hovered ? 0 : 1, visibility: hovered ? "hidden" : "visible" }}
+          >
+            {/*
+              <picture> lets the browser pick WebP (sharp-compressed) when available,
+              falling back to PNG automatically — no JS needed.
+              onError on <img> is the last resort: if both 404, fall through to live preview.
+            */}
+            <picture className="h-full w-full">
+              <source srcSet={thumbSrcs.webp} type="image/webp" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={thumbSrcs.png}
+                alt={`Thumbnail ${template.name}`}
+                className="h-full w-full object-cover object-top"
+                loading="lazy"
+                decoding="async"
+                onError={() => setThumbnailExists(false)}
+              />
+            </picture>
+          </div>
+
+          {/* ── Live preview — lazy-mounted, shown on hover ── */}
+          {everHovered && (
+            <div
+              className="absolute inset-0 transition-opacity duration-300"
+              style={{ opacity: hovered ? 1 : 0, pointerEvents: hovered ? "auto" : "none" }}
+            >
+              <InteractiveTemplatePreview
+                compact
+                componentKey={template.component_key}
+                gradient={template.gradient}
+                visualLabel={template.visual_label}
+                hideNavigation={true}
+                forceRandomMusic={true}
+              />
+            </div>
+          )}
+        </>
+      ) : (
+        /* ── No thumbnail: render live preview immediately (fallback) ── */
+        <InteractiveTemplatePreview
+          compact
+          componentKey={template.component_key}
+          gradient={template.gradient}
+          visualLabel={template.visual_label}
+          hideNavigation={true}
+          forceRandomMusic={true}
+        />
+      )}
+    </div>
+  );
+}
+
+
+// ─── Main catalog ──────────────────────────────────────────────────────────────
+
 export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
   const [activeTab, setActiveTab] = useState("all");
-  const router = useRouter();
 
   if (grouped.length === 0) {
     return (
@@ -81,15 +186,13 @@ export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
                 : "bg-white/58 text-[#7b536b] hover:bg-white hover:text-[#c04b86]"
             }`}
             key={group.slug}
-            onClick={() => {
-              setActiveTab(group.slug);
-            }}
+            onClick={() => setActiveTab(group.slug)}
             type="button"
           >
             {group.category?.name || group.slug}
           </button>
         ))}
-        
+
         {/* Nút Xem bảng giá siêu nổi bật */}
         <div className="ml-auto shrink-0 flex items-center pr-1">
           <PricingModal />
@@ -97,92 +200,79 @@ export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
       </div>
 
       <div className="grid gap-14">
-        {grouped.filter(group => activeTab === "all" || group.slug === activeTab).map((group) => (
-          <section className="grid gap-5" id={`category-${group.slug}`} key={group.slug}>
-            <div className="rounded-[28px] border border-white/70 bg-white/52 p-5 shadow-[0_14px_34px_rgba(215,112,158,0.1)] backdrop-blur-xl">
-              <h3 className="text-2xl font-extrabold text-[#321a32]">{group.category?.name}</h3>
-              <p className="mt-2 max-w-3xl text-sm leading-6 text-[#76556d]">
-                {group.category?.description}
-              </p>
-            </div>
+        {grouped
+          .filter((group) => activeTab === "all" || group.slug === activeTab)
+          .map((group) => (
+            <section className="grid gap-5" id={`category-${group.slug}`} key={group.slug}>
+              <div className="rounded-[28px] border border-white/70 bg-white/52 p-5 shadow-[0_14px_34px_rgba(215,112,158,0.1)] backdrop-blur-xl">
+                <h3 className="text-2xl font-extrabold text-[#321a32]">{group.category?.name}</h3>
+                <p className="mt-2 max-w-3xl text-sm leading-6 text-[#76556d]">
+                  {group.category?.description}
+                </p>
+              </div>
 
-            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-              {group.templates.map((template) => {
-
-
-                return (
+              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                {group.templates.map((template) => (
                   <motion.div
-                    initial={{ opacity: 0, y: 40 }}
+                    initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-40px" }}
-                    transition={{ duration: 0.5, type: "spring", bounce: 0.3 }}
+                    viewport={{ once: true, margin: "-60px", amount: 0.1 }}
+                    transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
                     key={template.id}
-                    className="h-full min-w-0"
+                    className="group h-full min-w-0"
+                    style={{ contain: "layout style" }}
                   >
-                    <GlassCard
-                      className="shine-card flex h-full min-h-[590px] flex-col p-4 sm:p-5"
-                    >
-                    <div 
-                      className="mb-5 block cursor-pointer" 
-                      onClick={(e) => {
-                        if (e.nativeEvent.isTrusted) {
-                          window.open(`/templates/${template.slug}/preview`, '_blank');
-                        }
-                      }}
-                    >
-                      <InteractiveTemplatePreview
-                        compact
-                        componentKey={template.component_key}
-                        gradient={template.gradient}
-                        visualLabel={template.visual_label}
-                        hideNavigation={true}
-                        forceRandomMusic={true}
-                      />
-                    </div>
+                    <GlassCard className="shine-card flex h-full min-h-[590px] flex-col p-4 sm:p-5">
+                      <TemplatePreviewArea template={template} />
 
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-[#c04b86]">
-                          {group.category?.name}
-                        </p>
-                        <Link href={`/templates/${template.slug}/preview`} target="_blank" rel="noopener noreferrer">
-                          <h4 className="mt-2 text-2xl font-extrabold leading-tight text-[#321a32] hover:text-[#d53f8c]">
-                            {template.name}
-                          </h4>
-                        </Link>
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-[#c04b86]">
+                            {group.category?.name}
+                          </p>
+                          <Link
+                            href={`/templates/${template.slug}/preview`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <h4 className="mt-2 text-2xl font-extrabold leading-tight text-[#321a32] hover:text-[#d53f8c]">
+                              {template.name}
+                            </h4>
+                          </Link>
+                        </div>
+                        {/* BỎ GIÁ TIỀN SẢN PHẨM Ở ĐÂY NHƯ USER YÊU CẦU */}
                       </div>
-                      {/* BỎ GIÁ TIỀN SẢN PHẨM Ở ĐÂY NHƯ USER YÊU CẦU */}
-                    </div>
 
-                    <div className="mt-3 flex-grow">
-                      <p className="text-sm leading-6 text-[#76556d] whitespace-pre-wrap line-clamp-3">
-                        {template.description || "Đang cập nhật mô tả..."}
-                      </p>
-                    </div>                    <div className="mt-5 grid grid-cols-2 gap-3">
-                      <Link
-                        className="rounded-full border border-[#f4bdd8] bg-white/78 px-4 py-3 text-center text-sm font-extrabold text-[#b83276] transition hover:bg-white"
-                        href={`/templates/${template.slug}/preview`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Mở preview
-                      </Link>
-                      <a
-                        className="rounded-full bg-gradient-to-r from-[#ff7eb8] to-[#ffd36f] px-4 py-3 text-center text-sm font-extrabold text-[#fff] shadow-[0_14px_30px_rgba(255,126,184,0.28)] transition hover:scale-[1.02]"
-                        href={facebookLink(template.slug)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Chọn mẫu
-                      </a>
-                    </div>
+                      <div className="mt-3 flex-grow">
+                        <p className="text-sm leading-6 text-[#76556d] whitespace-pre-wrap line-clamp-3">
+                          {template.description || "Đang cập nhật mô tả..."}
+                        </p>
+                      </div>
+
+                      <div className="mt-5 grid grid-cols-2 gap-3">
+                        <Link
+                          className="rounded-full border border-[#f4bdd8] bg-white/78 px-4 py-3 text-center text-sm font-extrabold text-[#b83276] transition hover:bg-white"
+                          href={`/templates/${template.slug}/preview`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Mở preview
+                        </Link>
+                        <a
+                          className="rounded-full bg-gradient-to-r from-[#ff7eb8] to-[#ffd36f] px-4 py-3 text-center text-sm font-extrabold text-[#fff] shadow-[0_14px_30px_rgba(255,126,184,0.28)] transition hover:scale-[1.02]"
+                          href={facebookLink(template.slug)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Chọn mẫu
+                        </a>
+                      </div>
                     </GlassCard>
                   </motion.div>
-                );
-              })}
-            </div>
-          </section>
-        ))}
+                ))}
+              </div>
+            </section>
+          ))}
       </div>
     </div>
   );

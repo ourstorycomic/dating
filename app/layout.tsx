@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Be_Vietnam_Pro } from "next/font/google";
+import { Be_Vietnam_Pro, Dancing_Script, Caveat } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/Toast";
 
@@ -7,11 +7,32 @@ const beVietnam = Be_Vietnam_Pro({
   subsets: ["latin", "vietnamese"],
   weight: ["400", "500", "600", "700", "800"],
   variable: "--font-be-vietnam",
+  display: "swap",
+});
+
+const dancingScript = Dancing_Script({
+  subsets: ["latin", "vietnamese"],
+  weight: ["600", "700"],
+  variable: "--font-dancing",
+  display: "swap",
+});
+
+const caveat = Caveat({
+  subsets: ["latin"],
+  weight: ["600", "700"],
+  variable: "--font-caveat",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
   title: "Lovora - Thay lời muốn nói",
-  description: "Web quà tặng tình yêu được shop setup theo yêu cầu.",
+  description: "Web quà tặng tình yêu được shop setup theo yêu cầu. Chọn mẫu, gửi ảnh, nhận web quà siêu dễ thương.",
+  keywords: ["web quà tặng", "web tặng người yêu", "valentine web", "lovora"],
+  openGraph: {
+    title: "Lovora - Thay lời muốn nói",
+    description: "Web quà tặng tình yêu được shop setup theo yêu cầu.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -20,7 +41,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" data-scroll-behavior="smooth" className={`scroll-smooth ${beVietnam.variable}`}>
+    <html lang="vi" data-scroll-behavior="smooth" className={`scroll-smooth ${beVietnam.variable} ${dancingScript.variable} ${caveat.variable}`}>
       <body>
         <div className="fixed inset-0 -z-10 overflow-hidden bg-romance-dark">
           <div className="absolute inset-0 dreamy-sky" />

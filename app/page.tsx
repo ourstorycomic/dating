@@ -1,6 +1,5 @@
-// Force recompile to clear stale Next.js cache
-export const revalidate = 0;
-export const dynamic = "force-dynamic";
+// Cache homepage for 5 minutes — templates rarely change, no need to re-fetch Supabase on every request
+export const revalidate = 300;
 import Link from "next/link";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { HomePageCatalog } from "@/components/HomePageCatalog";

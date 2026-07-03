@@ -234,9 +234,9 @@ export function Step6Popup({ confession, onComplete, compact, autoPlay = false, 
                     
                     <div className="relative h-[48px] w-full mt-2" style={{ overflow: 'visible' }}>
                       <motion.button
-                        onMouseEnter={compact ? undefined : handleNoHover}
-                        onTouchStart={handleNoHover}
-                        onClick={handleNoHover}
+                        onMouseEnter={compact || autoPlay ? undefined : handleNoHover}
+                        onTouchStart={autoPlay ? undefined : handleNoHover}
+                        onClick={autoPlay ? undefined : handleNoHover}
                         animate={{ x: noBtnPos.x, y: noBtnPos.y }}
                         transition={{ type: "tween", duration: 0.12, ease: "easeOut" }}
                         className="absolute left-0 right-0 mx-auto w-fit px-6 h-full flex items-center justify-center rounded-full font-bold text-gray-500 bg-gray-100 border-2 border-gray-200 whitespace-nowrap"

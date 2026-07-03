@@ -289,7 +289,7 @@ export async function getPublishedTemplates() {
   const { data, error } = await supabase
     .from("templates")
     .select(
-      "id, slug, name, description, tagline, component_key, visual_label, gradient, base_price, data_schema, sample_data, status_label, sort_order, template_categories(slug, name, description)",
+      "id, slug, name, description, tagline, component_key, visual_label, gradient, base_price, data_schema, sample_data, status_label, sort_order, thumbnail_url, template_categories(slug, name, description)",
     )
     .eq("is_published", true)
     .order("sort_order", { ascending: true });
@@ -325,7 +325,7 @@ export async function getTemplateBySlug(slug: string) {
   const { data, error } = await supabase
     .from("templates")
     .select(
-      "id, slug, name, description, tagline, component_key, visual_label, gradient, base_price, data_schema, sample_data, status_label, sort_order, template_categories(slug, name, description)",
+      "id, slug, name, description, tagline, component_key, visual_label, gradient, base_price, data_schema, sample_data, status_label, sort_order, thumbnail_url, template_categories(slug, name, description)",
     )
     .or(`slug.eq.${slug},component_key.eq.${slug}`)
     .limit(1)

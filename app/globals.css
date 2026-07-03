@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Caveat:wght@600;700&display=swap');
+/* Google Fonts (Dancing Script, Caveat) are loaded via next/font in layout.tsx — do NOT @import here */
 @import "tailwindcss";
 
 :root {
@@ -111,6 +111,58 @@
   display: none;
 }
 
+/* ─── PERFORMANCE: GPU acceleration & paint containment ─────────────── */
+
+/* Force GPU layer for all animated elements — eliminates scroll jank */
+.float-slow,
+.float-delay,
+.pulse-glow,
+.shine-card::after,
+.anim-float-cute {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Lazy render off-screen template cards — huge win on homepage with 9+ cards */
+.shine-card {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 590px;
+}
+
+/* Smooth scroll at 60fps */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Promote heavy blur panels to their own GPU layer */
+.glass-panel,
+.glass-panel-soft {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Reduce expensive blur on mobile for smoother scroll */
+@media (max-width: 768px) {
+  .glass-panel {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .glass-panel-soft {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  /* Disable decorative bg blurs on mobile — they cause the most jank */
+  .dreamy-pattern {
+    display: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────── */
 
 body {
   min-height: 100%;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TPL_DATA } from "../config";
 
@@ -15,6 +15,14 @@ export function Step2Vibe({ onNext , customData = {}, autoPlay}: { onNext: () =>
         onNext();
     }, 2000);
   };
+
+  // Auto-play: pick the first option automatically after a short delay
+  useEffect(() => {
+    if (!autoPlay) return;
+    const t = setTimeout(() => checkVibe(0), 1500);
+    return () => clearTimeout(t);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoPlay]);
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.5 }} className="absolute inset-0 z-10 flex flex-col items-center justify-center p-4">

@@ -198,6 +198,13 @@ function Step3Wheel({ onNext, autoPlay, config, isMuted }: { onNext: () => void;
   const [result, setResult] = useState<string | null>(null);
   const [rotation, setRotation] = useState(0);
   const spinAudioRef = useRef<HTMLAudioElement>(null);
+  const spinTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (spinTimeoutRef.current) clearTimeout(spinTimeoutRef.current);
+    };
+  }, []);
 
   const spin = () => {
     if (spinning || result) return;
@@ -206,19 +213,19 @@ function Step3Wheel({ onNext, autoPlay, config, isMuted }: { onNext: () => void;
       spinAudioRef.current.currentTime = 0;
       spinAudioRef.current.play().catch(() => {});
     }
-    const spins = Math.floor(Math.random() * 5) + 5; // 5-10 full spins
+    const spins = Math.floor(Math.random() * 10) + 15; // 15-25 full spins
     const targetIndex = Math.floor(Math.random() * options.length);
     const degreePerOpt = 360 / options.length;
     const finalRot = spins * 360 + targetIndex * degreePerOpt + (degreePerOpt / 2);
     
     setRotation(finalRot);
     
-    setTimeout(() => {
+    spinTimeoutRef.current = setTimeout(() => {
       setSpinning(false);
       // Because we spun positively, the selected index is actually backwards
       // Or we can just randomly pick one and not worry about exact pointer math for now.
       setResult(options[options.length - 1 - targetIndex] || options[0]);
-    }, 4000);
+    }, 10000);
   };
 
   useEffect(() => {
@@ -257,7 +264,7 @@ function Step3Wheel({ onNext, autoPlay, config, isMuted }: { onNext: () => void;
         <img src="/assets/sad/tisramissu.webp" className="absolute -bottom-4 -left-8 w-16 h-16 object-contain drop-shadow-lg z-30" alt="decor" />
         <motion.div
           animate={{ rotate: rotation }}
-          transition={{ duration: 4, ease: [0.2, 0.8, 0.2, 1] }}
+          transition={{ duration: 10, ease: [0.2, 0.8, 0.2, 1] }}
           className="w-full h-full rounded-full border-4 border-slate-700 overflow-hidden relative shadow-2xl"
           style={{ background: "conic-gradient(#fecdd3 0 60deg, #fbcfe8 60deg 120deg, #fecdd3 120deg 180deg, #fbcfe8 180deg 240deg, #fecdd3 240deg 300deg, #fbcfe8 300deg 360deg)" }}
         >
@@ -531,6 +538,13 @@ export default function Sorry1Template({ compact = false, autoPlay = false, hide
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const btnAudioRef = useRef<HTMLAudioElement>(null);
+  const loopTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (loopTimeoutRef.current) clearTimeout(loopTimeoutRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (autoPlay && audioRef.current) {
@@ -619,7 +633,7 @@ export default function Sorry1Template({ compact = false, autoPlay = false, hide
       triggerConfetti();
       setStep(7);
       if (autoPlay) {
-        setTimeout(() => setStep(1), 4000); // loop
+        loopTimeoutRef.current = setTimeout(() => setStep(1), 4000); // loop
       }
     } else {
       setStep(s => s + 1);

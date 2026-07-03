@@ -89,7 +89,8 @@ export function Valentine2WatchParty({
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    if (data.musicUrl && !audio.src.endsWith(data.musicUrl)) {
+    if (data.musicUrl && !audio.src.endsWith(encodeURIComponent(data.musicUrl)) && !audio.src.endsWith(data.musicUrl)) {
+      audio.pause();
       audio.src = data.musicUrl;
     }
   }, [data.musicUrl]);

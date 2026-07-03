@@ -22,12 +22,12 @@ export default async function TemplatePreviewPage({
   let relatedTemplates = allTemplates
     .filter(t => t.template_categories?.slug === categorySlug && t.slug !== template.slug);
 
-  if (relatedTemplates.length < 3) {
+  if (relatedTemplates.length < 4) {
     const otherTemplates = allTemplates.filter(t => t.template_categories?.slug !== categorySlug && t.slug !== template.slug);
     relatedTemplates = [...relatedTemplates, ...otherTemplates];
   }
   
-  relatedTemplates = relatedTemplates.slice(0, 3);
+  relatedTemplates = relatedTemplates.slice(0, 4);
 
   return <PreviewClient template={template} relatedTemplates={relatedTemplates} />;
 }

@@ -180,32 +180,50 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                 {relatedTemplates.length > 0 && (
                   <div className="mt-6 w-full border-t border-pink-100 pt-5">
                     <h3 className="text-xs font-bold text-pink-300 mb-3 uppercase tracking-widest">Gợi ý mẫu cùng chủ đề:</h3>
-                    <div className="flex items-center gap-3 overflow-x-auto pb-2 [&::-webkit-scrollbar]:hidden snap-x">
+                    <div className="grid grid-cols-4 gap-2 pb-2">
                       {relatedTemplates.map((relTemplate) => (
                         <Link
                           href={`/templates/${relTemplate.slug}/preview`}
                           key={relTemplate.id}
-                          className="shrink-0 relative w-[70px] h-[120px] rounded-2xl overflow-hidden border-2 border-pink-100 hover:border-pink-400 hover:shadow-[0_10px_20px_-5px_rgba(255,192,203,0.5)] transition-all group snap-start bg-white"
+                          className="relative h-[110px] rounded-xl overflow-hidden border-2 border-pink-100 hover:border-pink-400 hover:shadow-[0_8px_16px_-4px_rgba(255,192,203,0.6)] transition-all group bg-[#05020a]"
                         >
-                          <div className="absolute top-0 left-0 origin-top-left w-[280px] h-[480px] pointer-events-none bg-[#05020a]" style={{ transform: "scale(0.25)" }}>
-                            <InteractiveTemplatePreview
-                              compact
-                              noFrame
-                              isBuilderPreview
-                              componentKey={relTemplate.component_key}
-                              gradient={relTemplate.gradient}
-                              visualLabel={relTemplate.visual_label}
-                              hideNavigation={true}
-                            />
-                          </div>
-                          <div className="absolute inset-0 bg-gradient-to-t from-pink-900/90 via-pink-900/10 to-transparent pointer-events-none"></div>
-                          <span className="absolute bottom-2 left-2 right-2 text-white font-bold text-[10px] leading-tight drop-shadow-md z-10 pointer-events-none truncate text-left">{relTemplate.name}</span>
+                          {/* Static thumbnail — DB url > webp > png > dark bg */}
+                          <picture className="absolute inset-0 w-full h-full">
+                            {relTemplate.thumbnail_url ? (
+                              <>
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={relTemplate.thumbnail_url}
+                                  alt={relTemplate.name}
+                                  className="w-full h-full object-cover object-top"
+                                  loading="lazy"
+                                  decoding="async"
+                                  onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                                />
+                              </>
+                            ) : (
+                              <>
+                                <source srcSet={`/thumbnails/${relTemplate.slug}.webp`} type="image/webp" />
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={`/thumbnails/${relTemplate.slug}.png`}
+                                  alt={relTemplate.name}
+                                  className="w-full h-full object-cover object-top"
+                                  loading="lazy"
+                                  decoding="async"
+                                  onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                                />
+                              </>
+                            )}
+                          </picture>
+                          {/* Gradient overlay for text legibility */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-pink-900/90 via-pink-900/20 to-transparent pointer-events-none" />
+                          <span className="absolute bottom-1.5 left-1.5 right-1.5 text-white font-bold text-[9px] leading-tight drop-shadow-md z-10 pointer-events-none line-clamp-2 text-center">{relTemplate.name}</span>
                         </Link>
                       ))}
                     </div>
                   </div>
                 )}
-
             </div>
 
             {/* Right Column: The Phone / PC Preview */}
@@ -252,6 +270,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                        style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)', isolation: 'isolate' }}
                      >
                        <InteractiveTemplatePreview
+                          key="preview-mobile"
                          compact={false}
                          isBuilderPreview={true}
                          noFrame={true}
@@ -272,6 +291,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                        style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)', isolation: 'isolate' }}
                      >
                        <InteractiveTemplatePreview
+                          key="preview-desktop"
                          compact={false}
                          isBuilderPreview={true}
                          noFrame={true}

@@ -257,9 +257,16 @@ export function InteractiveTemplatePreview({
             <div className="absolute inset-0 z-50" />
             
             <div className="absolute inset-0 pointer-events-none">
-              <BotAutoPlayer enabled={isPreviewActive} key={isPreviewActive ? "active" : "inactive"}>
-                <Component {...finalProps} roomId={roomId} autoPlay={isPreviewActive} compact={true} />
-              </BotAutoPlayer>
+              {/* When autoPlay is active, the component handles navigation itself (e.g. quiz picks correct answer).
+                  BotAutoPlayer is only used as a helper when the component has no autoPlay logic of its own.
+                  Running both simultaneously causes conflicts (e.g. BotAutoPlayer clicks wrong quiz answers). */}
+              {isPreviewActive ? (
+                <Component {...finalProps} roomId={roomId} autoPlay={true} compact={true} />
+              ) : (
+                <BotAutoPlayer enabled={false} key="inactive">
+                  <Component {...finalProps} roomId={roomId} autoPlay={false} compact={true} />
+                </BotAutoPlayer>
+              )}
             </div>
           </div>
         );
