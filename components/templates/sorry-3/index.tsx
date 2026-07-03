@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertTriangle, WifiOff, Trash2, Heart, MessageCircle, ServerCrash, XCircle, Send, CheckCircle2 } from "lucide-react";
+import { AlertTriangle, WifiOff, Trash2, Folder, Heart, MessageCircle, ServerCrash, XCircle, Send, CheckCircle2 } from "lucide-react";
 import confetti from "canvas-confetti";
 import GameOverImg from './textures/map/GameOver.png';
 import ResetImg from './textures/map/Reset.png';
@@ -279,7 +279,6 @@ function Step2NoInternet({ onNext, autoPlay, config }: { onNext: () => void; aut
         <div className="w-16 h-16 opacity-80">
           <WifiOff size={64} />
         </div>
-        <img src="/assets/sad/123.webp" className="w-20 h-20 object-contain drop-shadow-sm opacity-80 -mt-8" alt="no internet" />
       </div>
       <h1 className="text-2xl font-bold mb-4 text-[#202124]">{config?.noConnTitle || "Không có kết nối"}</h1>
       <p className="text-[15px] leading-relaxed mb-8">
@@ -509,15 +508,24 @@ function Step3DinoRun({ onNext, autoPlay, config }: { onNext: () => void; autoPl
                 }
               }
             } else {
-              // Obstacle collision
               const dx = (st.dino.x + 22) - (obs.x + 15);
               const dy = (150 - (st.dino.ducking ? 30 : 47) + st.dino.y + 20) - (150 - obs.y - 15);
-              const dist = Math.sqrt(dx * dx + dy * dy);
-              if (dist < 35 && !autoPlay) {
-                st.isLost = true;
-                setGameState("lost");
-              } else if (obs.x < st.dino.x) {
-                obs.passed = true;
+              
+              if (obs.type === 'flying') {
+                if (!st.dino.ducking && Math.abs(dx) < 25 && !autoPlay) {
+                  st.isLost = true;
+                  setGameState("lost");
+                } else if (obs.x < st.dino.x) {
+                  obs.passed = true;
+                }
+              } else {
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 35 && !autoPlay) {
+                  st.isLost = true;
+                  setGameState("lost");
+                } else if (obs.x < st.dino.x) {
+                  obs.passed = true;
+                }
               }
             }
           }
@@ -775,15 +783,15 @@ function Step5RecycleBin({ onNext, autoPlay, config }: { onNext: () => void; aut
         className="mb-8 relative z-20 flex flex-col items-center"
       >
         <div className="relative">
-          <Trash2 size={80} className={`text-white transition-all ${opened ? 'opacity-50' : 'opacity-100'}`} />
+          <Folder size={80} className={`text-white transition-all ${opened ? 'opacity-50' : 'opacity-100'}`} />
           {!opened && <img src="/assets/sad/love-cute.webp" className="absolute -top-6 -right-6 w-12 h-12 object-contain drop-shadow-lg" alt="cute" />}
         </div>
-        <p className="text-white mt-2 font-mono text-sm">Recycle Bin</p>
+        <p className="text-white mt-2 font-mono text-sm">Folder</p>
       </motion.button>
 
       <p 
-        className="text-white mb-10 font-mono text-sm bg-black/40 p-4 border border-white/20 whitespace-pre-line"
-        dangerouslySetInnerHTML={{__html: config?.trashMessage || "Tớ đã lỡ vứt những thói quen xấu vào thùng rác rồi.<br/>Bù lại, tớ tìm thấy cái này..."}}
+        className="text-pink-300 font-bold mb-10 font-mono text-sm bg-black/50 p-4 border border-pink-400/50 whitespace-pre-line rounded-lg shadow-lg"
+        dangerouslySetInnerHTML={{__html: config?.trashMessage || "Tớ đã mất rất nhiều thời gian để thu thập những báu vật này..."}}
       />
 
       {/* Memories flying out */}
