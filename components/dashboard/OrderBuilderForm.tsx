@@ -1234,10 +1234,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                           }
                         }}
                       >
-                        <div className="flex items-center justify-between">
                           <p className="font-semibold">{template.name}</p>
-                        </div>
-                        {template.description && <p className="mt-1 text-xs text-gray-500">{template.description}</p>}
                       </li>
                     );
                   })
