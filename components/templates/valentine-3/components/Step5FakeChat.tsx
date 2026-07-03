@@ -59,7 +59,7 @@ export function Step5FakeChat({ chat, onComplete, autoPlay = false }: { chat: Ch
               transition={{ type: "spring", stiffness: 300, damping: 24 }}
               className={`flex w-full ${isMe ? 'justify-end' : 'justify-start'}`}
             >
-              <div className={`max-w-[75%] px-4 py-2.5 rounded-2xl text-[15px] ${isMe ? 'bg-rose-500 text-white rounded-br-sm shadow-md shadow-rose-200' : 'bg-slate-100 text-slate-800 rounded-bl-sm border border-slate-200'}`}>
+              <div className={`max-w-[75%] px-4 py-2.5 rounded-2xl text-[15px] ${isMe ? 'bg-rose-500 !text-white rounded-br-sm shadow-md shadow-rose-200' : 'bg-slate-100 text-slate-800 rounded-bl-sm border border-slate-200'}`}>
                 {msg.text}
               </div>
             </motion.div>
