@@ -80,7 +80,27 @@ function getRelationOne<T>(value: T | T[] | null | undefined): T | null {
 }
 
 async function copyText(value: string) {
-  await navigator.clipboard.writeText(value);
+  try {
+    if (navigator.clipboard && window.isSecureContext && document.hasFocus()) {
+      await navigator.clipboard.writeText(value);
+    } else {
+      throw new Error("Clipboard API unavailable or document not focused");
+    }
+  } catch (error) {
+    const textArea = document.createElement("textarea");
+    textArea.value = value;
+    textArea.style.position = "absolute";
+    textArea.style.left = "-999999px";
+    document.body.prepend(textArea);
+    textArea.select();
+    try {
+      document.execCommand("copy");
+    } catch (err) {
+      console.error("Lỗi copy text:", err);
+    } finally {
+      textArea.remove();
+    }
+  }
 }
 
 async function copyQrImage(url: string, onCopied?: (message: string) => void) {
