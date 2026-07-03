@@ -33,7 +33,7 @@ export function PricingModal({ customTrigger }: { customTrigger?: React.ReactNod
       {mounted && createPortal(
         <AnimatePresence>
           {isOpen && (
-            <div className="fixed inset-0 z-[999999] flex items-center justify-center px-4">
+            <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4 sm:p-6">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -45,7 +45,7 @@ export function PricingModal({ customTrigger }: { customTrigger?: React.ReactNod
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-3xl overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-white via-[#fff5fb] to-[#ffe5f3] p-6 shadow-[0_30px_60px_-15px_rgba(255,126,184,0.4)] md:p-10 border-[4px] border-white ring-4 ring-pink-100"
+              className="relative w-full max-w-3xl max-h-[95vh] overflow-y-auto no-scrollbar rounded-[2.5rem] bg-gradient-to-br from-white via-[#fff5fb] to-[#ffe5f3] p-5 shadow-[0_30px_60px_-15px_rgba(255,126,184,0.4)] md:p-8 border-[4px] border-white ring-4 ring-pink-100"
             >
               {/* Decorative background shapes */}
               <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-gradient-to-br from-pink-200 to-pink-100 blur-2xl opacity-60"></div>
@@ -72,55 +72,55 @@ export function PricingModal({ customTrigger }: { customTrigger?: React.ReactNod
                   <table className="w-full min-w-[600px] text-left border-collapse">
                     <thead>
                       <tr className="bg-gradient-to-r from-pink-50 to-purple-50">
-                        <th className="px-6 py-4 text-sm font-extrabold text-[#7b536b] w-1/2 uppercase tracking-wide rounded-tl-3xl">Gói Dịch Vụ</th>
-                        <th className="px-6 py-4 text-sm font-extrabold text-[#7b536b] w-1/4 uppercase tracking-wide">
+                        <th className="px-4 py-3 sm:px-6 sm:py-4 text-[13px] sm:text-sm font-extrabold text-[#7b536b] w-1/2 uppercase tracking-wide rounded-tl-3xl">Gói Dịch Vụ</th>
+                        <th className="px-4 py-3 sm:px-6 sm:py-4 text-[13px] sm:text-sm font-extrabold text-[#7b536b] w-1/4 uppercase tracking-wide">
                           <div className="flex items-center gap-2">Làm Thường</div>
-                          <span className="block text-[11px] font-semibold normal-case text-[#a37c93] mt-1">(Xong trong 24h)</span>
+                          <span className="block text-[10px] sm:text-[11px] font-semibold normal-case text-[#a37c93] mt-1">(Xong trong 24h)</span>
                         </th>
-                        <th className="px-6 py-4 text-sm font-extrabold text-[#7b536b] w-1/4 uppercase tracking-wide rounded-tr-3xl">
+                        <th className="px-4 py-3 sm:px-6 sm:py-4 text-[13px] sm:text-sm font-extrabold text-[#7b536b] w-1/4 uppercase tracking-wide rounded-tr-3xl">
                           <div className="flex items-center gap-2">Làm Gấp</div>
-                          <span className="block text-[11px] font-semibold normal-case text-[#a37c93] mt-1">(Xong trong vài giờ)</span>
+                          <span className="block text-[10px] sm:text-[11px] font-semibold normal-case text-[#a37c93] mt-1">(Xong trong vài giờ)</span>
                         </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-pink-100/50 text-[#321a32]">
                       <tr className="transition-all hover:bg-white hover:shadow-[0_4px_15px_rgba(255,182,193,0.15)] group relative">
-                        <td className="px-6 py-6 pr-4">
-                          <p className="text-base font-black flex items-center gap-2">
+                        <td className="px-4 py-4 sm:px-6 sm:py-5 pr-4">
+                          <p className="text-sm sm:text-base font-black flex items-center gap-2">
                             GÓI 1: THEO MẪU
                           </p>
-                          <p className="mt-1.5 text-sm font-medium text-[#76556d] leading-relaxed">Dành cho bạn đã chuẩn bị sẵn nội dung. Nhận link web y hệt mẫu có sẵn.</p>
+                          <p className="mt-1 text-[13px] sm:text-sm font-medium text-[#76556d] leading-relaxed">Dành cho bạn đã chuẩn bị sẵn nội dung. Nhận link web y hệt mẫu có sẵn.</p>
                         </td>
-                        <td className="px-6 py-6 text-lg font-black text-[#ff59ab]">59K</td>
-                        <td className="px-6 py-6 text-lg font-black text-[#ff59ab]">Từ 88K</td>
+                        <td className="px-4 py-4 sm:px-6 sm:py-5 text-base sm:text-lg font-black text-[#ff59ab]">59K</td>
+                        <td className="px-4 py-4 sm:px-6 sm:py-5 text-base sm:text-lg font-black text-[#ff59ab]">Từ 88K</td>
                       </tr>
                       <tr className="transition-all bg-pink-50/30 hover:bg-white hover:shadow-[0_4px_15px_rgba(255,182,193,0.15)] group relative">
-                        <td className="px-6 py-6 pr-4">
-                          <p className="text-base font-black flex items-center gap-2">
+                        <td className="px-4 py-4 sm:px-6 sm:py-5 pr-4">
+                          <p className="text-sm sm:text-base font-black flex flex-wrap items-center gap-2">
                             GÓI 2: CHỈNH CẢM XÚC
-                            <span className="ml-2 inline-flex animate-pulse items-center rounded-full bg-gradient-to-r from-orange-400 to-pink-500 px-2.5 py-0.5 text-[10px] font-bold uppercase text-white shadow-sm">Hot nhất</span>
+                            <span className="inline-flex animate-pulse items-center rounded-full bg-gradient-to-r from-orange-400 to-pink-500 px-2 py-0.5 text-[9px] font-bold uppercase text-white shadow-sm">Hot nhất</span>
                           </p>
-                          <p className="mt-1.5 text-sm font-medium text-[#76556d] leading-relaxed">Sắp xếp ảnh, mông má lại câu chữ cho hợp cảm xúc. Hỗ trợ chỉnh sửa 1 lần.</p>
+                          <p className="mt-1 text-[13px] sm:text-sm font-medium text-[#76556d] leading-relaxed">Sắp xếp ảnh, mông má lại câu chữ cho hợp cảm xúc. Hỗ trợ chỉnh sửa 1 lần.</p>
                         </td>
-                        <td className="px-6 py-6 text-lg font-black text-[#ff59ab]">99K</td>
-                        <td className="px-6 py-6 text-lg font-black text-[#ff59ab]">Từ 128K</td>
+                        <td className="px-4 py-4 sm:px-6 sm:py-5 text-base sm:text-lg font-black text-[#ff59ab]">99K</td>
+                        <td className="px-4 py-4 sm:px-6 sm:py-5 text-base sm:text-lg font-black text-[#ff59ab]">Từ 128K</td>
                       </tr>
                       <tr className="transition-all hover:bg-white hover:shadow-[0_4px_15px_rgba(255,182,193,0.15)] group relative">
-                        <td className="px-6 py-6 pr-4">
-                          <p className="text-base font-black flex items-center gap-2">
+                        <td className="px-4 py-4 sm:px-6 sm:py-5 pr-4">
+                          <p className="text-sm sm:text-base font-black flex items-center gap-2">
                             GÓI 3: ĐẶC BIỆT
                           </p>
-                          <p className="mt-1.5 text-sm font-medium text-[#76556d] leading-relaxed">Tư vấn concept riêng, viết lời nhắn sâu sắc. Ưu tiên hoàn thành, hỗ trợ chỉnh sửa 2 lần.</p>
+                          <p className="mt-1 text-[13px] sm:text-sm font-medium text-[#76556d] leading-relaxed">Tư vấn concept riêng, viết lời nhắn sâu sắc. Ưu tiên hoàn thành, hỗ trợ chỉnh sửa 2 lần.</p>
                         </td>
-                        <td className="px-6 py-6 text-lg font-black text-[#ff59ab]">149K</td>
-                        <td className="px-6 py-6 text-lg font-black text-[#ff59ab]">Từ 178K</td>
+                        <td className="px-4 py-4 sm:px-6 sm:py-5 text-base sm:text-lg font-black text-[#ff59ab]">149K</td>
+                        <td className="px-4 py-4 sm:px-6 sm:py-5 text-base sm:text-lg font-black text-[#ff59ab]">Từ 178K</td>
                       </tr>
                       <tr className="transition-all bg-yellow-50/50 hover:bg-white hover:shadow-[0_4px_15px_rgba(255,182,193,0.15)] group relative border-t-2 border-dashed border-pink-200">
-                        <td className="px-6 py-5 pr-4" colSpan={3}>
-                          <p className="text-sm font-black flex items-center gap-2 text-[#7b536b]">
+                        <td className="px-4 py-4 sm:px-6 sm:py-5 pr-4" colSpan={3}>
+                          <p className="text-[13px] sm:text-sm font-black flex items-center gap-2 text-[#7b536b]">
                             ⚠️ LƯU Ý VỀ CHỈNH SỬA
                           </p>
-                          <p className="mt-1 text-sm font-medium text-[#76556d] leading-relaxed">
+                          <p className="mt-1 text-[12px] sm:text-[13px] font-medium text-[#76556d] leading-relaxed">
                             Mỗi gói có giới hạn số lần sửa miễn phí. Sau khi chốt đơn, mọi yêu cầu chỉnh sửa thêm sẽ tính phí <b className="text-[#ff59ab]">19K / lần</b>.
                           </p>
                         </td>

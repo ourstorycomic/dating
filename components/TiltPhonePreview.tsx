@@ -39,7 +39,7 @@ export function TiltPhonePreview() {
           rotateY,
           transformStyle: "preserve-3d",
         }}
-        className="relative mx-auto flex aspect-[9/16] max-h-[620px] min-h-[520px] w-full max-w-[340px] flex-col overflow-hidden rounded-[2.2rem] border-[8px] border-[#3a233a] bg-[#fff5fb] shadow-[0_24px_60px_rgba(96,54,91,0.22)] cursor-pointer"
+        className="relative mx-auto flex aspect-[9/16] max-h-[720px] min-h-[580px] w-full max-w-[400px] flex-col overflow-hidden rounded-[2.2rem] border-[8px] border-[#3a233a] bg-[#fff5fb] shadow-[0_24px_60px_rgba(96,54,91,0.22)] cursor-pointer"
       >
         <div className="absolute inset-0 bg-[linear-gradient(180deg,#fff7fb_0%,#ffe8f3_46%,#e8f7ff_100%)] pointer-events-none" style={{ transform: "translateZ(-20px)" }} />
         

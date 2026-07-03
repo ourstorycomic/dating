@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
+
+export const dynamic = "force-dynamic";
 import { CommissionRulesForm } from "@/components/dashboard/CommissionRulesForm";
 import { EmployeeStatsPanel } from "@/components/dashboard/EmployeeStatsPanel";
 import { CommissionListPanel } from "@/components/dashboard/CommissionListPanel";
