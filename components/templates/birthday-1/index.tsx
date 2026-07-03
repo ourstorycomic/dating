@@ -164,6 +164,27 @@ function BirthdayScene({
     }
   }, []);
 
+  // AutoPlay progression
+  useEffect(() => {
+    if (!autoPlay) return;
+
+    let timer: number;
+    if (phase === "dark") {
+      timer = window.setTimeout(turnOnLights, 2000);
+    } else if (phase === "music") {
+      if (!musicActive) {
+        timer = window.setTimeout(startMusic, 2000);
+      }
+    } else if (phase === "decorate-popup") {
+      timer = window.setTimeout(handleWandClicked, 2000);
+    } else if (phase === "match-ignite") {
+      timer = window.setTimeout(handleCandleLit, 4000);
+    } else if (phase === "wish-record") {
+      timer = window.setTimeout(() => handleWishRecorded(""), 4000);
+    }
+    return () => window.clearTimeout(timer);
+  }, [autoPlay, phase, musicActive]);
+
   // Preload audio on mount
   useEffect(() => {
     const audio = audioRef.current;

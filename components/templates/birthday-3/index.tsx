@@ -60,8 +60,11 @@ function BackgroundSparkles() {
   );
 }
 
+import { Step8Success } from "../dating-3/components/Step8Success";
+
 export default function Birthday3Template({ autoPlay = false, compact = false, hideNavigation = false, isBuilderPreview = false, config = {}, generalAudioUrl }: { autoPlay?: boolean; compact?: boolean; hideNavigation?: boolean; isBuilderPreview?: boolean; config?: any; generalAudioUrl?: string }) {
   const [step, setStep] = useState(1);
+  const [dateTime, setDateTime] = useState({d: "", t: ""});
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
@@ -73,7 +76,7 @@ export default function Birthday3Template({ autoPlay = false, compact = false, h
   }, [autoPlay, compact, isBuilderPreview, generalAudioUrl]);
 
   const nextStep = useCallback(() => {
-    setStep(s => Math.min(s + 1, 9));
+    setStep(s => Math.min(s + 1, 10));
   }, []);
 
   return (
@@ -88,7 +91,7 @@ export default function Birthday3Template({ autoPlay = false, compact = false, h
         {step === 6 && <Step6Memory key="step6" onNext={nextStep} autoPlay={autoPlay} config={config} />}
         {step === 7 && <Step7Unboxing key="step7" onNext={nextStep} autoPlay={autoPlay} config={config} />}
         {step === 8 && <Step8Afterparty key="step8" autoPlay={autoPlay} config={config} onNext={nextStep} />}
-        {step === 9 && <Step5DateTimePicker key="step9" onNext={(d, t) => alert(`Đã chốt lịch hẹn: ${d} - ${t}`)} autoPlay={autoPlay} data={{
+        {step === 9 && <Step5DateTimePicker key="step9" onNext={(d, t) => { setDateTime({d, t}); setStep(10); }} autoPlay={autoPlay} data={{
           ...config,
           dtTitle: config?.dtTitle || "Chọn Ngày Hẹn",
           dtSub: config?.dtSub || "Để tớ chuẩn bị nha",
@@ -96,12 +99,18 @@ export default function Birthday3Template({ autoPlay = false, compact = false, h
           dtTimeLabel: config?.dtTimeLabel || "Mấy giờ thì tiện cho cậu?",
           dtBtn: config?.dtBtn || "CHỐT ĐƠN! 🎉",
         }} />}
+        {step === 10 && <Step8Success key="step10" location={config?.giftText || BIRTHDAY_DATA.giftText} date={dateTime.d} time={dateTime.t} onComplete={() => {}} autoPlay={autoPlay} data={{
+          ...config,
+          step8Title: "Đã chốt lịch hẹn!",
+          step8Sub: "Cảm ơn cậu đã đồng ý. Hẹn gặp lại nhé! ❤️",
+          step8Btn: "Kết thúc",
+        }} />}
       </AnimatePresence>
       <TemplateNavigator
         currentIndex={step - 1}
-        totalSteps={9}
+        totalSteps={10}
         onPrev={() => setStep(s => Math.max(1, s - 1))}
-        onNext={() => setStep(s => Math.min(9, s + 1))}
+        onNext={() => setStep(s => Math.min(10, s + 1))}
         accentColor="#f43f5e"
         isHidden={hideNavigation || autoPlay}
       />

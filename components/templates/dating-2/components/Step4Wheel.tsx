@@ -61,6 +61,9 @@ export function Step4Wheel({ onNext , customData = {}, autoPlay}: { onNext: (res
       const resText = (customData.wheelOptions || TPL_DATA.wheelOptions)[safeIndex];
       setResult(`Chốt: ${resText} 🎉`);
       setDone(true);
+      if (autoPlay) {
+        setTimeout(() => onNext(resText), 1500);
+      }
     }, 4000);
   };
 

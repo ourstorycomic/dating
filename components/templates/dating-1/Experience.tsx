@@ -159,6 +159,28 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
     console.log("WillYouDateMeExperience mounted:", { isBuilderPreview, autoPlay, compact });
   }, [isBuilderPreview, autoPlay, compact]);
 
+  useEffect(() => {
+    if (!autoPlay || !mounted) return;
+
+    let timer: number;
+    
+    if (stage === "question") {
+      timer = window.setTimeout(() => setStage("success"), 2500);
+    } else if (stage === "success") {
+      timer = window.setTimeout(() => setStage("location"), 2500);
+    } else if (stage === "location") {
+      timer = window.setTimeout(() => { setSelections(prev => ({ ...prev, location: ["Cà phê ☕"] })); setStage("datetime"); }, 2500);
+    } else if (stage === "datetime") {
+      timer = window.setTimeout(() => { setSelections(prev => ({ ...prev, date: "Ngày mai", time: "19:00" })); setStage("food"); }, 2500);
+    } else if (stage === "food") {
+      timer = window.setTimeout(() => { setSelections(prev => ({ ...prev, food: ["Bún đậu"] })); setStage("drink"); }, 2500);
+    } else if (stage === "drink") {
+      timer = window.setTimeout(() => { setSelections(prev => ({ ...prev, drink: ["Trà Sữa"] })); setStage("completion"); }, 2500);
+    }
+
+    return () => window.clearTimeout(timer);
+  }, [stage, autoPlay, mounted]);
+
   let noBtnResponses = [
     "KHÔNG! ☹",
     "Thật sao?",

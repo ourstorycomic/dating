@@ -50,8 +50,23 @@ export function Step3Delivery({ onNext, autoPlay = false, compact = false, photo
   useEffect(() => {
     if (autoPlay) {
       const t1 = setTimeout(() => setShowSignPad(true), 2000);
-      const t2 = setTimeout(() => setIsSigned(true), 3500);
-      const t3 = setTimeout(() => onNext(), 5000);
+      const t2 = setTimeout(() => {
+        const canvas = canvasRef.current;
+        const ctx = canvas?.getContext("2d");
+        if (ctx && canvas) {
+          ctx.beginPath();
+          ctx.moveTo(canvas.width * 0.2, canvas.height * 0.5);
+          ctx.bezierCurveTo(canvas.width * 0.4, canvas.height * 0.2, canvas.width * 0.6, canvas.height * 0.8, canvas.width * 0.8, canvas.height * 0.4);
+          ctx.lineTo(canvas.width * 0.9, canvas.height * 0.6);
+          ctx.lineWidth = 4;
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
+          ctx.strokeStyle = "#1e40af";
+          ctx.stroke();
+        }
+        setIsSigned(true);
+      }, 3000);
+      const t3 = setTimeout(() => onNext(), 4500);
       return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
     }
   }, [autoPlay, onNext]);

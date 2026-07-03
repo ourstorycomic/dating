@@ -43,7 +43,7 @@ export function Footer() {
           </div>
         </div>
         
-        <div className="mt-16 border-t border-white/40 pt-8 text-center flex flex-col md:flex-row items-center justify-center gap-4">
+        <div className="mt-8 border-t border-white/40 pt-6 text-center flex flex-col md:flex-row items-center justify-center gap-4">
           <p className="text-sm text-[#76556d]">© {new Date().getFullYear()} Lovora. All rights reserved.</p>
         </div>
       </div>

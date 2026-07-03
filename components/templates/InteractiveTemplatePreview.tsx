@@ -229,7 +229,18 @@ export function InteractiveTemplatePreview({
     }
   };
 
-  const isPreviewActive = (isMobile && isInView) || (!isMobile && isHovered);
+  const [delayedInView, setDelayedInView] = useState(false);
+
+  useEffect(() => {
+    if (isInView) {
+      const timer = setTimeout(() => setDelayedInView(true), 800);
+      return () => clearTimeout(timer);
+    } else {
+      setDelayedInView(false);
+    }
+  }, [isInView]);
+
+  const isPreviewActive = (isMobile && delayedInView) || (!isMobile && isHovered);
   const normalizedKey = componentKey.toLowerCase();
   const preview = previewRegistry.find((item) => normalizedKey.includes(item.match));
 

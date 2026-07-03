@@ -72,7 +72,7 @@ export function Stage1Telescope({
   }, [autoPlay]);
 
   const revealTarget = (point?: { x: number; y: number }) => {
-    if (found || !canScan) return;
+    if (found || (!autoPlay && !canScan)) return;
     const rect = containerRef.current?.getBoundingClientRect();
     setFound(true);
     if (point && rect) {
