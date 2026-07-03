@@ -26,6 +26,10 @@ if (typeof window !== "undefined") {
   useGLTF.preload(MODELS.matchbox);
   useGLTF.preload(MODELS.matchstick);
   useGLTF.preload(MODELS.lootBox);
+  useGLTF.preload(MODELS.magicWand);
+  useGLTF.preload(MODELS.hat);
+  useGLTF.preload(MODELS.fire);
+  useGLTF.preload(MODELS.giftBox);
 }
 
 export function prepareScene(scene: THREE.Object3D, materialTone?: MaterialTone, noClone: boolean = false) {
@@ -1856,35 +1860,52 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
   const audioContextRef = useRef<AudioContext | null>(null); const recorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null); const chunksRef = useRef<Blob[]>([]);
   const [isRecording, setIsRecording] = useState(false);
+  const [isPressing, setIsPressing] = useState(false);
 
   useEffect(() => { const helperTimer = setTimeout(() => setShowHelper(true), 1000); return () => clearTimeout(helperTimer); }, []);
-  useEffect(() => {
-    if (phase === "wish-record" && isRecording) {
-      const interval = setInterval(() => { setWishTimeLeft((t) => { if (t <= 1) { clearInterval(interval); stopRecordingAndBlow(); return 0; } return t - 1; }); }, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [phase, isRecording]);
 
   const startRecording = async () => {
+    if (recorderRef.current && recorderRef.current.state === "recording") return;
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); streamRef.current = stream;
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); 
+      
+      // Prevent recording if user released button during permission prompt
+      if (!isPressing) {
+        stream.getTracks().forEach((track) => track.stop());
+        return;
+      }
+      
+      streamRef.current = stream;
       const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)(); audioContextRef.current = audioCtx;
       const analyser = audioCtx.createAnalyser(); const source = audioCtx.createMediaStreamSource(stream); source.connect(analyser); analyser.fftSize = 256;
       chunksRef.current = []; const recorder = new MediaRecorder(stream); recorderRef.current = recorder;
       recorder.ondataavailable = (event) => { if (event.data.size > 0) chunksRef.current.push(event.data); };
       recorder.onstop = () => { const blob = new Blob(chunksRef.current, { type: "audio/webm" }); const reader = new FileReader(); reader.onloadend = () => { onWishRecorded(String(reader.result)); }; reader.readAsDataURL(blob); };
       recorder.start(); setIsRecording(true);
-      let blowFrames = 0;
       const checkVolume = () => {
         if (!recorder || recorder.state !== "recording") return;
         const dataArray = new Uint8Array(analyser.frequencyBinCount); analyser.getByteFrequencyData(dataArray);
         let sum = 0; for (let i = 0; i < analyser.frequencyBinCount; i++) sum += dataArray[i];
         const avg = sum / analyser.frequencyBinCount;
         const waveBar = document.getElementById("record-wave-indicator"); if (waveBar) waveBar.style.height = `${Math.min(100, Math.max(10, avg * 1.2))}px`;
-        if (avg > 72) blowFrames++; else blowFrames = 0;
-        if (blowFrames > 12) stopRecordingAndBlow(); else requestAnimationFrame(checkVolume);
+        requestAnimationFrame(checkVolume);
       }; checkVolume();
     } catch (err) { setIsRecording(true); }
+  };
+
+  const handlePressStart = (e: React.PointerEvent) => {
+    e.preventDefault();
+    if (autoPlay) return;
+    setIsPressing(true);
+    // Use timeout to let state update, then check
+    setTimeout(() => startRecording(), 0);
+  };
+  
+  const handlePressEnd = (e: React.PointerEvent) => {
+    e.preventDefault();
+    if (autoPlay) return;
+    setIsPressing(false);
+    stopRecordingAndBlow();
   };
 
   const stopRecordingAndBlow = () => {
@@ -1957,13 +1978,12 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
     if (candleFireRef.current) candleFireRef.current.scale.setScalar(Math.max(0.001, fireScaleRef.current * 0.8));
     
     if (holding && matchLit && nearWick && phase === "match-ignite" && !lit) {
-      litProgressRef.current = Math.min(1, litProgressRef.current + delta / 1.5); 
-      if (litProgressRef.current >= 1) { 
-        setLit(true); 
-        flickStartTime.current = performance.now(); 
-        onCandleLit(); 
-        setTimeout(() => { startRecording(); }, 2200); 
-      }
+        litProgressRef.current = Math.min(1, litProgressRef.current + delta / 1.5); 
+        if (litProgressRef.current >= 1) { 
+          setLit(true); 
+          flickStartTime.current = performance.now(); 
+          onCandleLit(); 
+        }
     } else {
       litProgressRef.current = Math.max(0, litProgressRef.current - delta);
     }
@@ -2026,7 +2046,7 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
 
           {phase !== "match-ignite" && phase !== "wish-record" && (
             <group>
-              <group scale={0.7} position={[0, 4.3, 0]}>
+              <group scale={0.7} position={[0, 5.8, 0]}>
                 <BirthdayBanner name={recipientName || ""} visible={phase === "celebration"} position={[0, 0, 0]} />
               </group>
               <NormalizedModel desiredHeight={2.85} position={[0, 1.425, 0]} url={MODELS.cake} />
@@ -2082,16 +2102,31 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
         )}
       </group>
 
-      {phase === "wish-record" && isRecording && (
+      {phase === "wish-record" && (
         <Html center position={[0, 1.35, 0]} zIndexRange={[90, 80]}>
            <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center text-center w-[300px]">
              <div className="whitespace-nowrap text-4xl font-black text-[#ffd84d]">Hãy ước...</div>
              <div className="mt-3 flex items-center justify-center gap-2 text-lg font-bold text-white/90">
-               <span className="relative flex h-3 w-3"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#ff7fc7] opacity-75"></span><span className="relative inline-flex h-3 w-3 rounded-full bg-[#ff38aa]"></span></span>
-               Đang ghi âm điều ước ({wishTimeLeft}s)
+               {isPressing ? (
+                 <>
+                   <span className="relative flex h-3 w-3"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#ff7fc7] opacity-75"></span><span className="relative inline-flex h-3 w-3 rounded-full bg-[#ff38aa]"></span></span>
+                   Đang ghi âm điều ước...
+                 </>
+               ) : (
+                 "Nhấn giữ nút bên dưới để ước"
+               )}
              </div>
-             <div className="mt-6 h-16 w-36"><div id="record-wave-indicator" className="w-2.5 bg-gradient-to-t from-pink-500 to-yellow-400 rounded-full transition-all duration-75" style={{ height: '15px' }} /></div>
-             <button onClick={stopRecordingAndBlow} className="mt-6 px-8 py-3.5 border-2 border-white/40 bg-pink-600/60 text-white font-extrabold uppercase rounded-full tracking-wider shadow-lg backdrop-blur-md text-sm pointer-events-auto">Thổi nến & Gửi điều ước ✨</button>
+             {isPressing && <div className="mt-6 h-16 w-36"><div id="record-wave-indicator" className="w-2.5 bg-gradient-to-t from-pink-500 to-yellow-400 rounded-full transition-all duration-75" style={{ height: '15px' }} /></div>}
+             <button 
+               onPointerDown={handlePressStart}
+               onPointerUp={handlePressEnd}
+               onPointerLeave={handlePressEnd}
+               onContextMenu={(e) => e.preventDefault()}
+               style={{ WebkitUserSelect: "none", userSelect: "none" }}
+               className={`mt-6 p-6 rounded-full border-2 border-white/40 shadow-lg backdrop-blur-md pointer-events-auto transition-transform ${isPressing ? 'bg-pink-500 scale-110' : 'bg-pink-600/60'}`}
+             >
+               <i className={`fas fa-microphone text-2xl ${isPressing ? 'text-white' : 'text-white/90'}`}></i>
+             </button>
            </motion.div>
         </Html>
       )}
