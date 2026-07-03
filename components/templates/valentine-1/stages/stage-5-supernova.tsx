@@ -214,9 +214,11 @@ export function Stage5Supernova({
           <motion.div className="relative z-10 w-full max-w-md px-6"
             initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 1, type: "spring", bounce: 0.5 }}
           >
-            <div className="text-9xl text-white drop-shadow-[0_0_50px_rgba(255,255,255,1)] animate-pulse mb-6">
-              ♥
-            </div>
+            {!showGift && (
+              <div className="text-9xl text-white drop-shadow-[0_0_50px_rgba(255,255,255,1)] animate-pulse mb-6">
+                ♥
+              </div>
+            )}
             
             <AnimatePresence mode="wait">
               {!showGift ? (
@@ -234,7 +236,7 @@ export function Stage5Supernova({
                   </button>
                 </motion.div>
               ) : (
-                <motion.div key="gift" className="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl text-pink-600 relative overflow-hidden w-full max-w-sm mx-auto"
+                <motion.div key="gift" className="bg-white p-4 sm:p-8 rounded-3xl shadow-2xl text-pink-600 relative overflow-y-auto max-h-[90vh] w-full max-w-sm mx-auto"
                   initial={{ opacity: 0, scale: 0.8, rotate: -5 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} transition={{ type: "spring", bounce: 0.6 }}
                 >
                   {!giftAccepted && !giftDeclined && (
@@ -299,7 +301,7 @@ export function Stage5Supernova({
                       <p className="text-gray-600 font-medium mb-6">
                         {giftDeclinedBody}
                       </p>
-                      <div className="mt-4 relative z-50 w-[105%] -ml-[2.5%] sm:w-full sm:ml-0 text-gray-800">
+                      <div className="mt-4 relative z-50 w-full text-gray-800">
                         <CuteDatePicker
                           selected={rescheduleDate}
                           onSelect={(d) => {
