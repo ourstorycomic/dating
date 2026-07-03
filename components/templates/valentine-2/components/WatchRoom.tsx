@@ -434,7 +434,7 @@ export function WatchRoom({
           {/* Right Column: Chat */}
           {showChat && (
             <div className={`w-full flex-[1] flex-shrink-0 flex flex-col ${compact ? "h-[300px]" : "xl:w-[400px]"}`}>
-              <div className={`bg-white/[0.03] backdrop-blur-xl border border-white/10 shadow-2xl flex flex-col overflow-hidden relative ${compact ? "rounded-xl h-full" : "rounded-2xl lg:rounded-3xl h-[500px] xl:h-full"}`}>
+              <div className={`bg-white/[0.03] backdrop-blur-xl border border-white/10 shadow-2xl flex flex-col overflow-hidden relative ${compact ? "rounded-xl h-full" : "rounded-2xl lg:rounded-3xl h-[350px] sm:h-[400px] xl:h-full"}`}>
                 {/* Chat header */}
                 <div className={`border-b border-white/10 flex-shrink-0 bg-gradient-to-r from-white/[0.05] to-transparent ${compact ? "px-3 py-2" : "px-5 py-4"}`}>
                   <h3 className={`text-rose-100 font-black ${compact ? "text-sm" : "text-base"}`}>💬 Trò chuyện</h3>
@@ -503,7 +503,7 @@ export function WatchRoom({
                 <div
                   key={m._id}
                   onClick={() => { playClick(compact); onChangeMovie(m); }}
-                  className="flex-shrink-0 w-36 lg:w-44 cursor-pointer group snap-start"
+                  className="flex-shrink-0 w-28 sm:w-36 lg:w-44 cursor-pointer group snap-start"
                 >
                   <div className="w-full aspect-[2/3] rounded-xl overflow-hidden shadow-lg mb-3 relative border border-white/10 ring-1 ring-black/50">
                     <img src={m.thumb_url} alt={m.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />

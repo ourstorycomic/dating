@@ -691,7 +691,7 @@ export function VideoPlayer({
             )}
           </div>
         </div>
-        <div className="flex flex-wrap items-center gap-1 sm:gap-2 text-white">
+        <div className="flex flex-nowrap items-center gap-1 sm:gap-2 text-white overflow-x-auto no-scrollbar pmovies-controls-scroll">
           <button type="button" onClick={togglePlay} className={`shrink-0 rounded-md p-1.5 sm:p-2 transition-colors ${compact ? "bg-pink-500 hover:bg-pink-400" : "bg-pink-500/80 hover:bg-pink-500"}`}>
             {paused ? <Play size={compact ? 14 : 16} fill="currentColor" /> : <Pause size={compact ? 14 : 16} fill="currentColor" />}
           </button>
@@ -702,23 +702,27 @@ export function VideoPlayer({
             {muted || volume === 0 ? <VolumeX size={compact ? 14 : 16} /> : <Volume2 size={compact ? 14 : 16} />}
           </button>
           
-          <input type="range" min={0} max={1} step={0.05} value={muted ? 0 : volume} onChange={(event) => changeVolume(Number(event.target.value))} className={`pmovies-range accent-pink-500 w-16 ${compact ? "hidden" : "hidden md:block"}`} />
-          
-          {!locked && (
-            <select value={speed} onChange={(event) => changeSpeed(Number(event.target.value))} className={`rounded-md bg-pink-500 hover:bg-pink-400 text-white font-bold appearance-none text-center px-1.5 py-1 text-[10px] sm:text-xs cursor-pointer shadow-sm ${compact ? "hidden" : "hidden sm:block"}`}>
-              {[0.5, 0.75, 1, 1.25, 1.5, 2].map((item) => <option key={item} value={item} className="bg-slate-900 text-white">{item}x</option>)}
-            </select>
-          )}
-          
-          <select value={level} onChange={(event) => changeLevel(Number(event.target.value))} className={`min-w-0 rounded-md bg-pink-500 hover:bg-pink-400 text-white font-bold appearance-none text-center px-1.5 py-1 text-[10px] sm:text-xs cursor-pointer shadow-sm ${compact ? "hidden" : "hidden md:block"}`}>
-            <option value={-1} className="bg-slate-900 text-white">Auto</option>
-            {levels.map((item) => <option key={item.index} value={item.index} className="bg-slate-900 text-white">{item.height}p</option>)}
-          </select>
-          
-          {pictureInPictureSupported && !compact && (
-            <button type="button" onClick={togglePictureInPicture} className="shrink-0 rounded-md p-1.5 sm:p-2 transition-colors bg-pink-500/80 hover:bg-pink-500 hidden sm:block" title={isPictureInPicture ? "Close mini player" : "Mini player"}>
-              <PictureInPicture2 size={16} className={isPictureInPicture ? "text-pink-200" : undefined} />
-            </button>
+          {!compact && (
+            <>
+              <input type="range" min={0} max={1} step={0.05} value={muted ? 0 : volume} onChange={(event) => changeVolume(Number(event.target.value))} className="pmovies-range accent-pink-500 w-16 hidden md:block shrink-0" />
+              
+              {!locked && (
+                <select value={speed} onChange={(event) => changeSpeed(Number(event.target.value))} className="rounded-md bg-pink-500 hover:bg-pink-400 text-white font-bold appearance-none text-center px-1.5 py-1 text-[10px] sm:text-xs cursor-pointer shadow-sm hidden sm:block shrink-0">
+                  {[0.5, 0.75, 1, 1.25, 1.5, 2].map((item) => <option key={item} value={item} className="bg-slate-900 text-white">{item}x</option>)}
+                </select>
+              )}
+              
+              <select value={level} onChange={(event) => changeLevel(Number(event.target.value))} className="min-w-0 rounded-md bg-pink-500 hover:bg-pink-400 text-white font-bold appearance-none text-center px-1.5 py-1 text-[10px] sm:text-xs cursor-pointer shadow-sm hidden md:block shrink-0">
+                <option value={-1} className="bg-slate-900 text-white">Auto</option>
+                {levels.map((item) => <option key={item.index} value={item.index} className="bg-slate-900 text-white">{item.height}p</option>)}
+              </select>
+              
+              {pictureInPictureSupported && (
+                <button type="button" onClick={togglePictureInPicture} className="shrink-0 rounded-md p-1.5 sm:p-2 transition-colors bg-pink-500/80 hover:bg-pink-500 hidden sm:block" title={isPictureInPicture ? "Close mini player" : "Mini player"}>
+                  <PictureInPicture2 size={16} className={isPictureInPicture ? "text-pink-200" : undefined} />
+                </button>
+              )}
+            </>
           )}
           
           <button type="button" onClick={toggleFullscreen} className={`ml-auto shrink-0 rounded-md p-1.5 sm:p-2 transition-colors ${compact ? "bg-pink-500 hover:bg-pink-400" : "bg-pink-500/80 hover:bg-pink-500"}`}>

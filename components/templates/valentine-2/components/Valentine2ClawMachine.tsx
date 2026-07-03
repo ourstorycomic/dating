@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { motion, useAnimation, AnimatePresence } from "framer-motion";
+import { motion, useAnimation, AnimatePresence, useMotionValue, animate } from "framer-motion";
 import { FloatingParticles } from "./FloatingParticles";
 import { playClick, playCoin } from "./soundFX";
 
@@ -101,8 +101,36 @@ export function Valentine2ClawMachine({ onEggGrabbed, autoPlay = false, compact 
   }, [autoPlay, step, coinControls]);
 
   // ── Coin insert ──
-  const handleDragEnd = useCallback(async () => {
+  const coinX = useMotionValue(0);
+  const coinY = useMotionValue(0);
+  const dragStartRef = useRef({ x: 0, y: 0 });
+  const [isCoinDragging, setIsCoinDragging] = useState(false);
+
+  const handlePointerDown = (e: React.PointerEvent) => {
     if (step !== "insert") return;
+    setIsCoinDragging(true);
+    dragStartRef.current = { x: e.clientX - coinX.get() * getScale(), y: e.clientY - coinY.get() * getScale() };
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const getScale = () => {
+    if (!coinRef.current) return 1;
+    const parent = coinRef.current.closest('.template-preview-surface') as HTMLElement;
+    return parent ? parent.getBoundingClientRect().width / parent.offsetWidth : 1;
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isCoinDragging) return;
+    const scale = getScale();
+    coinX.set((e.clientX - dragStartRef.current.x) / scale);
+    coinY.set((e.clientY - dragStartRef.current.y) / scale);
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (!isCoinDragging) return;
+    setIsCoinDragging(false);
+    (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+
     if (!slotRef.current || !coinRef.current) return;
     const slotR = slotRef.current.getBoundingClientRect();
     const coinR = coinRef.current.getBoundingClientRect();
@@ -110,15 +138,16 @@ export function Valentine2ClawMachine({ onEggGrabbed, autoPlay = false, compact 
       (coinR.left + coinR.width / 2)  - (slotR.left + slotR.width / 2),
       (coinR.top  + coinR.height / 2) - (slotR.top  + slotR.height / 2),
     );
+
     if (dist < 110) {
-      // Fast vanish — no await so it doesn't freeze the UI
       playCoin(compact && !autoPlay);
       try { coinControls.start({ scale: 0, opacity: 0, transition: { duration: 0.15 } }); } catch(e) {}
       setTimeout(() => setStep("play"), 180);
     } else {
-      try { coinControls.start({ x: 0, y: 0, transition: { type: "spring", stiffness: 320, damping: 22 } }); } catch(e) {}
+      animate(coinX, 0, { type: "spring", stiffness: 320, damping: 22 });
+      animate(coinY, 0, { type: "spring", stiffness: 320, damping: 22 });
     }
-  }, [step, coinControls]);
+  };
 
   // ── Move (single tap) ──
   const moveClaw = useCallback((dir: -1 | 1) => {
@@ -409,7 +438,11 @@ export function Valentine2ClawMachine({ onEggGrabbed, autoPlay = false, compact 
                     <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 0.85 }}
                       className="absolute -top-6 left-1/2 -translate-x-1/2 text-sm pointer-events-none select-none">👆</motion.div>
                     <motion.div
-                      ref={coinRef} drag dragSnapToOrigin onDragEnd={handleDragEnd}
+                      ref={coinRef}
+                      onPointerDown={handlePointerDown}
+                      onPointerMove={handlePointerMove}
+                      onPointerUp={handlePointerUp}
+                      style={{ x: coinX, y: coinY, touchAction: "none" }}
                       animate={coinControls} whileHover={{ scale: 1.12 }} whileTap={{ scale: 0.88 }}
                       className="w-16 h-16 bg-gradient-to-br from-yellow-300 via-yellow-400 to-yellow-600 rounded-full shadow-[0_8px_24px_rgba(234,179,8,0.55)] border-4 border-yellow-200 flex items-center justify-center cursor-grab active:cursor-grabbing select-none"
                     >
