@@ -1311,8 +1311,15 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                           >
                             {order.custom_data?.isLocked ? "Sửa tiếp" : "Sửa"}
                           </div>
-                        ) : null}
-                        <div className={`flex items-center justify-center rounded-full border px-3 py-1 text-[11px] leading-none font-bold ${paid ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "border-yellow-500/20 bg-yellow-500/10 text-yellow-600 dark:text-yellow-500"}`}>
+                        ) : (
+                          <div
+                            onClick={() => loadOrder(order)}
+                            className="cursor-pointer flex items-center justify-center rounded-full bg-yellow-500/10 border border-yellow-500/20 px-3 py-1 text-[11px] leading-none font-bold text-yellow-600 dark:text-yellow-500 hover:bg-yellow-500/20 transition-colors"
+                          >
+                            Xem QR / Thanh toán
+                          </div>
+                        )}
+                        <div className={`flex items-center justify-center rounded-full border px-3 py-1 text-[11px] leading-none font-bold ${paid ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "border-white/10 bg-white/5 text-white/50"}`}>
                           {paid ? "Đã thanh toán" : "Chờ thanh toán"}
                         </div>
                       </div>
