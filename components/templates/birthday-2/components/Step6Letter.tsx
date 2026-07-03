@@ -50,11 +50,11 @@ export function Step6Letter({ letter, onNext, autoPlay = false, compact = false 
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 1.5, ease: "easeOut" }}
-        className="w-full max-w-[320px] bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl relative"
+        className="w-full max-w-[320px] bg-[#fdfbf7] border border-amber-200 p-8 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative"
       >
-        <div className="absolute top-0 right-0 w-10 h-10 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 pointer-events-none" />
+        <div className="absolute top-0 right-0 w-10 h-10 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none" />
         
-        <p className="font-serif text-slate-300 text-lg leading-loose min-h-[200px]">
+        <p className="font-serif text-slate-800 font-medium text-lg leading-loose min-h-[200px]">
           {displayedText}
           {!isTypingFinished && <span className="animate-pulse">_</span>}
         </p>

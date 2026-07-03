@@ -106,7 +106,7 @@ export function Step2FakeChat({ messages, onNext, autoPlay = false, compact = fa
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="mt-auto flex flex-col items-end gap-2"
+              className="mt-4 flex flex-col items-end gap-2"
             >
               <motion.div 
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}

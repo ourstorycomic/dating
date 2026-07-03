@@ -103,7 +103,7 @@ export function Step4Unbox({ photos, onNext, autoPlay = false, compact = false }
             }
             onNext();
           }}
-          className="w-full py-4 rounded-full bg-orange-800 text-white font-bold text-lg shadow-[0_10px_20px_rgba(154,52,18,0.3)] hover:scale-105 active:scale-95 transition-transform"
+          className="w-full py-4 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold text-lg shadow-[0_10px_20px_rgba(225,29,72,0.3)] hover:scale-105 active:scale-95 transition-transform"
         >
           Xem Tiếp ✨
         </button>

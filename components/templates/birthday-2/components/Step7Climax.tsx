@@ -79,7 +79,10 @@ export function Step7Climax({ autoPlay = false, onNext }: { autoPlay?: boolean; 
           className="w-full py-4 rounded-xl bg-indigo-900 text-amber-300 font-black text-xl uppercase tracking-wider hover:bg-indigo-800 transition-colors"
           onClick={() => {
             if (autoPlay) return;
-            confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } });
+            if (canvasRef.current) {
+              const myConfetti = confetti.create(canvasRef.current, { resize: true, useWorker: true });
+              myConfetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, zIndex: 100 });
+            }
             if (onNext) {
               setTimeout(onNext, 2000);
             }

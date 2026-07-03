@@ -4,11 +4,35 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function Step5Cake({ onNext, autoPlay = false, compact = false }: { onNext: () => void; autoPlay?: boolean; compact?: boolean }) {
+  const [phase, setPhase] = useState<"record" | "blow">("record");
   const [holding, setHolding] = useState(false);
   const [progress, setProgress] = useState(0);
   const [blown, setBlown] = useState(false);
+  
+  const [isRecording, setIsRecording] = useState(false);
+  const streamRef = useRef<MediaStream | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const blowSoundRef = useRef<HTMLAudioElement>(null);
+
+  const startRecord = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+      setIsRecording(true);
+      if (navigator.vibrate) navigator.vibrate(50);
+    } catch(err) {
+      setIsRecording(true);
+    }
+  };
+
+  const stopRecord = () => {
+    if (!isRecording) return;
+    setIsRecording(false);
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(t => t.stop());
+    }
+    setPhase("blow");
+  };
 
   const startHold = () => {
     if (blown) return;
@@ -49,8 +73,10 @@ export function Step5Cake({ onNext, autoPlay = false, compact = false }: { onNex
 
   useEffect(() => {
     if (autoPlay) {
-      const t = setTimeout(() => startHold(), 2000);
+      const t0 = setTimeout(() => setPhase("blow"), 2000);
+      const t = setTimeout(() => startHold(), 4000);
       return () => {
+        clearTimeout(t0);
         clearTimeout(t);
         if (intervalRef.current) clearInterval(intervalRef.current);
       };
@@ -78,9 +104,15 @@ export function Step5Cake({ onNext, autoPlay = false, compact = false }: { onNex
         transition={{ delay: 0.5 }}
         className="text-center z-20 mb-20"
       >
-        <h2 className="text-2xl font-black text-amber-200 mb-3 drop-shadow-[0_0_10px_rgba(253,230,138,0.5)]">Make a Wish ✨</h2>
-        <p className="text-slate-300 font-medium leading-relaxed">
-          Nhắm mắt lại, ước một điều<br />và <span className="text-amber-400 font-bold">giữ lỳ vào ngọn nến</span> để thổi nhé!
+        <h2 className="text-2xl font-black text-amber-200 mb-3 drop-shadow-[0_0_10px_rgba(253,230,138,0.5)]">
+          {phase === "record" ? "Điều ước của bạn" : "Make a Wish ✨"}
+        </h2>
+        <p className="text-slate-300 font-medium leading-relaxed h-12">
+          {phase === "record" ? (
+            <>Nói điều bạn muốn gửi gắm<br />Bằng cách <span className="text-amber-400 font-bold">nhấn giữ nút Mic</span> bên dưới</>
+          ) : (
+            <>Nhắm mắt lại, nghĩ về điều ước<br />và <span className="text-amber-400 font-bold">giữ lỳ vào ngọn nến</span> để thổi nhé!</>
+          )}
         </p>
       </motion.div>
 
@@ -94,8 +126,8 @@ export function Step5Cake({ onNext, autoPlay = false, compact = false }: { onNex
             
             {/* Hitbox for interaction */}
             <div 
-              className="absolute -top-20 left-1/2 -translate-x-1/2 w-32 h-32 bg-transparent cursor-pointer touch-none z-50 rounded-full flex items-center justify-center"
-              onPointerDown={startHold}
+              className={`absolute -top-20 left-1/2 -translate-x-1/2 w-32 h-32 bg-transparent ${phase === "blow" ? "cursor-pointer" : ""} touch-none z-50 rounded-full flex items-center justify-center`}
+              onPointerDown={() => phase === "blow" && startHold()}
               onPointerUp={stopHold}
               onPointerLeave={stopHold}
               onContextMenu={e => e.preventDefault()}
@@ -153,6 +185,44 @@ export function Step5Cake({ onNext, autoPlay = false, compact = false }: { onNex
           </div>
         </div>
       </div>
+
+      {/* Mic Recording UI */}
+      <AnimatePresence>
+        {phase === "record" && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="absolute bottom-20 flex flex-col items-center z-50"
+          >
+            <div className="h-10 flex items-center justify-center mb-4">
+              {isRecording ? (
+                <div className="flex items-center gap-2 text-pink-400 font-bold">
+                  <span className="relative flex h-3 w-3"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-pink-400 opacity-75"></span><span className="relative inline-flex h-3 w-3 rounded-full bg-pink-500"></span></span>
+                  Đang ghi âm điều ước...
+                </div>
+              ) : (
+                <div className="text-slate-400 text-sm">Sẵn sàng ghi âm</div>
+              )}
+            </div>
+            
+            <button
+              onPointerDown={(e) => { e.preventDefault(); startRecord(); }}
+              onPointerUp={(e) => { e.preventDefault(); stopRecord(); }}
+              onPointerLeave={(e) => { e.preventDefault(); stopRecord(); }}
+              onContextMenu={(e) => e.preventDefault()}
+              style={{ WebkitUserSelect: "none", userSelect: "none" }}
+              className={`w-20 h-20 rounded-full flex items-center justify-center border-4 border-slate-700 transition-all ${isRecording ? 'bg-pink-500 scale-110 shadow-[0_0_30px_rgba(236,72,153,0.6)]' : 'bg-slate-800'}`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={isRecording ? "text-white" : "text-slate-400"}>
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" x2="12" y1="19" y2="22"></line>
+              </svg>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
     </>
   );

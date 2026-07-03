@@ -9,18 +9,21 @@ const APPS = [
   { icon: Calendar, color: "bg-white text-red-500", name: "Calendar" },
   { icon: Camera, color: "bg-gray-100 text-gray-800", name: "Camera" },
   { icon: Settings, color: "bg-gray-400", name: "Settings" },
-  { icon: Phone, color: "bg-green-400", name: "Phone" },
-  { icon: Compass, color: "bg-blue-400", name: "Safari" },
-  { icon: Mail, color: "bg-blue-500", name: "Mail" },
-  { icon: Map, color: "bg-green-600", name: "Maps" },
-  { icon: Music, color: "bg-rose-500", name: "Music" },
-  { icon: Video, color: "bg-purple-500", name: "Videos" },
   { icon: Cloud, color: "bg-blue-300", name: "Weather" },
   { icon: Calculator, color: "bg-orange-500", name: "Calculator" },
   { icon: Clock, color: "bg-black", name: "Clock" },
   { icon: Store, color: "bg-blue-600", name: "App Store" },
   { icon: Book, color: "bg-orange-400", name: "Books" },
-  { icon: Heart, color: "bg-white text-rose-500", name: "Health" }
+  { icon: Heart, color: "bg-white text-rose-500", name: "Health" },
+  { icon: Map, color: "bg-green-600", name: "Maps" },
+  { icon: Video, color: "bg-purple-500", name: "Videos" },
+];
+
+const DOCK_APPS = [
+  { icon: Phone, color: "bg-green-400", name: "Phone" },
+  { icon: Compass, color: "bg-blue-400", name: "Safari" },
+  { icon: Mail, color: "bg-blue-500", name: "Mail" },
+  { icon: Music, color: "bg-rose-500", name: "Music" },
 ];
 
 export function Step3Delivery({ onNext, autoPlay = false, compact = false, photos = [] }: { onNext: () => void; autoPlay?: boolean; compact?: boolean; photos?: { url: string }[] }) {
@@ -136,6 +139,15 @@ export function Step3Delivery({ onNext, autoPlay = false, compact = false, photo
               <div className={`w-14 h-14 rounded-[1.2rem] ${app.color} shadow-sm flex items-center justify-center`}>
                 <app.icon className={`w-7 h-7 ${app.color.includes('text-') ? '' : 'text-white'}`} strokeWidth={1.5} />
               </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Fake iOS Dock */}
+        <div className="absolute bottom-6 left-4 right-4 h-[84px] bg-white/30 backdrop-blur-xl rounded-[2rem] flex items-center justify-around px-3 border border-white/20 shadow-lg pointer-events-none">
+          {DOCK_APPS.map((app, i) => (
+            <div key={i} className={`w-[60px] h-[60px] rounded-[1.25rem] ${app.color} shadow-sm flex items-center justify-center`}>
+              <app.icon className="w-8 h-8 text-white" strokeWidth={1.5} />
             </div>
           ))}
         </div>
