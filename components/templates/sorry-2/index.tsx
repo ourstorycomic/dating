@@ -220,6 +220,7 @@ function Step3Whack({ onNext, autoPlay, weapon, compact, config }: { onNext: () 
   const [showCursor, setShowCursor] = useState(false);
   const [whacking, setWhacking] = useState(false);
   const hitSoundRef = useRef<HTMLAudioElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   
   const maxHealth = parseInt(config?.gameTarget) || 10;
 
@@ -249,7 +250,15 @@ function Step3Whack({ onNext, autoPlay, weapon, compact, config }: { onNext: () 
   }, [autoPlay, activeHole, health]);
 
   const handlePointerMove = (e: React.PointerEvent) => {
-    setCursorPos({ x: e.clientX, y: e.clientY });
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const scaleX = containerRef.current.offsetWidth / rect.width;
+    const scaleY = containerRef.current.offsetHeight / rect.height;
+    
+    setCursorPos({ 
+      x: (e.clientX - rect.left) * scaleX, 
+      y: (e.clientY - rect.top) * scaleY 
+    });
     setShowCursor(true);
   };
 
@@ -290,6 +299,7 @@ function Step3Whack({ onNext, autoPlay, weapon, compact, config }: { onNext: () 
     <>
     <audio ref={hitSoundRef} src="/assets/vfx/glass-break.mp3" preload="auto" muted={compact && !autoPlay} />
     <motion.div
+      ref={containerRef}
       key="step3"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -375,7 +385,7 @@ function Step3Whack({ onNext, autoPlay, weapon, compact, config }: { onNext: () 
       {/* Custom Cursor Weapon */}
       {!autoPlay && showCursor && (
         <motion.div
-          className="fixed pointer-events-none z-50 text-6xl drop-shadow-2xl"
+          className="absolute pointer-events-none z-50 text-6xl drop-shadow-2xl"
           style={{ left: cursorPos.x - 30, top: cursorPos.y - 30 }}
           animate={{ rotate: whacking ? -45 : 0, scale: whacking ? 0.8 : 1 }}
           transition={{ duration: 0.05 }}
