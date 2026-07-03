@@ -10,8 +10,8 @@ export function Step8Success({ location, date, time, onComplete, autoPlay, data 
   }, [autoPlay, onComplete]);
 
   return (
-    <div className="absolute inset-0 bg-black/85 backdrop-blur-xl z-[80] flex flex-col items-center justify-center p-6">
-      
+    <div className="absolute inset-0 bg-black/85 backdrop-blur-xl z-[80] overflow-y-auto">
+      <div className="min-h-full flex flex-col items-center justify-center p-6 py-12">
       <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500 mb-10 drop-shadow-[0_0_20px_rgba(250,204,21,0.5)] anim-spring-up text-center uppercase tracking-widest flex flex-col items-center">
           <img src="/assets/happy/cute-love.webp" className="w-32 h-32 object-contain mb-4 drop-shadow-2xl" alt="cute" />
           {data?.step8Title}
@@ -67,6 +67,7 @@ export function Step8Success({ location, date, time, onComplete, autoPlay, data 
       >
           {data?.step8Btn}
       </button>
+      </div>
     </div>
   );
 }

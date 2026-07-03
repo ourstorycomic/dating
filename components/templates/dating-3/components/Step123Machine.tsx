@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { motion, useAnimation } from "framer-motion";
+import { motion, useAnimation, useMotionValue, animate } from "framer-motion";
 
 export function Step123Machine({ onEggDropped, autoPlay, compact, data }: { onEggDropped: () => void, autoPlay?: boolean, compact?: boolean, data?: any }) {
   const [step, setStep] = useState(1); // 1: Idle, 1.5: Dropped, 2: Inserted, 3: Spinning
@@ -12,10 +12,7 @@ export function Step123Machine({ onEggDropped, autoPlay, compact, data }: { onEg
 
   useEffect(() => {
     if (step === 1 && !autoPlay) {
-      coinControls.start({
-        y: [0, -15, 0],
-        transition: { duration: 3, repeat: Infinity, ease: "easeInOut" }
-      });
+      animate(coinY, [0, -15, 0], { duration: 3, repeat: Infinity, ease: "easeInOut" });
     }
   }, [step, autoPlay, coinControls]);
 
@@ -32,9 +29,8 @@ export function Step123Machine({ onEggDropped, autoPlay, compact, data }: { onEg
           targetX = slotRect.left + slotRect.width / 2 - (coinRect.left + coinRect.width / 2);
           targetY = slotRect.top + slotRect.height / 2 - (coinRect.top + coinRect.height / 2);
         }
-        await coinControls.start({
-          x: targetX, y: targetY, transition: { duration: 1.2, ease: "easeInOut" }
-        });
+        animate(coinX, targetX, { duration: 1.2, ease: "easeInOut" });
+        await animate(coinY, targetY, { duration: 1.2, ease: "easeInOut" });
         setStep(1.5);
         await coinControls.start({
           scale: 0.2, opacity: 0, transition: { duration: 0.3 }
@@ -51,7 +47,36 @@ export function Step123Machine({ onEggDropped, autoPlay, compact, data }: { onEg
     return () => clearTimeout(timer);
   }, [autoPlay, step]);
 
-  const handleDragEnd = async (event: any, info: any) => {
+  const coinX = useMotionValue(0);
+  const coinY = useMotionValue(0);
+  const dragStartRef = useRef({ x: 0, y: 0 });
+
+  const getScale = () => {
+    if (!coinRef.current) return 1;
+    const parent = coinRef.current.closest('.template-preview-surface') as HTMLElement;
+    return parent ? parent.getBoundingClientRect().width / parent.offsetWidth : 1;
+  };
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    if (step !== 1) return;
+    setIsDragging(true);
+    coinControls.stop();
+    dragStartRef.current = { x: e.clientX - coinX.get() * getScale(), y: e.clientY - coinY.get() * getScale() };
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isDragging) return;
+    const scale = getScale();
+    coinX.set((e.clientX - dragStartRef.current.x) / scale);
+    coinY.set((e.clientY - dragStartRef.current.y) / scale);
+  };
+
+  const handlePointerUp = async (e: React.PointerEvent) => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+
     if (step !== 1) return;
     if (!slotRef.current || !coinRef.current) return;
 
@@ -76,14 +101,11 @@ export function Step123Machine({ onEggDropped, autoPlay, compact, data }: { onEg
       }
       setTimeout(() => setStep(2), 400);
     } else {
-      coinControls.start({ x: 0, y: 0, transition: { type: "spring", stiffness: 300, damping: 20 } }).then(() => {
-        if (step === 1 && !autoPlay) {
-          coinControls.start({
-            y: [0, -15, 0],
-            transition: { duration: 3, repeat: Infinity, ease: "easeInOut" }
-          });
-        }
-      });
+      animate(coinX, 0, { type: "spring", stiffness: 300, damping: 20 });
+      animate(coinY, 0, { type: "spring", stiffness: 300, damping: 20 });
+      if (step === 1 && !autoPlay) {
+        animate(coinY, [0, -15, 0], { duration: 3, repeat: Infinity, ease: "easeInOut" });
+      }
     }
   };
 
@@ -165,12 +187,12 @@ export function Step123Machine({ onEggDropped, autoPlay, compact, data }: { onEg
       {step < 2 && (
         <motion.div 
             ref={coinRef}
-            drag
-            dragMomentum={false}
-            onDragStart={() => { coinControls.stop(); setIsDragging(true); }}
-            onDragEnd={(e, info) => { setIsDragging(false); handleDragEnd(e, info); }}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerUp}
             animate={coinControls}
-            style={{ left: 'calc(50% - 40px)' }}
+            style={{ left: 'calc(50% - 40px)', x: coinX, y: coinY }}
             className={`absolute bottom-12 w-20 h-20 bg-gradient-to-br from-yellow-300 via-yellow-400 to-yellow-600 rounded-full border-[5px] border-yellow-100 flex items-center justify-center cursor-grab active:cursor-grabbing z-50 shadow-[0_10px_25px_rgba(250,204,21,0.5),_inset_0_0_15px_rgba(255,255,255,0.8)] touch-none`}
         >
             <div className="absolute inset-0 rounded-full border border-yellow-500 opacity-50 pointer-events-none"></div>
