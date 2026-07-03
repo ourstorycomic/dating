@@ -1236,7 +1236,6 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                       >
                         <div className="flex items-center justify-between">
                           <p className="font-semibold">{template.name}</p>
-                          <p className="text-xs font-bold text-pink-500">{Math.round(template.base_price / 1000)}K</p>
                         </div>
                         {template.description && <p className="mt-1 text-xs text-gray-500">{template.description}</p>}
                       </li>
