@@ -88,7 +88,14 @@ export default function Birthday3Template({ autoPlay = false, compact = false, h
         {step === 6 && <Step6Memory key="step6" onNext={nextStep} autoPlay={autoPlay} config={config} />}
         {step === 7 && <Step7Unboxing key="step7" onNext={nextStep} autoPlay={autoPlay} config={config} />}
         {step === 8 && <Step8Afterparty key="step8" autoPlay={autoPlay} config={config} onNext={nextStep} />}
-        {step === 9 && <Step5DateTimePicker key="step9" onNext={() => {}} autoPlay={autoPlay} data={config} />}
+        {step === 9 && <Step5DateTimePicker key="step9" onNext={(d, t) => alert(`Đã chốt lịch hẹn: ${d} - ${t}`)} autoPlay={autoPlay} data={{
+          ...config,
+          dtTitle: config?.dtTitle || "Chọn Ngày Hẹn",
+          dtSub: config?.dtSub || "Để tớ chuẩn bị nha",
+          dtDateLabel: config?.dtDateLabel || "Ngày nào hợp lý nhỉ?",
+          dtTimeLabel: config?.dtTimeLabel || "Mấy giờ thì tiện cho cậu?",
+          dtBtn: config?.dtBtn || "CHỐT ĐƠN! 🎉",
+        }} />}
       </AnimatePresence>
       <TemplateNavigator
         currentIndex={step - 1}
@@ -598,9 +605,33 @@ function Step3Balloons({ onNext, autoPlay, config }: { onNext: () => void; autoP
 
 // --- STEP 4: THE CAKE ---
 function Step4Cake({ onNext, autoPlay, config }: { onNext: () => void; autoPlay: boolean; config: any }) {
+  const [phase, setPhase] = useState<"record" | "blow">("record");
   const [blowProgress, setBlowProgress] = useState(0);
   const [blown, setBlown] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  const [isRecording, setIsRecording] = useState(false);
+  const streamRef = useRef<MediaStream | null>(null);
+
+  const startRecord = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+      setIsRecording(true);
+      if (navigator.vibrate) navigator.vibrate(50);
+    } catch(err) {
+      setIsRecording(true);
+    }
+  };
+
+  const stopRecord = () => {
+    if (!isRecording) return;
+    setIsRecording(false);
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(t => t.stop());
+    }
+    setPhase("blow");
+  };
 
   const startBlowing = () => {
     if (blown || autoPlay) return;
@@ -625,19 +656,24 @@ function Step4Cake({ onNext, autoPlay, config }: { onNext: () => void; autoPlay:
 
   useEffect(() => {
     if (autoPlay && !blown) {
-      let p = 0;
-      const t = setInterval(() => {
-        p += 2;
-        setBlowProgress(p);
-        if (p >= 100) {
-          clearInterval(t);
-          setBlown(true);
-          setTimeout(onNext, 2000);
-        }
-      }, 60);
-      return () => clearInterval(t);
+      if (phase === "record") {
+        const t0 = setTimeout(() => setPhase("blow"), 2000);
+        return () => clearTimeout(t0);
+      } else {
+        let p = 0;
+        const t = setInterval(() => {
+          p += 2;
+          setBlowProgress(p);
+          if (p >= 100) {
+            clearInterval(t);
+            setBlown(true);
+            setTimeout(onNext, 2000);
+          }
+        }, 60);
+        return () => clearInterval(t);
+      }
     }
-  }, [autoPlay, blown, onNext]);
+  }, [autoPlay, blown, phase, onNext]);
 
   return (
     <motion.div
@@ -650,8 +686,16 @@ function Step4Cake({ onNext, autoPlay, config }: { onNext: () => void; autoPlay:
       <FloatingParticles step={4} />
 
       <div className="text-center px-6">
-        <h2 className="text-2xl font-bold text-amber-100 mb-2 drop-shadow-md">{config?.cakeTitle || "Happy Birthday! 🌟"}</h2>
-        <p className="text-slate-300 text-sm">{config?.cakeInstruction || "Nhắm mắt lại, chắp tay và ước một điều thật to lớn đi nào!"}</p>
+        <h2 className="text-2xl font-bold text-amber-100 mb-2 drop-shadow-md">
+          {phase === "record" ? "Điều ước của bạn" : (config?.cakeTitle || "Happy Birthday! 🌟")}
+        </h2>
+        <p className="text-slate-300 text-sm h-10">
+          {phase === "record" ? (
+            <>Nói điều bạn muốn gửi gắm<br />Bằng cách <span className="text-amber-400 font-bold">nhấn giữ nút Mic</span> bên dưới</>
+          ) : (
+            config?.cakeInstruction || "Nhắm mắt lại, chắp tay và ước một điều thật to lớn đi nào!"
+          )}
+        </p>
       </div>
 
       <motion.div 
@@ -698,17 +742,17 @@ function Step4Cake({ onNext, autoPlay, config }: { onNext: () => void; autoPlay:
 
       <div className="relative w-64 h-16">
         <button
-          onPointerDown={startBlowing}
-          onPointerUp={stopBlowing}
-          onPointerLeave={stopBlowing}
-          disabled={blown || autoPlay}
-          className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full font-bold text-white shadow-[0_5px_20px_rgba(245,158,11,0.4)] disabled:opacity-50 select-none z-10 touch-none flex items-center justify-center gap-2"
+          onPointerDown={() => phase === "blow" && startBlowing()}
+          onPointerUp={() => phase === "blow" && stopBlowing()}
+          onPointerLeave={() => phase === "blow" && stopBlowing()}
+          disabled={blown || autoPlay || phase === "record"}
+          className={`absolute inset-0 rounded-full font-bold shadow-[0_5px_20px_rgba(245,158,11,0.4)] select-none z-10 touch-none flex items-center justify-center gap-2 transition-all ${phase === "record" ? 'bg-slate-700 text-slate-400 opacity-0 pointer-events-none' : 'bg-gradient-to-r from-amber-500 to-orange-500 text-white disabled:opacity-50'}`}
         >
           {blown ? "ĐÃ ƯỚC XONG ✨" : (config?.blowBtn || "NHẤN GIỮ ĐỂ THỔI NẾN 🌬️")}
         </button>
         
         {/* Progress Ring Overlay */}
-        {!blown && (
+        {phase === "blow" && !blown && (
           <div 
             className="absolute inset-0 border-4 border-white/40 rounded-full pointer-events-none z-20"
             style={{ 
@@ -718,6 +762,44 @@ function Step4Cake({ onNext, autoPlay, config }: { onNext: () => void; autoPlay:
           />
         )}
       </div>
+
+      {/* Mic Recording UI */}
+      <AnimatePresence>
+        {phase === "record" && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="absolute bottom-16 flex flex-col items-center z-50 w-full"
+          >
+            <div className="h-8 flex items-center justify-center mb-4">
+              {isRecording ? (
+                <div className="flex items-center gap-2 text-pink-400 font-bold text-sm">
+                  <span className="relative flex h-2.5 w-2.5"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-pink-400 opacity-75"></span><span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-pink-500"></span></span>
+                  Đang ghi âm điều ước...
+                </div>
+              ) : (
+                <div className="text-slate-400 text-xs">Sẵn sàng ghi âm</div>
+              )}
+            </div>
+            
+            <button
+              onPointerDown={(e) => { e.preventDefault(); startRecord(); }}
+              onPointerUp={(e) => { e.preventDefault(); stopRecord(); }}
+              onPointerLeave={(e) => { e.preventDefault(); stopRecord(); }}
+              onContextMenu={(e) => e.preventDefault()}
+              style={{ WebkitUserSelect: "none", userSelect: "none" }}
+              className={`w-16 h-16 rounded-full flex items-center justify-center border-2 border-slate-700 transition-all ${isRecording ? 'bg-pink-500 scale-110 shadow-[0_0_20px_rgba(236,72,153,0.6)]' : 'bg-slate-800'}`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={isRecording ? "text-white" : "text-slate-400"}>
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" x2="12" y1="19" y2="22"></line>
+              </svg>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
@@ -925,7 +1007,9 @@ function Step7Unboxing({ onNext, autoPlay, config }: { onNext: () => void; autoP
         className="relative"
       >
         {taps < maxTaps ? (
-          <img src="/assets/dumb/auau.webp" className="w-40 h-40 object-contain drop-shadow-[0_20px_30px_rgba(245,158,11,0.4)] animate-bounce" alt="gift" />
+          <div className="w-48 h-48 bg-amber-100 rounded-full flex items-center justify-center border-4 border-amber-300 drop-shadow-[0_20px_30px_rgba(245,158,11,0.4)] animate-bounce shadow-inner">
+            <Gift size={100} className="text-amber-500" />
+          </div>
         ) : (
           <motion.div
             initial={{ scale: 0, opacity: 0 }}
