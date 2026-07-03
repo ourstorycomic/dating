@@ -97,7 +97,7 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen flex flex-col overflow-hidden text-[#332035]">
-      <div className="flex-1 px-4 pt-4 pb-16 sm:px-6 sm:pb-20 lg:px-10">
+      <div className="flex-1 px-4 pt-4 pb-16 sm:px-6 sm:pb-4 lg:px-10">
         <header className="mx-auto flex max-w-7xl items-center gap-3 rounded-full border-[3px] border-[#ffe0ef] bg-white/80 px-4 py-3 shadow-[0_18px_50px_rgba(255,182,193,0.2)] backdrop-blur-xl sm:px-5">
           <Link className="flex items-center gap-2 text-base font-extrabold tracking-normal sm:text-lg" href="/">
             <img src="/favicon.ico" alt="Lovora Logo" className="h-10 w-10 rounded-[12px] shadow-[0_10px_24px_rgba(255,143,199,0.38)] animate-bounce-slow" />
@@ -229,7 +229,7 @@ export default async function Home() {
             </GlassCard>
           </section>
 
-          <section id="mau-web" className="py-12">
+          <section id="mau-web" className="pt-12 pb-4">
             <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="text-sm font-extrabold uppercase tracking-[0.16em] text-[#ff59ab]">
