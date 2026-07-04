@@ -715,6 +715,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   }, [result]);
 
   const customData = {
+      expiresAtDate,
     anniversaryCode,
     componentKey: selectedComponentKey,
     connectInstruction: stage1Instruction,
@@ -1136,6 +1137,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     // Birthday Magic specific
     if (cd.birthdayMessage) setBirthdayMessage(cd.birthdayMessage);
     if (cd.musicUrl) setGeneralAudioUrl(cd.musicUrl);
+      if (cd.expiresAtDate) setExpiresAtDate(cd.expiresAtDate);
     if (cd.imageUrl) setStage1ImageUrl(cd.imageUrl);
     if (cd.age) setBirthdayAge(String(cd.age));
     if (cd.memories) setBirthdayMemories(cd.memories);
