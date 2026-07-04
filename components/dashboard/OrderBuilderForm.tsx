@@ -412,7 +412,7 @@ function MemoryArrayInput({
               <button type="button" onClick={() => onChange(values.filter((_, idx) => idx !== i))} className="text-red-400 text-xs hover:underline px-2 py-1 bg-red-400/10 rounded-lg">Xóa ảnh này</button>
            </div>
            
-           <MediaInput label="" accept="image/*" onChange={(url) => {
+           <MediaInput label="" accept="image/*,video/*" onChange={(url) => {
               const newValues = [...values];
               newValues[i].imageUrl = url;
               onChange(newValues);
@@ -594,6 +594,12 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const [finalAccent, setFinalAccent] = useState("#ec4899");
   const [giftTitle, setGiftTitle] = useState("Thư Mời Hẹn Hò");
   const [giftBody, setGiftBody] = useState("Cuối tuần này, cùng nhau đi dạo phố và uống chút gì đó ấm áp nhé? Tớ biết một quán view rất xinh!");
+  const [val1StartDate, setVal1StartDate] = useState("2023-02-14T00:00:00");
+  const [expiresAtDate, setExpiresAtDate] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 10);
+    return d.toISOString().split('T')[0];
+  });
   const [proposedDate, setProposedDate] = useState("");
   const [giftDeclineButton, setGiftDeclineButton] = useState("Để khi khác");
   const [giftAcceptButton, setGiftAcceptButton] = useState("Lên đồ thôi!");
@@ -678,6 +684,12 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const isDating2 = selectedComponentKey === "dating-2" || selectedComponentKey === "dating #2";
   const isDating3 = selectedComponentKey === "dating-3" || selectedComponentKey === "dating #3";
   const isValentine2 = selectedComponentKey.includes("valentine-2") || selectedComponentKey.includes("valentine #2");
+  const isValentine3 = selectedComponentKey.includes("valentine-3") || selectedComponentKey.includes("valentine #3");
+  const isBirthday2 = selectedComponentKey.includes("birthday-2") || selectedComponentKey.includes("birthday #2");
+  const isBirthday3 = selectedComponentKey.includes("birthday-3") || selectedComponentKey.includes("birthday #3");
+  const isSorry1 = selectedComponentKey.includes("sorry-1") || selectedComponentKey.includes("sorry #1");
+  const isSorry2 = selectedComponentKey.includes("sorry-2") || selectedComponentKey.includes("sorry #2");
+  const isSorry3 = selectedComponentKey.includes("sorry-3") || selectedComponentKey.includes("sorry #3");
   const canEditTemplate = result?.unlocked ?? false;
 
   useEffect(() => {
@@ -1565,6 +1577,18 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                 </div>
 
                 <Section title="Thiết lập chung">
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-bold uppercase tracking-wider text-pink-600 dark:text-pink-400">
+                    Ngày hết hạn đơn (Mặc định 10 ngày)
+                  </label>
+                  <input
+                    type="date"
+                    value={expiresAtDate}
+                    onChange={(e) => setExpiresAtDate(e.target.value)}
+                    className="w-full rounded-2xl border-2 border-pink-100 bg-white/80 px-4 py-3.5 text-[15px] font-medium text-slate-700 shadow-inner transition-all hover:border-pink-200 focus:border-pink-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-pink-400/20 dark:border-pink-900/30 dark:bg-slate-900/50 dark:text-slate-300"
+                  />
+                  <p className="text-xs text-slate-500">Sau ngày này, toàn bộ ảnh/text sẽ bị xóa để giảm tải data, chỉ giữ lại mã đơn và nhật ký.</p>
+                </div>
                   <ColorInput label="Màu nền tổng thể" onCommit={setStage2Background} value={stage2Background} />
                   <ColorInput label="Màu nhấn (Nút, Tiêu đề)" onCommit={setStage1Accent} value={stage1Accent} />
                   <MediaInput label="Ảnh nền trang (Tùy chọn)" onChange={setStage1Background} />
@@ -1620,8 +1644,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                 <Section title="Bước 1: Cuốn Sổ Kỷ Niệm">
                   <ThemeMusicSelector theme={getThemeFromComponentKey(selectedComponentKey)} label="Nhạc nền (.mp3)" value={valentine2Config.musicUrl} onChange={(url) => setValentine2Config({ ...valentine2Config, musicUrl: url })} />
                   <TextInput label="Tiêu đề bìa" value={valentine2Config.coverTitle} onChange={(v) => setValentine2Config({ ...valentine2Config, coverTitle: v })} />
-                  <MediaInput label="Ảnh ngoài bìa" accept="image/*" onChange={(url) => setValentine2Config({ ...valentine2Config, coverImage: url })} />
-                  <MediaInput label="Ảnh trang 1" accept="image/*" onChange={(url) => setValentine2Config({ ...valentine2Config, page1Image: url })} />
+                  <MediaInput label="Ảnh ngoài bìa" accept="image/*,video/*" onChange={(url) => setValentine2Config({ ...valentine2Config, coverImage: url })} />
+                  <MediaInput label="Ảnh trang 1" accept="image/*,video/*" onChange={(url) => setValentine2Config({ ...valentine2Config, page1Image: url })} />
                   <TextArea label="Lời nhắn trang 1" value={valentine2Config.page1Text} onChange={(v) => setValentine2Config({ ...valentine2Config, page1Text: v })} />
                   
                   <div className="md:col-span-2 space-y-4 mt-4">
@@ -1629,7 +1653,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                     {valentine2Config.polaroids.map((p, idx) => (
                       <div key={p.id} className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white/5 p-4 rounded-xl relative border border-white/10">
                         <button type="button" onClick={() => setValentine2Config({ ...valentine2Config, polaroids: valentine2Config.polaroids.filter(item => item.id !== p.id) })} className="absolute top-2 right-2 text-xs text-red-400 hover:text-red-300">Xóa</button>
-                        <MediaInput label={`Ảnh Polaroid ${idx + 1}`} accept="image/*" onChange={(url) => {
+                        <MediaInput label={`Ảnh Polaroid ${idx + 1}`} accept="image/*,video/*" onChange={(url) => {
                           const newPolaroids = [...valentine2Config.polaroids];
                           newPolaroids[idx].src = url;
                           setValentine2Config({ ...valentine2Config, polaroids: newPolaroids });
@@ -1667,6 +1691,395 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                       <br/>Hiện tại mẫu sẽ sử dụng dữ liệu mặc định chuẩn của template.
                     </p>
                   </div>
+                </Section>
+              </>
+            
+
+            ) : isBirthday3 ? (
+              <>
+                <Section title="Đoạn - Hóa đơn thanh toán">
+                  <TextInput label={"Chọn Ngày Hẹn"} value={dynamicData.dtTitle || "Chọn Ngày Hẹn"} onChange={(v) => setDynamicData(d => ({ ...d, dtTitle: v }))} />
+                  <TextInput label={"Để tớ chuẩn bị nha"} value={dynamicData.dtSub || "Để tớ chuẩn bị nha"} onChange={(v) => setDynamicData(d => ({ ...d, dtSub: v }))} />
+                  <TextInput label={"Ngày nào hợp lý nhỉ?"} value={dynamicData.dtDateLabel || "Ngày nào hợp lý nhỉ?"} onChange={(v) => setDynamicData(d => ({ ...d, dtDateLabel: v }))} />
+                  <TextInput label={"Mấy giờ thì tiện cho cậu?"} value={dynamicData.dtTimeLabel || "Mấy giờ thì tiện cho cậu?"} onChange={(v) => setDynamicData(d => ({ ...d, dtTimeLabel: v }))} />
+                  <TextInput label={"CHỐT ĐƠN! 🎉"} value={dynamicData.dtBtn || "CHỐT ĐƠN! 🎉"} onChange={(v) => setDynamicData(d => ({ ...d, dtBtn: v }))} />
+                  <TextInput label={"giftText"} value={dynamicData.giftText || "giftText"} onChange={(v) => setDynamicData(d => ({ ...d, giftText: v }))} />
+                  <TextInput label={"A SPECIAL GIFT 💌"} value={dynamicData.doorSign || "A SPECIAL GIFT 💌"} onChange={(v) => setDynamicData(d => ({ ...d, doorSign: v }))} />
+                  <TextInput label={"Chạm 3 lần để mở thư!"} value={dynamicData.doorInstruction || "Chạm 3 lần để mở thư!"} onChange={(v) => setDynamicData(d => ({ ...d, doorInstruction: v }))} />
+                  <TextInput label={"Kéo xuống nhé!"} value={dynamicData.darkRoomText || "Kéo xuống nhé!"} onChange={(v) => setDynamicData(d => ({ ...d, darkRoomText: v }))} />
+                  <TextInput label={"compact"} value={dynamicData.compact || "compact"} onChange={(v) => setDynamicData(d => ({ ...d, compact: v }))} />
+                  <TextInput label={"autoPlay"} value={dynamicData.autoPlay || "autoPlay"} onChange={(v) => setDynamicData(d => ({ ...d, autoPlay: v }))} />
+                  <TextInput label={"Chạm vào 3 quả bóng bay để xem điều bất ngờ!"} value={dynamicData.balloonText || "Chạm vào 3 quả bóng bay để xem điều bất ngờ!"} onChange={(v) => setDynamicData(d => ({ ...d, balloonText: v }))} />
+                  <TextInput label={"Happy Birthday! 🌟"} value={dynamicData.cakeTitle || "Happy Birthday! 🌟"} onChange={(v) => setDynamicData(d => ({ ...d, cakeTitle: v }))} />
+                  <TextArea label={"Nhắm mắt lại, chắp tay và ước một điều thật to lớn"} value={dynamicData.cakeInstruction || "Nhắm mắt lại, chắp tay và ước một điều thật to lớn đi nào!"} onChange={(v) => setDynamicData(d => ({ ...d, cakeInstruction: v }))} />
+                  <TextInput label={"NHẤN GIỮ ĐỂ THỔI NẾN 🌬️"} value={dynamicData.blowBtn || "NHẤN GIỮ ĐỂ THỔI NẾN 🌬️"} onChange={(v) => setDynamicData(d => ({ ...d, blowBtn: v }))} />
+                  <TextInput label={"Lời Chúc Từ Trái Tim"} value={dynamicData.cardTitle || "Lời Chúc Từ Trái Tim"} onChange={(v) => setDynamicData(d => ({ ...d, cardTitle: v }))} />
+                  <TextInput label={"Lật thiệp"} value={dynamicData.cardBtn || "Lật thiệp"} onChange={(v) => setDynamicData(d => ({ ...d, cardBtn: v }))} />
+                  <TextInput label={"Một năm qua cậu đã rực rỡ thế này cơ mà..."} value={dynamicData.memoryWish1 || "Một năm qua cậu đã rực rỡ thế này cơ mà..."} onChange={(v) => setDynamicData(d => ({ ...d, memoryWish1: v }))} />
+                  <TextInput label={"Một năm qua cậu đã rực rỡ thế này cơ mà..."} value={dynamicData.memoryWish2 || "Một năm qua cậu đã rực rỡ thế này cơ mà..."} onChange={(v) => setDynamicData(d => ({ ...d, memoryWish2: v }))} />
+                  <TextInput label={"Một năm qua cậu đã rực rỡ thế này cơ mà..."} value={dynamicData.memoryWish3 || "Một năm qua cậu đã rực rỡ thế này cơ mà..."} onChange={(v) => setDynamicData(d => ({ ...d, memoryWish3: v }))} />
+                  <TextInput label={"Một năm qua cậu đã rực rỡ thế này cơ mà..."} value={dynamicData.memoryWish4 || "Một năm qua cậu đã rực rỡ thế này cơ mà..."} onChange={(v) => setDynamicData(d => ({ ...d, memoryWish4: v }))} />
+                  <TextInput label={"memory1"} value={dynamicData.memory1 || "memory1"} onChange={(v) => setDynamicData(d => ({ ...d, memory1: v }))} />
+                  <TextInput label={"memory2"} value={dynamicData.memory2 || "memory2"} onChange={(v) => setDynamicData(d => ({ ...d, memory2: v }))} />
+                  <TextInput label={"memory3"} value={dynamicData.memory3 || "memory3"} onChange={(v) => setDynamicData(d => ({ ...d, memory3: v }))} />
+                  <TextInput label={"Chạm liên tục để xé giấy gói nhé!"} value={dynamicData.giftInstruction || "Chạm liên tục để xé giấy gói nhé!"} onChange={(v) => setDynamicData(d => ({ ...d, giftInstruction: v }))} />
+                  <TextInput label={"giftName"} value={dynamicData.giftName || "giftName"} onChange={(v) => setDynamicData(d => ({ ...d, giftName: v }))} />
+                  <TextInput label={"giftImage"} value={dynamicData.giftImage || "giftImage"} onChange={(v) => setDynamicData(d => ({ ...d, giftImage: v }))} />
+                  <TextInput label={"NHẬN QUÀ NGAY 👗"} value={dynamicData.memoryBtn || "NHẬN QUÀ NGAY 👗"} onChange={(v) => setDynamicData(d => ({ ...d, memoryBtn: v }))} />
+                </Section>
+              </>
+
+            ) : isSorry1 ? (
+              <>
+                <Section title="Đoạn - Khởi đầu (Phá Băng)">
+                  <TextInput label={"đang giận tớ lắm đúng không...?"} value={dynamicData.iceTitle || "đang giận tớ lắm đúng không...?"} onChange={(v) => setDynamicData(d => ({ ...d, iceTitle: v }))} />
+                  <TextArea label={"Bấm vào màn hình để đập vỡ lớp băng này nhé, lạnh "} value={dynamicData.iceSubtitle || "Bấm vào màn hình để đập vỡ lớp băng này nhé, lạnh quá..."} onChange={(v) => setDynamicData(d => ({ ...d, iceSubtitle: v }))} />
+                  <TextInput label={"confessText"} value={dynamicData.confessText || "confessText"} onChange={(v) => setDynamicData(d => ({ ...d, confessText: v }))} />
+                  <TextInput label={"Đúng, cậu rất đáng đòn! 😡"} value={dynamicData.confessBtn || "Đúng, cậu rất đáng đòn! 😡"} onChange={(v) => setDynamicData(d => ({ ...d, confessBtn: v }))} />
+                </Section>
+                <Section title="Đoạn - Vòng quay (Đền tội)">
+                  <TextInput label={"Trà sữa 1 tuần"} value={dynamicData.wheelOpt1 || "Trà sữa 1 tuần"} onChange={(v) => setDynamicData(d => ({ ...d, wheelOpt1: v }))} />
+                  <TextInput label={"Đấm 3 cái"} value={dynamicData.wheelOpt2 || "Đấm 3 cái"} onChange={(v) => setDynamicData(d => ({ ...d, wheelOpt2: v }))} />
+                  <TextInput label={"Rửa bát 1 tháng"} value={dynamicData.wheelOpt3 || "Rửa bát 1 tháng"} onChange={(v) => setDynamicData(d => ({ ...d, wheelOpt3: v }))} />
+                  <TextInput label={"Làm osin 1 ngày"} value={dynamicData.wheelOpt4 || "Làm osin 1 ngày"} onChange={(v) => setDynamicData(d => ({ ...d, wheelOpt4: v }))} />
+                  <TextInput label={"Mua quà xịn"} value={dynamicData.wheelOpt5 || "Mua quà xịn"} onChange={(v) => setDynamicData(d => ({ ...d, wheelOpt5: v }))} />
+                  <TextInput label={"Bao đi ăn tối"} value={dynamicData.wheelOpt6 || "Bao đi ăn tối"} onChange={(v) => setDynamicData(d => ({ ...d, wheelOpt6: v }))} />
+                  <TextInput label={"Vòng Quay Đền Tội"} value={dynamicData.wheelTitle || "Vòng Quay Đền Tội"} onChange={(v) => setDynamicData(d => ({ ...d, wheelTitle: v }))} />
+                  <TextArea label={"Trước khi tha lỗi, cho cậu quyền phạt tớ đấy! Quay"} value={dynamicData.wheelSubtitle || "Trước khi tha lỗi, cho cậu quyền phạt tớ đấy! Quay đi, tớ chịu hết!"} onChange={(v) => setDynamicData(d => ({ ...d, wheelSubtitle: v }))} />
+                  <TextInput label={"QUAY NGAY"} value={dynamicData.wheelBtn || "QUAY NGAY"} onChange={(v) => setDynamicData(d => ({ ...d, wheelBtn: v }))} />
+                  <TextInput label={"Tạm bớt giận 👉"} value={dynamicData.wheelNextBtn || "Tạm bớt giận 👉"} onChange={(v) => setDynamicData(d => ({ ...d, wheelNextBtn: v }))} />
+                </Section>
+                <Section title="Đoạn - Chốt hạ">
+                  <TextInput label={"memory1"} value={dynamicData.memory1 || "memory1"} onChange={(v) => setDynamicData(d => ({ ...d, memory1: v }))} />
+                  <TextInput label={"memory2"} value={dynamicData.memory2 || "memory2"} onChange={(v) => setDynamicData(d => ({ ...d, memory2: v }))} />
+                  <TextInput label={"memory3"} value={dynamicData.memory3 || "memory3"} onChange={(v) => setDynamicData(d => ({ ...d, memory3: v }))} />
+                  <TextArea label={"&quot;Tớ không muốn vì một phút ngu ngốc mà đánh m"} value={dynamicData.nostalgiaText || "&quot;Tớ không muốn vì một phút ngu ngốc mà đánh mất những nụ cười này...&quot;"} onChange={(v) => setDynamicData(d => ({ ...d, nostalgiaText: v }))} />
+                  <TextInput label={"Xem tiếp"} value={dynamicData.nostalgiaBtn || "Xem tiếp"} onChange={(v) => setDynamicData(d => ({ ...d, nostalgiaBtn: v }))} />
+                  <TextInput label={"letterText"} value={dynamicData.letterText || "letterText"} onChange={(v) => setDynamicData(d => ({ ...d, letterText: v }))} />
+                  <TextInput label={"Chốt hạ"} value={dynamicData.letterBtn || "Chốt hạ"} onChange={(v) => setDynamicData(d => ({ ...d, letterBtn: v }))} />
+                  <TextInput label={"Hiệp Ước Hòa Bình"} value={dynamicData.treatyTitle || "Hiệp Ước Hòa Bình"} onChange={(v) => setDynamicData(d => ({ ...d, treatyTitle: v }))} />
+                  <TextInput label={"Quyết định nằm trong tay cậu. Xin hãy nương tay..."} value={dynamicData.treatySubtitle || "Quyết định nằm trong tay cậu. Xin hãy nương tay..."} onChange={(v) => setDynamicData(d => ({ ...d, treatySubtitle: v }))} />
+                  <TextInput label={"Ký tên, tha mạng"} value={dynamicData.treatyBtnYes || "Ký tên, tha mạng"} onChange={(v) => setDynamicData(d => ({ ...d, treatyBtnYes: v }))} />
+                  <TextInput label={"GIẬN TIẾP, KHÔNG THA 😤"} value={dynamicData.treatyBtnNo || "GIẬN TIẾP, KHÔNG THA 😤"} onChange={(v) => setDynamicData(d => ({ ...d, treatyBtnNo: v }))} />
+                  <TextInput label={"Cảm ơn cậu! ❤️"} value={dynamicData.successTitle || "Cảm ơn cậu! ❤️"} onChange={(v) => setDynamicData(d => ({ ...d, successTitle: v }))} />
+                  <TextInput label={"Tớ qua đón cậu đi ăn đền tội ngay đây!"} value={dynamicData.successDesc || "Tớ qua đón cậu đi ăn đền tội ngay đây!"} onChange={(v) => setDynamicData(d => ({ ...d, successDesc: v }))} />
+                </Section>
+              </>
+
+            ) : isSorry2 ? (
+              <>
+                <Section title="Đoạn - Quyết định">
+                  <TextArea label={"Người này đã làm bạn giận. Bạn có quyền được xả gi"} value={dynamicData.warnDesc || "Người này đã làm bạn giận. Bạn có quyền được xả giận ngay bây giờ!"} onChange={(v) => setDynamicData(d => ({ ...d, warnDesc: v }))} />
+                  <TextInput label={"Bắt đầu xả giận"} value={dynamicData.warnBtn || "Bắt đầu xả giận"} onChange={(v) => setDynamicData(d => ({ ...d, warnBtn: v }))} />
+                  <TextInput label={"Dép Lào"} value={dynamicData.weapon1 || "Dép Lào"} onChange={(v) => setDynamicData(d => ({ ...d, weapon1: v }))} />
+                  <TextInput label={"Chổi chà"} value={dynamicData.weapon2 || "Chổi chà"} onChange={(v) => setDynamicData(d => ({ ...d, weapon2: v }))} />
+                  <TextInput label={"Chọn Vũ Khí"} value={dynamicData.weaponTitle || "Chọn Vũ Khí"} onChange={(v) => setDynamicData(d => ({ ...d, weaponTitle: v }))} />
+                  <TextInput label={"gameTarget"} value={dynamicData.gameTarget || "gameTarget"} onChange={(v) => setDynamicData(d => ({ ...d, gameTarget: v }))} />
+                  <TextInput label={"Á ui... đau quá!"} value={dynamicData.bandageTitle || "Á ui... đau quá!"} onChange={(v) => setDynamicData(d => ({ ...d, bandageTitle: v }))} />
+                  <TextArea label={"&quot;Ui cha mẹ ơi... Đánh xong rồi, đằng ấy đã xả"} value={dynamicData.bandageDesc || "&quot;Ui cha mẹ ơi... Đánh xong rồi, đằng ấy đã xả hết giận chưa? Xót người ta chưa? 🥺 Nếu bớt giận rồi thì cho người ta giải thích nhé?&quot;"} onChange={(v) => setDynamicData(d => ({ ...d, bandageDesc: v }))} />
+                  <TextInput label={"Giải thích đi nghe thử 😒"} value={dynamicData.bandageBtn || "Giải thích đi nghe thử 😒"} onChange={(v) => setDynamicData(d => ({ ...d, bandageBtn: v }))} />
+                  <TextArea label={"Từ nay tớ hứa sẽ ngoan, không cãi lời, không làm đ"} value={dynamicData.successDesc || "Từ nay tớ hứa sẽ ngoan, không cãi lời, không làm đằng ấy phải dỗi nữa. Cho tớ một cơ hội chuộc lỗi bằng một cốc trà sữa to chà bá nhé? 🧋"} onChange={(v) => setDynamicData(d => ({ ...d, successDesc: v }))} />
+                  <TextInput label={"Hòa nhé!"} value={dynamicData.successTitle || "Hòa nhé!"} onChange={(v) => setDynamicData(d => ({ ...d, successTitle: v }))} />
+                </Section>
+                <Section title="Đoạn - Thư xin lỗi">
+                  <TextInput label={"apologyText"} value={dynamicData.apologyText || "apologyText"} onChange={(v) => setDynamicData(d => ({ ...d, apologyText: v }))} />
+                  <TextInput label={"Tha thứ"} value={dynamicData.apologyBtn || "Tha thứ"} onChange={(v) => setDynamicData(d => ({ ...d, apologyBtn: v }))} />
+                </Section>
+              </>
+
+            ) : isSorry3 ? (
+              <>
+                <Section title="Đoạn - Lỗi hệ thống (BSOD)">
+                  <TextInput label={"LỖI HỆ THỐNG"} value={dynamicData.bsodTitle || "LỖI HỆ THỐNG"} onChange={(v) => setDynamicData(d => ({ ...d, bsodTitle: v }))} />
+                  <TextInput label={"MỐI QUAN HỆ ĐANG BỊ GIÁN ĐOẠN."} value={dynamicData.bsodMessage || "MỐI QUAN HỆ ĐANG BỊ GIÁN ĐOẠN."} onChange={(v) => setDynamicData(d => ({ ...d, bsodMessage: v }))} />
+                  <TextInput label={"reason"} value={dynamicData.reason || "reason"} onChange={(v) => setDynamicData(d => ({ ...d, reason: v }))} />
+                  <TextInput label={"Mã lỗi: LOVE_NOT_FOUND_404"} value={dynamicData.bsodCode || "Mã lỗi: LOVE_NOT_FOUND_404"} onChange={(v) => setDynamicData(d => ({ ...d, bsodCode: v }))} />
+                  <TextInput label={"[ Tái khởi động ]"} value={dynamicData.bsodButton || "[ Tái khởi động ]"} onChange={(v) => setDynamicData(d => ({ ...d, bsodButton: v }))} />
+                </Section>
+                <Section title="Đoạn - Mất kết nối & Khủng long">
+                  <TextInput label={"Không có kết nối"} value={dynamicData.noConnTitle || "Không có kết nối"} onChange={(v) => setDynamicData(d => ({ ...d, noConnTitle: v }))} />
+                  <TextInput label={"Mất kết nối với trái tim của người yêu."} value={dynamicData.noConnMessage || "Mất kết nối với trái tim của người yêu."} onChange={(v) => setDynamicData(d => ({ ...d, noConnMessage: v }))} />
+                  <TextInput label={"Kiểm tra lại độ thành tâm"} value={dynamicData.noConnHint1 || "Kiểm tra lại độ thành tâm"} onChange={(v) => setDynamicData(d => ({ ...d, noConnHint1: v }))} />
+                  <TextInput label={"Chuẩn bị sẵn lời xin lỗi"} value={dynamicData.noConnHint2 || "Chuẩn bị sẵn lời xin lỗi"} onChange={(v) => setDynamicData(d => ({ ...d, noConnHint2: v }))} />
+                  <TextInput label={"Chạy qua nhà đền tội ngay lập tức"} value={dynamicData.noConnHint3 || "Chạy qua nhà đền tội ngay lập tức"} onChange={(v) => setDynamicData(d => ({ ...d, noConnHint3: v }))} />
+                  <TextInput label={"ERR_HEART_BROKEN"} value={dynamicData.noConnErr || "ERR_HEART_BROKEN"} onChange={(v) => setDynamicData(d => ({ ...d, noConnErr: v }))} />
+                  <TextInput label={"Bấm phím Space hoặc chạm vào màn hình để thử lại."} value={dynamicData.dinoHelpText || "Bấm phím Space hoặc chạm vào màn hình để thử lại."} onChange={(v) => setDynamicData(d => ({ ...d, dinoHelpText: v }))} />
+                  <TextInput label={"dinoFaceImg"} value={dynamicData.dinoFaceImg || "dinoFaceImg"} onChange={(v) => setDynamicData(d => ({ ...d, dinoFaceImg: v }))} />
+                  <TextInput label={"avatar"} value={dynamicData.avatar || "avatar"} onChange={(v) => setDynamicData(d => ({ ...d, avatar: v }))} />
+                  <TextInput label={"memories"} value={dynamicData.memories || "memories"} onChange={(v) => setDynamicData(d => ({ ...d, memories: v }))} />
+                  <TextInput label={"NHẢY (W)"} value={dynamicData.dinoJumpBtn || "NHẢY (W)"} onChange={(v) => setDynamicData(d => ({ ...d, dinoJumpBtn: v }))} />
+                  <TextInput label={"CÚI (S)"} value={dynamicData.dinoDuckBtn || "CÚI (S)"} onChange={(v) => setDynamicData(d => ({ ...d, dinoDuckBtn: v }))} />
+                </Section>
+                <Section title="Đoạn - Cảnh báo & Bằng chứng">
+                  <TextInput label={"Cảnh_Báo.exe"} value={dynamicData.alertTitle || "Cảnh_Báo.exe"} onChange={(v) => setDynamicData(d => ({ ...d, alertTitle: v }))} />
+                  <TextArea label={"CẢNH BÁO: Tên ngốc này đã nhận ra lỗi lầm!  Hắn th"} value={dynamicData.alertMessage || "CẢNH BÁO: Tên ngốc này đã nhận ra lỗi lầm!  Hắn thừa nhận mình vô tâm, trẻ con và hứa sẽ sửa đổi. Bạn có muốn xem bằng chứng không?"} onChange={(v) => setDynamicData(d => ({ ...d, alertMessage: v }))} />
+                  <TextInput label={"Xem bằng chứng"} value={dynamicData.alertBtnYes || "Xem bằng chứng"} onChange={(v) => setDynamicData(d => ({ ...d, alertBtnYes: v }))} />
+                  <TextInput label={"Hủy"} value={dynamicData.alertBtnNo || "Hủy"} onChange={(v) => setDynamicData(d => ({ ...d, alertBtnNo: v }))} />
+                  <TextArea label={"Tớ đã mất rất nhiều thời gian để thu thập những bá"} value={dynamicData.trashMessage || "Tớ đã mất rất nhiều thời gian để thu thập những báu vật này..."} onChange={(v) => setDynamicData(d => ({ ...d, trashMessage: v }))} />
+                  <TextInput label={"memory1"} value={dynamicData.memory1 || "memory1"} onChange={(v) => setDynamicData(d => ({ ...d, memory1: v }))} />
+                  <TextInput label={"memory2"} value={dynamicData.memory2 || "memory2"} onChange={(v) => setDynamicData(d => ({ ...d, memory2: v }))} />
+                  <TextInput label={"memory3"} value={dynamicData.memory3 || "memory3"} onChange={(v) => setDynamicData(d => ({ ...d, memory3: v }))} />
+                  <TextInput label={"Xem tiếp"} value={dynamicData.trashBtn || "Xem tiếp"} onChange={(v) => setDynamicData(d => ({ ...d, trashBtn: v }))} />
+                </Section>
+                <Section title="Đoạn - Cài đặt lại HĐH">
+                  <TextInput label={"Đang tải... Sự quan tâm"} value={dynamicData.installStep1 || "Đang tải... Sự quan tâm"} onChange={(v) => setDynamicData(d => ({ ...d, installStep1: v }))} />
+                  <TextInput label={"Đang cài đặt... Tính tự giác"} value={dynamicData.installStep2 || "Đang cài đặt... Tính tự giác"} onChange={(v) => setDynamicData(d => ({ ...d, installStep2: v }))} />
+                  <TextInput label={"Đang xóa bỏ... Thói quen vô tâm"} value={dynamicData.installStep3 || "Đang xóa bỏ... Thói quen vô tâm"} onChange={(v) => setDynamicData(d => ({ ...d, installStep3: v }))} />
+                  <TextInput label={"Hoàn tất! Hệ thống đã được nâng cấp."} value={dynamicData.installSuccess || "Hoàn tất! Hệ thống đã được nâng cấp."} onChange={(v) => setDynamicData(d => ({ ...d, installSuccess: v }))} />
+                </Section>
+                <Section title="Đoạn - Lời xin lỗi cuối">
+                  <TextInput label={"letter"} value={dynamicData.letter || "letter"} onChange={(v) => setDynamicData(d => ({ ...d, letter: v }))} />
+                  <TextInput label={"successTitle"} value={dynamicData.successTitle || "successTitle"} onChange={(v) => setDynamicData(d => ({ ...d, successTitle: v }))} />
+                  <TextInput label={"successMessage"} value={dynamicData.successMessage || "successMessage"} onChange={(v) => setDynamicData(d => ({ ...d, successMessage: v }))} />
+                  <TextInput label={"choiceTitle"} value={dynamicData.choiceTitle || "choiceTitle"} onChange={(v) => setDynamicData(d => ({ ...d, choiceTitle: v }))} />
+                  <TextInput label={"acceptText"} value={dynamicData.acceptText || "acceptText"} onChange={(v) => setDynamicData(d => ({ ...d, acceptText: v }))} />
+                  <TextInput label={"rejectText"} value={dynamicData.rejectText || "rejectText"} onChange={(v) => setDynamicData(d => ({ ...d, rejectText: v }))} />
+                </Section>
+              </>
+
+            
+            ) : isBirthday2 ? (
+              <>
+                <Section title="Đoạn - Step1Alarm">
+                  <TextInput label={"Thứ 2, ngày 14 tháng 2"} value={dynamicData.Th2ngy14thng2 || "Thứ 2, ngày 14 tháng 2"} onChange={(v) => setDynamicData(d => ({ ...d, Th2ngy14thng2: v }))} />
+                  <TextInput label={"alarm"} value={dynamicData.alarm || "alarm"} onChange={(v) => setDynamicData(d => ({ ...d, alarm: v }))} />
+                  <TextInput label={"Báo thức"} value={dynamicData.Bothc || "Báo thức"} onChange={(v) => setDynamicData(d => ({ ...d, Bothc: v }))} />
+                  <TextInput label={"Dậy thôi lợn con ơi! 🐷"} value={dynamicData.Dythilnconi || "Dậy thôi lợn con ơi! 🐷"} onChange={(v) => setDynamicData(d => ({ ...d, Dythilnconi: v }))} />
+                  <TextInput label={"Vuốt để tắt báo thức"} value={dynamicData.Vutttbothc || "Vuốt để tắt báo thức"} onChange={(v) => setDynamicData(d => ({ ...d, Vutttbothc: v }))} />
+                </Section>
+                <Section title="Đoạn - Step2FakeChat">
+                  <TextInput label={"Back"} value={dynamicData.Back || "Back"} onChange={(v) => setDynamicData(d => ({ ...d, Back: v }))} />
+                  <TextInput label={"Người ấy &gt;"} value={dynamicData.Ngiygt || "Người ấy &gt;"} onChange={(v) => setDynamicData(d => ({ ...d, Ngiygt: v }))} />
+                  <TextInput label={"Today 7:05 AM"} value={dynamicData.Today705AM || "Today 7:05 AM"} onChange={(v) => setDynamicData(d => ({ ...d, Today705AM: v }))} />
+                  <TextInput label={"Chạm màn hình để đọc tiếp"} value={dynamicData.Chmmnhnhctip || "Chạm màn hình để đọc tiếp"} onChange={(v) => setDynamicData(d => ({ ...d, Chmmnhnhctip: v }))} />
+                  <TextInput label={"Bấm gửi ngay!"} value={dynamicData.Bmgingay || "Bấm gửi ngay!"} onChange={(v) => setDynamicData(d => ({ ...d, Bmgingay: v }))} />
+                  <TextInput label={"Hôm nay sinh nhật tớ mà 🥺"} value={dynamicData.Hmnaysinhnhttm || "Hôm nay sinh nhật tớ mà 🥺"} onChange={(v) => setDynamicData(d => ({ ...d, Hmnaysinhnhttm: v }))} />
+                  <TextInput label={"iMessage"} value={dynamicData.iMessage || "iMessage"} onChange={(v) => setDynamicData(d => ({ ...d, iMessage: v }))} />
+                </Section>
+                <Section title="Đoạn - Step3Delivery">
+                  <TextInput label={"Widget"} value={dynamicData.Widget || "Widget"} onChange={(v) => setDynamicData(d => ({ ...d, Widget: v }))} />
+                  <TextInput label={"SHOPEE EXPRESS"} value={dynamicData.SHOPEEEXPRESS || "SHOPEE EXPRESS"} onChange={(v) => setDynamicData(d => ({ ...d, SHOPEEEXPRESS: v }))} />
+                  <TextInput label={"now"} value={dynamicData.now || "now"} onChange={(v) => setDynamicData(d => ({ ...d, now: v }))} />
+                  <TextArea label={"Bạn có một kiện hàng tối mật. Phí COD: 0đ. Yêu cầu"} value={dynamicData.Bncmtkinhngtimt || "Bạn có một kiện hàng tối mật. Phí COD: 0đ. Yêu cầu ký nhận!"} onChange={(v) => setDynamicData(d => ({ ...d, Bncmtkinhngtimt: v }))} />
+                  <TextInput label={"Ký Nhận Điện Tử"} value={dynamicData.KNhninT || "Ký Nhận Điện Tử"} onChange={(v) => setDynamicData(d => ({ ...d, KNhninT: v }))} />
+                  <TextInput label={"Vui lòng ký vào khung bên dưới"} value={dynamicData.Vuilngkvokhungb || "Vui lòng ký vào khung bên dưới"} onChange={(v) => setDynamicData(d => ({ ...d, Vuilngkvokhungb: v }))} />
+                  <TextInput label={"Ký tên tại đây"} value={dynamicData.Ktntiy || "Ký tên tại đây"} onChange={(v) => setDynamicData(d => ({ ...d, Ktntiy: v }))} />
+                  <TextInput label={"Mở Kiện Hàng ✨"} value={dynamicData.MKinHng || "Mở Kiện Hàng ✨"} onChange={(v) => setDynamicData(d => ({ ...d, MKinHng: v }))} />
+                </Section>
+                <Section title="Đoạn - Step4Unbox">
+                  <TextInput label={"Xem Tiếp ✨"} value={dynamicData.XemTip || "Xem Tiếp ✨"} onChange={(v) => setDynamicData(d => ({ ...d, XemTip: v }))} />
+                </Section>
+                <Section title="Đoạn - Step5Cake">
+                  <TextInput label={"Nói điều bạn muốn gửi gắm"} value={dynamicData.Niiubnmungigm || "Nói điều bạn muốn gửi gắm"} onChange={(v) => setDynamicData(d => ({ ...d, Niiubnmungigm: v }))} />
+                  <TextInput label={"Bằng cách"} value={dynamicData.Bngcch || "Bằng cách"} onChange={(v) => setDynamicData(d => ({ ...d, Bngcch: v }))} />
+                  <TextInput label={"nhấn giữ nút Mic"} value={dynamicData.nhngintMic || "nhấn giữ nút Mic"} onChange={(v) => setDynamicData(d => ({ ...d, nhngintMic: v }))} />
+                  <TextInput label={"bên dưới"} value={dynamicData.bndi || "bên dưới"} onChange={(v) => setDynamicData(d => ({ ...d, bndi: v }))} />
+                  <TextInput label={"Nhắm mắt lại, nghĩ về điều ước"} value={dynamicData.Nhmmtlinghviuc || "Nhắm mắt lại, nghĩ về điều ước"} onChange={(v) => setDynamicData(d => ({ ...d, Nhmmtlinghviuc: v }))} />
+                  <TextInput label={"và"} value={dynamicData.v || "và"} onChange={(v) => setDynamicData(d => ({ ...d, v: v }))} />
+                  <TextInput label={"giữ lỳ vào ngọn nến"} value={dynamicData.gilvongnnn || "giữ lỳ vào ngọn nến"} onChange={(v) => setDynamicData(d => ({ ...d, gilvongnnn: v }))} />
+                  <TextInput label={"để thổi nhé!"} value={dynamicData.thinh || "để thổi nhé!"} onChange={(v) => setDynamicData(d => ({ ...d, thinh: v }))} />
+                  <TextInput label={"Đang ghi âm điều ước..."} value={dynamicData.angghimiuc || "Đang ghi âm điều ước..."} onChange={(v) => setDynamicData(d => ({ ...d, angghimiuc: v }))} />
+                  <TextInput label={"Sẵn sàng ghi âm"} value={dynamicData.Snsngghim || "Sẵn sàng ghi âm"} onChange={(v) => setDynamicData(d => ({ ...d, Snsngghim: v }))} />
+                </Section>
+                <Section title="Đoạn - Step6Letter">
+                  <TextInput label={"Mở quà thật 🎁"} value={dynamicData.Mqutht || "Mở quà thật 🎁"} onChange={(v) => setDynamicData(d => ({ ...d, Mqutht: v }))} />
+                </Section>
+                <Section title="Đoạn - Step7Climax">
+                  <TextInput label={"Voucher Đặc Quyền"} value={dynamicData.VouchercQuyn || "Voucher Đặc Quyền"} onChange={(v) => setDynamicData(d => ({ ...d, VouchercQuyn: v }))} />
+                  <TextArea label={"&quot;Tặng cậu 1 vé ăn sập thành phố đêm nay do tớ"} value={dynamicData.Tngcu1vnspthnhp || "&quot;Tặng cậu 1 vé ăn sập thành phố đêm nay do tớ bao trọn gói!&quot;"} onChange={(v) => setDynamicData(d => ({ ...d, Tngcu1vnspthnhp: v }))} />
+                  <TextInput label={"Lên đồ thôi! 🛵"} value={dynamicData.Lnthi || "Lên đồ thôi! 🛵"} onChange={(v) => setDynamicData(d => ({ ...d, Lnthi: v }))} />
+                </Section>
+              </>
+
+            ) : isBirthday3 ? (
+              <>
+                <Section title="Đoạn - Hóa đơn thanh toán">
+                  <TextInput label={"Chọn Ngày Hẹn"} value={dynamicData.dtTitle || "Chọn Ngày Hẹn"} onChange={(v) => setDynamicData(d => ({ ...d, dtTitle: v }))} />
+                  <TextInput label={"Để tớ chuẩn bị nha"} value={dynamicData.dtSub || "Để tớ chuẩn bị nha"} onChange={(v) => setDynamicData(d => ({ ...d, dtSub: v }))} />
+                  <TextInput label={"Ngày nào hợp lý nhỉ?"} value={dynamicData.dtDateLabel || "Ngày nào hợp lý nhỉ?"} onChange={(v) => setDynamicData(d => ({ ...d, dtDateLabel: v }))} />
+                  <TextInput label={"Mấy giờ thì tiện cho cậu?"} value={dynamicData.dtTimeLabel || "Mấy giờ thì tiện cho cậu?"} onChange={(v) => setDynamicData(d => ({ ...d, dtTimeLabel: v }))} />
+                  <TextInput label={"CHỐT ĐƠN! 🎉"} value={dynamicData.dtBtn || "CHỐT ĐƠN! 🎉"} onChange={(v) => setDynamicData(d => ({ ...d, dtBtn: v }))} />
+                  <TextInput label={"giftText"} value={dynamicData.giftText || "giftText"} onChange={(v) => setDynamicData(d => ({ ...d, giftText: v }))} />
+                  <TextInput label={"A SPECIAL GIFT 💌"} value={dynamicData.doorSign || "A SPECIAL GIFT 💌"} onChange={(v) => setDynamicData(d => ({ ...d, doorSign: v }))} />
+                  <TextInput label={"Chạm 3 lần để mở thư!"} value={dynamicData.doorInstruction || "Chạm 3 lần để mở thư!"} onChange={(v) => setDynamicData(d => ({ ...d, doorInstruction: v }))} />
+                  <TextInput label={"Kéo xuống nhé!"} value={dynamicData.darkRoomText || "Kéo xuống nhé!"} onChange={(v) => setDynamicData(d => ({ ...d, darkRoomText: v }))} />
+                  <TextInput label={"compact"} value={dynamicData.compact || "compact"} onChange={(v) => setDynamicData(d => ({ ...d, compact: v }))} />
+                  <TextInput label={"autoPlay"} value={dynamicData.autoPlay || "autoPlay"} onChange={(v) => setDynamicData(d => ({ ...d, autoPlay: v }))} />
+                  <TextInput label={"Chạm vào 3 quả bóng bay để xem điều bất ngờ!"} value={dynamicData.balloonText || "Chạm vào 3 quả bóng bay để xem điều bất ngờ!"} onChange={(v) => setDynamicData(d => ({ ...d, balloonText: v }))} />
+                  <TextInput label={"Happy Birthday! 🌟"} value={dynamicData.cakeTitle || "Happy Birthday! 🌟"} onChange={(v) => setDynamicData(d => ({ ...d, cakeTitle: v }))} />
+                  <TextArea label={"Nhắm mắt lại, chắp tay và ước một điều thật to lớn"} value={dynamicData.cakeInstruction || "Nhắm mắt lại, chắp tay và ước một điều thật to lớn đi nào!"} onChange={(v) => setDynamicData(d => ({ ...d, cakeInstruction: v }))} />
+                  <TextInput label={"NHẤN GIỮ ĐỂ THỔI NẾN 🌬️"} value={dynamicData.blowBtn || "NHẤN GIỮ ĐỂ THỔI NẾN 🌬️"} onChange={(v) => setDynamicData(d => ({ ...d, blowBtn: v }))} />
+                  <TextInput label={"Lời Chúc Từ Trái Tim"} value={dynamicData.cardTitle || "Lời Chúc Từ Trái Tim"} onChange={(v) => setDynamicData(d => ({ ...d, cardTitle: v }))} />
+                  <TextInput label={"Lật thiệp"} value={dynamicData.cardBtn || "Lật thiệp"} onChange={(v) => setDynamicData(d => ({ ...d, cardBtn: v }))} />
+                  <TextInput label={"Một năm qua cậu đã rực rỡ thế này cơ mà..."} value={dynamicData.memoryWish1 || "Một năm qua cậu đã rực rỡ thế này cơ mà..."} onChange={(v) => setDynamicData(d => ({ ...d, memoryWish1: v }))} />
+                  <TextInput label={"Một năm qua cậu đã rực rỡ thế này cơ mà..."} value={dynamicData.memoryWish2 || "Một năm qua cậu đã rực rỡ thế này cơ mà..."} onChange={(v) => setDynamicData(d => ({ ...d, memoryWish2: v }))} />
+                  <TextInput label={"Một năm qua cậu đã rực rỡ thế này cơ mà..."} value={dynamicData.memoryWish3 || "Một năm qua cậu đã rực rỡ thế này cơ mà..."} onChange={(v) => setDynamicData(d => ({ ...d, memoryWish3: v }))} />
+                  <TextInput label={"Một năm qua cậu đã rực rỡ thế này cơ mà..."} value={dynamicData.memoryWish4 || "Một năm qua cậu đã rực rỡ thế này cơ mà..."} onChange={(v) => setDynamicData(d => ({ ...d, memoryWish4: v }))} />
+                  <TextInput label={"memory1"} value={dynamicData.memory1 || "memory1"} onChange={(v) => setDynamicData(d => ({ ...d, memory1: v }))} />
+                  <TextInput label={"memory2"} value={dynamicData.memory2 || "memory2"} onChange={(v) => setDynamicData(d => ({ ...d, memory2: v }))} />
+                  <TextInput label={"memory3"} value={dynamicData.memory3 || "memory3"} onChange={(v) => setDynamicData(d => ({ ...d, memory3: v }))} />
+                  <TextInput label={"Chạm liên tục để xé giấy gói nhé!"} value={dynamicData.giftInstruction || "Chạm liên tục để xé giấy gói nhé!"} onChange={(v) => setDynamicData(d => ({ ...d, giftInstruction: v }))} />
+                  <TextInput label={"giftName"} value={dynamicData.giftName || "giftName"} onChange={(v) => setDynamicData(d => ({ ...d, giftName: v }))} />
+                  <TextInput label={"giftImage"} value={dynamicData.giftImage || "giftImage"} onChange={(v) => setDynamicData(d => ({ ...d, giftImage: v }))} />
+                  <TextInput label={"NHẬN QUÀ NGAY 👗"} value={dynamicData.memoryBtn || "NHẬN QUÀ NGAY 👗"} onChange={(v) => setDynamicData(d => ({ ...d, memoryBtn: v }))} />
+                </Section>
+              </>
+
+            ) : isSorry1 ? (
+              <>
+                <Section title="Đoạn - Khởi đầu (Phá Băng)">
+                  <TextInput label={"đang giận tớ lắm đúng không...?"} value={dynamicData.iceTitle || "đang giận tớ lắm đúng không...?"} onChange={(v) => setDynamicData(d => ({ ...d, iceTitle: v }))} />
+                  <TextArea label={"Bấm vào màn hình để đập vỡ lớp băng này nhé, lạnh "} value={dynamicData.iceSubtitle || "Bấm vào màn hình để đập vỡ lớp băng này nhé, lạnh quá..."} onChange={(v) => setDynamicData(d => ({ ...d, iceSubtitle: v }))} />
+                  <TextInput label={"confessText"} value={dynamicData.confessText || "confessText"} onChange={(v) => setDynamicData(d => ({ ...d, confessText: v }))} />
+                  <TextInput label={"Đúng, cậu rất đáng đòn! 😡"} value={dynamicData.confessBtn || "Đúng, cậu rất đáng đòn! 😡"} onChange={(v) => setDynamicData(d => ({ ...d, confessBtn: v }))} />
+                </Section>
+                <Section title="Đoạn - Vòng quay (Đền tội)">
+                  <TextInput label={"Trà sữa 1 tuần"} value={dynamicData.wheelOpt1 || "Trà sữa 1 tuần"} onChange={(v) => setDynamicData(d => ({ ...d, wheelOpt1: v }))} />
+                  <TextInput label={"Đấm 3 cái"} value={dynamicData.wheelOpt2 || "Đấm 3 cái"} onChange={(v) => setDynamicData(d => ({ ...d, wheelOpt2: v }))} />
+                  <TextInput label={"Rửa bát 1 tháng"} value={dynamicData.wheelOpt3 || "Rửa bát 1 tháng"} onChange={(v) => setDynamicData(d => ({ ...d, wheelOpt3: v }))} />
+                  <TextInput label={"Làm osin 1 ngày"} value={dynamicData.wheelOpt4 || "Làm osin 1 ngày"} onChange={(v) => setDynamicData(d => ({ ...d, wheelOpt4: v }))} />
+                  <TextInput label={"Mua quà xịn"} value={dynamicData.wheelOpt5 || "Mua quà xịn"} onChange={(v) => setDynamicData(d => ({ ...d, wheelOpt5: v }))} />
+                  <TextInput label={"Bao đi ăn tối"} value={dynamicData.wheelOpt6 || "Bao đi ăn tối"} onChange={(v) => setDynamicData(d => ({ ...d, wheelOpt6: v }))} />
+                  <TextInput label={"Vòng Quay Đền Tội"} value={dynamicData.wheelTitle || "Vòng Quay Đền Tội"} onChange={(v) => setDynamicData(d => ({ ...d, wheelTitle: v }))} />
+                  <TextArea label={"Trước khi tha lỗi, cho cậu quyền phạt tớ đấy! Quay"} value={dynamicData.wheelSubtitle || "Trước khi tha lỗi, cho cậu quyền phạt tớ đấy! Quay đi, tớ chịu hết!"} onChange={(v) => setDynamicData(d => ({ ...d, wheelSubtitle: v }))} />
+                  <TextInput label={"QUAY NGAY"} value={dynamicData.wheelBtn || "QUAY NGAY"} onChange={(v) => setDynamicData(d => ({ ...d, wheelBtn: v }))} />
+                  <TextInput label={"Tạm bớt giận 👉"} value={dynamicData.wheelNextBtn || "Tạm bớt giận 👉"} onChange={(v) => setDynamicData(d => ({ ...d, wheelNextBtn: v }))} />
+                </Section>
+                <Section title="Đoạn - Chốt hạ">
+                  <TextInput label={"memory1"} value={dynamicData.memory1 || "memory1"} onChange={(v) => setDynamicData(d => ({ ...d, memory1: v }))} />
+                  <TextInput label={"memory2"} value={dynamicData.memory2 || "memory2"} onChange={(v) => setDynamicData(d => ({ ...d, memory2: v }))} />
+                  <TextInput label={"memory3"} value={dynamicData.memory3 || "memory3"} onChange={(v) => setDynamicData(d => ({ ...d, memory3: v }))} />
+                  <TextArea label={"&quot;Tớ không muốn vì một phút ngu ngốc mà đánh m"} value={dynamicData.nostalgiaText || "&quot;Tớ không muốn vì một phút ngu ngốc mà đánh mất những nụ cười này...&quot;"} onChange={(v) => setDynamicData(d => ({ ...d, nostalgiaText: v }))} />
+                  <TextInput label={"Xem tiếp"} value={dynamicData.nostalgiaBtn || "Xem tiếp"} onChange={(v) => setDynamicData(d => ({ ...d, nostalgiaBtn: v }))} />
+                  <TextInput label={"letterText"} value={dynamicData.letterText || "letterText"} onChange={(v) => setDynamicData(d => ({ ...d, letterText: v }))} />
+                  <TextInput label={"Chốt hạ"} value={dynamicData.letterBtn || "Chốt hạ"} onChange={(v) => setDynamicData(d => ({ ...d, letterBtn: v }))} />
+                  <TextInput label={"Hiệp Ước Hòa Bình"} value={dynamicData.treatyTitle || "Hiệp Ước Hòa Bình"} onChange={(v) => setDynamicData(d => ({ ...d, treatyTitle: v }))} />
+                  <TextInput label={"Quyết định nằm trong tay cậu. Xin hãy nương tay..."} value={dynamicData.treatySubtitle || "Quyết định nằm trong tay cậu. Xin hãy nương tay..."} onChange={(v) => setDynamicData(d => ({ ...d, treatySubtitle: v }))} />
+                  <TextInput label={"Ký tên, tha mạng"} value={dynamicData.treatyBtnYes || "Ký tên, tha mạng"} onChange={(v) => setDynamicData(d => ({ ...d, treatyBtnYes: v }))} />
+                  <TextInput label={"GIẬN TIẾP, KHÔNG THA 😤"} value={dynamicData.treatyBtnNo || "GIẬN TIẾP, KHÔNG THA 😤"} onChange={(v) => setDynamicData(d => ({ ...d, treatyBtnNo: v }))} />
+                  <TextInput label={"Cảm ơn cậu! ❤️"} value={dynamicData.successTitle || "Cảm ơn cậu! ❤️"} onChange={(v) => setDynamicData(d => ({ ...d, successTitle: v }))} />
+                  <TextInput label={"Tớ qua đón cậu đi ăn đền tội ngay đây!"} value={dynamicData.successDesc || "Tớ qua đón cậu đi ăn đền tội ngay đây!"} onChange={(v) => setDynamicData(d => ({ ...d, successDesc: v }))} />
+                </Section>
+              </>
+
+            ) : isSorry2 ? (
+              <>
+                <Section title="Đoạn - Quyết định">
+                  <TextArea label={"Người này đã làm bạn giận. Bạn có quyền được xả gi"} value={dynamicData.warnDesc || "Người này đã làm bạn giận. Bạn có quyền được xả giận ngay bây giờ!"} onChange={(v) => setDynamicData(d => ({ ...d, warnDesc: v }))} />
+                  <TextInput label={"Bắt đầu xả giận"} value={dynamicData.warnBtn || "Bắt đầu xả giận"} onChange={(v) => setDynamicData(d => ({ ...d, warnBtn: v }))} />
+                  <TextInput label={"Dép Lào"} value={dynamicData.weapon1 || "Dép Lào"} onChange={(v) => setDynamicData(d => ({ ...d, weapon1: v }))} />
+                  <TextInput label={"Chổi chà"} value={dynamicData.weapon2 || "Chổi chà"} onChange={(v) => setDynamicData(d => ({ ...d, weapon2: v }))} />
+                  <TextInput label={"Chọn Vũ Khí"} value={dynamicData.weaponTitle || "Chọn Vũ Khí"} onChange={(v) => setDynamicData(d => ({ ...d, weaponTitle: v }))} />
+                  <TextInput label={"gameTarget"} value={dynamicData.gameTarget || "gameTarget"} onChange={(v) => setDynamicData(d => ({ ...d, gameTarget: v }))} />
+                  <TextInput label={"Á ui... đau quá!"} value={dynamicData.bandageTitle || "Á ui... đau quá!"} onChange={(v) => setDynamicData(d => ({ ...d, bandageTitle: v }))} />
+                  <TextArea label={"&quot;Ui cha mẹ ơi... Đánh xong rồi, đằng ấy đã xả"} value={dynamicData.bandageDesc || "&quot;Ui cha mẹ ơi... Đánh xong rồi, đằng ấy đã xả hết giận chưa? Xót người ta chưa? 🥺 Nếu bớt giận rồi thì cho người ta giải thích nhé?&quot;"} onChange={(v) => setDynamicData(d => ({ ...d, bandageDesc: v }))} />
+                  <TextInput label={"Giải thích đi nghe thử 😒"} value={dynamicData.bandageBtn || "Giải thích đi nghe thử 😒"} onChange={(v) => setDynamicData(d => ({ ...d, bandageBtn: v }))} />
+                  <TextArea label={"Từ nay tớ hứa sẽ ngoan, không cãi lời, không làm đ"} value={dynamicData.successDesc || "Từ nay tớ hứa sẽ ngoan, không cãi lời, không làm đằng ấy phải dỗi nữa. Cho tớ một cơ hội chuộc lỗi bằng một cốc trà sữa to chà bá nhé? 🧋"} onChange={(v) => setDynamicData(d => ({ ...d, successDesc: v }))} />
+                  <TextInput label={"Hòa nhé!"} value={dynamicData.successTitle || "Hòa nhé!"} onChange={(v) => setDynamicData(d => ({ ...d, successTitle: v }))} />
+                </Section>
+                <Section title="Đoạn - Thư xin lỗi">
+                  <TextInput label={"apologyText"} value={dynamicData.apologyText || "apologyText"} onChange={(v) => setDynamicData(d => ({ ...d, apologyText: v }))} />
+                  <TextInput label={"Tha thứ"} value={dynamicData.apologyBtn || "Tha thứ"} onChange={(v) => setDynamicData(d => ({ ...d, apologyBtn: v }))} />
+                </Section>
+              </>
+
+            ) : isSorry3 ? (
+              <>
+                <Section title="Đoạn - Lỗi hệ thống (BSOD)">
+                  <TextInput label={"LỖI HỆ THỐNG"} value={dynamicData.bsodTitle || "LỖI HỆ THỐNG"} onChange={(v) => setDynamicData(d => ({ ...d, bsodTitle: v }))} />
+                  <TextInput label={"MỐI QUAN HỆ ĐANG BỊ GIÁN ĐOẠN."} value={dynamicData.bsodMessage || "MỐI QUAN HỆ ĐANG BỊ GIÁN ĐOẠN."} onChange={(v) => setDynamicData(d => ({ ...d, bsodMessage: v }))} />
+                  <TextInput label={"reason"} value={dynamicData.reason || "reason"} onChange={(v) => setDynamicData(d => ({ ...d, reason: v }))} />
+                  <TextInput label={"Mã lỗi: LOVE_NOT_FOUND_404"} value={dynamicData.bsodCode || "Mã lỗi: LOVE_NOT_FOUND_404"} onChange={(v) => setDynamicData(d => ({ ...d, bsodCode: v }))} />
+                  <TextInput label={"[ Tái khởi động ]"} value={dynamicData.bsodButton || "[ Tái khởi động ]"} onChange={(v) => setDynamicData(d => ({ ...d, bsodButton: v }))} />
+                </Section>
+                <Section title="Đoạn - Mất kết nối & Khủng long">
+                  <TextInput label={"Không có kết nối"} value={dynamicData.noConnTitle || "Không có kết nối"} onChange={(v) => setDynamicData(d => ({ ...d, noConnTitle: v }))} />
+                  <TextInput label={"Mất kết nối với trái tim của người yêu."} value={dynamicData.noConnMessage || "Mất kết nối với trái tim của người yêu."} onChange={(v) => setDynamicData(d => ({ ...d, noConnMessage: v }))} />
+                  <TextInput label={"Kiểm tra lại độ thành tâm"} value={dynamicData.noConnHint1 || "Kiểm tra lại độ thành tâm"} onChange={(v) => setDynamicData(d => ({ ...d, noConnHint1: v }))} />
+                  <TextInput label={"Chuẩn bị sẵn lời xin lỗi"} value={dynamicData.noConnHint2 || "Chuẩn bị sẵn lời xin lỗi"} onChange={(v) => setDynamicData(d => ({ ...d, noConnHint2: v }))} />
+                  <TextInput label={"Chạy qua nhà đền tội ngay lập tức"} value={dynamicData.noConnHint3 || "Chạy qua nhà đền tội ngay lập tức"} onChange={(v) => setDynamicData(d => ({ ...d, noConnHint3: v }))} />
+                  <TextInput label={"ERR_HEART_BROKEN"} value={dynamicData.noConnErr || "ERR_HEART_BROKEN"} onChange={(v) => setDynamicData(d => ({ ...d, noConnErr: v }))} />
+                  <TextInput label={"Bấm phím Space hoặc chạm vào màn hình để thử lại."} value={dynamicData.dinoHelpText || "Bấm phím Space hoặc chạm vào màn hình để thử lại."} onChange={(v) => setDynamicData(d => ({ ...d, dinoHelpText: v }))} />
+                  <TextInput label={"dinoFaceImg"} value={dynamicData.dinoFaceImg || "dinoFaceImg"} onChange={(v) => setDynamicData(d => ({ ...d, dinoFaceImg: v }))} />
+                  <TextInput label={"avatar"} value={dynamicData.avatar || "avatar"} onChange={(v) => setDynamicData(d => ({ ...d, avatar: v }))} />
+                  <TextInput label={"memories"} value={dynamicData.memories || "memories"} onChange={(v) => setDynamicData(d => ({ ...d, memories: v }))} />
+                  <TextInput label={"NHẢY (W)"} value={dynamicData.dinoJumpBtn || "NHẢY (W)"} onChange={(v) => setDynamicData(d => ({ ...d, dinoJumpBtn: v }))} />
+                  <TextInput label={"CÚI (S)"} value={dynamicData.dinoDuckBtn || "CÚI (S)"} onChange={(v) => setDynamicData(d => ({ ...d, dinoDuckBtn: v }))} />
+                </Section>
+                <Section title="Đoạn - Cảnh báo & Bằng chứng">
+                  <TextInput label={"Cảnh_Báo.exe"} value={dynamicData.alertTitle || "Cảnh_Báo.exe"} onChange={(v) => setDynamicData(d => ({ ...d, alertTitle: v }))} />
+                  <TextArea label={"CẢNH BÁO: Tên ngốc này đã nhận ra lỗi lầm!  Hắn th"} value={dynamicData.alertMessage || "CẢNH BÁO: Tên ngốc này đã nhận ra lỗi lầm!  Hắn thừa nhận mình vô tâm, trẻ con và hứa sẽ sửa đổi. Bạn có muốn xem bằng chứng không?"} onChange={(v) => setDynamicData(d => ({ ...d, alertMessage: v }))} />
+                  <TextInput label={"Xem bằng chứng"} value={dynamicData.alertBtnYes || "Xem bằng chứng"} onChange={(v) => setDynamicData(d => ({ ...d, alertBtnYes: v }))} />
+                  <TextInput label={"Hủy"} value={dynamicData.alertBtnNo || "Hủy"} onChange={(v) => setDynamicData(d => ({ ...d, alertBtnNo: v }))} />
+                  <TextArea label={"Tớ đã mất rất nhiều thời gian để thu thập những bá"} value={dynamicData.trashMessage || "Tớ đã mất rất nhiều thời gian để thu thập những báu vật này..."} onChange={(v) => setDynamicData(d => ({ ...d, trashMessage: v }))} />
+                  <TextInput label={"memory1"} value={dynamicData.memory1 || "memory1"} onChange={(v) => setDynamicData(d => ({ ...d, memory1: v }))} />
+                  <TextInput label={"memory2"} value={dynamicData.memory2 || "memory2"} onChange={(v) => setDynamicData(d => ({ ...d, memory2: v }))} />
+                  <TextInput label={"memory3"} value={dynamicData.memory3 || "memory3"} onChange={(v) => setDynamicData(d => ({ ...d, memory3: v }))} />
+                  <TextInput label={"Xem tiếp"} value={dynamicData.trashBtn || "Xem tiếp"} onChange={(v) => setDynamicData(d => ({ ...d, trashBtn: v }))} />
+                </Section>
+                <Section title="Đoạn - Cài đặt lại HĐH">
+                  <TextInput label={"Đang tải... Sự quan tâm"} value={dynamicData.installStep1 || "Đang tải... Sự quan tâm"} onChange={(v) => setDynamicData(d => ({ ...d, installStep1: v }))} />
+                  <TextInput label={"Đang cài đặt... Tính tự giác"} value={dynamicData.installStep2 || "Đang cài đặt... Tính tự giác"} onChange={(v) => setDynamicData(d => ({ ...d, installStep2: v }))} />
+                  <TextInput label={"Đang xóa bỏ... Thói quen vô tâm"} value={dynamicData.installStep3 || "Đang xóa bỏ... Thói quen vô tâm"} onChange={(v) => setDynamicData(d => ({ ...d, installStep3: v }))} />
+                  <TextInput label={"Hoàn tất! Hệ thống đã được nâng cấp."} value={dynamicData.installSuccess || "Hoàn tất! Hệ thống đã được nâng cấp."} onChange={(v) => setDynamicData(d => ({ ...d, installSuccess: v }))} />
+                </Section>
+                <Section title="Đoạn - Lời xin lỗi cuối">
+                  <TextInput label={"letter"} value={dynamicData.letter || "letter"} onChange={(v) => setDynamicData(d => ({ ...d, letter: v }))} />
+                  <TextInput label={"successTitle"} value={dynamicData.successTitle || "successTitle"} onChange={(v) => setDynamicData(d => ({ ...d, successTitle: v }))} />
+                  <TextInput label={"successMessage"} value={dynamicData.successMessage || "successMessage"} onChange={(v) => setDynamicData(d => ({ ...d, successMessage: v }))} />
+                  <TextInput label={"choiceTitle"} value={dynamicData.choiceTitle || "choiceTitle"} onChange={(v) => setDynamicData(d => ({ ...d, choiceTitle: v }))} />
+                  <TextInput label={"acceptText"} value={dynamicData.acceptText || "acceptText"} onChange={(v) => setDynamicData(d => ({ ...d, acceptText: v }))} />
+                  <TextInput label={"rejectText"} value={dynamicData.rejectText || "rejectText"} onChange={(v) => setDynamicData(d => ({ ...d, rejectText: v }))} />
+                </Section>
+              </>
+
+            ) : isValentine3 ? (
+              <>
+                <Section title="Đoạn - Step1Fingerprint">
+                  <TextInput label={"Nhật Ký Tình Yêu"} value={dynamicData.NhtKTnhYu || "Nhật Ký Tình Yêu"} onChange={(v) => setDynamicData(d => ({ ...d, NhtKTnhYu: v }))} />
+                  <TextInput label={"Chạm và giữ để xác thực nhịp tim 💓"} value={dynamicData.Chmvgixcthcnhpt || "Chạm và giữ để xác thực nhịp tim 💓"} onChange={(v) => setDynamicData(d => ({ ...d, Chmvgixcthcnhpt: v }))} />
+                </Section>
+                <Section title="Đoạn - Step2TimeMachine">
+                  <TextInput label={"Đã bao lâu kể từ ngày"} value={dynamicData.baoluktngy || "Đã bao lâu kể từ ngày"} onChange={(v) => setDynamicData(d => ({ ...d, baoluktngy: v }))} />
+                  <TextInput label={"trái tim lỡ nhịp?"} value={dynamicData.tritimlnhp || "trái tim lỡ nhịp?"} onChange={(v) => setDynamicData(d => ({ ...d, tritimlnhp: v }))} />
+                  <TextInput label={"Ngày"} value={dynamicData.Ngy || "Ngày"} onChange={(v) => setDynamicData(d => ({ ...d, Ngy: v }))} />
+                  <TextInput label={"Giờ"} value={dynamicData.Gi || "Giờ"} onChange={(v) => setDynamicData(d => ({ ...d, Gi: v }))} />
+                  <TextInput label={"Phút"} value={dynamicData.Pht || "Phút"} onChange={(v) => setDynamicData(d => ({ ...d, Pht: v }))} />
+                  <TextInput label={"Giây"} value={dynamicData.Giy || "Giây"} onChange={(v) => setDynamicData(d => ({ ...d, Giy: v }))} />
+                  <TextInput label={"Hành trình bắt đầu"} value={dynamicData.Hnhtrnhbtu || "Hành trình bắt đầu"} onChange={(v) => setDynamicData(d => ({ ...d, Hnhtrnhbtu: v }))} />
+                </Section>
+                <Section title="Đoạn - Step3Quiz">
+                  <TextInput label={"Trạm Trí Nhớ"} value={dynamicData.TrmTrNh || "Trạm Trí Nhớ"} onChange={(v) => setDynamicData(d => ({ ...d, TrmTrNh: v }))} />
+                </Section>
+                <Section title="Đoạn - Step4Puzzle">
+                  <TextInput label={"Mảnh Ghép Ký Ức"} value={dynamicData.MnhGhpKc || "Mảnh Ghép Ký Ức"} onChange={(v) => setDynamicData(d => ({ ...d, MnhGhpKc: v }))} />
+                  <TextInput label={"Click 2 mảnh để hoán đổi vị trí nhé!"} value={dynamicData.Click2mnhhonivt || "Click 2 mảnh để hoán đổi vị trí nhé!"} onChange={(v) => setDynamicData(d => ({ ...d, Click2mnhhonivt: v }))} />
+                </Section>
+                <Section title="Đoạn - Step5FakeChat">
+                  <TextInput label={"Người ấy ❤️"} value={dynamicData.Ngiy || "Người ấy ❤️"} onChange={(v) => setDynamicData(d => ({ ...d, Ngiy: v }))} />
+                  <TextInput label={"Chạm vào màn hình để tiếp tục..."} value={dynamicData.Chmvomnhnhtiptc || "Chạm vào màn hình để tiếp tục..."} onChange={(v) => setDynamicData(d => ({ ...d, Chmvomnhnhtiptc: v }))} />
+                  <TextInput label={"Ngắm nhìn lại nhé 📸"} value={dynamicData.Ngmnhnlinh || "Ngắm nhìn lại nhé 📸"} onChange={(v) => setDynamicData(d => ({ ...d, Ngmnhnlinh: v }))} />
+                </Section>
+                <Section title="Đoạn - Step6PolaroidSwipe">
+                  <TextInput label={"Triển Lãm Ký Ức"} value={dynamicData.TrinLmKc || "Triển Lãm Ký Ức"} onChange={(v) => setDynamicData(d => ({ ...d, TrinLmKc: v }))} />
+                  <TextInput label={"Vuốt trái/phải để xem ảnh tiếp theo"} value={dynamicData.Vuttriphixemnht || "Vuốt trái/phải để xem ảnh tiếp theo"} onChange={(v) => setDynamicData(d => ({ ...d, Vuttriphixemnht: v }))} />
+                  <TextInput label={"Hành trình này thật đẹp,"} value={dynamicData.Hnhtrnhnythtp || "Hành trình này thật đẹp,"} onChange={(v) => setDynamicData(d => ({ ...d, Hnhtrnhnythtp: v }))} />
+                  <TextInput label={"nhưng tớ muốn nó"} value={dynamicData.nhngtmunn || "nhưng tớ muốn nó"} onChange={(v) => setDynamicData(d => ({ ...d, nhngtmunn: v }))} />
+                  <TextInput label={"dài hơn nữa..."} value={dynamicData.dihnna || "dài hơn nữa..."} onChange={(v) => setDynamicData(d => ({ ...d, dihnna: v }))} />
+                  <TextInput label={"Mở bức thư cuối"} value={dynamicData.Mbcthcui || "Mở bức thư cuối"} onChange={(v) => setDynamicData(d => ({ ...d, Mbcthcui: v }))} />
+                </Section>
+                <Section title="Đoạn - Step7Letter">
+                  <TextInput label={"Chạm để mở thư 💌"} value={dynamicData.Chmmth || "Chạm để mở thư 💌"} onChange={(v) => setDynamicData(d => ({ ...d, Chmmth: v }))} />
+                  <TextInput label={"Tiếp tục"} value={dynamicData.Tiptc || "Tiếp tục"} onChange={(v) => setDynamicData(d => ({ ...d, Tiptc: v }))} />
+                </Section>
+                <Section title="Đoạn - Step8Climax">
+                  <TextInput label={"Thế tóm lại là..."} value={dynamicData.Thtmlil || "Thế tóm lại là..."} onChange={(v) => setDynamicData(d => ({ ...d, Thtmlil: v }))} />
+                  <TextArea label={"Cuối tuần này cậu có rảnh không, đi chơi với tớ nh"} value={dynamicData.Cuitunnycucrnhk || "Cuối tuần này cậu có rảnh không, đi chơi với tớ nhé? 🥺"} onChange={(v) => setDynamicData(d => ({ ...d, Cuitunnycucrnhk: v }))} />
+                  <TextInput label={"ĐỒNG Ý LUÔN 💖"} value={dynamicData.NGLUN || "ĐỒNG Ý LUÔN 💖"} onChange={(v) => setDynamicData(d => ({ ...d, NGLUN: v }))} />
+                  <TextInput label={"TỪ CHỐI 💔"} value={dynamicData.TCHI || "TỪ CHỐI 💔"} onChange={(v) => setDynamicData(d => ({ ...d, TCHI: v }))} />
+                  <TextInput label={"Chốt Đơn!"} value={dynamicData.Chtn || "Chốt Đơn!"} onChange={(v) => setDynamicData(d => ({ ...d, Chtn: v }))} />
+                  <TextInput label={"Lên đồ lẹ lênnnn!"} value={dynamicData.Lnllnnnn || "Lên đồ lẹ lênnnn!"} onChange={(v) => setDynamicData(d => ({ ...d, Lnllnnnn: v }))} />
+                  <TextInput label={"Tớ qua đón đi chơi ngay và luôn! 🛵💨"} value={dynamicData.Tquanichingayvl || "Tớ qua đón đi chơi ngay và luôn! 🛵💨"} onChange={(v) => setDynamicData(d => ({ ...d, Tquanichingayvl: v }))} />
                 </Section>
               </>
             ) : !(Array.isArray(selectedTemplate?.data_schema) && selectedTemplate.data_schema.length > 0) ? (

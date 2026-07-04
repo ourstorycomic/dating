@@ -1,3 +1,4 @@
+import { MediaDisplay } from "@/components/ui/MediaDisplay";
 /* eslint-disable @next/next/no-img-element */
 export const IconStar = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
@@ -30,6 +31,6 @@ export function MediaFrame({
     );
   }
 
-  return <img src={src} className={`h-full w-full object-cover ${className}`} alt={alt} />;
+  return <MediaDisplay src={src} className={`h-full w-full object-cover ${className}`} alt={alt} />;
 }
 

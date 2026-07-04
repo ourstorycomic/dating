@@ -1,4 +1,6 @@
 "use client";
+import { MediaDisplay } from "@/components/ui/MediaDisplay";
+
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -140,7 +142,7 @@ export function Step3Delivery({ onNext, autoPlay = false, compact = false, photo
            {photos.length > 0 ? (
              <>
                {/* eslint-disable-next-line @next/next/no-img-element */}
-               <img src={photos[0].url} className="w-full h-full object-cover" alt="Widget" />
+               <MediaDisplay src={photos[0].url} className="w-full h-full object-cover" alt="Widget" />
              </>
            ) : (
              <div className="w-full h-full bg-slate-200" />

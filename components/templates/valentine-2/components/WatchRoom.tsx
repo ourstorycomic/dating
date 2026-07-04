@@ -1,4 +1,6 @@
 "use client";
+import { MediaDisplay } from "@/components/ui/MediaDisplay";
+
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { VideoPlayer, type PlayerPendingRequest } from "@/components/ui/video-player";
@@ -506,7 +508,7 @@ export function WatchRoom({
                   className="flex-shrink-0 w-28 sm:w-36 lg:w-44 cursor-pointer group snap-start"
                 >
                   <div className="w-full aspect-[2/3] rounded-xl overflow-hidden shadow-lg mb-3 relative border border-white/10 ring-1 ring-black/50">
-                    <img src={m.thumb_url} alt={m.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                    <MediaDisplay src={m.thumb_url} alt={m.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
                       <Play size={40} className="text-rose-500 drop-shadow-[0_0_15px_rgba(225,29,72,0.8)] ml-1" />
                     </div>

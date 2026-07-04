@@ -1,4 +1,6 @@
 "use client";
+import { MediaDisplay } from "@/components/ui/MediaDisplay";
+
 
 import React, { useState, useRef, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -211,7 +213,7 @@ export function Valentine2WatchParty({
             ) : (
               <div className="flex flex-col items-center justify-center h-full gap-6 p-6">
                 <div className="relative w-40 h-60 rounded-2xl overflow-hidden shadow-2xl ring-4 ring-rose-500/40">
-                  <img src={selectedMovie.thumb_url} alt={selectedMovie.name} className="w-full h-full object-cover" />
+                  <MediaDisplay src={selectedMovie.thumb_url} alt={selectedMovie.name} className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent" />
                 </div>
                 <div className="text-center">

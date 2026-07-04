@@ -1,4 +1,6 @@
 "use client";
+import { MediaDisplay } from "@/components/ui/MediaDisplay";
+
 
 import { useEffect, useRef } from "react";
 import { motion, Variants } from "framer-motion";
@@ -81,7 +83,7 @@ export function Step4Unbox({ photos, onNext, autoPlay = false, compact = false }
             style={{ width: '80%', maxWidth: '280px', top: i * 20 }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={photo.url} alt={`Memory ${i}`} className="w-full aspect-square object-cover bg-gray-100" />
+            <MediaDisplay src={photo.url} alt={`Memory ${i}`} className="w-full aspect-square object-cover bg-gray-100" />
             <p className="font-serif text-center mt-4 text-gray-700 text-sm leading-relaxed" style={{ transform: "rotate(-1deg)" }}>
               {photo.note}
             </p>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
+import { isPast } from "date-fns";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { InteractiveTemplatePreview } from "@/components/templates/InteractiveTemplatePreview";
 import { GlassCard } from "@/components/ui/GlassCard";
@@ -25,6 +26,7 @@ type Order = {
   status: string;
   templates: { component_key: string; name: string; visual_label?: string | null } | null;
   creator?: { name: string | null; email: string | null } | { name: string | null; email: string | null }[] | null;
+  expires_at?: string | null;
 };
 
 type LogRow = {
@@ -301,6 +303,7 @@ function OrderDetailModal({ log, onClose }: { log: LogRow; onClose: () => void }
   const payment = getPayment(order);
   const customData = order?.custom_data ?? {};
   const componentKey = order?.templates?.component_key ?? textFrom(customData, "componentKey", "valentine-1");
+  const isExpired = order?.expires_at ? isPast(new Date(order.expires_at)) : false;
   const senderName = textFrom(customData, "senderName", "Anh");
   const recipientName = textFrom(customData, "recipientName", order?.recipient_name ?? "Em");
 
@@ -332,6 +335,13 @@ function OrderDetailModal({ log, onClose }: { log: LogRow; onClose: () => void }
               <Info label="Trạng thái đơn" value={order?.status ?? "N/A"} />
             </div>
 
+            {isExpired ? (
+              <div className="group rounded-2xl border border-pink-200 bg-white/60 p-8 text-center shadow-sm">
+                <span className="text-3xl mb-3 block">🗑️</span>
+                <p className="text-base font-semibold text-pink-700">Dữ liệu đơn đã bị xóa do hết hạn.</p>
+                <p className="text-sm text-pink-600/70 mt-1">Chỉ còn thông tin cơ bản được lưu trữ.</p>
+              </div>
+            ) : (
             <details className="group rounded-2xl border border-pink-200 bg-white/60 p-4">
               <summary className="flex cursor-pointer list-none items-center justify-between text-lg font-semibold text-pink-900 outline-none">
                 Nội dung Form (Custom Data)
@@ -385,9 +395,18 @@ function OrderDetailModal({ log, onClose }: { log: LogRow; onClose: () => void }
                 {Object.keys(customData).length === 0 && <p className="text-sm font-medium text-pink-500">Không có dữ liệu form.</p>}
               </div>
             </details>
+            )}
           </div>
 
           <div className="h-full flex flex-col rounded-2xl border border-pink-200 bg-white/60 p-4 overflow-y-auto relative">
+            {isExpired ? (
+              <div className="flex h-full flex-col items-center justify-center text-center p-8 bg-white/80 rounded-xl border border-pink-100">
+                <span className="text-4xl mb-4">⌛</span>
+                <p className="text-lg font-bold text-pink-800">Đơn đã hết hạn</p>
+                <p className="text-sm text-pink-600/80 mt-2">Bản xem trước không khả dụng.</p>
+              </div>
+            ) : (
+            <>
             <div className="mb-4 shrink-0 flex items-center justify-between gap-3 bg-white p-3 rounded-xl z-30 shadow-sm border border-pink-100 relative">
               <h3 className="text-xl font-semibold text-pink-900 ml-2">Live preview</h3>
               <span className="rounded-full border border-pink-200 bg-pink-100/50 px-3 py-1 text-xs font-medium text-pink-700">
@@ -413,6 +432,8 @@ function OrderDetailModal({ log, onClose }: { log: LogRow; onClose: () => void }
                 </div>
               </div>
             </div>
+            </>
+            )}
           </div>
         </div>
       </div>

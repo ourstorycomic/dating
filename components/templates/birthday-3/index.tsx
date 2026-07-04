@@ -1,4 +1,6 @@
 "use client";
+import { MediaDisplay } from "@/components/ui/MediaDisplay";
+
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
@@ -927,7 +929,7 @@ function Step6Memory({ onNext, autoPlay, config }: { onNext: () => void; autoPla
             className="absolute inset-0 bg-white p-4 pb-16 rounded-sm shadow-2xl"
           >
             <div className="w-full h-full bg-stone-200 overflow-hidden relative">
-              <img 
+              <MediaDisplay 
                 src={[config?.memory1, config?.memory2, config?.memory3].filter(Boolean)[photoIndex] || BIRTHDAY_DATA.photos[photoIndex]} 
                 alt="Memory" 
                 className="w-full h-full object-cover"
@@ -1103,7 +1105,7 @@ function Step8Afterparty({ autoPlay, config, onNext }: { autoPlay: boolean; conf
         
         <div className="bg-rose-50 p-4 rounded-xl border border-rose-100 mb-8 overflow-hidden relative flex flex-col justify-center items-center min-h-[100px]">
           {config?.giftImage && (
-            <img src={config.giftImage} alt="Gift" className="w-full h-32 object-cover rounded-md mb-2" />
+            <MediaDisplay src={config.giftImage} alt="Gift" className="w-full h-32 object-cover rounded-md mb-2" />
           )}
           <p className={`font-bold text-rose-700 ${config?.giftImage ? 'absolute bottom-2 left-0 right-0 bg-white/90 p-2 m-2 rounded-lg backdrop-blur-md' : 'text-xl text-center px-2'}`}>
             {config?.giftName || BIRTHDAY_DATA.giftText}

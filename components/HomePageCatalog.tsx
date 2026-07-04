@@ -125,6 +125,7 @@ function TemplatePreviewArea({ template }: { template: HomeTemplate }) {
               style={{ opacity: hovered ? 1 : 0, pointerEvents: hovered ? "auto" : "none" }}
             >
               <InteractiveTemplatePreview
+                noFrame
                 compact
                 componentKey={template.component_key}
                 gradient={template.gradient}
@@ -138,7 +139,8 @@ function TemplatePreviewArea({ template }: { template: HomeTemplate }) {
       ) : (
         /* ── No thumbnail: render live preview immediately (fallback) ── */
         <InteractiveTemplatePreview
-          compact
+                noFrame
+                compact
           componentKey={template.component_key}
           gradient={template.gradient}
           visualLabel={template.visual_label}

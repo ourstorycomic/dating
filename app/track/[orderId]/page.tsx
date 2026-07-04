@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+import { formatDistanceToNow, isPast } from "date-fns";
+import { vi } from "date-fns/locale";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { getOrderByPublicId } from "@/lib/supabase/server";
 import { TrackResponsePanel } from "./TrackResponsePanel";
@@ -19,6 +21,19 @@ function parseResponse(raw: string | null): SavedResponse | null {
   } catch {
     return { message: raw };
   }
+}
+
+
+function getExpiresStatus(expiresAt: string | null) {
+  if (!expiresAt) return { label: "Ngày hết hạn", value: "Không hết hạn" };
+  const d = new Date(expiresAt);
+  if (isPast(d)) {
+    return { label: "Ngày hết hạn", value: "Đã hết hạn vào " + formatTime(expiresAt) };
+  }
+  return { 
+    label: "Ngày hết hạn", 
+    value: formatTime(expiresAt) + " (còn " + formatDistanceToNow(d, { locale: vi }) + ")" 
+  };
 }
 
 function formatTime(value: string | null) {
@@ -59,11 +74,12 @@ export default async function TrackPage({
           </p>
         </header>
 
-        <section className="grid gap-4 md:grid-cols-3">
+        <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {[
             ["Trạng thái đơn", order.status],
             ["Thời điểm mở", formatTime(order.gift_opened_at)],
             ["Câu trả lời", answerLabel(order.recipient_response)],
+            [getExpiresStatus((order as any).expires_at).label, getExpiresStatus((order as any).expires_at).value],
           ].map(([label, value]) => (
             <GlassCard key={label} hover={false} className="p-5">
               <p className="text-sm text-white/58">{label}</p>

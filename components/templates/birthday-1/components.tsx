@@ -1,4 +1,6 @@
 "use client";
+import { MediaDisplay } from "@/components/ui/MediaDisplay";
+
 
 import "@/app/templates.css";
 
@@ -2483,7 +2485,7 @@ export function HangingGallery({
         return (
           <HangingItem key={index} x={xPos} startX={startX} ropeLength={ropeLength} index={index}>
             <div className="polaroid-card">
-              <img src={memory.imageUrl} className="polaroid-img" alt="Memory" />
+              <MediaDisplay src={memory.imageUrl} className="polaroid-img" alt="Memory" />
               <div className="polaroid-caption">{memory.message}</div>
             </div>
           </HangingItem>

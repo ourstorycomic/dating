@@ -104,6 +104,7 @@ export async function POST(request: Request) {
       recipient_name: body.recipientName ?? customData.recipientName ?? null,
       status: isFreeOrder ? "ACTIVE" : "PENDING_PAYMENT",
       template_id: templateId,
+        expires_at: customData.expiresAtDate ? new Date(customData.expiresAtDate).toISOString() : null,
     })
     .select("id, public_id")
     .single();
@@ -196,6 +197,7 @@ export async function PATCH(request: Request) {
       custom_data: customData,
       recipient_name: recipientName,
       buyer_name: buyerName !== null ? buyerName : undefined,
+        expires_at: customData.expiresAtDate ? new Date(customData.expiresAtDate).toISOString() : undefined,
     })
     .eq("id", order.id);
 

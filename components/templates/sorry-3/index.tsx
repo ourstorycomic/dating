@@ -1,4 +1,6 @@
 "use client";
+import { MediaDisplay } from "@/components/ui/MediaDisplay";
+
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -694,9 +696,9 @@ function Step3DinoRun({ onNext, autoPlay, config }: { onNext: () => void; autoPl
 
       {gameState === "lost" && (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[20px] flex flex-col items-center gap-4 z-30 pointer-events-none">
-          <img src={GameOverImg.src} alt="Game Over" className="h-8 object-contain drop-shadow-md" />
+          <MediaDisplay src={GameOverImg.src} alt="Game Over" className="h-8 object-contain drop-shadow-md" />
           <div className="animate-pulse mt-2">
-            <img src={ResetImg.src} alt="Reset" className="h-16 object-contain drop-shadow-md" />
+            <MediaDisplay src={ResetImg.src} alt="Reset" className="h-16 object-contain drop-shadow-md" />
           </div>
         </div>
       )}
@@ -813,7 +815,7 @@ function Step5RecycleBin({ onNext, autoPlay, config }: { onNext: () => void; aut
           transition={{ type: "spring", damping: 12, delay: i * 0.2 }}
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-40 bg-white p-2 shadow-2xl z-30 border border-gray-200"
         >
-          <img src={img} className="w-full h-[120px] object-cover bg-gray-200" />
+          <MediaDisplay src={img} className="w-full h-[120px] object-cover bg-gray-200" />
         </motion.div>
       ))}
 

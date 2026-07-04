@@ -1,4 +1,6 @@
 "use client";
+import { MediaDisplay } from "@/components/ui/MediaDisplay";
+
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -337,7 +339,7 @@ function Step4Nostalgia({ onNext, autoPlay, config }: { onNext: () => void; auto
               className="absolute top-0 w-40 h-48 bg-white p-2 pb-8 shadow-2xl rounded-sm border border-slate-200"
               style={{ left: `calc(50% - 5rem + ${(i - 1) * 2}rem)`, zIndex: i }}
             >
-              <img src={img} alt="memory" className="w-full h-full object-cover" />
+              <MediaDisplay src={img} alt="memory" className="w-full h-full object-cover" />
             </motion.div>
           ))
           : APOLOGY_DATA.memories.slice(0,3).map((img, i) => (
@@ -349,7 +351,7 @@ function Step4Nostalgia({ onNext, autoPlay, config }: { onNext: () => void; auto
             className="absolute top-0 w-40 h-48 bg-white p-2 pb-8 shadow-2xl rounded-sm border border-slate-200"
             style={{ left: `calc(50% - 5rem + ${(i - 1) * 2}rem)`, zIndex: i }}
           >
-            <img src={img} alt="memory" className="w-full h-full object-cover" />
+            <MediaDisplay src={img} alt="memory" className="w-full h-full object-cover" />
           </motion.div>
         ))}
       </div>

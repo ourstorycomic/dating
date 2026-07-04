@@ -1,3 +1,4 @@
+import { MediaDisplay } from "@/components/ui/MediaDisplay";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart } from "lucide-react";
@@ -293,7 +294,7 @@ export function Scrapbook({
                   transition={{ type: "spring", stiffness: 100, damping: 15, delay: 1 + i * 0.5 }}
                 >
                   <div className="aspect-square bg-gray-200 w-full mb-2">
-                    <img src={p.src} className="w-full h-full object-cover" alt="" />
+                    <MediaDisplay src={p.src} className="w-full h-full object-cover" alt="" />
                   </div>
                   <p className="text-center font-[Caveat] text-lg text-slate-800 font-bold">{p.caption}</p>
                   <div className={`${WASHI_TAPE} -top-2 left-1/2 -translate-x-1/2`} />
@@ -394,7 +395,7 @@ export function Scrapbook({
 
             
             <div className="w-3/4 aspect-square rounded-lg overflow-hidden border-[6px] border-[#fdfbf7] shadow-[0_10px_20px_rgba(0,0,0,0.5)] mb-12 relative z-10 rotate-[2deg]">
-              <img src={data.coverImage || undefined} className="w-full h-full object-cover opacity-90 sepia-[0.2]" alt="Cover" />
+              <MediaDisplay src={data.coverImage || undefined} className="w-full h-full object-cover opacity-90 sepia-[0.2]" alt="Cover" />
             </div>
             
             <h2 className="text-4xl font-[Dancing_Script] font-bold text-[#fdfbf7] text-center drop-shadow-[2px_4px_4px_rgba(0,0,0,0.6)] mb-8 px-4 leading-tight relative z-10">

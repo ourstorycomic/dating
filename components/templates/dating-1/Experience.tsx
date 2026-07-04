@@ -1,4 +1,6 @@
 "use client";
+import { MediaDisplay } from "@/components/ui/MediaDisplay";
+
 
 
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, react-hooks/set-state-in-effect */
@@ -302,7 +304,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
           >
             { questionImage ? (
-              <img src={questionImage} alt="question" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
+              <MediaDisplay src={questionImage} alt="question" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
               <img src="/assets/happy/cat-cute.webp" alt="question" className="mb-4 h-32 w-32 object-cover mx-auto animate-bounce drop-shadow-xl rounded-full border-4 border-white" />
             )}
@@ -343,7 +345,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
           >
             { successImage ? (
-              <img src={successImage} alt="success" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
+              <MediaDisplay src={successImage} alt="success" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
               <img src="/assets/happy/kiss-love.webp" alt="success" className="mb-4 h-40 w-40 object-cover mx-auto animate-bounce drop-shadow-xl rounded-2xl border-4 border-white" />
             )}
@@ -370,7 +372,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
           >
             { locationImage ? (
-              <img src={locationImage} alt="location" className="mb-2 h-16 w-16 sm:mb-4 sm:h-24 sm:w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
+              <MediaDisplay src={locationImage} alt="location" className="mb-2 h-16 w-16 sm:mb-4 sm:h-24 sm:w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
               <img src="/assets/dumb/seal.webp" alt="location" className="mb-2 h-20 w-20 sm:mb-4 sm:h-32 sm:w-32 object-cover mx-auto animate-bounce drop-shadow-xl rounded-2xl border-4 border-white" />
             )}
@@ -414,7 +416,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
           >
             { datetimeImage ? (
-              <img src={datetimeImage} alt="datetime" className="mb-2 h-16 w-16 sm:mb-4 sm:h-24 sm:w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
+              <MediaDisplay src={datetimeImage} alt="datetime" className="mb-2 h-16 w-16 sm:mb-4 sm:h-24 sm:w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
               <img src="/assets/happy/bubu-dudu-sseeyall.webp" alt="datetime" className="mb-2 h-20 w-20 sm:mb-4 sm:h-32 sm:w-32 object-cover mx-auto animate-bounce drop-shadow-xl rounded-2xl border-4 border-white" />
             )}
@@ -463,7 +465,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
           >
             { foodImage ? (
-              <img src={foodImage} alt="food" className="mb-2 h-16 w-16 sm:mb-4 sm:h-24 sm:w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
+              <MediaDisplay src={foodImage} alt="food" className="mb-2 h-16 w-16 sm:mb-4 sm:h-24 sm:w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
               <img src="/assets/happy/ami-bụng-bự.webp" alt="food" className="mb-2 h-20 w-20 sm:mb-4 sm:h-32 sm:w-32 object-cover mx-auto animate-bounce drop-shadow-xl rounded-2xl border-4 border-white" />
             )}
@@ -507,7 +509,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
           >
             { drinkImage ? (
-              <img src={drinkImage} alt="drink" className="mb-2 h-16 w-16 sm:mb-4 sm:h-24 sm:w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
+              <MediaDisplay src={drinkImage} alt="drink" className="mb-2 h-16 w-16 sm:mb-4 sm:h-24 sm:w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
             ) : (
               <img src="/assets/happy/dudu-bubu.webp" alt="drink" className="mb-2 h-20 w-20 sm:mb-4 sm:h-32 sm:w-32 object-cover mx-auto animate-bounce drop-shadow-xl rounded-2xl border-4 border-white" />
             )}

@@ -1,3 +1,4 @@
+import { MediaDisplay } from "@/components/ui/MediaDisplay";
 import { motion, useAnimation, PanInfo } from "framer-motion";
 import { useState } from "react";
 import { ChevronRight } from "lucide-react";
@@ -84,7 +85,7 @@ export function Step6PolaroidSwipe({ photos, onComplete, autoPlay = false }: { p
                   className={`absolute w-full h-full bg-white p-3 pb-12 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-gray-100 ${isFront ? 'cursor-grab active:cursor-grabbing' : ''}`}
                 >
                   <div className="w-full h-full relative rounded-md overflow-hidden bg-gray-100">
-                    <img src={photo} alt="" className="w-full h-full object-cover pointer-events-none" />
+                    <MediaDisplay src={photo} alt="" className="w-full h-full object-cover pointer-events-none" />
                   </div>
                 </motion.div>
               );
