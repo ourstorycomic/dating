@@ -598,7 +598,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const [expiresAtDate, setExpiresAtDate] = useState(() => {
     const d = new Date();
     d.setDate(d.getDate() + 10);
-    return d.toISOString().split('T')[0];
+    return d.toISOString().slice(0, 16);
   });
   const [proposedDate, setProposedDate] = useState("");
   const [giftDeclineButton, setGiftDeclineButton] = useState("Để khi khác");
@@ -1299,12 +1299,13 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
             <div className="md:col-span-2 mt-4">
               <label className="mb-2 block text-sm font-semibold opacity-90">Ngày hết hạn đơn (Mặc định 10 ngày)</label>
               <input
-                type="date"
+                type="datetime-local"
+                min={new Date().toISOString().slice(0, 16)}
                 value={expiresAtDate}
                 onChange={(e) => setExpiresAtDate(e.target.value)}
                 className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 outline-none focus:border-pink-500/50 text-slate-900"
               />
-              <p className="text-xs text-slate-500 mt-2">Sau ngày này, toàn bộ dữ liệu đơn sẽ bị xóa để tiết kiệm dung lượng. Các thông tin nhật ký, thống kê vẫn được giữ nguyên.</p>
+              <p className="text-xs text-slate-500 mt-2">Sau thời gian này, toàn bộ dữ liệu đơn sẽ bị xóa để tiết kiệm dung lượng. Các thông tin nhật ký, thống kê vẫn được giữ nguyên.</p>
             </div>
 
           <div className="md:col-span-2">
