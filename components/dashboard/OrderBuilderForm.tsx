@@ -1293,6 +1293,17 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
             </select>
           </div>
 
+            <div className="md:col-span-2 mt-4">
+              <label className="mb-2 block text-sm font-semibold opacity-90">Ngày hết hạn đơn (Mặc định 10 ngày)</label>
+              <input
+                type="date"
+                value={expiresAtDate}
+                onChange={(e) => setExpiresAtDate(e.target.value)}
+                className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 outline-none focus:border-pink-500/50 text-slate-900"
+              />
+              <p className="text-xs text-slate-500 mt-2">Sau ngày này, toàn bộ dữ liệu đơn sẽ bị xóa để tiết kiệm dung lượng. Các thông tin nhật ký, thống kê vẫn được giữ nguyên.</p>
+            </div>
+
           <div className="md:col-span-2">
             {!result ? (
               <button className="w-full rounded-full bg-gradient-to-r from-pink-500 to-purple-500 px-6 py-3 text-sm font-semibold disabled:opacity-50" disabled={isSubmitting} onClick={createOrder} type="button">
@@ -1577,18 +1588,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                 </div>
 
                 <Section title="Thiết lập chung">
-                <div className="flex flex-col gap-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-pink-600 dark:text-pink-400">
-                    Ngày hết hạn đơn (Mặc định 10 ngày)
-                  </label>
-                  <input
-                    type="date"
-                    value={expiresAtDate}
-                    onChange={(e) => setExpiresAtDate(e.target.value)}
-                    className="w-full rounded-2xl border-2 border-pink-100 bg-white/80 px-4 py-3.5 text-[15px] font-medium text-slate-700 shadow-inner transition-all hover:border-pink-200 focus:border-pink-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-pink-400/20 dark:border-pink-900/30 dark:bg-slate-900/50 dark:text-slate-300"
-                  />
-                  <p className="text-xs text-slate-500">Sau ngày này, toàn bộ ảnh/text sẽ bị xóa để giảm tải data, chỉ giữ lại mã đơn và nhật ký.</p>
-                </div>
+                
                   <ColorInput label="Màu nền tổng thể" onCommit={setStage2Background} value={stage2Background} />
                   <ColorInput label="Màu nhấn (Nút, Tiêu đề)" onCommit={setStage1Accent} value={stage1Accent} />
                   <MediaInput label="Ảnh nền trang (Tùy chọn)" onChange={setStage1Background} />
