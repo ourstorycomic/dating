@@ -411,7 +411,7 @@ export async function getOrdersByCreator(userId: string) {
   const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
     .from("orders")
-    .select("id, public_id, template_id, buyer_name, buyer_contact, recipient_name, custom_data, amount, status, created_at, templates(id, name, component_key), payments(payment_code, status, paid_at)")
+    .select("id, public_id, template_id, buyer_name, buyer_contact, recipient_name, custom_data, amount, status, created_at, expires_at, templates(id, name, component_key), payments(payment_code, status, paid_at)")
     .eq("created_by_id", userId)
     .order("created_at", { ascending: false })
     .limit(30);
@@ -472,7 +472,7 @@ export async function getOrderLogs(page = 1, limit = 10, filters?: { query?: str
   
   let dbQuery = supabase
     .from("order_logs")
-    .select("id, action, metadata, created_at, users(name, email), orders(id, public_id, buyer_name, buyer_contact, recipient_name, amount, status, custom_data, created_at, templates(name, component_key, visual_label), payments(payment_code, amount, status, qr_code_url, paid_at), creator:users!orders_created_by_id_fkey(name, email))", { count: 'exact' })
+    .select("id, action, metadata, created_at, users(name, email), orders(id, public_id, buyer_name, buyer_contact, recipient_name, amount, status, custom_data, created_at, expires_at, templates(name, component_key, visual_label), payments(payment_code, amount, status, qr_code_url, paid_at), creator:users!orders_created_by_id_fkey(name, email))", { count: 'exact' })
     .order("created_at", { ascending: false });
 
   // Status and date can be partially pushed to DB or filtered in memory
@@ -530,7 +530,7 @@ export async function getOrderByPublicId(publicId: string) {
   const { data, error } = await supabase
     .from("orders")
     .select(
-      "id, public_id, recipient_name, custom_data, amount, status, gift_opened_at, recipient_response, response_text, responded_at, created_at, templates(component_key, visual_label, gradient), payments(payment_code, amount, status, qr_code_url)",
+      "id, public_id, recipient_name, custom_data, amount, status, gift_opened_at, recipient_response, response_text, responded_at, created_at, expires_at, templates(component_key, visual_label, gradient), payments(payment_code, amount, status, qr_code_url)",
     )
     .eq("public_id", publicId)
     .maybeSingle();
