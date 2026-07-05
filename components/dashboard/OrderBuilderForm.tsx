@@ -632,6 +632,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
 
   const [dynamicData, setDynamicData] = useState<Record<string, any>>({});
   const [result, setResult] = useState<{ amount: number; giftLink: string; orderId: string; paymentCode: string; paymentStatus: string; qrCodeUrl: string | null; status: string; trackLink: string; unlocked: boolean; templateKey?: string } | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isConfirmingPayment, setIsConfirmingPayment] = useState(false);
   const [isConfirmingFree, setIsConfirmingFree] = useState(false);
   const [isSavingEdits, setIsSavingEdits] = useState(false);
