@@ -641,6 +641,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const [copyMessage, setCopyMessage] = useState("");
   const [builderVolume, setBuilderVolume] = useState(0.5);
   const [orderPage, setOrderPage] = useState(1);
+  const [orderSearchQuery, setOrderSearchQuery] = useState("");
   const ordersPerPage = 5;
   const [isLocked, setIsLocked] = useState(false);
   const [editUnlockCount, setEditUnlockCount] = useState(0);
@@ -1331,8 +1332,42 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                 {myOrders.length} đơn
               </span>
             </div>
+            <div className="mt-4">
+              <input 
+                type="text" 
+                placeholder="Tìm mã đơn, tên khách, SĐT..."
+                value={orderSearchQuery}
+                onChange={(e) => {
+                  setOrderSearchQuery(e.target.value);
+                  setOrderPage(1); // Reset page on search
+                }}
+                className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 outline-none focus:border-pink-500/50 text-white placeholder-white/50"
+              />
+            </div>
             <div className="mt-4 space-y-3 pr-2">
-              {myOrders.length ? myOrders.slice((orderPage - 1) * ordersPerPage, orderPage * ordersPerPage).map((order) => {
+              {myOrders.filter(order => {
+                const query = orderSearchQuery.toLowerCase();
+                if (!query) return true;
+                const payment = getRelationOne(order.payments);
+                return (
+                  order.public_id?.toLowerCase().includes(query) ||
+                  order.buyer_name?.toLowerCase().includes(query) ||
+                  order.buyer_contact?.toLowerCase().includes(query) ||
+                  order.recipient_name?.toLowerCase().includes(query) ||
+                  payment?.payment_code?.toLowerCase().includes(query)
+                );
+              }).length ? myOrders.filter(order => {
+                const query = orderSearchQuery.toLowerCase();
+                if (!query) return true;
+                const payment = getRelationOne(order.payments);
+                return (
+                  order.public_id?.toLowerCase().includes(query) ||
+                  order.buyer_name?.toLowerCase().includes(query) ||
+                  order.buyer_contact?.toLowerCase().includes(query) ||
+                  order.recipient_name?.toLowerCase().includes(query) ||
+                  payment?.payment_code?.toLowerCase().includes(query)
+                );
+              }).slice((orderPage - 1) * ordersPerPage, orderPage * ordersPerPage).map((order) => {
                 const payment = getRelationOne(order.payments);
                 const template = getRelationOne(order.templates);
                 const paid = order.status === "ACTIVE" || payment?.status === "PAID";
@@ -1391,7 +1426,18 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               )}
             </div>
             
-            {myOrders.length > ordersPerPage && (
+            {myOrders.filter(order => {
+                const query = orderSearchQuery.toLowerCase();
+                if (!query) return true;
+                const payment = getRelationOne(order.payments);
+                return (
+                  order.public_id?.toLowerCase().includes(query) ||
+                  order.buyer_name?.toLowerCase().includes(query) ||
+                  order.buyer_contact?.toLowerCase().includes(query) ||
+                  order.recipient_name?.toLowerCase().includes(query) ||
+                  payment?.payment_code?.toLowerCase().includes(query)
+                );
+              }).length > ordersPerPage && (
               <div className="mt-5 flex items-center justify-center gap-3 border-t border-white/5 pt-4">
                 <button 
                   onClick={() => setOrderPage(p => Math.max(1, p - 1))}

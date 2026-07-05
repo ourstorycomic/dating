@@ -1,7 +1,6 @@
 import { GlassCard } from "@/components/ui/GlassCard";
 import { getDashboardCounts, getRecentOrders } from "@/lib/supabase/server";
 import { OrderFilters } from "@/components/dashboard/OrderFilters";
-import { OrderDeleteButton } from "@/components/dashboard/OrderDeleteButton";
 
 export default async function DashboardPage(props: { searchParams?: Promise<{ query?: string; status?: string; startDate?: string; endDate?: string }> }) {
   const searchParams = await props.searchParams;
@@ -58,7 +57,6 @@ export default async function DashboardPage(props: { searchParams?: Promise<{ qu
                   <th className="px-5 py-4 font-medium">Số tiền</th>
                   <th className="px-5 py-4 font-medium">Trạng thái</th>
                   <th className="px-5 py-4 font-medium">Ngày tạo</th>
-                  <th className="px-5 py-4 font-medium text-right">Thao tác</th>
                 </tr>
               </thead>
               <tbody>
@@ -75,9 +73,6 @@ export default async function DashboardPage(props: { searchParams?: Promise<{ qu
                       <span className="rounded-full border border-white/10 bg-white/[0.07] px-3 py-1 text-xs font-semibold">{order.status}</span>
                     </td>
                     <td className="px-5 py-4 text-white/58">{new Date(order.created_at).toLocaleString("vi-VN")}</td>
-                    <td className="px-5 py-4 text-right">
-                      <OrderDeleteButton orderId={order.public_id} />
-                    </td>
                   </tr>
                 ))}
               </tbody>
