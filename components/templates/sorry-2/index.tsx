@@ -299,7 +299,7 @@ function Step3Whack({ onNext, autoPlay, weapon, compact, config }: { onNext: () 
 
   return (
     <>
-    <audio ref={hitSoundRef} src="/assets/vfx/glass-break.mp3" preload="auto" muted={compact && !autoPlay} />
+    <audio ref={hitSoundRef} src="/assets/vfx/lopi.mp3" preload="auto" muted={compact && !autoPlay} />
     <motion.div
       ref={containerRef}
       key="step3"

@@ -65,15 +65,12 @@ function getThumbnailSrcs(
 
 function TemplatePreviewArea({ template }: { template: HomeTemplate }) {
   const [hovered, setHovered] = useState(false);
-  // Lazy-mount live preview: once hovered keep it mounted to avoid re-init
-  const [everHovered, setEverHovered] = useState(false);
   const thumbSrcs = getThumbnailSrcs(template.slug, template.component_key, template.thumbnail_url);
   // Optimistic: assume thumbnail exists; onError on the <img> fallback sets false
   const [thumbnailExists, setThumbnailExists] = useState(true);
 
   const handleMouseEnter = () => {
     setHovered(true);
-    setEverHovered(true);
   };
   const handleMouseLeave = () => setHovered(false);
 
@@ -119,7 +116,7 @@ function TemplatePreviewArea({ template }: { template: HomeTemplate }) {
           </div>
 
           {/* ── Live preview — lazy-mounted, shown on hover ── */}
-          {everHovered && (
+          {hovered && (
             <div
               className="absolute inset-0 transition-opacity duration-300"
               style={{ opacity: hovered ? 1 : 0, pointerEvents: hovered ? "auto" : "none" }}
