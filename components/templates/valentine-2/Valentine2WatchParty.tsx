@@ -94,8 +94,12 @@ export function Valentine2WatchParty({
     if (data.musicUrl && !audio.src.endsWith(encodeURIComponent(data.musicUrl)) && !audio.src.endsWith(data.musicUrl)) {
       audio.pause();
       audio.src = data.musicUrl;
+      if (autoPlay) {
+        audio.volume = 0.3;
+        audio.play().catch(e => console.log('Audio play error', e));
+      }
     }
-  }, [data.musicUrl]);
+  }, [data.musicUrl, autoPlay]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -253,3 +257,4 @@ export function Valentine2WatchParty({
     </div>
   );
 }
+
