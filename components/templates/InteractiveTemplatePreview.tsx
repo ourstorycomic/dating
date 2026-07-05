@@ -251,7 +251,7 @@ export function InteractiveTemplatePreview({
       if (props.noFrame) {
         return (
           <div ref={containerRef} className="absolute inset-0" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-            <Component {...finalProps} roomId={roomId} compact={true} />
+            <Component {...finalProps} roomId={roomId} autoPlay={isPreviewActive} compact={true} />
           </div>
         );
       } else if (!props.isBuilderPreview) {
