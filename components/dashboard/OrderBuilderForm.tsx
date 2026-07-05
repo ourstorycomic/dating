@@ -642,6 +642,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const [builderVolume, setBuilderVolume] = useState(0.5);
   const [orderPage, setOrderPage] = useState(1);
   const [orderSearchQuery, setOrderSearchQuery] = useState("");
+  const [orderStatusFilter, setOrderStatusFilter] = useState("ALL");
+  const [orderDateFilter, setOrderDateFilter] = useState("");
   const ordersPerPage = 5;
   const [isLocked, setIsLocked] = useState(false);
   const [editUnlockCount, setEditUnlockCount] = useState(0);
@@ -1332,23 +1334,54 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                 {myOrders.length} đơn
               </span>
             </div>
-            <div className="mt-4">
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
               <input 
                 type="text" 
                 placeholder="Tìm mã đơn, tên khách, SĐT..."
                 value={orderSearchQuery}
                 onChange={(e) => {
                   setOrderSearchQuery(e.target.value);
-                  setOrderPage(1); // Reset page on search
+                  setOrderPage(1);
                 }}
                 className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 outline-none focus:border-pink-500/50 text-white placeholder-white/50"
+              />
+              <select
+                value={orderStatusFilter}
+                onChange={(e) => {
+                  setOrderStatusFilter(e.target.value);
+                  setOrderPage(1);
+                }}
+                className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 outline-none focus:border-pink-500/50 text-white [&>option]:text-slate-900"
+              >
+                <option value="ALL">Tất cả trạng thái</option>
+                <option value="PAID">Đã thanh toán (Mở khóa)</option>
+                <option value="UNPAID">Chờ thanh toán</option>
+              </select>
+              <input 
+                type="date" 
+                value={orderDateFilter}
+                onChange={(e) => {
+                  setOrderDateFilter(e.target.value);
+                  setOrderPage(1);
+                }}
+                className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 outline-none focus:border-pink-500/50 text-white"
               />
             </div>
             <div className="mt-4 space-y-3 pr-2">
               {myOrders.filter(order => {
+                const payment = getRelationOne(order.payments);
+                const paid = order.status === "ACTIVE" || payment?.status === "PAID";
+                
+                if (orderStatusFilter === "PAID" && !paid) return false;
+                if (orderStatusFilter === "UNPAID" && paid) return false;
+
+                if (orderDateFilter) {
+                  const orderDate = new Date(order.created_at).toISOString().split('T')[0];
+                  if (orderDate !== orderDateFilter) return false;
+                }
+
                 const query = orderSearchQuery.toLowerCase();
                 if (!query) return true;
-                const payment = getRelationOne(order.payments);
                 return (
                   order.public_id?.toLowerCase().includes(query) ||
                   order.buyer_name?.toLowerCase().includes(query) ||
@@ -1357,9 +1390,19 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                   payment?.payment_code?.toLowerCase().includes(query)
                 );
               }).length ? myOrders.filter(order => {
+                const payment = getRelationOne(order.payments);
+                const paid = order.status === "ACTIVE" || payment?.status === "PAID";
+                
+                if (orderStatusFilter === "PAID" && !paid) return false;
+                if (orderStatusFilter === "UNPAID" && paid) return false;
+
+                if (orderDateFilter) {
+                  const orderDate = new Date(order.created_at).toISOString().split('T')[0];
+                  if (orderDate !== orderDateFilter) return false;
+                }
+
                 const query = orderSearchQuery.toLowerCase();
                 if (!query) return true;
-                const payment = getRelationOne(order.payments);
                 return (
                   order.public_id?.toLowerCase().includes(query) ||
                   order.buyer_name?.toLowerCase().includes(query) ||
@@ -1427,9 +1470,19 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
             </div>
             
             {myOrders.filter(order => {
+                const payment = getRelationOne(order.payments);
+                const paid = order.status === "ACTIVE" || payment?.status === "PAID";
+                
+                if (orderStatusFilter === "PAID" && !paid) return false;
+                if (orderStatusFilter === "UNPAID" && paid) return false;
+
+                if (orderDateFilter) {
+                  const orderDate = new Date(order.created_at).toISOString().split('T')[0];
+                  if (orderDate !== orderDateFilter) return false;
+                }
+
                 const query = orderSearchQuery.toLowerCase();
                 if (!query) return true;
-                const payment = getRelationOne(order.payments);
                 return (
                   order.public_id?.toLowerCase().includes(query) ||
                   order.buyer_name?.toLowerCase().includes(query) ||
@@ -1448,11 +1501,65 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                   Trước
                 </button>
                 <span className="text-xs text-white/60 font-medium">
-                  Trang {orderPage} / {Math.ceil(myOrders.length / ordersPerPage)}
+                  Trang {orderPage} / {Math.ceil(myOrders.filter(order => {
+                const payment = getRelationOne(order.payments);
+                const paid = order.status === "ACTIVE" || payment?.status === "PAID";
+                if (orderStatusFilter === "PAID" && !paid) return false;
+                if (orderStatusFilter === "UNPAID" && paid) return false;
+                if (orderDateFilter) {
+                  const orderDate = new Date(order.created_at).toISOString().split('T')[0];
+                  if (orderDate !== orderDateFilter) return false;
+                }
+                const query = orderSearchQuery.toLowerCase();
+                if (!query) return true;
+                return (
+                  order.public_id?.toLowerCase().includes(query) ||
+                  order.buyer_name?.toLowerCase().includes(query) ||
+                  order.buyer_contact?.toLowerCase().includes(query) ||
+                  order.recipient_name?.toLowerCase().includes(query) ||
+                  payment?.payment_code?.toLowerCase().includes(query)
+                );
+              }).length / ordersPerPage)}
                 </span>
                 <button 
-                  onClick={() => setOrderPage(p => Math.min(Math.ceil(myOrders.length / ordersPerPage), p + 1))}
-                  disabled={orderPage >= Math.ceil(myOrders.length / ordersPerPage)}
+                  onClick={() => setOrderPage(p => Math.min(Math.ceil(myOrders.filter(order => {
+                const payment = getRelationOne(order.payments);
+                const paid = order.status === "ACTIVE" || payment?.status === "PAID";
+                if (orderStatusFilter === "PAID" && !paid) return false;
+                if (orderStatusFilter === "UNPAID" && paid) return false;
+                if (orderDateFilter) {
+                  const orderDate = new Date(order.created_at).toISOString().split('T')[0];
+                  if (orderDate !== orderDateFilter) return false;
+                }
+                const query = orderSearchQuery.toLowerCase();
+                if (!query) return true;
+                return (
+                  order.public_id?.toLowerCase().includes(query) ||
+                  order.buyer_name?.toLowerCase().includes(query) ||
+                  order.buyer_contact?.toLowerCase().includes(query) ||
+                  order.recipient_name?.toLowerCase().includes(query) ||
+                  payment?.payment_code?.toLowerCase().includes(query)
+                );
+              }).length / ordersPerPage), p + 1))}
+                  disabled={orderPage >= Math.ceil(myOrders.filter(order => {
+                const payment = getRelationOne(order.payments);
+                const paid = order.status === "ACTIVE" || payment?.status === "PAID";
+                if (orderStatusFilter === "PAID" && !paid) return false;
+                if (orderStatusFilter === "UNPAID" && paid) return false;
+                if (orderDateFilter) {
+                  const orderDate = new Date(order.created_at).toISOString().split('T')[0];
+                  if (orderDate !== orderDateFilter) return false;
+                }
+                const query = orderSearchQuery.toLowerCase();
+                if (!query) return true;
+                return (
+                  order.public_id?.toLowerCase().includes(query) ||
+                  order.buyer_name?.toLowerCase().includes(query) ||
+                  order.buyer_contact?.toLowerCase().includes(query) ||
+                  order.recipient_name?.toLowerCase().includes(query) ||
+                  payment?.payment_code?.toLowerCase().includes(query)
+                );
+              }).length / ordersPerPage)}
                   className="rounded-full bg-white/10 px-4 py-2 text-xs font-semibold hover:bg-white/20 disabled:opacity-30 disabled:pointer-events-none transition"
                   type="button"
                 >
