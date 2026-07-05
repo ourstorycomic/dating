@@ -67,7 +67,7 @@ export async function GET(request: Request) {
     if (files && files.length > 0) {
       const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
       // Filter files older than 1 hour (ignoring empty folder placeholder '.emptyFolderPlaceholder')
-      const oldFiles = files.filter(f => f.created_at < oneHourAgo && f.name !== ".emptyFolderPlaceholder");
+      const oldFiles = files.filter(f => f.created_at && f.created_at < oneHourAgo && f.name !== ".emptyFolderPlaceholder");
 
       if (oldFiles.length > 0) {
         // 2. Get all custom_data strings across the DB
