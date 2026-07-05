@@ -13,7 +13,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import * as THREE from "three";
 import { SkeletonUtils } from "three-stdlib";
 import type { BirthdayMagicExperienceProps, BirthdayPhase, MaterialTone } from "./types";
-import { MODELS, FIRST_PAINT_MODELS, DEFAULT_BIRTHDAY_MUSIC, TOUCH_SOUND, MAGIC_WAND_SOUND } from "./models";
+import { MODELS, FIRST_PAINT_MODELS, DEFAULT_BIRTHDAY_MUSIC, TOUCH_SOUND } from "./models";
 
 // Preload critical models to prevent lag during interactions
 if (typeof window !== "undefined") {

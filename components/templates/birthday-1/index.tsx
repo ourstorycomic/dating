@@ -8,7 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import * as THREE from "three";
 import { SkeletonUtils } from "three-stdlib";
 import type { BirthdayMagicExperienceProps, BirthdayPhase } from "./types";
-import { MODELS, FIRST_PAINT_MODELS, DEFAULT_BIRTHDAY_MUSIC, TOUCH_SOUND, MAGIC_WAND_SOUND } from "./models";
+import { MODELS, FIRST_PAINT_MODELS, DEFAULT_BIRTHDAY_MUSIC, TOUCH_SOUND } from "./models";
 import {
   Model,
   NormalizedModel,
@@ -119,7 +119,6 @@ function BirthdayScene({
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const touchAudioRef = useRef<HTMLAudioElement | null>(null);
-  const magicAudioRef = useRef<HTMLAudioElement | null>(null);
   const meowAudioRef = useRef<HTMLAudioElement | null>(null);
   const patAudioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -128,11 +127,6 @@ function BirthdayScene({
     if (compact && !autoPlay) return;
     touchAudioRef.current && (touchAudioRef.current.currentTime = 0);
     touchAudioRef.current?.play().catch(() => { });
-  }, [compact, autoPlay]);
-  const playMagic = useCallback(() => {
-    if (compact && !autoPlay) return;
-    magicAudioRef.current && (magicAudioRef.current.currentTime = 0);
-    magicAudioRef.current?.play().catch(() => { });
   }, [compact, autoPlay]);
   const playMeow = useCallback(() => {
     if (compact && !autoPlay) return;
@@ -227,7 +221,6 @@ function BirthdayScene({
   }, [musicActive]);
 
   function handleWandClicked() {
-    playMagic();
     setBalloonCoverActive(true);
     
     setTimeout(() => {
@@ -402,7 +395,6 @@ function BirthdayScene({
 
       <audio src={musicUrl || DEFAULT_BIRTHDAY_MUSIC} loop preload="auto" ref={audioRef} muted={compact && !autoPlay} />
       <audio preload="auto" ref={touchAudioRef} src={TOUCH_SOUND} muted={compact && !autoPlay} />
-      <audio preload="auto" ref={magicAudioRef} src={MAGIC_WAND_SOUND} muted={compact && !autoPlay} />
       <audio preload="auto" ref={meowAudioRef} src="/assets/vfx/meow-1.mp3" muted={compact && !autoPlay} />
       <audio preload="auto" ref={patAudioRef} src="/assets/vfx/lopi.mp3" muted={compact && !autoPlay} />
 
@@ -515,7 +507,7 @@ function BirthdayScene({
           )}
 
           {phase === "decorate-popup" && (
-            <MagicDecorWand onDone={handleWandClicked} onMagic={playMagic} onTouch={playTouch} autoPlay={autoPlay} />
+            <MagicDecorWand onDone={handleWandClicked} onMagic={() => {}} onTouch={playTouch} autoPlay={autoPlay} />
           )}
 
           {phase === "cake-messages" && (

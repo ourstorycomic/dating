@@ -25,4 +25,3 @@ export const FIRST_PAINT_MODELS = [MODELS.lightSwitch, MODELS.stars, MODELS.gram
 
 export const DEFAULT_BIRTHDAY_MUSIC = "/birthday-1/music/link_nhac_nen_chung.m4a";
 export const TOUCH_SOUND = "/assets/vfx/touch.mp3";
-export const MAGIC_WAND_SOUND = "/assets/vfx/you-found-bojuka_2.mp3";
