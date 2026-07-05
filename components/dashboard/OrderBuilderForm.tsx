@@ -690,7 +690,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const isSorry1 = selectedComponentKey.includes("sorry-1") || selectedComponentKey.includes("sorry #1");
   const isSorry2 = selectedComponentKey.includes("sorry-2") || selectedComponentKey.includes("sorry #2");
   const isSorry3 = selectedComponentKey.includes("sorry-3") || selectedComponentKey.includes("sorry #3");
-  const canEditTemplate = !result || result.unlocked;
+  const isEditing = !!result;
+  const canEditTemplate = isEditing && result.unlocked;
 
   useEffect(() => {
     if (!result || result.unlocked) return;

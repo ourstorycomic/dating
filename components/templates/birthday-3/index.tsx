@@ -146,7 +146,7 @@ function FloatingParticles({ step }: { step: number }) {
         <motion.div
           key={`${step}-${i}`}
           initial={{
-            x: Math.random() * 400,
+            left: `${Math.random() * 100}%`,
             y: Math.random() * 800 + 800, // start below
             opacity: 0,
             scale: Math.random() * 0.5 + 0.5,

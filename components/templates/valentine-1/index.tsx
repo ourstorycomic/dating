@@ -225,7 +225,7 @@ export function ConstellationVaultExperience({
   }, [stage, mounted, stage3AudioUrl, micActive]);
 
   return (
-    <div className={`template-preview-surface ${fullScreen ? "relative w-full min-h-[640px] sm:min-h-[85vh] rounded-2xl" : compact ? "absolute inset-0" : "relative min-h-[640px] h-full sm:h-[800px] sm:max-h-[85vh] sm:rounded-2xl border border-white/10"} w-full overflow-hidden text-white font-sans selection:bg-pink-500/30 transition-colors duration-1000`} style={{ background: stage === 5 ? finalBackground : [stage1Background, stage2Background, stage3Background, stage4Background][stage - 1] ?? "#0a0514" }}>
+    <div className={`template-preview-surface ${fullScreen ? "relative w-full min-h-screen h-full" : compact ? "absolute inset-0" : "relative min-h-[640px] h-full sm:h-[800px] sm:max-h-[85vh] sm:rounded-2xl border border-white/10"} w-full overflow-hidden text-white font-sans selection:bg-pink-500/30 transition-colors duration-1000`} style={{ background: stage === 5 ? finalBackground : [stage1Background, stage2Background, stage3Background, stage4Background][stage - 1] ?? "#0a0514" }}>
       {mounted && (
         <>
           {generalAudioUrl && <audio ref={generalAudioRef} src={generalAudioUrl} loop className="hidden" muted={isMuted} />}
@@ -236,7 +236,7 @@ export function ConstellationVaultExperience({
                {Array.from({ length: 50 }).map((_, i) => (
                  <motion.div key={`bgstar-${i}`}
                    className="absolute w-1 h-1 bg-white rounded-full shadow-[0_0_10px_#fff]"
-                   initial={{ x: Math.random() * 400, y: Math.random() * 800, opacity: Math.random() }}
+                   initial={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%`, opacity: Math.random() }}
                    animate={{ opacity: [0.1, 0.8, 0.1], scale: [0.8, 1.2, 0.8] }}
                    transition={{ duration: 4 + Math.random() * 5, repeat: Infinity, ease: "easeInOut", delay: Math.random() * 2 }}
                  />
