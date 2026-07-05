@@ -632,9 +632,9 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
 
   const [dynamicData, setDynamicData] = useState<Record<string, any>>({});
   const [result, setResult] = useState<{ amount: number; giftLink: string; orderId: string; paymentCode: string; paymentStatus: string; qrCodeUrl: string | null; status: string; trackLink: string; unlocked: boolean; templateKey?: string } | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSavingEdits, setIsSavingEdits] = useState(false);
   const [isConfirmingPayment, setIsConfirmingPayment] = useState(false);
+  const [isConfirmingFree, setIsConfirmingFree] = useState(false);
+  const [isSavingEdits, setIsSavingEdits] = useState(false);
   const [error, setError] = useState("");
   const [saveMessage, setSaveMessage] = useState("");
   const [copyMessage, setCopyMessage] = useState("");
@@ -948,23 +948,27 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     toast.success("Đã lưu chỉnh sửa template cho đơn này.");
   }
 
-  async function confirmPaymentManually() {
+  async function confirmPaymentManually(isFree = false) {
     if (!result || currentRole !== "ADMIN") return;
 
-    setIsConfirmingPayment(true);
+    if (isFree) setIsConfirmingFree(true);
+    else setIsConfirmingPayment(true);
+    
     setError("");
 
-    const response = await fetch(`/api/orders/${result.orderId}/confirm-payment`, {
+    const response = await fetch(`/api/orders/${result.orderId}/confirm-payment${isFree ? "?free=true" : ""}`, {
       method: "POST",
     });
     const data = await response.json().catch(() => ({}));
-    setIsConfirmingPayment(false);
+    
+    if (isFree) setIsConfirmingFree(false);
+    else setIsConfirmingPayment(false);
 
     if (!response.ok) {
       toast.error(data.error ?? "Không xác nhận được thanh toán.");
       return;
     }
-    toast.success("Đã xác nhận thanh toán.");
+    toast.success(isFree ? "Đã mở khóa miễn phí." : "Đã xác nhận thanh toán.");
 
     setResult((current) => current ? {
       ...current,
@@ -2138,14 +2142,28 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                       </>
                     ) : null}
                     {currentRole === "ADMIN" ? (
-                      <button
-                        className="rounded-full border border-emerald-400 bg-emerald-500 px-5 py-2 text-xs font-bold text-white shadow-lg shadow-emerald-500/30 hover:bg-emerald-600 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:hover:scale-100 disabled:shadow-none"
-                        disabled={isConfirmingPayment}
-                        onClick={confirmPaymentManually}
-                        type="button"
-                      >
-                        {isConfirmingPayment ? "Đang mở khóa..." : "Đã nhận tiền - mở khóa"}
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          className="rounded-full border border-emerald-400 bg-emerald-500 px-5 py-2 text-xs font-bold text-white shadow-lg shadow-emerald-500/30 hover:bg-emerald-600 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:hover:scale-100 disabled:shadow-none"
+                          disabled={isConfirmingPayment || isConfirmingFree}
+                          onClick={() => confirmPaymentManually(false)}
+                          type="button"
+                        >
+                          {isConfirmingPayment ? "Đang mở khóa..." : "Đã nhận tiền - mở khóa"}
+                        </button>
+                        <button
+                          className="rounded-full border border-purple-400 bg-purple-500 px-5 py-2 text-xs font-bold text-white shadow-lg shadow-purple-500/30 hover:bg-purple-600 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:hover:scale-100 disabled:shadow-none"
+                          disabled={isConfirmingPayment || isConfirmingFree}
+                          onClick={() => {
+                            if (confirm("Xác nhận mở khóa MIỄN PHÍ cho đơn này? Đơn sẽ không được tính hoa hồng.")) {
+                              confirmPaymentManually(true);
+                            }
+                          }}
+                          type="button"
+                        >
+                          {isConfirmingFree ? "Đang mở khóa..." : "Miễn thanh toán"}
+                        </button>
+                      </div>
                     ) : null}
                   </div>
                 </div>

@@ -67,6 +67,9 @@ export async function POST(
   _request: Request,
   { params }: { params: Promise<{ orderId: string }> },
 ) {
+  const { searchParams } = new URL(_request.url);
+  const isFree = searchParams.get("free") === "true";
+
   const session = await getSession();
 
   if (!session || session.role !== "ADMIN") {
@@ -100,7 +103,7 @@ export async function POST(
     .from("payments")
     .update({
       paid_at: paidAt,
-      provider: "MANUAL_ADMIN_CONFIRM",
+      provider: isFree ? "MANUAL_ADMIN_FREE" : "MANUAL_ADMIN_CONFIRM",
       provider_transaction_id: `manual-${order.public_id}-${Date.now()}`,
       raw_webhook_payload: {
         confirmedBy: session.userId,
@@ -140,55 +143,57 @@ export async function POST(
 
   const orderAmount = Number(order.amount);
   const commissions = [];
-  const employeePercentage = await getUserCommissionPercentage({
-    fallbackRecipientType: "EMPLOYEE",
-    fallbackRules: commissionRules,
-    supabase,
-    templateId: order.template_id,
-    userId: creator?.id,
-  });
-
-  if (employeePercentage > 0 && creator?.id) {
-    commissions.push({
-      amount: (orderAmount * employeePercentage) / 100,
-      order_id: order.id,
-      percentage: employeePercentage,
-      recipient_type: "EMPLOYEE",
-      user_id: creator.id,
+  if (!isFree) {
+    const employeePercentage = await getUserCommissionPercentage({
+      fallbackRecipientType: "EMPLOYEE",
+      fallbackRules: commissionRules,
+      supabase,
+      templateId: order.template_id,
+      userId: creator?.id,
     });
-  }
 
-  const staffPercentage = await getUserCommissionPercentage({
-    fallbackRecipientType: "STAFF",
-    fallbackRules: commissionRules,
-    supabase,
-    templateId: order.template_id,
-    userId: creator?.manager_id,
-  });
+    if (employeePercentage > 0 && creator?.id) {
+      commissions.push({
+        amount: (orderAmount * employeePercentage) / 100,
+        order_id: order.id,
+        percentage: employeePercentage,
+        recipient_type: "EMPLOYEE",
+        user_id: creator.id,
+      });
+    }
 
-  if (staffPercentage > 0 && creator?.manager_id) {
-    commissions.push({
-      amount: (orderAmount * staffPercentage) / 100,
-      order_id: order.id,
-      percentage: staffPercentage,
-      recipient_type: "STAFF",
-      user_id: creator.manager_id,
+    const staffPercentage = await getUserCommissionPercentage({
+      fallbackRecipientType: "STAFF",
+      fallbackRules: commissionRules,
+      supabase,
+      templateId: order.template_id,
+      userId: creator?.manager_id,
     });
-  }
 
-  const affiliatePercentage = getGlobalPercentage(commissionRules, "AFFILIATE");
-  if (affiliatePercentage > 0 && order.affiliate_id) {
-    commissions.push({
-      affiliate_id: order.affiliate_id,
-      amount: (orderAmount * affiliatePercentage) / 100,
-      order_id: order.id,
-      percentage: affiliatePercentage,
-      recipient_type: "AFFILIATE",
-    });
-  }
+    if (staffPercentage > 0 && creator?.manager_id) {
+      commissions.push({
+        amount: (orderAmount * staffPercentage) / 100,
+        order_id: order.id,
+        percentage: staffPercentage,
+        recipient_type: "STAFF",
+        user_id: creator.manager_id,
+      });
+    }
 
-  if (commissions.length) {
-    await supabase.from("commissions").insert(commissions);
+    const affiliatePercentage = getGlobalPercentage(commissionRules, "AFFILIATE");
+    if (affiliatePercentage > 0 && order.affiliate_id) {
+      commissions.push({
+        affiliate_id: order.affiliate_id,
+        amount: (orderAmount * affiliatePercentage) / 100,
+        order_id: order.id,
+        percentage: affiliatePercentage,
+        recipient_type: "AFFILIATE",
+      });
+    }
+
+    if (commissions.length) {
+      await supabase.from("commissions").insert(commissions);
+    }
   }
 
   await supabase.from("order_logs").insert([
@@ -201,7 +206,7 @@ export async function POST(
     {
       action: "ORDER_ACTIVATED",
       actor_id: session.userId,
-      metadata: { reason: "Admin confirmed bank transfer manually" },
+      metadata: { reason: isFree ? "Admin unlocked order without payment" : "Admin confirmed bank transfer manually" },
       order_id: order.id,
     },
   ]);
