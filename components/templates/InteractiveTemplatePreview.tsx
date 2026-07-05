@@ -22,6 +22,7 @@ type InteractiveTemplatePreviewProps = TemplatePreviewProps & {
   roomId?: string;
   noFrame?: boolean;
   forceRandomMusic?: boolean;
+  isActive?: boolean;
 };
 
 const previewRegistry = [
@@ -240,7 +241,7 @@ export function InteractiveTemplatePreview({
     }
   }, [isInView]);
 
-  const isPreviewActive = (isMobile && delayedInView) || (!isMobile && isHovered);
+  const isPreviewActive = props.isActive ?? ((isMobile && delayedInView) || (!isMobile && isHovered));
   const normalizedKey = componentKey.toLowerCase();
   const preview = previewRegistry.find((item) => normalizedKey.includes(item.match));
 

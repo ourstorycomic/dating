@@ -132,6 +132,7 @@ function TemplatePreviewArea({ template }: { template: HomeTemplate }) {
                 visualLabel={template.visual_label}
                 hideNavigation={true}
                 forceRandomMusic={true}
+                isActive={hovered}
               />
             </div>
           )}
@@ -146,6 +147,7 @@ function TemplatePreviewArea({ template }: { template: HomeTemplate }) {
           visualLabel={template.visual_label}
           hideNavigation={true}
           forceRandomMusic={true}
+          isActive={hovered}
         />
       )}
     </div>
