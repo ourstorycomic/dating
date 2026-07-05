@@ -242,6 +242,24 @@ export function InteractiveTemplatePreview({
   }, [isInView]);
 
   const isPreviewActive = props.isActive ?? ((isMobile && delayedInView) || (!isMobile && isHovered));
+
+  // Fast-forward audio to chorus (30s) for more engaging auto-preview
+  useEffect(() => {
+    if (isPreviewActive && props.compact && !props.isBuilderPreview) {
+      const interval = setInterval(() => {
+        if (containerRef.current) {
+          const audios = containerRef.current.querySelectorAll('audio');
+          audios.forEach((audio) => {
+            // Only seek if it just started (less than 2 seconds) and it has loaded metadata
+            if (audio.currentTime > 0 && audio.currentTime < 2 && audio.duration > 30) {
+              audio.currentTime = 30;
+            }
+          });
+        }
+      }, 500);
+      return () => clearInterval(interval);
+    }
+  }, [isPreviewActive, props.compact, props.isBuilderPreview]);
   const normalizedKey = componentKey.toLowerCase();
   const preview = previewRegistry.find((item) => normalizedKey.includes(item.match));
 
