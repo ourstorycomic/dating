@@ -938,7 +938,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
         customData: mergedData,
         orderId: result.orderId,
         recipientName,
-        buyerName: senderName,
+        buyerName,
       }),
     });
     const data = await response.json().catch(() => ({}));
@@ -1059,7 +1059,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   }
 
   function loadOrder(order: any) {
-    const template = getRelationOne(order.templates);
+    const template = getRelationOne(order.templates) || templates.find(t => t.id === order.template_id);
     const payment = getRelationOne(order.payments);
     const paid = order.status === "ACTIVE" || payment?.status === "PAID";
     
@@ -1080,6 +1080,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     setBuyerName(order.buyer_name || "");
     setBuyerContact(order.buyer_contact || "");
     setRecipientName(order.recipient_name || "");
+    setSenderName(order.custom_data?.senderName || "Anh");
     if (template) {
       setLoadedTemplate(template);
       setSelectedTemplateId(template.id);
@@ -1124,7 +1125,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     if (cd.stage1Accent) setStage1Accent(cd.stage1Accent);
     if (cd.stage2Background) setStage2Background(cd.stage2Background);
 
-    const loadedTemplateKey = `${template?.component_key ?? ""} ${template?.name ?? ""}`.toLowerCase();
+    const loadedTemplateKey = `${template?.component_key ?? cd.componentKey ?? ""} ${template?.name ?? ""}`.toLowerCase();
     if (loadedTemplateKey.includes("valentine-2") || loadedTemplateKey.includes("valentine #2")) {
       setValentine2Config((current) => ({
         ...current,
