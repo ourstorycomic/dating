@@ -30,15 +30,14 @@ export interface BirthdayMagicExperienceProps {
   memories?: { imageUrl: string; message: string; }[];
   instructionText?: string;
   wishPromptText?: string;
-  wishAcceptButton?: string;
-  wishDeclineButton?: string;
   recordingText?: string;
-  recordingCompleteButton?: string;
   giftPromptText?: string;
-  balloonText?: string;
-  greetingCardSignature?: string;
-  final3DSignature?: string;
+  messages?: string[];
+  finalMessage?: string;
+  bannerTitle?: string;
+  bannerName?: string;
   onResponse?: (response: { answer: string; message?: string; audioDataUrl?: string; date?: string }) => void;
   forceStep?: number;
   onStepChange?: (step: number, total: number) => void;
 }
+

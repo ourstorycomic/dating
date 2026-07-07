@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { MediaDisplay } from "@/components/ui/MediaDisplay";
 
 
@@ -1822,7 +1822,7 @@ function MatchMagicDust() {
   );
 }
 
-export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipientName, onGiftOpen, celebrationZoom, autoPlay }: { phase: BirthdayPhase; age: number; onCandleLit: () => void; onWishRecorded: (audioUrl: string) => void; recipientName?: string; onGiftOpen?: () => void; celebrationZoom?: boolean; autoPlay?: boolean; }) {
+export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipientName, onGiftOpen, celebrationZoom, autoPlay, instructionText, wishPromptText, recordingText, giftPromptText, bannerTitle, bannerName }: { phase: BirthdayPhase; age: number; onCandleLit: () => void; onWishRecorded: (audioUrl: string) => void; recipientName?: string; onGiftOpen?: () => void; celebrationZoom?: boolean; autoPlay?: boolean; instructionText?: string; wishPromptText?: string; recordingText?: string; giftPromptText?: string; bannerTitle?: string; bannerName?: string; }) {
   const [holding, setHolding] = useState(false); const [nearWick, setNearWick] = useState(false);
   const [lit, setLit] = useState(false); const [matchLit, setMatchLit] = useState(false);
   const [strikeCount, setStrikeCount] = useState(0); const [wishTimeLeft, setWishTimeLeft] = useState(10);
@@ -2063,7 +2063,7 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
           <group position={[0, -2.35, 0]}>
             <NormalizedModel position={[-2.2, 0.5, 0.8]} desiredHeight={1.0} url={MODELS.giftBox} />
             <NormalizedModel position={[2.2, 0.4, -0.5]} desiredHeight={0.8} url={MODELS.giftBox} />
-            <GiftFinale onOpen={onGiftOpen || (() => {})} opening={phase === "gift-reveal"} position={[1.6, 0.6, 1.4]} celebrationZoom={celebrationZoom} autoPlay={autoPlay} />
+            <GiftFinale onOpen={onGiftOpen || (() => {})} opening={phase === "gift-reveal"} position={[1.6, 0.6, 1.4]} celebrationZoom={celebrationZoom} autoPlay={autoPlay} giftPromptText={giftPromptText} />
           </group>
         )}
       </group>
@@ -2098,7 +2098,7 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
         {!holding && !matchLit && showHelper && (
           <Html center position={[-0.25, 0.08, 0]} zIndexRange={[80, 70]}>
             <motion.div animate={{ rotate: [-2, 2, -2], scale: [1, 1.04, 1] }} className="pointer-events-none whitespace-nowrap bg-transparent text-center text-[14px] font-black leading-tight text-[#ffd84d]" transition={{ duration: 1.3, repeat: Infinity }}>
-              Quẹt diêm 3 lần<br/>để thắp nến nhé! {strikeCount > 0 && `(${strikeCount}/3)`}
+              {instructionText ? (<div dangerouslySetInnerHTML={{ __html: instructionText.replace(/\\n/g, '<br/>') }} />) : (<>Quẹt diêm 3 lần<br/>để thắp nến nhé!</>)} {strikeCount > 0 && `(${strikeCount}/3)`}
             </motion.div>
           </Html>
         )}
@@ -2107,12 +2107,12 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
       {phase === "wish-record" && (
         <Html center position={[0, 1.35, 0]} zIndexRange={[90, 80]}>
            <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center text-center w-[300px]">
-             <div className="whitespace-nowrap text-4xl font-black text-[#ffd84d]">Hãy ước...</div>
+             <div className="whitespace-nowrap text-4xl font-black text-[#ffd84d]">{wishPromptText || "Hãy ước..."}</div>
              <div className="mt-3 flex items-center justify-center gap-2 text-lg font-bold text-white/90">
                {isPressing ? (
                  <>
                    <span className="relative flex h-3 w-3"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#ff7fc7] opacity-75"></span><span className="relative inline-flex h-3 w-3 rounded-full bg-[#ff38aa]"></span></span>
-                   Đang ghi âm điều ước...
+                   {recordingText || "Đang ghi âm điều ước..."}
                  </>
                ) : (
                  "Nhấn giữ nút bên dưới để ước"
@@ -2208,7 +2208,7 @@ export function BirthdayBanner({ name, visible = true, position = [0, 3.2, 0] }:
   );
 }
 
-export function GiftFinale({ onOpen, opening, position = [0, 0, 0], celebrationZoom, autoPlay }: { onOpen: () => void; opening: boolean; position?: [number, number, number]; celebrationZoom?: boolean; autoPlay?: boolean }) {
+export function GiftFinale({ onOpen, opening, position = [0, 0, 0], celebrationZoom, autoPlay, giftPromptText }: { onOpen: () => void; opening: boolean; position?: [number, number, number]; celebrationZoom?: boolean; autoPlay?: boolean; giftPromptText?: string; }) {
   const [signal, setSignal] = useState(0);
   const groupRef = useRef<THREE.Group>(null);
   const [animState, setAnimState] = useState<"idle" | "bouncing" | "opened">("idle");
@@ -2265,7 +2265,7 @@ export function GiftFinale({ onOpen, opening, position = [0, 0, 0], celebrationZ
             className="pointer-events-none whitespace-nowrap rounded-none bg-transparent px-2 text-center text-lg font-black leading-tight text-[#ffd84d] drop-shadow-[0_3px_0_rgba(91,35,85,0.22)]"
             transition={{ duration: 1.3, repeat: Infinity }}
           >
-            Chạm vào hộp quà<br/>để nhận bất ngờ 🎁
+            {giftPromptText ? (<div dangerouslySetInnerHTML={{ __html: giftPromptText.replace(/\\n/g, '<br/>') }} />) : (<>Chạm vào hộp quà<br/>để nhận bất ngờ 🎁</>)}
           </motion.div>
         </Html>
       )}

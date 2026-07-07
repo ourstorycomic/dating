@@ -473,9 +473,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   }, []);
 
   const dating1Stages = ["question", "success", "location", "datetime", "food", "drink", "completion"];
-  const [dating1Stage, setDating1Stage] = useState(dating1Stages[0]);
-
-  const [valentine1Stage, setValentine1Stage] = useState(1);
+  const [previewStepIndex, setPreviewStepIndex] = useState(0);
 
   const [dating2Config, setDating2Config] = useState<Record<string, any>>({
     previewStep: 1,
@@ -640,6 +638,21 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const [saveMessage, setSaveMessage] = useState("");
   const [copyMessage, setCopyMessage] = useState("");
   const [builderVolume, setBuilderVolume] = useState(0.5);
+  
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const previewContainer = document.getElementById("builder-preview");
+    if (!previewContainer) return;
+    const audios = previewContainer.querySelectorAll("audio");
+    audios.forEach(audio => {
+      audio.volume = builderVolume;
+      audio.muted = builderVolume === 0;
+      if (builderVolume > 0 && audio.paused && audio.src && !audio.src.includes("click") && !audio.src.includes("yay") && !audio.src.includes("meow") && !audio.src.includes("lopi") && !audio.src.includes("touch")) {
+        // Attempt to play background music in preview if it's paused
+        audio.play().catch(() => {});
+      }
+    });
+  }, [builderVolume, generalAudioUrl, musicUrl, selectedComponentKey, previewStepIndex]);
   const [orderPage, setOrderPage] = useState(1);
   const [orderSearchQuery, setOrderSearchQuery] = useState("");
   const [orderStatusFilter, setOrderStatusFilter] = useState("ALL");
@@ -748,6 +761,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     introSubtitle: "",
     introTitle: "",
     servicePackage: selectedPackage,
+    forceStep: previewStepIndex,
+    forceStage: selectedComponentKey === "dating-1" ? dating1Stages[previewStepIndex] : (previewStepIndex + 1),
     question,
     recipientName,
     senderName,
@@ -800,7 +815,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
       ],
     } : {}),
     ...(isBirthdayMagic ? {
-      birthdayMessage: birthdayMessage,
+      messages: birthdayMessage ? birthdayMessage.split('\n').filter(Boolean) : undefined,
       musicUrl: generalAudioUrl,
       age: birthdayAge,
       imageUrl: stage1ImageUrl,
@@ -816,8 +831,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
       recordingCompleteButton: birthdayRecordingCompleteButton,
       giftPromptText: birthdayGiftPromptText,
       balloonText: birthdayBalloonText,
-      greetingCardSignature: birthdayGreetingCardSignature,
-      final3DSignature: birthdayFinal3DSignature,
+      bannerTitle: birthdayGreetingCardSignature,
+      bannerName: birthdayFinal3DSignature,
     } : isWillYouDateMe ? {
       questionTitle: stage1Instruction,
       questionBody: question,
@@ -838,11 +853,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
       generalAudioUrl: generalAudioUrl,
       backgroundImage: stage1Background,
       backgroundColor: stage2Background,
-      forceStage: dating1Stage,
       accentColor: stage1Accent,
-    } : {
-      forceStage: valentine1Stage,
-    }),
+    } : {}),
   };
 
   useEffect(() => {
@@ -1617,37 +1629,37 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
           <>
             {isBirthdayMagic ? (
               <>
-                <Section title="Khối 1: Giao diện Bánh kem & Thắp nến">
+                <Section title="Khối 1: Bánh kem & Thắp nến">
                   <TextInput label="Độ tuổi (Cắm nến số)" onChange={setBirthdayAge} value={birthdayAge} />
-                  <TextInput label="Dòng chữ nổi trên bánh (Bong bóng 3D)" onChange={setBirthdayBalloonText} value={birthdayBalloonText} />
-                  <MediaInput label="Ảnh/Video in trên thân bánh" onChange={(url) => setStage1ImageUrl(url)} />
                   <MediaInput label="Nhạc nền tổng thể" accept="audio/*" onChange={(url) => setGeneralAudioUrl(url)} />
                   <div className="md:col-span-2">
-                    <TextInput label="Chỉ dẫn thắp nến" onChange={setBirthdayInstructionText} value={birthdayInstructionText} />
+                    <TextInput label="Chỉ dẫn thắp nến (Mặc định: Quẹt diêm 3 lần để thắp nến nhé!)" onChange={setBirthdayInstructionText} value={birthdayInstructionText} />
                   </div>
                 </Section>
                 <Section title="Khối 2: Lời chúc & Thực hiện điều ước">
-                  <TextInput label="Chữ ký trên thiệp chúc mừng (Từ: ...)" onChange={setBirthdayGreetingCardSignature} value={birthdayGreetingCardSignature} />
-                  <TextInput label="Tiêu đề gợi ý điều ước" onChange={setBirthdayWishPromptText} value={birthdayWishPromptText} />
-                  <div className="md:col-span-2 grid grid-cols-2 gap-4">
-                    <TextInput label="Nút đồng ý ước" onChange={setBirthdayWishAcceptButton} value={birthdayWishAcceptButton} />
-                    <TextInput label="Nút từ chối ước (Sẽ bỏ chạy khi trỏ chuột)" onChange={setBirthdayWishDeclineButton} value={birthdayWishDeclineButton} />
+                  <div className="md:col-span-2">
+                    <TextArea label="Lời chúc khi bánh sinh nhật xuất hiện (Mỗi câu 1 dòng)" onChange={setBirthdayMessage} value={birthdayMessage} />
                   </div>
-                  <TextInput label="Trạng thái khi đang ghi âm" onChange={setBirthdayRecordingText} value={birthdayRecordingText} />
-                  <TextInput label="Nút hoàn tất ghi âm" onChange={setBirthdayRecordingCompleteButton} value={birthdayRecordingCompleteButton} />
+                  <div className="md:col-span-2">
+                    <TextInput label="Tiêu đề gợi ý điều ước (Mặc định: Hãy ước...)" onChange={setBirthdayWishPromptText} value={birthdayWishPromptText} />
+                  </div>
+                  <div className="md:col-span-2">
+                    <TextInput label="Trạng thái khi đang ghi âm (Mặc định: Đang ghi âm điều ước...)" onChange={setBirthdayRecordingText} value={birthdayRecordingText} />
+                  </div>
                 </Section>
                 <Section title="Khối 3: Chờ mở hộp quà">
                   <div className="md:col-span-2">
-                    <TextInput label="Chỉ dẫn mở hộp quà" onChange={setBirthdayGiftPromptText} value={birthdayGiftPromptText} />
+                    <TextInput label="Chỉ dẫn mở hộp quà (Mặc định: Chạm vào hộp quà để nhận bất ngờ 🎁)" onChange={setBirthdayGiftPromptText} value={birthdayGiftPromptText} />
                   </div>
+                  <MediaInput label="Ảnh bất ngờ bật ra từ hộp quà" accept="image/*,video/*" onChange={(url) => setStage1ImageUrl(url)} value={stage1ImageUrl} />
                 </Section>
                 <Section title="Khối 4: Hành Trình Kỉ Niệm">
-                  <MemoryArrayInput label="Danh sách ảnh trôi dọc theo dây (Camera sẽ trôi qua từng tấm)" values={birthdayMemories} onChange={setBirthdayMemories} />
+                  <MemoryArrayInput label="Danh sách ảnh kỉ niệm treo trên dây (Camera sẽ trôi qua từng tấm)" values={birthdayMemories} onChange={setBirthdayMemories} />
                   <div className="md:col-span-2">
-                    <TextArea label="Lời chúc cuối cùng (Thả nổi 3D khổng lồ ở trạm dừng cuối)" onChange={setBirthdayMessage} value={birthdayMessage} />
+                    <TextInput label="Dòng chữ nổi 3D ở chặng cuối (Ví dụ: Chúc mừng sinh nhật)" onChange={setBirthdayGreetingCardSignature} value={birthdayGreetingCardSignature} />
                   </div>
                   <div className="md:col-span-2">
-                    <TextInput label="Chữ ký nổi 3D (- Từ ... -)" onChange={setBirthdayFinal3DSignature} value={birthdayFinal3DSignature} />
+                    <TextInput label="Tên người nhận ở chặng cuối (Ví dụ: Em yêu)" onChange={setBirthdayFinal3DSignature} value={birthdayFinal3DSignature} />
                   </div>
                 </Section>
               </>
@@ -2383,7 +2395,27 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
           ) : null}
       </div>
 
-      {showSetupWorkspace ? (
+      {showSetupWorkspace ? (() => {
+        const previewStepsMap: Record<string, { totalSteps: number, labels?: string[] }> = {
+          "will-you-date-me": { totalSteps: 7, labels: ["Lời mời", "Phản hồi", "Địa điểm", "Ngày giờ", "Món ăn", "Nước", "Lời kết"] },
+          "dating-1": { totalSteps: 7, labels: ["Lời mời", "Phản hồi", "Địa điểm", "Ngày giờ", "Món ăn", "Nước", "Lời kết"] },
+          "dating-2": { totalSteps: 6, labels: ["Chờ", "Rung động", "Nạp đạn", "Bắn tim", "Thành công", "Chốt đơn"] },
+          "dating-3": { totalSteps: 8, labels: ["Bắt đầu", "Gacha", "Mở nắp", "Bất ngờ", "Hồi hộp", "Hoàn tất", "Lời kết", "Thành công"] },
+          "val-starry-constellation-01": { totalSteps: 5, labels: ["Bắt đầu", "Xếp sao", "Nhạc", "Thu thập", "Thành công"] },
+          "valentine-1": { totalSteps: 5, labels: ["Bắt đầu", "Xếp sao", "Nhạc", "Thu thập", "Thành công"] },
+          "valentine-2": { totalSteps: 8, labels: ["Bắt đầu", "Đếm ngược", "Phim", "Phản hồi", "Thử thách", "Câu hỏi", "Hoàn tất", "Cuối"] },
+          "valentine-3": { totalSteps: 8, labels: ["Bắt đầu", "Vân tay", "Máy", "Quiz", "Puzzle", "Chat", "Ảnh", "Cuối"] },
+          "birthday-1": { totalSteps: 10, labels: ["Tối", "Nhạc", "Trang trí", "Lời chúc", "Thắp nến", "Điều ước", "Pháo", "Quà", "Ảnh", "Cuối"] },
+          "birthday-2": { totalSteps: 7, labels: ["Báo thức", "Chat", "Giao hàng", "Mở hộp", "Bánh", "Thư", "Cuối"] },
+          "birthday-3": { totalSteps: 8, labels: ["Gõ cửa", "Vào nhà", "Kéo rèm", "Thắp nến", "Pháo hoa", "Mở bánh", "Quà", "Chúc mừng"] },
+          "sorry-1": { totalSteps: 6, labels: ["Bắt đầu", "Thư", "Xác nhận", "Phạt", "Cam kết", "Cuối"] },
+          "sorry-2": { totalSteps: 5, labels: ["Lỗi", "Khủng long", "Thùng rác", "Cài đặt", "Thành công"] },
+          "sorry-3": { totalSteps: 6, labels: ["Chặn", "Năn nỉ", "Mật khẩu", "Game", "Xác nhận", "Thành công"] },
+        };
+        const normalizedKey = selectedComponentKey.replace(" #", "-");
+        const currentConfig = previewStepsMap[normalizedKey] || { totalSteps: 1, labels: ["Preview"] };
+
+        return (
       <aside className="glass-panel-soft rounded-2xl p-4 xl:sticky xl:top-5 xl:h-[calc(100dvh-40px)] flex flex-col w-full xl:w-[450px]">
         <div className="px-1 pb-4 shrink-0 flex items-center justify-between">
           <div>
@@ -2395,7 +2427,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
             <input type="range" min="0" max="1" step="0.05" value={builderVolume} onChange={(e) => setBuilderVolume(Number(e.target.value))} className="w-24 accent-pink-500" />
           </div>
         </div>
-        <div id="builder-preview" className="flex-1 w-full min-h-0 flex items-center justify-center">
+        <div id="builder-preview" className="flex-1 w-full min-h-0 flex items-center justify-center relative">
             <InteractiveTemplatePreview
               componentKey={selectedComponentKey}
               customData={customData}
@@ -2410,8 +2442,20 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               fullScreen={false}
             />
         </div>
+        
+        <div className="shrink-0 mt-4 overflow-x-auto pb-2 custom-scrollbar">
+          <FormStepNavigator
+            currentStepIndex={previewStepIndex}
+            totalSteps={currentConfig.totalSteps}
+            stepLabels={currentConfig.labels}
+            onStepChange={setPreviewStepIndex}
+            onPrev={() => setPreviewStepIndex(Math.max(0, previewStepIndex - 1))}
+            onNext={() => setPreviewStepIndex(Math.min(currentConfig.totalSteps - 1, previewStepIndex + 1))}
+          />
+        </div>
       </aside>
-      ) : null}
+      );
+      })() : null}
 
       {/* Lock/Unlock Confirm Modal */}
       {confirmModal && (

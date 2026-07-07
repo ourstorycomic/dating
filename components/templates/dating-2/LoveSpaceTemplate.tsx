@@ -108,7 +108,9 @@ export function LoveSpaceTemplate({ compact, fullScreen, hideNavigation, isBuild
   }, [autoPlay, compact, isBuilderPreview, customData.audioSrc]);
 
   let containerClass = "journey-container relative w-full overflow-hidden ";
-  if (compact || isBuilderPreview) {
+  if (compact) {
+    containerClass += "absolute inset-0 rounded-[2.5rem]";
+  } else if (isBuilderPreview) {
     containerClass += "h-full";
   } else if (fullScreen) {
     containerClass += "h-full";

@@ -78,6 +78,12 @@ function BirthdayScene({
   compact = false,
   autoPlay = false,
   isBuilderPreview = false,
+  instructionText,
+  wishPromptText,
+  recordingText,
+  giftPromptText,
+  bannerTitle,
+  bannerName,
   forceStep,
   onStepChange,
   onResponse,
@@ -91,6 +97,12 @@ function BirthdayScene({
   compact?: boolean;
   autoPlay?: boolean;
   isBuilderPreview?: boolean;
+  instructionText?: string;
+  wishPromptText?: string;
+  recordingText?: string;
+  giftPromptText?: string;
+  bannerTitle?: string;
+  bannerName?: string;
   forceStep?: number;
   onStepChange?: (step: number, total: number) => void;
   onResponse?: (res: any) => void;
@@ -587,23 +599,24 @@ function BirthdayScene({
 
 export function BirthdayMagicExperience(props: BirthdayMagicExperienceProps) {
   return (
-    <div className="relative h-full w-full overflow-hidden bg-black font-sans selection:bg-pink-500/30">
+    <div className={`relative overflow-hidden bg-black font-sans selection:bg-pink-500/30 ${props.compact ? 'absolute inset-0 rounded-[2.5rem]' : 'h-full w-full'}`}>
       <div className="absolute inset-0 w-full h-full">
         <BirthdayScene
           age={props.age || 20}
-          finalMessage={props.birthdayMessage || "Happy Birthday!"}
+          finalMessage={props.finalMessage || "Chúc Mừng Sinh Nhật!"}
           memories={props.memories || []}
-          messages={props.birthdayMessage ? [
-            "Chúc cậu tuổi mới ngập tràn niềm vui và hạnh phúc! ✨",
-            "Mong rằng mọi điều ước hôm nay đều sẽ thành sự thật! 💖",
-            "Hãy trân trọng từng giây phút ngọt ngào này nhé! 🥰",
-            "Và giờ... hãy đón nhận món quà bí mật tiếp theo! 🎁",
-          ] : [
+          messages={props.messages || [
             "Chúc cậu tuổi mới ngập tràn niềm vui và hạnh phúc! ✨",
             "Mong rằng mọi điều ước hôm nay đều sẽ thành sự thật! 💖",
             "Hãy trân trọng từng giây phút ngọt ngào này nhé! 🥰",
             "Và giờ... hãy đón nhận món quà bí mật tiếp theo! 🎁",
           ]}
+          instructionText={props.instructionText}
+          wishPromptText={props.wishPromptText}
+          recordingText={props.recordingText}
+          giftPromptText={props.giftPromptText}
+          bannerTitle={props.bannerTitle}
+          bannerName={props.bannerName}
           musicUrl={props.musicUrl}
           recipientName={props.recipientName || "Bạn"}
           compact={props.compact}
