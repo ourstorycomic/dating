@@ -241,7 +241,7 @@ export function InteractiveTemplatePreview({
     }
   }, [isInView]);
 
-  const isPreviewActive = props.isActive ?? ((isMobile && delayedInView) || (!isMobile && isHovered));
+  const isPreviewActive = props.isBuilderPreview || (props.isActive ?? ((isMobile && delayedInView) || (!isMobile && isHovered)));
 
   // Fast-forward audio to chorus (30s) for more engaging auto-preview
   useEffect(() => {
