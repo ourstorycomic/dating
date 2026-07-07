@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import * as THREE from "three";
 import { SkeletonUtils } from "three-stdlib";
 import type { BirthdayMagicExperienceProps, BirthdayPhase } from "./types";
+import { PHASES } from "./types";
 import { MODELS, FIRST_PAINT_MODELS, DEFAULT_BIRTHDAY_MUSIC, TOUCH_SOUND } from "./models";
 import {
   Model,
@@ -77,6 +78,9 @@ function BirthdayScene({
   compact = false,
   autoPlay = false,
   isBuilderPreview = false,
+  forceStep,
+  onStepChange,
+  onResponse,
 }: {
   recipientName: string;
   finalMessage: string;
@@ -87,8 +91,25 @@ function BirthdayScene({
   compact?: boolean;
   autoPlay?: boolean;
   isBuilderPreview?: boolean;
+  forceStep?: number;
+  onStepChange?: (step: number, total: number) => void;
+  onResponse?: (res: any) => void;
 }) {
   const [phase, setPhase] = useState<BirthdayPhase>("dark");
+
+  useEffect(() => {
+    if (forceStep !== undefined) {
+      if (forceStep >= 0 && forceStep < PHASES.length) {
+        setPhase(PHASES[forceStep] as BirthdayPhase);
+      }
+    }
+  }, [forceStep]);
+
+  useEffect(() => {
+    const currentStep = PHASES.indexOf(phase);
+    onStepChange?.(currentStep, PHASES.length - 1);
+  }, [phase, onStepChange]);
+
   const [musicActive, setMusicActive] = useState(false);
   const [catChanged, setCatChanged] = useState(false);
 
@@ -394,9 +415,9 @@ function BirthdayScene({
       </AnimatePresence>
 
       <audio src={musicUrl || DEFAULT_BIRTHDAY_MUSIC} loop preload="auto" ref={audioRef} muted={compact && !autoPlay} />
-      <audio preload="auto" ref={touchAudioRef} src={TOUCH_SOUND} muted={compact && !autoPlay} />
-      <audio preload="auto" ref={meowAudioRef} src="/assets/vfx/meow-1.mp3" muted={compact && !autoPlay} />
-      <audio preload="auto" ref={patAudioRef} src="/assets/vfx/lopi.mp3" muted={compact && !autoPlay} />
+      <audio preload="auto" ref={touchAudioRef} src={TOUCH_SOUND} muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />
+      <audio preload="auto" ref={meowAudioRef} src="/assets/vfx/meow-1.mp3" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />
+      <audio preload="auto" ref={patAudioRef} src="/assets/vfx/lopi.mp3" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />
 
       <div className="absolute inset-0 z-10">
         <Canvas
@@ -588,6 +609,9 @@ export function BirthdayMagicExperience(props: BirthdayMagicExperienceProps) {
           compact={props.compact}
           autoPlay={props.autoPlay}
           isBuilderPreview={props.isBuilderPreview}
+          onResponse={props.onResponse}
+          forceStep={props.forceStep}
+          onStepChange={props.onStepChange}
         />
       </div>
     </div>

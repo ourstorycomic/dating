@@ -212,7 +212,7 @@ export function GachaTemplate({ compact, fullScreen, hideNavigation, isBuilderPr
           <div id="preview-container" className={containerClass} style={{ backgroundImage: "url('/assets/bg/bg7.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
             <div className={`absolute inset-0 bg-pink-100/60 backdrop-blur-sm pointer-events-none ${!compact && 'rounded-[2rem]'}`} />
           
-          <audio ref={audioRef} src={data.audioSrc || GACHA_DATA.audioSrc} loop autoPlay={autoPlay} muted={compact && !isBuilderPreview && !autoPlay} />
+          <audio ref={audioRef} src={data.audioSrc || GACHA_DATA.audioSrc} loop autoPlay={autoPlay} muted={compact && !autoPlay} />
 
           {!compact && <FloatingHearts3D />}
           

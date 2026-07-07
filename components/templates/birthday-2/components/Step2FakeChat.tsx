@@ -11,7 +11,7 @@ export function Step2FakeChat({ messages, onNext, autoPlay = false, compact = fa
   
   import_react_useEffect(() => {
     if (visibleCount > 0 && visibleCount <= messages.length) {
-      if (msgSoundRef.current && !(compact && !autoPlay)) {
+      if (msgSoundRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard'))) {
         msgSoundRef.current.currentTime = 0;
         msgSoundRef.current.play().catch(() => {});
       }
@@ -45,7 +45,7 @@ export function Step2FakeChat({ messages, onNext, autoPlay = false, compact = fa
       className="absolute inset-0 flex flex-col bg-white text-black z-20"
       onClick={handleClick}
     >
-      <audio ref={msgSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay} />
+      <audio ref={msgSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />
       {/* iOS style header */}
       <div className="flex items-center justify-between px-4 pt-12 pb-3 bg-gray-100/80 backdrop-blur-md border-b border-gray-200">
         <div className="flex items-center gap-2 text-blue-500">

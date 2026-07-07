@@ -104,21 +104,21 @@ export function WillYouDateMeExperience({
   const yayAudioRef = useRef<HTMLAudioElement>(null);
 
   const playClick = () => {
-    if (clickAudioRef.current && !(compact && !autoPlay)) {
+    if (clickAudioRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard'))) {
       clickAudioRef.current.currentTime = 0;
       clickAudioRef.current.play().catch(() => {});
     }
   };
 
   const playSwoosh = () => {
-    if (swooshAudioRef.current && !(compact && !autoPlay)) {
+    if (swooshAudioRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard'))) {
       swooshAudioRef.current.currentTime = 0;
       swooshAudioRef.current.play().catch(() => {});
     }
   };
 
   const playYay = () => {
-    if (yayAudioRef.current && !(compact && !autoPlay)) {
+    if (yayAudioRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard'))) {
       yayAudioRef.current.currentTime = 0;
       yayAudioRef.current.play().catch(() => {});
     }
@@ -283,9 +283,9 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
       {generalAudioUrl && (
         <audio ref={audioRef} src={generalAudioUrl} loop preload="auto" autoPlay={autoPlay} muted={compact && !autoPlay} />
       )}
-      {clickSfxUrl && <audio ref={clickAudioRef} src={clickSfxUrl} preload="auto" muted={compact && !autoPlay} />}
-      {swooshSfxUrl && <audio ref={swooshAudioRef} src={swooshSfxUrl} preload="auto" muted={compact && !autoPlay} />}
-      {yaySfxUrl && <audio ref={yayAudioRef} src={yaySfxUrl} preload="auto" muted={compact && !autoPlay} />}
+      {clickSfxUrl && <audio ref={clickAudioRef} src={clickSfxUrl} preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />}
+      {swooshSfxUrl && <audio ref={swooshAudioRef} src={swooshSfxUrl} preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />}
+      {yaySfxUrl && <audio ref={yayAudioRef} src={yaySfxUrl} preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />}
       <>
         <FloatingClouds />
         <GlowingDust />
@@ -301,7 +301,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
+            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-6 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
           >
             { questionImage ? (
               <MediaDisplay src={questionImage} alt="question" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
@@ -312,10 +312,10 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             <div className="mx-auto my-6 h-1 w-24 rounded-full bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
             <p className="mb-8 text-lg font-semibold text-gray-700">{questionBody}</p>
             
-            <div className="flex items-center justify-center gap-4">
+            <div className="flex items-center justify-center gap-2 sm:gap-4">
               <button
                 onClick={handleYes}
-                className="rounded-full px-8 py-3 text-lg font-bold shadow-xl transition-transform hover:scale-110 active:scale-95 hover:shadow-pink-300"
+                className="rounded-full px-6 py-3 text-lg font-bold shadow-xl transition-transform hover:scale-110 active:scale-95 hover:shadow-pink-300"
                 style={{ backgroundColor: accentColor, color: "#fff", zIndex: 10 }}
               >
                 {yesButton}
@@ -326,7 +326,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
                   onClick={handleNoHover}
                   animate={{ x: noBtnPos.x, y: noBtnPos.y }}
                   transition={{ type: "spring", stiffness: 800, damping: 25 }}
-                  className="absolute left-0 top-0 z-50 flex h-full min-w-full items-center justify-center whitespace-nowrap rounded-full px-8 font-bold text-gray-700 bg-white shadow-md border-2 border-pink-100 hover:bg-pink-50"
+                  className="absolute left-0 top-0 z-50 flex h-full min-w-full items-center justify-center whitespace-nowrap rounded-full px-6 font-bold text-gray-700 bg-white shadow-md border-2 border-pink-100 hover:bg-pink-50"
                 >
                   {noBtnResponses[noHoverCount % noBtnResponses.length]}
                 </motion.button>
@@ -342,7 +342,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
+            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-6 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
           >
             { successImage ? (
               <MediaDisplay src={successImage} alt="success" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
@@ -369,7 +369,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
+            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-6 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
           >
             { locationImage ? (
               <MediaDisplay src={locationImage} alt="location" className="mb-2 h-16 w-16 sm:mb-4 sm:h-24 sm:w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
@@ -413,7 +413,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
+            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-6 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
           >
             { datetimeImage ? (
               <MediaDisplay src={datetimeImage} alt="datetime" className="mb-2 h-16 w-16 sm:mb-4 sm:h-24 sm:w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
@@ -462,7 +462,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
+            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-6 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
           >
             { foodImage ? (
               <MediaDisplay src={foodImage} alt="food" className="mb-2 h-16 w-16 sm:mb-4 sm:h-24 sm:w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
@@ -506,7 +506,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-8 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
+            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-6 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
           >
             { drinkImage ? (
               <MediaDisplay src={drinkImage} alt="drink" className="mb-2 h-16 w-16 sm:mb-4 sm:h-24 sm:w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />

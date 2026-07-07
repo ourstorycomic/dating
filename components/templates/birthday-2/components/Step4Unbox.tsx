@@ -11,7 +11,7 @@ export function Step4Unbox({ photos, onNext, autoPlay = false, compact = false }
   
   useEffect(() => {
     const t = setTimeout(() => {
-      if (popSoundRef.current && !(compact && !autoPlay)) {
+      if (popSoundRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard'))) {
         popSoundRef.current.currentTime = 0;
         popSoundRef.current.play().catch(() => {});
       }
@@ -55,7 +55,7 @@ export function Step4Unbox({ photos, onNext, autoPlay = false, compact = false }
       transition={{ duration: 0.8 }}
       className="absolute inset-0 bg-gradient-to-br from-amber-100 via-orange-50 to-orange-100 flex flex-col items-center justify-center p-6 z-40 overflow-hidden"
     >
-      <audio ref={popSoundRef} src="/assets/vfx/you-found-bojuka_2.mp3" preload="auto" muted={compact && !autoPlay} />
+      <audio ref={popSoundRef} src="/assets/vfx/you-found-bojuka_2.mp3" preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none" />
 
       {/* The box at the bottom */}

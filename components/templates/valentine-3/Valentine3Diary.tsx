@@ -20,6 +20,8 @@ export function Valentine3Diary({
   autoPlay = false,
   isBuilderPreview = false,
   onResponse,
+  forceStep,
+  onStepChange,
 }: {
   compact?: boolean;
   fullScreen?: boolean;
@@ -29,9 +31,21 @@ export function Valentine3Diary({
   autoPlay?: boolean;
   isBuilderPreview?: boolean;
   onResponse?: (res: { answer: string; message: string }) => void;
+  forceStep?: number;
+  onStepChange?: (step: number, total: number) => void;
 }) {
   const [step, setStep] = useState(1);
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    if (forceStep !== undefined) {
+      setStep(forceStep + 1);
+    }
+  }, [forceStep]);
+
+  useEffect(() => {
+    onStepChange?.(step - 1, 8);
+  }, [step, onStepChange]);
 
   const playMusic = () => {
     if (audioRef.current) {
@@ -71,7 +85,7 @@ export function Valentine3Diary({
   return (
     <div className={containerClass} style={{ backgroundImage: "url('/assets/bg/bg5.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
       <div className="absolute inset-0 bg-pink-50/70 backdrop-blur-[2px] pointer-events-none" />
-      {mergedData.musicUrl && <audio ref={audioRef} src={mergedData.musicUrl} loop preload="auto" muted={isMuted} />}
+      {mergedData.musicUrl && <audio ref={audioRef} src={mergedData.musicUrl} loop preload="auto" muted={compact && !autoPlay} />}
 
       {!compact && <FloatingParticles />}
 

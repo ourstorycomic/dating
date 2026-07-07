@@ -15,6 +15,8 @@ export type TemplatePreviewProps = {
   autoPlay?: boolean;
   roomId?: string;
   onResponse?: (response: { answer: string; message?: string; audioDataUrl?: string; date?: string }) => void;
+  forceStep?: number;
+  onStepChange?: (step: number, total: number) => void;
   customData?: {
     forceStage?: string | number;
     anniversaryCode?: string;

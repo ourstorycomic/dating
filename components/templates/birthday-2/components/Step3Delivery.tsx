@@ -41,7 +41,7 @@ export function Step3Delivery({ onNext, autoPlay = false, compact = false, photo
     // Show popup shortly after entering this step (as if interrupted)
     const t = setTimeout(() => {
       setShowPopup(true);
-      if (popupSoundRef.current && !(compact && !autoPlay)) {
+      if (popupSoundRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard'))) {
         popupSoundRef.current.currentTime = 0;
         popupSoundRef.current.play().catch(() => {});
       }
@@ -124,7 +124,7 @@ export function Step3Delivery({ onNext, autoPlay = false, compact = false, photo
 
   return (
     <>
-    <audio ref={popupSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay} />
+    <audio ref={popupSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}

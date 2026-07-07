@@ -190,7 +190,7 @@ export default function Sorry3Template({ autoPlay = false, compact = false, hide
       style={{ backgroundImage: "url('/assets/bg/bg5.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
       <div className={`absolute inset-0 transition-colors duration-1000 backdrop-blur-[2px] pointer-events-none ${getContainerBg()}`} />
-      {generalAudioUrl && <audio ref={audioRef} src={generalAudioUrl} autoPlay loop muted={compact && !isBuilderPreview && !autoPlay} />}
+      {generalAudioUrl && <audio ref={audioRef} src={generalAudioUrl} autoPlay loop muted={compact && !autoPlay} />}
       <div className="absolute inset-0 pointer-events-none z-0">
         {step >= 3 && <BackgroundEffects step={step} />}
         {step >= 3 && <FloatingParticles step={step} />}
@@ -889,7 +889,7 @@ function Step7Inbox({ onNext, autoPlay, compact, config }: { onNext: () => void;
   const msgSoundRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
-    if (msgSoundRef.current && !(compact && !autoPlay)) {
+    if (msgSoundRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard'))) {
       msgSoundRef.current.play().catch(() => {});
     }
   }, [compact, autoPlay]);
@@ -909,7 +909,7 @@ function Step7Inbox({ onNext, autoPlay, compact, config }: { onNext: () => void;
 
   return (
     <>
-    <audio ref={msgSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay} />
+    <audio ref={msgSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}

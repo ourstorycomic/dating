@@ -139,7 +139,7 @@ export function Valentine2WatchParty({
 
   return (
     <div className={containerClass}>
-      {data.musicUrl ? <audio ref={audioRef} src={data.musicUrl} loop preload="auto" muted={compact && !isBuilderPreview && !autoPlay} /> : null}
+      {data.musicUrl ? <audio ref={audioRef} src={data.musicUrl} loop preload="auto" muted={compact && !autoPlay} /> : null}
 
       {/* Particles: romantic in scrapbook, subtle cinematic in movie steps */}
       {!compact && !isCinemaMode && <FloatingParticles fullWidth={fullScreen} cinema={false} />}

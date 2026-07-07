@@ -32,6 +32,8 @@ export function BirthdayMagicPreview(props: TemplatePreviewProps) {
       final3DSignature={parsedConfig.final3DSignature as string | undefined}
       onResponse={props.onResponse}
       autoPlay={props.autoPlay}
+      forceStep={props.forceStep}
+      onStepChange={props.onStepChange}
     />
   );
 }

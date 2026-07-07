@@ -88,7 +88,7 @@ export function Step5Cake({ onNext, autoPlay = false, compact = false }: { onNex
 
   return (
     <>
-    <audio ref={blowSoundRef} src="/assets/vfx/partyblower.mp3" preload="auto" muted={compact && !autoPlay} />
+    <audio ref={blowSoundRef} src="/assets/vfx/partyblower.mp3" preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}

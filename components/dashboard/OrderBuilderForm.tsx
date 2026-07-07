@@ -655,9 +655,9 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
 
   const selectedTemplate = useMemo(
     () =>
-      loadedTemplate?.id === selectedTemplateId
+      String(loadedTemplate?.id) === String(selectedTemplateId)
         ? (loadedTemplate as any)
-        : templates.find((template) => template.id === selectedTemplateId) ?? valentineOne,
+        : templates.find((template) => String(template.id) === String(selectedTemplateId)) ?? valentineOne,
     [selectedTemplateId, templates, valentineOne, loadedTemplate],
   );
 
@@ -861,15 +861,41 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     return () => clearInterval(interval);
   }, [result]);
 
+  const previewAudioRef = useRef<HTMLAudioElement | null>(null);
+
   // Control audio volume inside the preview
   useEffect(() => {
     if (typeof document === "undefined") return;
     const audios = document.querySelectorAll("#builder-preview audio");
     audios.forEach((audio: any) => {
       audio.volume = builderVolume;
-      audio.play().catch(() => {});
     });
-  }, [generalAudioUrl, builderVolume, selectedTemplateId, selectedComponentKey, customData]);
+    if (previewAudioRef.current) {
+      previewAudioRef.current.volume = builderVolume;
+    }
+  }, [builderVolume, selectedTemplateId, selectedComponentKey, customData]);
+
+  // Dedicated background music previewer
+  useEffect(() => {
+    if (typeof window === "undefined" || !generalAudioUrl) return;
+    
+    if (previewAudioRef.current) {
+      previewAudioRef.current.pause();
+    }
+    
+    const audio = new Audio(generalAudioUrl);
+    previewAudioRef.current = audio;
+    audio.volume = builderVolume;
+    audio.loop = true;
+    
+    audio.play().catch(() => {});
+
+    return () => {
+      audio.pause();
+      audio.src = "";
+    };
+  }, [generalAudioUrl]);
+
 
   async function createOrder() {
     setIsSubmitting(true);
@@ -1059,7 +1085,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   }
 
   function loadOrder(order: any) {
-    const template = getRelationOne(order.templates) || templates.find(t => t.id === order.template_id);
+    const cd = order.custom_data || {};
+    const template = getRelationOne(order.templates) || templates.find(t => t.id === order.template_id) || templates.find(t => t.component_key === cd.componentKey || t.slug === cd.componentKey);
     const payment = getRelationOne(order.payments);
     const paid = order.status === "ACTIVE" || payment?.status === "PAID";
     
@@ -1090,7 +1117,6 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     }
     
     // Nếu có package được lưu trong customData thì load lên
-    const cd = order.custom_data || {};
     if (cd.servicePackage) setSelectedPackage(cd.servicePackage);
     
     if (cd.question) setQuestion(cd.question);
@@ -1207,7 +1233,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               onFocus={() => {
                 setIsDropdownOpen(true);
                 // Nếu click vào mà tên template đang khớp, bôi đen để tiện gõ đè (search)
-                if (templateSearch === templates.find(t => t.id === selectedTemplateId)?.name) {
+                if (templateSearch === templates.find(t => String(t.id) === String(selectedTemplateId))?.name) {
                   setTemplateSearch("");
                 }
               }}
@@ -2369,7 +2395,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
             <input type="range" min="0" max="1" step="0.05" value={builderVolume} onChange={(e) => setBuilderVolume(Number(e.target.value))} className="w-24 accent-pink-500" />
           </div>
         </div>
-        <div id="builder-preview" className="flex-1 w-full flex items-center justify-center">
+        <div id="builder-preview" className="flex-1 w-full min-h-0 flex items-center justify-center">
             <InteractiveTemplatePreview
               componentKey={selectedComponentKey}
               customData={customData}
@@ -2377,6 +2403,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               recipientName={recipientName || "Em"}
               senderName={senderName || "Anh"}
               visualLabel={selectedTemplate?.visual_label}
+              generalAudioUrl={generalAudioUrl}
+              musicUrl={generalAudioUrl}
               compact={true}
               isBuilderPreview={true}
               fullScreen={false}

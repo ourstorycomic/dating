@@ -118,8 +118,8 @@ function TemplatePreviewArea({ template }: { template: HomeTemplate }) {
           {/* ── Live preview — lazy-mounted, shown on hover ── */}
           {hovered && (
             <div
-              className="absolute inset-0 transition-opacity duration-300"
-              style={{ opacity: hovered ? 1 : 0, pointerEvents: hovered ? "auto" : "none" }}
+              className={`${phoneFrameCls} absolute inset-0 transition-opacity duration-300`}
+              style={{ opacity: hovered ? 1 : 0, pointerEvents: hovered ? "auto" : "none", WebkitMaskImage: '-webkit-radial-gradient(white, black)' }}
             >
               <InteractiveTemplatePreview
                 noFrame
@@ -136,16 +136,18 @@ function TemplatePreviewArea({ template }: { template: HomeTemplate }) {
         </>
       ) : (
         /* ── No thumbnail: render live preview immediately (fallback) ── */
-        <InteractiveTemplatePreview
-                noFrame
-                compact
-          componentKey={template.component_key}
-          gradient={template.gradient}
-          visualLabel={template.visual_label}
-          hideNavigation={true}
-          forceRandomMusic={true}
-          isActive={hovered}
-        />
+        <div className={`${phoneFrameCls} w-full h-full`} style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)' }}>
+          <InteractiveTemplatePreview
+            noFrame
+            compact
+            componentKey={template.component_key}
+            gradient={template.gradient}
+            visualLabel={template.visual_label}
+            hideNavigation={true}
+            forceRandomMusic={true}
+            isActive={hovered}
+          />
+        </div>
       )}
     </div>
   );

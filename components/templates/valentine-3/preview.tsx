@@ -18,6 +18,8 @@ export function Valentine3Preview({
       roomId={roomId}
       autoPlay={props.autoPlay}
       onResponse={props.onResponse}
+      forceStep={props.forceStep}
+      onStepChange={props.onStepChange}
     />
   );
 }

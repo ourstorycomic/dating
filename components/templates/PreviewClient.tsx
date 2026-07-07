@@ -271,7 +271,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                      >
                        <InteractiveTemplatePreview
                           key="preview-mobile"
-                         compact={false}
+                         compact={true}
                          isBuilderPreview={true}
                          noFrame={true}
                          componentKey={template.component_key}
@@ -292,7 +292,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                      >
                        <InteractiveTemplatePreview
                           key="preview-desktop"
-                         compact={false}
+                         compact={true}
                          isBuilderPreview={true}
                          noFrame={true}
                          componentKey={template.component_key}

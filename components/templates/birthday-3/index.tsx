@@ -179,7 +179,7 @@ function Step1Knock({ onNext, autoPlay, compact, config }: { onNext: () => void;
   const handleKnock = () => {
     if (knocks < 3 && !autoPlay) {
       setKnocks(prev => prev + 1);
-      if (knockSoundRef.current && !(compact && !autoPlay)) {
+      if (knockSoundRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard'))) {
         knockSoundRef.current.currentTime = 0;
         knockSoundRef.current.play().catch(() => {});
       }
@@ -208,7 +208,7 @@ function Step1Knock({ onNext, autoPlay, compact, config }: { onNext: () => void;
 
   return (
     <>
-    <audio ref={knockSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay} />
+    <audio ref={knockSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -301,7 +301,7 @@ function Step2Surprise({ onNext, autoPlay, compact, config }: { onNext: () => vo
 
   const triggerSurprise = () => {
     setIsOn(true);
-    if (hornSoundRef.current && !(compact && !autoPlay)) {
+    if (hornSoundRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard'))) {
       hornSoundRef.current.currentTime = 0;
       hornSoundRef.current.play().catch(() => {});
     }
@@ -320,7 +320,7 @@ function Step2Surprise({ onNext, autoPlay, compact, config }: { onNext: () => vo
     if (info.offset.y > 50 && !autoPlay && !isOn) {
       // Play switch click sound
       const audio = new Audio("/assets/vfx/touch.mp3");
-      if (!(compact && !autoPlay)) {
+      if (!(compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard'))) {
         audio.play().catch(() => {});
       }
       
@@ -347,7 +347,7 @@ function Step2Surprise({ onNext, autoPlay, compact, config }: { onNext: () => vo
 
   return (
     <>
-    <audio ref={hornSoundRef} src="/assets/vfx/partyblower.mp3" preload="auto" muted={compact && !autoPlay} />
+    <audio ref={hornSoundRef} src="/assets/vfx/partyblower.mp3" preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, backgroundColor: isOn ? "#fff7ed" : "#0f172a" }}

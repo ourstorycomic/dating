@@ -272,7 +272,7 @@ function Step3Whack({ onNext, autoPlay, weapon, compact, config }: { onNext: () 
   const handleHit = (index: number, cx: number, cy: number) => {
     if (index !== activeHole || health >= maxHealth) return;
 
-    if (hitSoundRef.current && !(compact && !autoPlay)) {
+    if (hitSoundRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard'))) {
       hitSoundRef.current.currentTime = 0;
       hitSoundRef.current.play().catch(() => {});
     }
@@ -299,7 +299,7 @@ function Step3Whack({ onNext, autoPlay, weapon, compact, config }: { onNext: () 
 
   return (
     <>
-    <audio ref={hitSoundRef} src="/assets/vfx/lopi.mp3" preload="auto" muted={compact && !autoPlay} />
+    <audio ref={hitSoundRef} src="/assets/vfx/lopi.mp3" preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />
     <motion.div
       ref={containerRef}
       key="step3"
@@ -769,7 +769,7 @@ export default function Sorry2Template({ compact = false, autoPlay = false, hide
       style={{ backgroundImage: currentImg, backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
       <div className={`absolute inset-0 bg-gradient-to-b ${currentBg} backdrop-blur-sm bg-opacity-80`} />
-      {generalAudioUrl && <audio ref={audioRef} src={generalAudioUrl} loop autoPlay={autoPlay} muted={compact && !isBuilderPreview && !autoPlay} />}
+      {generalAudioUrl && <audio ref={audioRef} src={generalAudioUrl} loop autoPlay={autoPlay} muted={compact && !autoPlay} />}
       <FloatingParticles step={step} />
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-50" />
 

@@ -11,7 +11,7 @@ import { Step5Cake } from "./components/Step5Cake";
 import { Step6Letter } from "./components/Step6Letter";
 import { Step7Climax } from "./components/Step7Climax";
 
-export default function Birthday2Diary({ autoPlay = false, compact = false, isBuilderPreview = false, generalAudioUrl }: { autoPlay?: boolean; compact?: boolean; isBuilderPreview?: boolean; generalAudioUrl?: string }) {
+export default function Birthday2Diary({ autoPlay = false, compact = false, isBuilderPreview = false, generalAudioUrl, forceStep, onStepChange }: { autoPlay?: boolean; compact?: boolean; isBuilderPreview?: boolean; generalAudioUrl?: string; forceStep?: number; onStepChange?: (step: number, total: number) => void }) {
   const [step, setStep] = useState(1);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -23,6 +23,16 @@ export default function Birthday2Diary({ autoPlay = false, compact = false, isBu
     }
   }, [autoPlay, compact, isBuilderPreview, generalAudioUrl]);
 
+  useEffect(() => {
+    if (forceStep !== undefined) {
+      setStep(forceStep + 1);
+    }
+  }, [forceStep]);
+
+  useEffect(() => {
+    onStepChange?.(step - 1, 7);
+  }, [step, onStepChange]);
+
   const handleNext = () => setStep((s) => s + 1);
 
   return (
@@ -30,7 +40,7 @@ export default function Birthday2Diary({ autoPlay = false, compact = false, isBu
       className={`relative w-full overflow-hidden text-slate-800 font-sans mx-auto h-full bg-pink-50`}
       style={{ backgroundImage: "url('/assets/bg/bg2.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
-      {generalAudioUrl && <audio ref={audioRef} src={generalAudioUrl} loop muted={compact && !isBuilderPreview && !autoPlay} />}
+      {generalAudioUrl && <audio ref={audioRef} src={generalAudioUrl} loop muted={compact && !autoPlay} />}
       <div className="absolute inset-0 bg-pink-100/60 backdrop-blur-sm" />
       <AnimatePresence mode="wait">
         {step === 1 && <Step1Alarm key="step1" onNext={handleNext} autoPlay={autoPlay} compact={compact} />}

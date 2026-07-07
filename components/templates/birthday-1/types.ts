@@ -39,4 +39,6 @@ export interface BirthdayMagicExperienceProps {
   greetingCardSignature?: string;
   final3DSignature?: string;
   onResponse?: (response: { answer: string; message?: string; audioDataUrl?: string; date?: string }) => void;
+  forceStep?: number;
+  onStepChange?: (step: number, total: number) => void;
 }
