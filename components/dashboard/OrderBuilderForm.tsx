@@ -1633,7 +1633,6 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               <>
                 <Section title="Khối 1: Bánh kem & Thắp nến">
                   <TextInput label="Độ tuổi (Cắm nến số)" onChange={setBirthdayAge} value={birthdayAge} />
-                  <MediaInput label="Nhạc nền tổng thể" accept="audio/*" onChange={(url) => setGeneralAudioUrl(url)} />
                   <div className="md:col-span-2">
                     <TextInput label="Chỉ dẫn thắp nến (Mặc định: Quẹt diêm 3 lần để thắp nến nhé!)" onChange={setBirthdayInstructionText} value={birthdayInstructionText} />
                   </div>
@@ -1679,7 +1678,6 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                 </Section>
                 <Section title="Bước 2: Dò đài Radio">
                   <TextInput label="Gợi ý dò đài Radio" value={dating2Config.radioHint} onChange={(v) => setDating2Config({ ...dating2Config, radioHint: v })} />
-                  <MediaInput label="Link nhạc nền chung (.mp3)" accept="audio/*" onChange={(url) => setGeneralAudioUrl(url)} />
                 </Section>
                 <Section title="Bước 3: Tâm trạng">
                   <TextArea label="Tiêu đề hỏi thăm" value={dating2Config.vibeTitle} onChange={(v) => setDating2Config({ ...dating2Config, vibeTitle: v })} />
@@ -1796,7 +1794,6 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                   <ColorInput label="Màu nền tổng thể" onCommit={setStage2Background} value={stage2Background} />
                   <ColorInput label="Màu nhấn (Nút, Tiêu đề)" onCommit={setStage1Accent} value={stage1Accent} />
                   <MediaInput label="Ảnh nền trang (Tùy chọn)" onChange={setStage1Background} />
-                  <ThemeMusicSelector theme={getThemeFromComponentKey(selectedComponentKey)} label="Nhạc nền chung" value={generalAudioUrl} onChange={setGeneralAudioUrl} />
                 </Section>
                 <Section title="Bước 1: Lời mời">
                   <TextInput label="Tiêu đề lời mời" onChange={setStage1Instruction} value={stage1Instruction} />
