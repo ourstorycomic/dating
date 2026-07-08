@@ -294,6 +294,9 @@ function BirthdayScene({
   }
 
   function handleWishRecorded(audioUrl: string) {
+    if (audioUrl && onResponse) {
+      onResponse({ answer: "WISH_RECORDED", audioDataUrl: audioUrl });
+    }
     setPhase("celebration");
     setCelebrationState("landed");
   }

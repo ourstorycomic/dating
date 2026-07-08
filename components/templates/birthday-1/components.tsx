@@ -2529,6 +2529,12 @@ export function HangingGallery({
             border: 2px solid #d4c1a5;
             text-align: center;
             position: relative;
+            transform-origin: top center;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
           }
           .envelope-card::before {
             content: '';
