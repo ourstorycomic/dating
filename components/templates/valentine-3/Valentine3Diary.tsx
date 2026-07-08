@@ -23,6 +23,7 @@ export function Valentine3Diary({
   onResponse,
   forceStep,
   onStepChange,
+  hideNavigation = false,
 }: {
   compact?: boolean;
   fullScreen?: boolean;
