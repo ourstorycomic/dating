@@ -2464,9 +2464,11 @@ export function HangingGallery({
     { imageUrl: "/assets/lovepics/4.jpg", message: "Mãi bên nhau cậu nhé! 🥰" }
   ];
 
-  const startX = -1.5;
-  const ropeLength = displayMemories.length * 3.5 + 4;
-  const endX = startX + ropeLength;
+  // Extend the rope far to the left and right so ends are off-screen
+  const ropeStartX = -10.0;
+  const memoriesSpan = displayMemories.length * 3.5 + 3.5; // total span of items
+  const ropeLength = memoriesSpan + 20.0; // add 10 padding on both sides
+  const ropeEndX = ropeStartX + ropeLength;
 
   return (
     <group position={[0, 0.0, 0]}>
@@ -2539,12 +2541,12 @@ export function HangingGallery({
       </Html>
 
       {/* Dây thừng toán học (Parabol) */}
-      <CurvedRope startX={startX} endX={endX} y={1.8} />
+      <CurvedRope startX={ropeStartX} endX={ropeEndX} y={1.8} />
 
       {displayMemories.map((memory, index) => {
-        const xPos = startX + 1.5 + index * 3.5;
+        const xPos = 0.0 + index * 3.5; // Item positions unchanged
         return (
-          <HangingItem key={index} x={xPos} startX={startX} ropeLength={ropeLength} index={index}>
+          <HangingItem key={index} x={xPos} startX={ropeStartX} ropeLength={ropeLength} index={index}>
             <div className="polaroid-card">
               <MediaDisplay src={memory.imageUrl} className="polaroid-img" alt="Memory" />
               <div className="polaroid-caption">{memory.message}</div>
@@ -2553,7 +2555,7 @@ export function HangingGallery({
         );
       })}
 
-      <HangingItem x={startX + 1.5 + displayMemories.length * 3.5} startX={startX} ropeLength={ropeLength} index={displayMemories.length} isLetter>
+      <HangingItem x={0.0 + displayMemories.length * 3.5} startX={ropeStartX} ropeLength={ropeLength} index={displayMemories.length} isLetter>
         <div className="envelope-card">
           <div className="letter-text">{finalMessage}</div>
         </div>
