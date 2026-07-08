@@ -24,10 +24,10 @@ export function BirthdayMagicPreview(props: TemplatePreviewProps) {
       wishPromptText={parsedConfig.wishPromptText as string | undefined}
       recordingText={parsedConfig.recordingText as string | undefined}
       giftPromptText={parsedConfig.giftPromptText as string | undefined}
-      messages={parsedConfig.birthdayMessage ? (parsedConfig.birthdayMessage as string).split('\n').filter(Boolean) : undefined}
-      finalMessage={parsedConfig.final3DSignature as string | undefined}
-      bannerTitle={parsedConfig.greetingCardSignature as string | undefined}
-      bannerName={parsedConfig.final3DSignature as string | undefined}
+      messages={parsedConfig.messages || (parsedConfig.birthdayMessage ? (parsedConfig.birthdayMessage as string).split('\n').filter(Boolean) : undefined)}
+      finalMessage={parsedConfig.finalMessage as string | undefined}
+      bannerTitle={parsedConfig.bannerTitle || parsedConfig.greetingCardSignature as string | undefined}
+      bannerName={parsedConfig.bannerName || parsedConfig.final3DSignature as string | undefined}
       onResponse={props.onResponse}
       autoPlay={props.autoPlay}
       forceStep={props.forceStep}

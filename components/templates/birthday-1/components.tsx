@@ -2054,7 +2054,7 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
           {phase !== "match-ignite" && phase !== "wish-record" && (
             <group>
               <group scale={0.7} position={[0, 5.0, 0]}>
-                <BirthdayBanner name={recipientName || ""} visible={phase === "celebration"} position={[0, 0, 0]} />
+                <BirthdayBanner name={bannerName || recipientName || ""} title={bannerTitle} visible={phase === "celebration"} position={[0, 0, 0]} />
               </group>
               <NormalizedModel desiredHeight={2.85} position={[0, 1.425, 0]} url={MODELS.cake} />
               <NumberCandle age={age} lit={lit} position={[0, 2.22, 0.4]} scale={0.9} />
@@ -2188,7 +2188,7 @@ export function CelebrationEffects() {
   );
 }
 
-export function BirthdayBanner({ name, visible = true, position = [0, 3.2, 0] }: { name: string; visible?: boolean; position?: [number, number, number] }) {
+export function BirthdayBanner({ name, title, visible = true, position = [0, 3.2, 0] }: { name: string; title?: string; visible?: boolean; position?: [number, number, number] }) {
   if (!visible) return null;
   return (
     <Html center position={position} zIndexRange={[100, 90]}>
@@ -2204,7 +2204,7 @@ export function BirthdayBanner({ name, visible = true, position = [0, 3.2, 0] }:
           <div className="absolute right-[15%] top-0 h-6 w-1.5 bg-[#e0a6c8]/80 shadow-sm" />
           
           <div className="mt-4 max-w-[90vw] rounded-b-2xl rounded-t-sm border-b-4 border-[#ffb6e0] bg-gradient-to-b from-[#ffeff8] to-[#ffdbef] px-6 py-3 text-center shadow-[0_10px_20px_rgba(255,120,180,0.4)]">
-            <div className="text-xs md:text-sm font-bold tracking-widest text-[#ff59ab] drop-shadow-sm uppercase">Chúc Mừng Sinh Nhật</div>
+            <div className="text-xs md:text-sm font-bold tracking-widest text-[#ff59ab] drop-shadow-sm uppercase">{title || "Chúc Mừng Sinh Nhật"}</div>
             <div className={`mt-1 font-black text-[#d6287c] drop-shadow-md uppercase ${name && name.length > 12 ? 'text-lg md:text-xl' : 'text-2xl md:text-3xl'}`}>{name || "Bạn"}</div>
           </div>
         </motion.div>

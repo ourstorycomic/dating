@@ -533,6 +533,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const [birthdayBalloonText, setBirthdayBalloonText] = useState("HPBD Em!");
   const [birthdayGreetingCardSignature, setBirthdayGreetingCardSignature] = useState("CHÚC MỪNG SINH NHẬT");
   const [birthdayFinal3DSignature, setBirthdayFinal3DSignature] = useState("EM");
+  const [birthdayFinalMessage, setBirthdayFinalMessage] = useState("Chúc Mừng Sinh Nhật!");
 
   const [stage1Instruction, setStage1Instruction] = useState("Nối các ngôi sao");
   const [stage1Background, setStage1Background] = useState("#05020a");
@@ -835,6 +836,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
       balloonText: birthdayBalloonText,
       bannerTitle: birthdayGreetingCardSignature,
       bannerName: birthdayFinal3DSignature,
+      finalMessage: birthdayFinalMessage,
     } : isWillYouDateMe ? {
       questionTitle: stage1Instruction,
       questionBody: question,
@@ -1204,8 +1206,13 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     if (cd.recordingCompleteButton) setBirthdayRecordingCompleteButton(cd.recordingCompleteButton);
     if (cd.giftPromptText) setBirthdayGiftPromptText(cd.giftPromptText);
     if (cd.balloonText) setBirthdayBalloonText(cd.balloonText);
-    if (cd.greetingCardSignature) setBirthdayGreetingCardSignature(cd.greetingCardSignature);
-    if (cd.final3DSignature) setBirthdayFinal3DSignature(cd.final3DSignature);
+    if (cd.bannerTitle) setBirthdayGreetingCardSignature(cd.bannerTitle);
+    else if (cd.greetingCardSignature) setBirthdayGreetingCardSignature(cd.greetingCardSignature);
+    
+    if (cd.bannerName) setBirthdayFinal3DSignature(cd.bannerName);
+    else if (cd.final3DSignature) setBirthdayFinal3DSignature(cd.final3DSignature);
+    
+    if (cd.finalMessage) setBirthdayFinalMessage(cd.finalMessage);
     setDynamicData(cd);
     
     setIsLocked(cd.isLocked ?? false);
@@ -1660,6 +1667,9 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                 </Section>
                 <Section title="Đoạn 9/10 & 10/10: Kỷ niệm">
                   <MemoryArrayInput label="Danh sách ảnh kỷ niệm quay quanh khung hình" values={birthdayMemories} onChange={setBirthdayMemories} />
+                  <div className="md:col-span-2">
+                    <TextInput label="Lời nhắn cuối cùng (Chặng 10)" onChange={setBirthdayFinalMessage} value={birthdayFinalMessage} />
+                  </div>
                 </Section>
               </>
             ) : isDating2 ? (
