@@ -12,7 +12,7 @@ export default async function NewOrderPage() {
   ]);
 
   const permissions = (userRecord?.custom_roles as any)?.permissions || [];
-  const canCreateFree = userRecord?.role === "ADMIN" || permissions.includes("orders:create_free");
+  const canCreateFree = session?.role === "ADMIN" || userRecord?.role === "ADMIN" || permissions.includes("orders:create_free");
 
   return (
     <div className="grid gap-6">

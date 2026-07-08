@@ -44,7 +44,7 @@ export async function POST(request: Request) {
   const supabase = createServerSupabaseClient();
   const { data: userRecord } = await supabase.from("users").select("role, custom_roles(permissions)").eq("id", session.userId).single();
   const permissions = (userRecord?.custom_roles as any)?.permissions || [];
-  const canCreateFree = userRecord?.role === "ADMIN" || permissions.includes("orders:create_free");
+  const canCreateFree = session.role === "ADMIN" || userRecord?.role === "ADMIN" || permissions.includes("orders:create_free");
 
   const body = await request.json();
   const templateId = body.templateId as string | undefined;
@@ -76,7 +76,7 @@ export async function POST(request: Request) {
     }
   }
 
-  const isFreeOrder = Boolean(body.isFreeOrder) && canCreateFree;
+  const isFreeOrder = session.role === "ADMIN" || (Boolean(body.isFreeOrder) && canCreateFree);
   
   // Cho phép client truyền giá (dùng cho các gói dịch vụ khác nhau)
   const amount = isFreeOrder 
