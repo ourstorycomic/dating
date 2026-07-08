@@ -12,6 +12,7 @@ import { Step5FakeChat } from "./components/Step5FakeChat";
 import { Step6PolaroidSwipe } from "./components/Step6PolaroidSwipe";
 import { Step7Letter } from "./components/Step7Letter";
 import { Step8Climax } from "./components/Step8Climax";
+import { TemplateNavigator } from "../TemplateNavigator";
 
 export function Valentine3Diary({
   compact = false,
@@ -165,6 +166,15 @@ export function Valentine3Diary({
             />
           )}
         </AnimatePresence>
+        
+        <TemplateNavigator
+          currentIndex={step - 1}
+          totalSteps={8}
+          onPrev={() => setStep(Math.max(1, step - 1))}
+          onNext={() => setStep(Math.min(8, step + 1))}
+          accentColor="#ec4899"
+          isHidden={hideNavigation || autoPlay}
+        />
       </div>
     </div>
   );

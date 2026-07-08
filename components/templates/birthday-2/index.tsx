@@ -10,8 +10,9 @@ import { Step4Unbox } from "./components/Step4Unbox";
 import { Step5Cake } from "./components/Step5Cake";
 import { Step6Letter } from "./components/Step6Letter";
 import { Step7Climax } from "./components/Step7Climax";
+import { TemplateNavigator } from "../TemplateNavigator";
 
-export default function Birthday2Diary({ autoPlay = false, compact = false, isBuilderPreview = false, generalAudioUrl, forceStep, onStepChange }: { autoPlay?: boolean; compact?: boolean; isBuilderPreview?: boolean; generalAudioUrl?: string; forceStep?: number; onStepChange?: (step: number, total: number) => void }) {
+export default function Birthday2Diary({ autoPlay = false, compact = false, isBuilderPreview = false, generalAudioUrl, forceStep, onStepChange, hideNavigation = false }: { autoPlay?: boolean; compact?: boolean; isBuilderPreview?: boolean; generalAudioUrl?: string; forceStep?: number; onStepChange?: (step: number, total: number) => void; hideNavigation?: boolean }) {
   const [step, setStep] = useState(1);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -51,6 +52,14 @@ export default function Birthday2Diary({ autoPlay = false, compact = false, isBu
         {step === 6 && <Step6Letter key="step6" letter={BIRTHDAY_DATA.letter} onNext={handleNext} autoPlay={autoPlay} compact={compact} />}
         {step === 7 && <Step7Climax key="step7" autoPlay={autoPlay} onNext={() => autoPlay && setStep(1)} />}
       </AnimatePresence>
+      <TemplateNavigator
+        currentIndex={step - 1}
+        totalSteps={7}
+        onPrev={() => setStep(Math.max(1, step - 1))}
+        onNext={() => setStep(Math.min(7, step + 1))}
+        accentColor="#db2777"
+        isHidden={hideNavigation || autoPlay}
+      />
     </div>
   );
 }
