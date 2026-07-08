@@ -442,7 +442,7 @@ export function CameraRig({
     let lerpSpeed = 1.2; let lookLerpSpeed = 1.5;
 
     if (phase === "dark") {
-      targetCameraPos.set(0, -0.1, 3.5); lookY.current = -0.5; lookX.current = 0;
+      targetCameraPos.set(0, 0.0, 3.5); lookY.current = 0.0; lookX.current = 0;
     } else if (phase === "music" || phase === "decorate-popup") {
       targetCameraPos.set(0, musicActive ? 0.4 : 0.6, musicActive ? 3.0 : 3.5);
       lookY.current = musicActive ? -0.6 : -0.4; lookX.current = 0;
