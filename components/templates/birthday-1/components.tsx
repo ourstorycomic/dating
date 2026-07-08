@@ -461,7 +461,7 @@ export function CameraRig({
         targetCameraPos.set(1.6, -1.2, 7.0); lookY.current = -1.75; lookX.current = 1.6;
         lerpSpeed = 2.0; lookLerpSpeed = 2.0;
       } else {
-        targetCameraPos.set(0, 0.5, 12.0); lookY.current = -0.5; lookX.current = 0;
+        targetCameraPos.set(0, 0.5, 5.5); lookY.current = -0.5; lookX.current = 0;
         lerpSpeed = 2.0; lookLerpSpeed = 2.0;
       }
     } else if (phase === "gift-reveal") {
