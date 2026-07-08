@@ -437,7 +437,7 @@ function BirthdayScene({
       <div className="absolute inset-0 z-10">
         <Canvas
           resize={{ offsetSize: true }}
-          camera={{ fov: 50, position: [0, 0.35, 2.65] }}
+          camera={{ fov: 46, position: [0, 0.35, 2.65] }}
           shadows
           gl={{ alpha: false, antialias: true }}
           onCreated={({ gl }) => {
@@ -517,6 +517,7 @@ function BirthdayScene({
 
           {(phase === "music" || phase === "decorate-popup") && (
             <group>
+              {musicActive && (
               <MusicCatWalk
                 hideHtml={false}
                 interactive={true}
@@ -527,6 +528,7 @@ function BirthdayScene({
                 onPlayTouch={playTouch}
                 onCatChanged={() => { if (!catChanged) setCatChanged(true); }}
               />
+              )}
 
               <CartoonPop position={[0, -0.85, 0.05]} signal={gramophoneSignal}>
                 <RotatableGramophone interactive={true} musicActive={musicActive} onClick={musicActive ? () => { } : startMusic} />
