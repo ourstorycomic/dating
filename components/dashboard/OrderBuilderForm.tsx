@@ -2444,17 +2444,6 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               fullScreen={false}
             />
         </div>
-        
-        <div className="shrink-0 mt-4 overflow-x-auto pb-2 custom-scrollbar">
-          <FormStepNavigator
-            currentStepIndex={previewStepIndex}
-            totalSteps={currentConfig.totalSteps}
-            stepLabels={currentConfig.labels}
-            onStepChange={setPreviewStepIndex}
-            onPrev={() => setPreviewStepIndex(Math.max(0, previewStepIndex - 1))}
-            onNext={() => setPreviewStepIndex(Math.min(currentConfig.totalSteps - 1, previewStepIndex + 1))}
-          />
-        </div>
       </aside>
       );
       })() : null}

@@ -9,6 +9,7 @@ import * as THREE from "three";
 import { SkeletonUtils } from "three-stdlib";
 import type { BirthdayMagicExperienceProps, BirthdayPhase } from "./types";
 import { PHASES } from "./types";
+import { TemplateNavigator } from "../shared/TemplateNavigator";
 import { MODELS, FIRST_PAINT_MODELS, DEFAULT_BIRTHDAY_MUSIC, TOUCH_SOUND } from "./models";
 import {
   Model,
@@ -106,6 +107,7 @@ function BirthdayScene({
   forceStep?: number;
   onStepChange?: (step: number, total: number) => void;
   onResponse?: (res: any) => void;
+  hideNavigation?: boolean;
 }) {
   const [phase, setPhase] = useState<BirthdayPhase>("dark");
 
@@ -593,13 +595,23 @@ function BirthdayScene({
 
       <AnimatePresence>
       </AnimatePresence>
+      
+      {(!hideNavigation && !autoPlay) && (
+        <TemplateNavigator
+          currentStep={PHASES.indexOf(phase)}
+          totalSteps={PHASES.length}
+          onPrev={() => setPhase(PHASES[Math.max(0, PHASES.indexOf(phase) - 1)] as BirthdayPhase)}
+          onNext={() => setPhase(PHASES[Math.min(PHASES.length - 1, PHASES.indexOf(phase) + 1)] as BirthdayPhase)}
+          accentColor="#db2777"
+        />
+      )}
     </>
   );
 }
 
 export function BirthdayMagicExperience(props: BirthdayMagicExperienceProps) {
   return (
-    <div className={`relative overflow-hidden bg-black font-sans selection:bg-pink-500/30 ${props.compact ? 'h-full w-full rounded-[2.5rem]' : 'h-full w-full'}`}>
+    <div className={`overflow-hidden bg-black font-sans selection:bg-pink-500/30 ${props.compact ? 'absolute inset-0 rounded-[2.5rem]' : 'relative h-full w-full'}`}>
       <div className="absolute inset-0 w-full h-full">
         <BirthdayScene
           age={props.age || 20}
@@ -625,6 +637,7 @@ export function BirthdayMagicExperience(props: BirthdayMagicExperienceProps) {
           onResponse={props.onResponse}
           forceStep={props.forceStep}
           onStepChange={props.onStepChange}
+          hideNavigation={props.hideNavigation}
         />
       </div>
     </div>

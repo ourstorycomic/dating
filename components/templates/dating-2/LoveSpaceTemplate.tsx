@@ -107,15 +107,13 @@ export function LoveSpaceTemplate({ compact, fullScreen, hideNavigation, isBuild
     }
   }, [autoPlay, compact, isBuilderPreview, customData.audioSrc]);
 
-  let containerClass = "journey-container relative w-full overflow-hidden ";
+  let containerClass = "journey-container w-full overflow-hidden ";
   if (compact) {
-    containerClass += "h-full w-full rounded-[2.5rem]";
-  } else if (isBuilderPreview) {
-    containerClass += "h-full";
-  } else if (fullScreen) {
-    containerClass += "h-full";
+    containerClass += "absolute inset-0 rounded-[2.5rem]";
+  } else if (fullScreen || isBuilderPreview) {
+    containerClass += "relative h-full min-h-[640px] sm:rounded-2xl";
   } else {
-    containerClass += "w-full h-full min-h-[600px] sm:rounded-3xl shadow-2xl mx-auto border-4 border-white";
+    containerClass += "relative h-[800px] min-h-[640px] max-h-[85vh] sm:rounded-2xl shadow-xl border-4 border-white";
   }
 
   const bgStyle = {

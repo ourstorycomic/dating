@@ -258,7 +258,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
 
   return (
     <div
-      className={`relative flex flex-col items-center justify-center overflow-hidden font-sans text-gray-800 ${compact ? "h-full w-full rounded-[2.5rem]" : (fullScreen || isBuilderPreview) ? "h-full min-h-[640px] w-full sm:rounded-2xl" : "h-[800px] min-h-[640px] max-h-[85vh] w-full sm:rounded-2xl border border-pink-100"}`}
+      className={`flex flex-col items-center justify-center overflow-hidden font-sans text-gray-800 ${compact ? "absolute inset-0 rounded-[2.5rem]" : (fullScreen || isBuilderPreview) ? "relative h-full min-h-[640px] w-full sm:rounded-2xl" : "relative h-[800px] min-h-[640px] max-h-[85vh] w-full sm:rounded-2xl border border-pink-100"}`}
       style={{ backgroundColor }}
     >
       {backgroundImage ? (
