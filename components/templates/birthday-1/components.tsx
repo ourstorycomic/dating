@@ -451,7 +451,7 @@ export function CameraRig({
       targetCameraPos.set(0, 0.8, 3.2);
       lookY.current = -0.3; lookX.current = 0;
     } else if (phase === "cake-messages") {
-      targetCameraPos.set(0, 0.8, 7.0); lookY.current = -0.2; lookX.current = 0;
+      targetCameraPos.set(0, 0.5, 5.5); lookY.current = -0.5; lookX.current = 0;
     } else if (phase === "match-ignite") {
       targetCameraPos.set(0, 0.9, 3.8); lookY.current = 0.8; lookX.current = 0;
     } else if (phase === "wish-record") {
@@ -954,8 +954,8 @@ export function TwinkleGarland({ active }: { active: boolean }) {
   const group = useRef<THREE.Group>(null);
   const bulbs = useMemo(
     () =>
-      Array.from({ length: 13 }, (_, index) => ({
-        x: -2.35 + index * 0.39,
+      Array.from({ length: 25 }, (_, index) => ({
+        x: -5.5 + index * 0.46,
         y: 1.48 + Math.sin(index * 0.7) * 0.16,
         color: ["#ff78c8", "#fff1a8", "#9be7ff", "#b78cff"][index % 4],
         phase: index * 0.55,
@@ -976,7 +976,7 @@ export function TwinkleGarland({ active }: { active: boolean }) {
   return (
     <group ref={group} position={[0, 0, -1.45]}>
       <mesh position={[0, 1.48, 0]}>
-        <boxGeometry args={[5.1, 0.018, 0.018]} />
+        <boxGeometry args={[11.5, 0.018, 0.018]} />
         <meshBasicMaterial color="#ffffff" transparent opacity={0.35} />
       </mesh>
       {bulbs.map((bulb, index) => (
@@ -2095,14 +2095,24 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
 
       {phase === "match-ignite" && !lit && (
         <mesh position={[0, 1.2, 1.35]} onPointerDown={(e) => { 
-            const elapsed = (performance.now() - autoPlayStart.current) / 1000;
-            if (elapsed < 3.0) return;
-            e.stopPropagation(); setHolding(true); matchWorld.current.copy(e.point); 
+            if (!autoPlay) {
+              // Manual mode: immediate interaction
+              e.stopPropagation(); setHolding(true); matchWorld.current.copy(e.point);
+            } else {
+              const elapsed = (performance.now() - autoPlayStart.current) / 1000;
+              if (elapsed < 3.0) return;
+              e.stopPropagation(); setHolding(true); matchWorld.current.copy(e.point);
+            }
           }} onPointerMove={(e) => { 
             if (!holding) return; 
-            const elapsed = (performance.now() - autoPlayStart.current) / 1000;
-            if (elapsed < 9.0) return;
-            e.stopPropagation(); matchWorld.current.copy(e.point); 
+            if (!autoPlay) {
+              // Manual mode: follow mouse immediately
+              e.stopPropagation(); matchWorld.current.copy(e.point);
+            } else {
+              const elapsed = (performance.now() - autoPlayStart.current) / 1000;
+              if (elapsed < 9.0) return;
+              e.stopPropagation(); matchWorld.current.copy(e.point);
+            }
           }} onPointerUp={() => setHolding(false)}>
           <planeGeometry args={[100, 100]} /><meshBasicMaterial visible={false} />
         </mesh>
