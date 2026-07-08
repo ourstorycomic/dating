@@ -442,38 +442,38 @@ export function CameraRig({
     let lerpSpeed = 1.2; let lookLerpSpeed = 1.5;
 
     if (phase === "dark") {
-      targetCameraPos.set(0, 0.35, 3.8); lookY.current = 0.02; lookX.current = 0;
+      targetCameraPos.set(0, 0.35, 5.0); lookY.current = 0.02; lookX.current = 0;
     } else if (phase === "music" || phase === "decorate-popup") {
-      targetCameraPos.set(0, musicActive ? 0.85 : 1.85, musicActive ? 5.2 : 6.8);
+      targetCameraPos.set(0, musicActive ? 0.85 : 1.85, musicActive ? 6.5 : 8.2);
       lookY.current = musicActive ? -0.25 : 0.05; lookX.current = 0;
     } else if (phase === "cake-messages") {
-      targetCameraPos.set(0, 1.2, 11.0); lookY.current = 0.5; lookX.current = 0;
+      targetCameraPos.set(0, 1.2, 13.0); lookY.current = 0.5; lookX.current = 0;
     } else if (phase === "match-ignite") {
-      targetCameraPos.set(0, 1.2, 3.5); lookY.current = 1.2; lookX.current = 0;
+      targetCameraPos.set(0, 1.2, 4.5); lookY.current = 1.2; lookX.current = 0;
     } else if (phase === "wish-record") {
-      targetCameraPos.set(0, 1.15, 3.2); lookY.current = 1.2; lookX.current = 0;
+      targetCameraPos.set(0, 1.15, 4.2); lookY.current = 1.2; lookX.current = 0;
     } else if (phase === "celebration") {
       if (celebrationZoom) {
-        targetCameraPos.set(1.6, -1.2, 5.8); lookY.current = -1.75; lookX.current = 1.6;
+        targetCameraPos.set(1.6, -1.2, 7.0); lookY.current = -1.75; lookX.current = 1.6;
         lerpSpeed = 2.0; lookLerpSpeed = 2.0;
       } else {
-        targetCameraPos.set(0, 0.5, 10.0); lookY.current = -0.5; lookX.current = 0;
+        targetCameraPos.set(0, 0.5, 12.0); lookY.current = -0.5; lookX.current = 0;
         lerpSpeed = 2.0; lookLerpSpeed = 2.0;
       }
     } else if (phase === "gift-reveal") {
       if (giftZoomInside) {
-        targetCameraPos.set(1.6, -1.2, 2.0);
+        targetCameraPos.set(1.6, -1.2, 2.5);
         camera.position.lerp(targetCameraPos, delta * 6);
       } else {
-        targetCameraPos.set(1.6, -1.2, 4.2);
+        targetCameraPos.set(1.6, -1.2, 5.5);
         camera.position.lerp(targetCameraPos, delta * 4);
       }
       camera.lookAt(1.6, -1.75, 1.4); 
       return; 
     } else if (phase === "vintage-gallery" || phase === "end") {
-      const finalX = memoriesCount * 3.5 + 0.25; // Giảm offset từ 0.5 xuống 0.25 để căn chuẩn giữa màn hình
+      const finalX = memoriesCount * 3.5 + 0.25;
       const t = Math.min(1, vintageElapsed / 15.0); const xPos = -1.5 + t * (finalX + 1.5); 
-      camera.position.set(xPos, vintageElapsed > 25.0 ? 0.9 + Math.min(1, (vintageElapsed - 25.0) / 4.0) * 5.0 : 0.9, 5.5);
+      camera.position.set(xPos, vintageElapsed > 25.0 ? 0.9 + Math.min(1, (vintageElapsed - 25.0) / 4.0) * 5.0 : 0.9, 7.0);
       camera.lookAt(xPos, vintageElapsed > 25.0 ? 0.9 + Math.min(1, (vintageElapsed - 25.0) / 4.0) * 5.0 : 0.9, 0); return;
     }
     

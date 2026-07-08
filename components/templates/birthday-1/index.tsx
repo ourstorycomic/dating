@@ -437,7 +437,7 @@ function BirthdayScene({
       <div className="absolute inset-0 z-10">
         <Canvas
           resize={{ offsetSize: true }}
-          camera={{ fov: 42, position: [0, 0.35, 2.65] }}
+          camera={{ fov: 50, position: [0, 0.35, 2.65] }}
           shadows
           gl={{ alpha: false, antialias: true }}
           onCreated={({ gl }) => {

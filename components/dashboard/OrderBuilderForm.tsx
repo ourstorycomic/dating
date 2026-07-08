@@ -138,72 +138,7 @@ export function getThemeFromComponentKey(key: string) {
   return "valentine";
 }
 
-function ThemeMusicSelector({
-  theme,
-  value,
-  onChange,
-  label
-}: {
-  theme: string;
-  value: string;
-  onChange: (url: string) => void;
-  label: string;
-}) {
-  const themeSongs: Record<string, { label: string, url: string }[]> = {
-    dating: [
-      { label: "Dating - Nhạc 1", url: "/assets/songs/dating/dating-1.mp3" },
-      { label: "Dating - Nhạc 2", url: "/assets/songs/dating/dating-2.mp3" },
-      { label: "Dating - Nhạc 3", url: "/assets/songs/dating/dating-3.mp3" },
-      { label: "Dating - Nhạc 4", url: "/assets/songs/dating/dating-4.mp3" },
-      { label: "Dating - Nhạc 5", url: "/assets/songs/dating/dating-5.m4a" },
-    ],
-    birthday: [
-      { label: "Sinh Nhật - Nhạc 1", url: "/assets/songs/birthday/birthday-1.mp3" },
-      { label: "Sinh Nhật - Nhạc 2", url: "/assets/songs/birthday/birthday-2.mp3" },
-      { label: "Sinh Nhật - Nhạc 3", url: "/assets/songs/birthday/birthday-3.m4a" },
-    ],
-    valentine: [
-      { label: "Valentine - Nhạc 1", url: "/assets/songs/valentine/valentine-1.mp3" },
-      { label: "Valentine - Nhạc 2", url: "/assets/songs/valentine/valentine-2.mp3" },
-      { label: "Valentine - Nhạc 3", url: "/assets/songs/valentine/valentine-3.mp3" },
-    ],
-    sorry: [
-      { label: "Xin Lỗi - Nhạc 1", url: "/assets/songs/sorry/sorry-1.mp3" },
-      { label: "Xin Lỗi - Nhạc 2", url: "/assets/songs/sorry/sorry-2.mp3" },
-    ],
-  };
 
-  const options = themeSongs[theme] || themeSongs.valentine;
-  const isCustom = value && !options.some(o => o.url === value);
-
-  return (
-    <div className="grid gap-2 text-sm md:col-span-2">
-      <span className="text-white/64">{label}</span>
-      <select 
-        className="rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3 outline-none focus:border-pink-300/50 text-white"
-        value={isCustom ? "custom" : value || ""}
-        onChange={(e) => {
-           if (e.target.value !== "custom") {
-             onChange(e.target.value);
-           } else {
-             onChange(""); // reset for custom input
-           }
-        }}
-      >
-        <option value="" className="text-black">-- Chọn nhạc có sẵn --</option>
-        {options.map((o) => (
-          <option key={o.url} value={o.url} className="text-black">{o.label}</option>
-        ))}
-        <option value="custom" className="text-black">Tải lên nhạc khác...</option>
-      </select>
-      {(isCustom || value === "") && (
-         <div className="mt-2">
-           <MediaInput label="" accept="audio/*" onChange={(url) => onChange(url)} />
-         </div>
-      )}
-    </div>
-  );
-}
 
 function TextInput({
   label,
@@ -808,7 +743,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
 
     ...(isDating2 ? { ...dating2Config, audioSrc: generalAudioUrl } : {}),
     ...(isDating3 ? { ...dating3Config, audioSrc: generalAudioUrl } : {}),
-    ...(isValentine2 ? valentine2Config : {}),
+    ...(isValentine2 ? { ...valentine2Config, musicUrl: generalAudioUrl } : {}),
     ...(!isBirthdayMagic ? {
       memories: [
         { message: stage3Message1, title: "Tin nhắn 1" },
@@ -1663,7 +1598,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                   <div className="md:col-span-2">
                     <TextInput label="Chỉ dẫn mở hộp quà" onChange={setBirthdayGiftPromptText} value={birthdayGiftPromptText} />
                   </div>
-                  <MediaInput label="Ảnh bất ngờ bật ra từ hộp quà" accept="image/*,video/*" onChange={(url) => setStage1ImageUrl(url)} value={stage1ImageUrl} />
+                  <MediaInput label="Ảnh bất ngờ bật ra từ hộp quà" accept="image/*,video/*" onChange={(url) => setStage1ImageUrl(url)} />
                 </Section>
                 <Section title="Đoạn 9/10 & 10/10: Kỷ niệm">
                   <MemoryArrayInput label="Danh sách ảnh kỷ niệm quay quanh khung hình" values={birthdayMemories} onChange={setBirthdayMemories} />
@@ -1851,7 +1786,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
             ) : isValentine2 ? (
               <>
                 <Section title="Bước 1: Cuốn Sổ Kỷ Niệm">
-                  <ThemeMusicSelector theme={getThemeFromComponentKey(selectedComponentKey)} label="Nhạc nền (.mp3)" value={valentine2Config.musicUrl} onChange={(url) => setValentine2Config({ ...valentine2Config, musicUrl: url })} />
+
                   <TextInput label="Tiêu đề bìa" value={valentine2Config.coverTitle} onChange={(v) => setValentine2Config({ ...valentine2Config, coverTitle: v })} />
                   <MediaInput label="Ảnh ngoài bìa" accept="image/*,video/*" onChange={(url) => setValentine2Config({ ...valentine2Config, coverImage: url })} />
                   <MediaInput label="Ảnh trang 1" accept="image/*,video/*" onChange={(url) => setValentine2Config({ ...valentine2Config, page1Image: url })} />
