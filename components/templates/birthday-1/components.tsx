@@ -475,7 +475,7 @@ export function CameraRig({
       camera.lookAt(1.6, -1.75, 1.4); 
       return; 
     } else if (phase === "vintage-gallery" || phase === "end") {
-      const finalX = memoriesCount * 3.5 + 0.25;
+      const finalX = memoriesCount * 3.5 + 0.25;  // This matches startX=-1.5 + 1.5 offset + memories span
       const t = Math.min(1, vintageElapsed / 15.0); const xPos = -1.5 + t * (finalX + 1.5); 
       camera.position.set(xPos, vintageElapsed > 25.0 ? 0.9 + Math.min(1, (vintageElapsed - 25.0) / 4.0) * 5.0 : 0.9, 7.0);
       camera.lookAt(xPos, vintageElapsed > 25.0 ? 0.9 + Math.min(1, (vintageElapsed - 25.0) / 4.0) * 5.0 : 0.9, 0); return;
@@ -2443,10 +2443,8 @@ function HangingItem({ x, startX, ropeLength, index, children, isLetter = false 
       </mesh>
 
       <group position={[0, -0.84, 0]}>
-        <Html transform distanceFactor={2.8}>
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', transform: 'translate(-50%, -50%)' }}>
-            {children}
-          </div>
+        <Html transform center distanceFactor={2.8}>
+          {children}
         </Html>
       </group>
     </group>
@@ -2473,10 +2471,12 @@ export function HangingGallery({
     { imageUrl: "/assets/lovepics/4.jpg", message: "Mãi bên nhau cậu nhé! 🥰" }
   ];
 
-  // Extend the rope far to the left and right so ends are off-screen
+  // Use consistent startX=-1.5 so camera pan (which uses same formula) lines up perfectly
+  const itemStartX = -1.5;
+  const memoriesSpan = displayMemories.length * 3.5 + 3.5;
+  // Extend rope far left and right so ends are off-screen
   const ropeStartX = -10.0;
-  const memoriesSpan = displayMemories.length * 3.5 + 3.5; // total span of items
-  const ropeLength = memoriesSpan + 20.0; // add 10 padding on both sides
+  const ropeLength = memoriesSpan + 20.0;
   const ropeEndX = ropeStartX + ropeLength;
 
   return (
@@ -2507,7 +2507,6 @@ export function HangingGallery({
             object-fit: cover;
             border: 1px solid rgba(0,0,0,0.1);
             background: #eee;
-            /* Filter tạo lớp màng sương hoài cổ cực mạnh cho ảnh */
             filter: sepia(0.4) contrast(1.15) brightness(0.95);
           }
           .polaroid-caption {
@@ -2519,9 +2518,6 @@ export function HangingGallery({
             line-height: 1.2;
             word-wrap: break-word;
           }
-          {(phase === "music" || phase === "decorate-popup") && (
-             <CakeBackgroundEffects active={true} />
-          )}
           .envelope-card {
             background: #fffaeb;
             padding: 30px;
@@ -2533,10 +2529,6 @@ export function HangingGallery({
             position: relative;
             transform-origin: top center;
             box-sizing: border-box;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto;
           }
           .envelope-card::before {
             content: '';
@@ -2559,7 +2551,7 @@ export function HangingGallery({
       <CurvedRope startX={ropeStartX} endX={ropeEndX} y={1.8} />
 
       {displayMemories.map((memory, index) => {
-        const xPos = 0.0 + index * 3.5; // Item positions unchanged
+        const xPos = itemStartX + 1.5 + index * 3.5;
         return (
           <HangingItem key={index} x={xPos} startX={ropeStartX} ropeLength={ropeLength} index={index}>
             <div className="polaroid-card">
@@ -2570,7 +2562,7 @@ export function HangingGallery({
         );
       })}
 
-      <HangingItem x={0.0 + displayMemories.length * 3.5} startX={ropeStartX} ropeLength={ropeLength} index={displayMemories.length} isLetter>
+      <HangingItem x={itemStartX + 1.5 + displayMemories.length * 3.5} startX={ropeStartX} ropeLength={ropeLength} index={displayMemories.length} isLetter>
         <div className="envelope-card">
           <div className="letter-text">{finalMessage}</div>
         </div>
