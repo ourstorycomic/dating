@@ -469,7 +469,7 @@ export function CameraRig({
         targetCameraPos.set(1.6, -1.2, 2.5);
         camera.position.lerp(targetCameraPos, delta * 6);
       } else {
-        targetCameraPos.set(1.6, -1.2, 5.5);
+        targetCameraPos.set(1.6, -1.2, 3.8);
         camera.position.lerp(targetCameraPos, delta * 4);
       }
       camera.lookAt(1.6, -1.75, 1.4); 
