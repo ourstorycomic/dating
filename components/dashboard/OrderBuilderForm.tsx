@@ -531,8 +531,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const [birthdayRecordingCompleteButton, setBirthdayRecordingCompleteButton] = useState("Hoàn tất ghi âm");
   const [birthdayGiftPromptText, setBirthdayGiftPromptText] = useState("Hãy nhấn vào hộp quà để mở điều bất ngờ! 🎁");
   const [birthdayBalloonText, setBirthdayBalloonText] = useState("HPBD Em!");
-  const [birthdayGreetingCardSignature, setBirthdayGreetingCardSignature] = useState("Từ: Anh");
-  const [birthdayFinal3DSignature, setBirthdayFinal3DSignature] = useState("- Từ Anh -");
+  const [birthdayGreetingCardSignature, setBirthdayGreetingCardSignature] = useState("CHÚC MỪNG SINH NHẬT");
+  const [birthdayFinal3DSignature, setBirthdayFinal3DSignature] = useState("EM");
 
   const [stage1Instruction, setStage1Instruction] = useState("Nối các ngôi sao");
   const [stage1Background, setStage1Background] = useState("#05020a");
@@ -1631,37 +1631,31 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
           <>
             {isBirthdayMagic ? (
               <>
-                <Section title="Khối 1: Bánh kem & Thắp nến">
+                <Section title="Đoạn 4/10: Lời chúc (Bong bóng)">
+                  <div className="md:col-span-2">
+                    <TextArea label="Lời chúc khi bong bóng xuất hiện (Mỗi câu 1 dòng)" onChange={setBirthdayMessage} value={birthdayMessage} />
+                  </div>
+                </Section>
+                <Section title="Đoạn 5/10: Bánh kem & Thắp nến">
                   <TextInput label="Độ tuổi (Cắm nến số)" onChange={setBirthdayAge} value={birthdayAge} />
-                  <div className="md:col-span-2">
-                    <TextInput label="Chỉ dẫn thắp nến (Mặc định: Quẹt diêm 3 lần để thắp nến nhé!)" onChange={setBirthdayInstructionText} value={birthdayInstructionText} />
-                  </div>
+                  <TextInput label="Chỉ dẫn thắp nến" onChange={setBirthdayInstructionText} value={birthdayInstructionText} />
                 </Section>
-                <Section title="Khối 2: Lời chúc & Thực hiện điều ước">
-                  <div className="md:col-span-2">
-                    <TextArea label="Lời chúc khi bánh sinh nhật xuất hiện (Mỗi câu 1 dòng)" onChange={setBirthdayMessage} value={birthdayMessage} />
-                  </div>
-                  <div className="md:col-span-2">
-                    <TextInput label="Tiêu đề gợi ý điều ước (Mặc định: Hãy ước...)" onChange={setBirthdayWishPromptText} value={birthdayWishPromptText} />
-                  </div>
-                  <div className="md:col-span-2">
-                    <TextInput label="Trạng thái khi đang ghi âm (Mặc định: Đang ghi âm điều ước...)" onChange={setBirthdayRecordingText} value={birthdayRecordingText} />
-                  </div>
+                <Section title="Đoạn 6/10: Thực hiện điều ước">
+                  <TextInput label="Tiêu đề gợi ý điều ước" onChange={setBirthdayWishPromptText} value={birthdayWishPromptText} />
+                  <TextInput label="Trạng thái khi đang ghi âm" onChange={setBirthdayRecordingText} value={birthdayRecordingText} />
                 </Section>
-                <Section title="Khối 3: Chờ mở hộp quà">
+                <Section title="Đoạn 7/10: Chúc mừng (Băng rôn)">
+                  <TextInput label="Tiêu đề băng rôn" onChange={setBirthdayGreetingCardSignature} value={birthdayGreetingCardSignature} />
+                  <TextInput label="Tên người nhận (Trọng tâm băng rôn)" onChange={setBirthdayFinal3DSignature} value={birthdayFinal3DSignature} />
+                </Section>
+                <Section title="Đoạn 8/10: Chờ mở hộp quà">
                   <div className="md:col-span-2">
-                    <TextInput label="Chỉ dẫn mở hộp quà (Mặc định: Chạm vào hộp quà để nhận bất ngờ 🎁)" onChange={setBirthdayGiftPromptText} value={birthdayGiftPromptText} />
+                    <TextInput label="Chỉ dẫn mở hộp quà" onChange={setBirthdayGiftPromptText} value={birthdayGiftPromptText} />
                   </div>
                   <MediaInput label="Ảnh bất ngờ bật ra từ hộp quà" accept="image/*,video/*" onChange={(url) => setStage1ImageUrl(url)} value={stage1ImageUrl} />
                 </Section>
-                <Section title="Khối 4: Hành Trình Kỉ Niệm">
-                  <MemoryArrayInput label="Danh sách ảnh kỉ niệm treo trên dây (Camera sẽ trôi qua từng tấm)" values={birthdayMemories} onChange={setBirthdayMemories} />
-                  <div className="md:col-span-2">
-                    <TextInput label="Dòng chữ nổi 3D ở chặng cuối (Ví dụ: Chúc mừng sinh nhật)" onChange={setBirthdayGreetingCardSignature} value={birthdayGreetingCardSignature} />
-                  </div>
-                  <div className="md:col-span-2">
-                    <TextInput label="Tên người nhận ở chặng cuối (Ví dụ: Em yêu)" onChange={setBirthdayFinal3DSignature} value={birthdayFinal3DSignature} />
-                  </div>
+                <Section title="Đoạn 9/10 & 10/10: Kỷ niệm">
+                  <MemoryArrayInput label="Danh sách ảnh kỷ niệm quay quanh khung hình" values={birthdayMemories} onChange={setBirthdayMemories} />
                 </Section>
               </>
             ) : isDating2 ? (
