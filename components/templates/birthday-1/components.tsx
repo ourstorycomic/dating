@@ -2444,7 +2444,7 @@ function HangingItem({ x, startX, ropeLength, index, children, isLetter = false 
 
       <group position={[0, -0.84, 0]}>
         <Html transform distanceFactor={2.8}>
-          <div style={{ transform: 'translate(-50%, -50%)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', transform: 'translate(-50%, -50%)' }}>
             {children}
           </div>
         </Html>
