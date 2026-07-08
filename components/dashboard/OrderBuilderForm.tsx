@@ -639,20 +639,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const [copyMessage, setCopyMessage] = useState("");
   const [builderVolume, setBuilderVolume] = useState(0.5);
   
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const previewContainer = document.getElementById("builder-preview");
-    if (!previewContainer) return;
-    const audios = previewContainer.querySelectorAll("audio");
-    audios.forEach(audio => {
-      audio.volume = builderVolume;
-      audio.muted = builderVolume === 0;
-      if (builderVolume > 0 && audio.paused && audio.src && !audio.src.includes("click") && !audio.src.includes("yay") && !audio.src.includes("meow") && !audio.src.includes("lopi") && !audio.src.includes("touch")) {
-        // Attempt to play background music in preview if it's paused
-        audio.play().catch(() => {});
-      }
-    });
-  }, [builderVolume, generalAudioUrl, selectedComponentKey, previewStepIndex]);
+
   const [orderPage, setOrderPage] = useState(1);
   const [orderSearchQuery, setOrderSearchQuery] = useState("");
   const [orderStatusFilter, setOrderStatusFilter] = useState("ALL");
@@ -709,6 +696,21 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const isSorry3 = selectedComponentKey.includes("sorry-3") || selectedComponentKey.includes("sorry #3");
   const isEditing = !!result;
   const canEditTemplate = isEditing && result.unlocked;
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const previewContainer = document.getElementById("builder-preview");
+    if (!previewContainer) return;
+    const audios = previewContainer.querySelectorAll("audio");
+    audios.forEach(audio => {
+      audio.volume = builderVolume;
+      audio.muted = builderVolume === 0;
+      if (builderVolume > 0 && audio.paused && audio.src && !audio.src.includes("click") && !audio.src.includes("yay") && !audio.src.includes("meow") && !audio.src.includes("lopi") && !audio.src.includes("touch")) {
+        // Attempt to play background music in preview if it's paused
+        audio.play().catch(() => {});
+      }
+    });
+  }, [builderVolume, generalAudioUrl, selectedComponentKey, previewStepIndex]);
 
   useEffect(() => {
     if (!result || result.unlocked) return;
