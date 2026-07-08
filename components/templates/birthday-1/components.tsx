@@ -2053,7 +2053,7 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
 
           {phase !== "match-ignite" && phase !== "wish-record" && (
             <group>
-              <group scale={0.7} position={[0, 4.0, 0]}>
+              <group scale={0.7} position={[0, 5.0, 0]}>
                 <BirthdayBanner name={recipientName || ""} visible={phase === "celebration"} position={[0, 0, 0]} />
               </group>
               <NormalizedModel desiredHeight={2.85} position={[0, 1.425, 0]} url={MODELS.cake} />
