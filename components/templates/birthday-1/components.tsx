@@ -435,8 +435,9 @@ export function CameraRig({
   const lookY = useRef(0.55);
   const lookX = useRef(0.0);
 
-  useFrame((state, delta) => {
+  useFrame((state, rawDelta) => {
     if (!enabled) return;
+    const delta = Math.min(rawDelta, 0.05); // clamp delta để tránh tab-switch glitch
     const targetCameraPos = new THREE.Vector3();
     const targetLookAt = new THREE.Vector3(0, lookY.current, 0);
     let lerpSpeed = 1.2; let lookLerpSpeed = 1.5;
@@ -450,9 +451,9 @@ export function CameraRig({
       targetCameraPos.set(0, 0.8, 3.2);
       lookY.current = -0.3; lookX.current = 0;
     } else if (phase === "cake-messages") {
-      targetCameraPos.set(0, 1.2, 13.0); lookY.current = 0.5; lookX.current = 0;
+      targetCameraPos.set(0, 0.8, 7.0); lookY.current = -0.2; lookX.current = 0;
     } else if (phase === "match-ignite") {
-      targetCameraPos.set(0, 1.2, 4.5); lookY.current = 1.2; lookX.current = 0;
+      targetCameraPos.set(0, 0.9, 3.8); lookY.current = 0.8; lookX.current = 0;
     } else if (phase === "wish-record") {
       targetCameraPos.set(0, 1.15, 4.2); lookY.current = 1.2; lookX.current = 0;
     } else if (phase === "celebration") {
