@@ -9,7 +9,7 @@ import * as THREE from "three";
 import { SkeletonUtils } from "three-stdlib";
 import type { BirthdayMagicExperienceProps, BirthdayPhase } from "./types";
 import { PHASES } from "./types";
-import { TemplateNavigator } from "../shared/TemplateNavigator";
+import { TemplateNavigator } from "../TemplateNavigator";
 import { MODELS, FIRST_PAINT_MODELS, DEFAULT_BIRTHDAY_MUSIC, TOUCH_SOUND } from "./models";
 import {
   Model,
