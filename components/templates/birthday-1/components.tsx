@@ -451,9 +451,9 @@ export function CameraRig({
       targetCameraPos.set(0, 0.8, 3.2);
       lookY.current = -0.3; lookX.current = 0;
     } else if (phase === "cake-messages") {
-      targetCameraPos.set(0, 0.5, 5.5); lookY.current = -0.5; lookX.current = 0;
+      targetCameraPos.set(0, 0.5, 8.5); lookY.current = -0.3; lookX.current = 0;
     } else if (phase === "match-ignite") {
-      targetCameraPos.set(0, 0.9, 3.8); lookY.current = 0.8; lookX.current = 0;
+      targetCameraPos.set(0, 0.9, 2.5); lookY.current = 0.8; lookX.current = 0;
     } else if (phase === "wish-record") {
       targetCameraPos.set(0, 1.15, 4.2); lookY.current = 1.2; lookX.current = 0;
     } else if (phase === "celebration") {
@@ -954,8 +954,8 @@ export function TwinkleGarland({ active }: { active: boolean }) {
   const group = useRef<THREE.Group>(null);
   const bulbs = useMemo(
     () =>
-      Array.from({ length: 25 }, (_, index) => ({
-        x: -5.5 + index * 0.46,
+      Array.from({ length: 41 }, (_, index) => ({
+        x: -9.0 + index * 0.45,
         y: 1.48 + Math.sin(index * 0.7) * 0.16,
         color: ["#ff78c8", "#fff1a8", "#9be7ff", "#b78cff"][index % 4],
         phase: index * 0.55,
@@ -976,7 +976,7 @@ export function TwinkleGarland({ active }: { active: boolean }) {
   return (
     <group ref={group} position={[0, 0, -1.45]}>
       <mesh position={[0, 1.48, 0]}>
-        <boxGeometry args={[11.5, 0.018, 0.018]} />
+        <boxGeometry args={[18.5, 0.018, 0.018]} />
         <meshBasicMaterial color="#ffffff" transparent opacity={0.35} />
       </mesh>
       {bulbs.map((bulb, index) => (
@@ -1854,13 +1854,15 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
   useEffect(() => {
     if (phase === "wish-record") {
       setWishTimeLeft(10);
-      const timer = setInterval(() => {
-        setWishTimeLeft((prev) => {
-          if (prev <= 1) { clearInterval(timer); stopRecordingAndBlow(); return 0; }
-          return prev - 1;
-        });
-      }, 1000);
-      return () => clearInterval(timer);
+      if (autoPlay) {
+        const timer = setInterval(() => {
+          setWishTimeLeft((prev) => {
+            if (prev <= 1) { clearInterval(timer); stopRecordingAndBlow(); return 0; }
+            return prev - 1;
+          });
+        }, 1000);
+        return () => clearInterval(timer);
+      }
     }
     if (phase === "match-ignite") {
       autoPlayStart.current = performance.now();
