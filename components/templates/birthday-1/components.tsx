@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { MediaDisplay } from "@/components/ui/MediaDisplay";
 
 
@@ -461,8 +461,13 @@ export function CameraRig({
         lerpSpeed = 2.0; lookLerpSpeed = 2.0;
       }
     } else if (phase === "gift-reveal") {
-      targetCameraPos.set(1.6, -1.2, 4.2);
-      camera.position.lerp(targetCameraPos, delta * 4);
+      if (giftZoomInside) {
+        targetCameraPos.set(1.6, -1.2, 2.0);
+        camera.position.lerp(targetCameraPos, delta * 6);
+      } else {
+        targetCameraPos.set(1.6, -1.2, 4.2);
+        camera.position.lerp(targetCameraPos, delta * 4);
+      }
       camera.lookAt(1.6, -1.75, 1.4); 
       return; 
     } else if (phase === "vintage-gallery" || phase === "end") {
@@ -2048,7 +2053,7 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
 
           {phase !== "match-ignite" && phase !== "wish-record" && (
             <group>
-              <group scale={0.7} position={[0, 5.8, 0]}>
+              <group scale={0.7} position={[0, 4.0, 0]}>
                 <BirthdayBanner name={recipientName || ""} visible={phase === "celebration"} position={[0, 0, 0]} />
               </group>
               <NormalizedModel desiredHeight={2.85} position={[0, 1.425, 0]} url={MODELS.cake} />
@@ -2095,9 +2100,9 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
           <pointLight color="#ffcc00" distance={1.5} intensity={4.0} />
         </group>
 
-        {!holding && !matchLit && showHelper && (
+        {!holding && !matchLit && showHelper && phase === "match-ignite" && (
           <Html center position={[-0.25, 0.08, 0]} zIndexRange={[80, 70]}>
-            <motion.div animate={{ rotate: [-2, 2, -2], scale: [1, 1.04, 1] }} className="pointer-events-none whitespace-nowrap bg-transparent text-center text-[14px] font-black leading-tight text-[#ffd84d]" transition={{ duration: 1.3, repeat: Infinity }}>
+            <motion.div animate={{ rotate: [-2, 2, -2], scale: [1, 1.04, 1] }} className="pointer-events-none whitespace-nowrap bg-transparent text-center text-[14px] font-black leading-tight" style={{ color: '#ffd84d', textShadow: '0 2px 10px rgba(255,216,77,0.5)' }} transition={{ duration: 1.3, repeat: Infinity }}>
               {instructionText ? (<div dangerouslySetInnerHTML={{ __html: instructionText.replace(/\\n/g, '<br/>') }} />) : (<>Quẹt diêm 3 lần<br/>để thắp nến nhé!</>)} {strikeCount > 0 && `(${strikeCount}/3)`}
             </motion.div>
           </Html>
@@ -2107,7 +2112,7 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
       {phase === "wish-record" && (
         <Html center position={[0, 1.35, 0]} zIndexRange={[90, 80]}>
            <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center text-center w-[300px]">
-             <div className="whitespace-nowrap text-4xl font-black text-[#ffd84d]">{wishPromptText || "Hãy ước..."}</div>
+             <div className="whitespace-nowrap text-4xl font-black" style={{ color: '#ffd84d', textShadow: '0 2px 10px rgba(255,216,77,0.5)' }}>{wishPromptText || "Hãy ước..."}</div>
              <div className="mt-3 flex items-center justify-center gap-2 text-lg font-bold text-white/90">
                {isPressing ? (
                  <>
