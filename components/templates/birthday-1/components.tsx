@@ -2444,9 +2444,7 @@ function HangingItem({ x, startX, ropeLength, index, children, isLetter = false 
 
       <group position={[0, -0.2, 0]}>
         <Html transform distanceFactor={2.8}>
-          <div style={{ position: 'absolute', left: 0, top: 0, transform: 'translate(-50%, 0)', width: 'max-content' }}>
-            {children}
-          </div>
+          {children}
         </Html>
       </group>
     </group>
@@ -2501,6 +2499,7 @@ export function HangingGallery({
             width: 220px;
             border: 1px solid #dcd2b6;
             transform-origin: top center;
+            transform: translateX(-50%);
             user-select: none;
           }
           .polaroid-img {
@@ -2530,6 +2529,7 @@ export function HangingGallery({
             text-align: center;
             position: relative;
             transform-origin: top center;
+            transform: translateX(-50%);
             box-sizing: border-box;
           }
           .envelope-card::before {
