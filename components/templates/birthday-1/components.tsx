@@ -1877,7 +1877,7 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); 
       
       // Prevent recording if user released button during permission prompt
-      if (!isPressing) {
+      if (!isPressingRef.current) {
         stream.getTracks().forEach((track) => track.stop());
         return;
       }
@@ -1900,10 +1900,13 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
     } catch (err) { setIsRecording(true); }
   };
 
+  const isPressingRef = useRef(false);
+
   const handlePressStart = (e: React.PointerEvent) => {
     e.preventDefault();
     if (autoPlay) return;
     setIsPressing(true);
+    isPressingRef.current = true;
     // Use timeout to let state update, then check
     setTimeout(() => startRecording(), 0);
   };
@@ -1912,12 +1915,24 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
     e.preventDefault();
     if (autoPlay) return;
     setIsPressing(false);
+    isPressingRef.current = false;
     stopRecordingAndBlow();
   };
 
   const stopRecordingAndBlow = () => {
-    if (recorderRef.current && recorderRef.current.state === "recording") recorderRef.current.stop(); else onWishRecorded("");
-    if (streamRef.current) streamRef.current.getTracks().forEach((track) => track.stop()); if (audioContextRef.current && audioContextRef.current.state !== "closed") audioContextRef.current.close(); setIsRecording(false);
+    if (recorderRef.current && recorderRef.current.state === "recording") {
+      recorderRef.current.stop();
+    } else {
+      // Clean up stream if recorder wasn't started yet
+      if (streamRef.current) streamRef.current.getTracks().forEach((track) => track.stop()); 
+      if (audioContextRef.current && audioContextRef.current.state !== "closed") audioContextRef.current.close(); 
+      setIsRecording(false);
+      return; // Do not call onWishRecorded if we haven't recorded anything
+    }
+    
+    if (streamRef.current) streamRef.current.getTracks().forEach((track) => track.stop()); 
+    if (audioContextRef.current && audioContextRef.current.state !== "closed") audioContextRef.current.close(); 
+    setIsRecording(false);
   };
 
   useFrame((state, delta) => {
