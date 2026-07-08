@@ -599,7 +599,7 @@ function BirthdayScene({
 
 export function BirthdayMagicExperience(props: BirthdayMagicExperienceProps) {
   return (
-    <div className={`relative overflow-hidden bg-black font-sans selection:bg-pink-500/30 ${props.compact ? 'absolute inset-0 rounded-[2.5rem]' : 'h-full w-full'}`}>
+    <div className={`relative overflow-hidden bg-black font-sans selection:bg-pink-500/30 ${props.compact ? 'h-full w-full rounded-[2.5rem]' : 'h-full w-full'}`}>
       <div className="absolute inset-0 w-full h-full">
         <BirthdayScene
           age={props.age || 20}
