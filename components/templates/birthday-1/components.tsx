@@ -1912,7 +1912,11 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
         });
         requestAnimationFrame(checkVolume);
       }; checkVolume();
-    } catch (err) { setIsRecording(true); }
+    } catch (err) { 
+      setIsRecording(false);
+      // Advance if mic permission denied, to prevent getting stuck
+      onWishRecorded("");
+    }
   };
 
   const isPressingRef = useRef(false);
@@ -1942,8 +1946,8 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
       if (streamRef.current) streamRef.current.getTracks().forEach((track) => track.stop()); 
       if (audioContextRef.current && audioContextRef.current.state !== "closed") audioContextRef.current.close(); 
       setIsRecording(false);
-      // Still advance the scene even if we couldn't record (mic not ready / denied)
-      onWishRecorded("");
+      // User released before recording started (e.g., just tapped for permission)
+      // Do NOT advance here. Wait for a real recording or a permission denial.
       return;
     }
     
