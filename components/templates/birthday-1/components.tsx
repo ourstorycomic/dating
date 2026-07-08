@@ -444,8 +444,8 @@ export function CameraRig({
     if (phase === "dark") {
       targetCameraPos.set(0, -0.1, 3.5); lookY.current = -0.5; lookX.current = 0;
     } else if (phase === "music" || phase === "decorate-popup") {
-      targetCameraPos.set(0, musicActive ? -0.2 : 0.2, musicActive ? 3.0 : 3.5);
-      lookY.current = musicActive ? -0.7 : -0.5; lookX.current = 0;
+      targetCameraPos.set(0, musicActive ? 0.4 : 0.6, musicActive ? 3.0 : 3.5);
+      lookY.current = musicActive ? -0.6 : -0.4; lookX.current = 0;
     } else if (phase === "cake-messages") {
       targetCameraPos.set(0, 1.2, 13.0); lookY.current = 0.5; lookX.current = 0;
     } else if (phase === "match-ignite") {
@@ -757,10 +757,10 @@ export function CakeBackgroundEffects({ active }: { active: boolean }) {
 
       <group position={[0, 0, 0]}>
         <Float speed={2.5} rotationIntensity={0.2} floatIntensity={1.5}>
-          <NormalizedModel loop desiredHeight={5.0} position={[-3.2, -0.8, -2.5]} rotation={[0, 0.4, 0]} url={MODELS.balloons} />
-          <NormalizedModel loop desiredHeight={5.0} position={[3.5, -0.5, -3.0]} rotation={[0, -0.2, 0]} url={MODELS.balloons} />
-          <NormalizedModel loop={false} desiredHeight={2.5} position={[-2.0, 1.5, -2.0]} rotation={[0, 0.1, 0]} url={MODELS.balloonSingle} />
-          <NormalizedModel loop={false} desiredHeight={2.5} position={[2.5, 1.8, -2.5]} rotation={[0, -0.3, 0]} url={MODELS.balloonSingle} />
+          <NormalizedModel loop desiredHeight={5.0} position={[-3.2, 0.8, -2.5]} rotation={[0, 0.4, 0]} url={MODELS.balloons} />
+          <NormalizedModel loop desiredHeight={5.0} position={[3.5, 1.0, -3.0]} rotation={[0, -0.2, 0]} url={MODELS.balloons} />
+          <NormalizedModel loop={false} desiredHeight={2.5} position={[-2.0, 2.8, -2.0]} rotation={[0, 0.1, 0]} url={MODELS.balloonSingle} />
+          <NormalizedModel loop={false} desiredHeight={2.5} position={[2.5, 3.0, -2.5]} rotation={[0, -0.3, 0]} url={MODELS.balloonSingle} />
         </Float>
       </group>
     </group>
