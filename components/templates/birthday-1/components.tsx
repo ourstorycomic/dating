@@ -2242,7 +2242,7 @@ export function GiftFinale({ onOpen, opening, position = [0, 0, 0], celebrationZ
     groupRef.current.position.y = y; groupRef.current.scale.set(sx, sy, sz); groupRef.current.rotation.z = rz;
   });
 
-  const handleClick = () => { if (animState === "idle") { setAnimState("bouncing"); animStart.current = performance.now(); } };
+  const handleClick = () => { if (animState === "idle" && celebrationZoom) { setAnimState("bouncing"); animStart.current = performance.now(); } };
 
   useEffect(() => {
     if (autoPlay && celebrationZoom && animState === "idle") {
