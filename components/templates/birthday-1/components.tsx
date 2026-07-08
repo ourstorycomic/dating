@@ -1900,6 +1900,14 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
         let sum = 0; for (let i = 0; i < analyser.frequencyBinCount; i++) sum += dataArray[i];
         const avg = sum / analyser.frequencyBinCount;
         const waveBar = document.getElementById("record-wave-indicator"); if (waveBar) waveBar.style.height = `${Math.min(100, Math.max(10, avg * 1.2))}px`;
+        // Animate 5-bar wave
+        [0,1,2,3,4].forEach((i) => {
+          const bar = document.getElementById(`record-wave-bar-${i}`);
+          if (bar) {
+            const offset = Math.sin(Date.now() / 150 + i * 0.8) * 0.5 + 0.5;
+            bar.style.height = `${Math.min(48, Math.max(8, avg * 0.8 * offset + 8))}px`;
+          }
+        });
         requestAnimationFrame(checkVolume);
       }; checkVolume();
     } catch (err) { setIsRecording(true); }
@@ -1932,7 +1940,9 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
       if (streamRef.current) streamRef.current.getTracks().forEach((track) => track.stop()); 
       if (audioContextRef.current && audioContextRef.current.state !== "closed") audioContextRef.current.close(); 
       setIsRecording(false);
-      return; // Do not call onWishRecorded if we haven't recorded anything
+      // Still advance the scene even if we couldn't record (mic not ready / denied)
+      onWishRecorded("");
+      return;
     }
     
     if (streamRef.current) streamRef.current.getTracks().forEach((track) => track.stop()); 
@@ -2153,16 +2163,23 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
                  "Nhấn giữ nút bên dưới để ước"
                )}
              </div>
-             {isPressing && <div className="mt-6 h-16 w-36"><div id="record-wave-indicator" className="w-2.5 bg-gradient-to-t from-pink-500 to-yellow-400 rounded-full transition-all duration-75" style={{ height: '15px' }} /></div>}
+             {isPressing && (
+               <div className="mt-4 flex items-end justify-center gap-1" style={{ height: '48px' }}>
+                 {[0,1,2,3,4].map((i) => (
+                   <div key={i} id={`record-wave-bar-${i}`} className="w-2 rounded-full bg-gradient-to-t from-pink-500 to-yellow-300" style={{ height: '12px', transition: 'height 0.07s', animationDelay: `${i * 0.1}s` }} />
+                 ))}
+               </div>
+             )}
              <button 
                onPointerDown={handlePressStart}
                onPointerUp={handlePressEnd}
                onPointerLeave={handlePressEnd}
                onContextMenu={(e) => e.preventDefault()}
                style={{ WebkitUserSelect: "none", userSelect: "none" }}
-               className={`mt-6 p-6 rounded-full border-2 border-white/40 shadow-lg backdrop-blur-md pointer-events-auto transition-transform ${isPressing ? 'bg-pink-500 scale-110' : 'bg-pink-600/60'}`}
+               className={`mt-4 px-6 py-4 rounded-2xl border-2 border-white/40 shadow-lg backdrop-blur-md pointer-events-auto transition-all flex items-center gap-3 ${isPressing ? 'bg-pink-500 scale-105 border-pink-300' : 'bg-pink-600/70 hover:bg-pink-500/80'}`}
              >
-               <i className={`fas fa-microphone text-2xl ${isPressing ? 'text-white' : 'text-white/90'}`}></i>
+               <i className={`fas fa-microphone text-2xl ${isPressing ? 'text-white animate-pulse' : 'text-white/90'}`} />
+               <span className="text-white font-bold text-base">{isPressing ? (recordingText || "Đang ghi âm...") : "Giữ để ước"}</span>
              </button>
            </motion.div>
         </Html>
