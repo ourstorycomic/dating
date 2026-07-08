@@ -88,6 +88,7 @@ function BirthdayScene({
   forceStep,
   onStepChange,
   onResponse,
+  hideNavigation,
 }: {
   recipientName: string;
   finalMessage: string;
