@@ -1535,7 +1535,8 @@ export function MagicDecorWand({ onDone, onMagic, onTouch, autoPlay }: { onDone:
       <Html center position={[0.2, -0.05, 0.05]} zIndexRange={[80, 70]}>
         <motion.div
           animate={{ opacity: cast ? 0 : 1, rotate: [-2, 2, -2], scale: [1, 1.04, 1] }}
-          className="pointer-events-none whitespace-nowrap rounded-none bg-transparent px-2 text-center text-lg font-black leading-tight text-[#ffd84d] drop-shadow-[0_3px_0_rgba(91,35,85,0.22)]"
+          className="pointer-events-none whitespace-nowrap rounded-none bg-transparent px-2 text-center text-lg font-black leading-tight drop-shadow-[0_3px_0_rgba(91,35,85,0.22)]"
+          style={{ color: '#ffd84d' }}
           transition={{ duration: 1.3, repeat: cast ? 0 : Infinity }}
         >
           Hãy<br />trang trí!!
