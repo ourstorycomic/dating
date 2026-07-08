@@ -444,8 +444,8 @@ export function CameraRig({
     if (phase === "dark") {
       targetCameraPos.set(0, 0.35, 5.0); lookY.current = 0.02; lookX.current = 0;
     } else if (phase === "music" || phase === "decorate-popup") {
-      targetCameraPos.set(0, musicActive ? 0.85 : 1.85, musicActive ? 6.5 : 8.2);
-      lookY.current = musicActive ? -0.25 : 0.05; lookX.current = 0;
+      targetCameraPos.set(0, musicActive ? 0.6 : 1.2, musicActive ? 4.2 : 5.5);
+      lookY.current = musicActive ? -0.1 : 0.05; lookX.current = 0;
     } else if (phase === "cake-messages") {
       targetCameraPos.set(0, 1.2, 13.0); lookY.current = 0.5; lookX.current = 0;
     } else if (phase === "match-ignite") {
@@ -757,10 +757,10 @@ export function CakeBackgroundEffects({ active }: { active: boolean }) {
 
       <group position={[0, 0, 0]}>
         <Float speed={2.5} rotationIntensity={0.4} floatIntensity={2}>
-          <NormalizedModel loop desiredHeight={18.0} position={[-10.0, 0.0, -12.0]} rotation={[0, 0.4, 0]} url={MODELS.balloons} />
-          <NormalizedModel loop desiredHeight={18.0} position={[11.0, 1.0, -14.0]} rotation={[0, -0.2, 0]} url={MODELS.balloons} />
-          <NormalizedModel loop={false} desiredHeight={12.0} position={[-7.0, 4.0, -8.0]} rotation={[0, 0.1, 0]} url={MODELS.balloonSingle} />
-          <NormalizedModel loop={false} desiredHeight={12.0} position={[8.0, 5.0, -10.0]} rotation={[0, -0.3, 0]} url={MODELS.balloonSingle} />
+          <NormalizedModel loop desiredHeight={9.0} position={[-5.0, -0.5, -5.5]} rotation={[0, 0.4, 0]} url={MODELS.balloons} />
+          <NormalizedModel loop desiredHeight={9.0} position={[5.5, 0.5, -6.5]} rotation={[0, -0.2, 0]} url={MODELS.balloons} />
+          <NormalizedModel loop={false} desiredHeight={5.0} position={[-3.5, 2.5, -4.0]} rotation={[0, 0.1, 0]} url={MODELS.balloonSingle} />
+          <NormalizedModel loop={false} desiredHeight={5.0} position={[4.0, 3.0, -5.0]} rotation={[0, -0.3, 0]} url={MODELS.balloonSingle} />
         </Float>
       </group>
     </group>
