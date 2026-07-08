@@ -517,7 +517,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const [generalAudioUrl, setGeneralAudioUrl] = useState("");
 
   const [birthdayAge, setBirthdayAge] = useState("18");
-  const [birthdayMessage, setBirthdayMessage] = useState("Chúc mừng sinh nhật cục cưng! Tuổi mới luôn rực rỡ và vui vẻ nha! ❤️");
+  const [birthdayMessage, setBirthdayMessage] = useState("Chúc cậu tuổi mới ngập tràn niềm vui và hạnh phúc! ✨\nMong rằng mọi điều ước hôm nay đều sẽ thành sự thật! 💖\nHãy trân trọng từng giây phút ngọt ngào này nhé! 🥰\nVà giờ... hãy đón nhận món quà bí mật tiếp theo! 🎁");
   const [birthdayMemories, setBirthdayMemories] = useState<MemoryItem[]>([
     { imageUrl: "", message: "Nhớ ngày đầu tiên đôi ta gặp gỡ..." },
     { imageUrl: "", message: "Nụ cười ấy đã làm trái tim anh xao xuyến" }
