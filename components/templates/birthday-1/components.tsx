@@ -1153,13 +1153,13 @@ export function LightBulbGlow({ position }: { position: [number, number, number]
 export function MusicCatWalk({ hideHtml, interactive, musicActive, resumeSignal, onPlayTouch, onPlayMeow, onPlayPat, onCatChanged }: { hideHtml?: boolean; interactive: boolean; musicActive: boolean; resumeSignal?: number; onPlayTouch: () => void; onPlayMeow: () => void; onPlayPat: () => void; onCatChanged?: () => void }) {
   const group = useRef<THREE.Group>(null);
   const [changed, setChanged] = useState(false);
-  const pos = useRef(new THREE.Vector3(-5.0, -0.1, -0.8)); // Xuất phát gần hơn
+  const pos = useRef(new THREE.Vector3(-7.0, -0.82, -0.8)); // Bắt đầu ngoài màn hình
   const targetX = useRef(0);
 
   useEffect(() => {
     if (resumeSignal && resumeSignal > 0) {
       setChanged(false);
-      pos.current.set(-5.0, -0.1, -0.8);
+      pos.current.set(-7.0, -0.82, -0.8);
     }
   }, [resumeSignal]);
 
@@ -1228,23 +1228,24 @@ export function MusicCatWalk({ hideHtml, interactive, musicActive, resumeSignal,
 
     if (changed) {
       // Khi ấn nựng mèo: Lướt mượt về cạnh máy hát
-      pos.current.lerp(new THREE.Vector3(targetX.current, -0.1, -0.6), delta * 4.0);
+      pos.current.lerp(new THREE.Vector3(targetX.current, -0.82, -0.6), delta * 4.0);
       group.current.rotation.y = THREE.MathUtils.lerp(group.current.rotation.y, faceCameraRot.current, delta * 6.0);
     } else if (delayedMusicActive) {
-      // NỐI TOÁN HỌC MƯỢT MÀ: Đi thẳng từ -5.0 vào -3.0, tới đúng -3.0 thì chạy hàm Sin
-      if (pos.current.x < -3.0) {
+      // NỐI TOÁN HỌC MƯỢT MÀ: Đi thẳng từ -7.0 vào -4.5, tới đúng -4.5 thì chạy hàm Sin
+      if (pos.current.x < -4.5) {
         pos.current.x += delta * 2.0;
         group.current.rotation.y = 0; 
       } else {
         walkTime.current += delta * 0.4;
-        pos.current.x = Math.sin(walkTime.current) * 3.0; 
+        pos.current.x = Math.sin(walkTime.current) * 4.5; // đi xa hơn ra hai phía
+        pos.current.y = -0.82; // đứng trên sàn
         pos.current.z = -0.8; 
         const vel = Math.cos(walkTime.current);
         const targetRotation = vel > 0 ? 0 : Math.PI;
         group.current.rotation.y += (targetRotation - group.current.rotation.y) * 0.1;
       }
     } else {
-      pos.current.set(-5.0, -0.1, -0.8);
+      pos.current.set(-7.0, -0.82, -0.8);
     }
 
     group.current.position.copy(pos.current);
