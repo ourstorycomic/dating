@@ -652,7 +652,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
         audio.play().catch(() => {});
       }
     });
-  }, [builderVolume, generalAudioUrl, musicUrl, selectedComponentKey, previewStepIndex]);
+  }, [builderVolume, generalAudioUrl, selectedComponentKey, previewStepIndex]);
   const [orderPage, setOrderPage] = useState(1);
   const [orderSearchQuery, setOrderSearchQuery] = useState("");
   const [orderStatusFilter, setOrderStatusFilter] = useState("ALL");
