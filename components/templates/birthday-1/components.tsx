@@ -453,7 +453,7 @@ export function CameraRig({
     } else if (phase === "cake-messages") {
       targetCameraPos.set(0, 0.5, 8.5); lookY.current = -0.3; lookX.current = 0;
     } else if (phase === "match-ignite") {
-      targetCameraPos.set(0, 0.9, 2.5); lookY.current = 0.8; lookX.current = 0;
+      targetCameraPos.set(0, 1.4, 2.8); lookY.current = 1.3; lookX.current = 0;
     } else if (phase === "wish-record") {
       targetCameraPos.set(0, 1.15, 4.2); lookY.current = 1.2; lookX.current = 0;
     } else if (phase === "celebration") {
