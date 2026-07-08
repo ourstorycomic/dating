@@ -599,7 +599,7 @@ function BirthdayScene({
       
       {(!hideNavigation && !autoPlay) && (
         <TemplateNavigator
-          currentStep={PHASES.indexOf(phase)}
+          currentIndex={PHASES.indexOf(phase)}
           totalSteps={PHASES.length}
           onPrev={() => setPhase(PHASES[Math.max(0, PHASES.indexOf(phase) - 1)] as BirthdayPhase)}
           onNext={() => setPhase(PHASES[Math.min(PHASES.length - 1, PHASES.indexOf(phase) + 1)] as BirthdayPhase)}
