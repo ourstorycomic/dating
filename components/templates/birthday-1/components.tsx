@@ -2443,8 +2443,10 @@ function HangingItem({ x, startX, ropeLength, index, children, isLetter = false 
       </mesh>
 
       <group position={[0, -0.84, 0]}>
-        <Html transform center distanceFactor={2.8}>
-          {children}
+        <Html transform distanceFactor={2.8}>
+          <div style={{ display: 'inline-block', transform: 'translateX(-50%)' }}>
+            {children}
+          </div>
         </Html>
       </group>
     </group>
