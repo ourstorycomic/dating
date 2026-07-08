@@ -1924,6 +1924,7 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
   const handlePressStart = (e: React.PointerEvent) => {
     e.preventDefault();
     if (autoPlay) return;
+    try { (e.target as HTMLElement).setPointerCapture(e.pointerId); } catch(err) {}
     setIsPressing(true);
     isPressingRef.current = true;
     // Use timeout to let state update, then check
@@ -1933,6 +1934,11 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
   const handlePressEnd = (e: React.PointerEvent) => {
     e.preventDefault();
     if (autoPlay) return;
+    try { 
+      if ((e.target as HTMLElement).hasPointerCapture(e.pointerId)) {
+        (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+      }
+    } catch(err) {}
     setIsPressing(false);
     isPressingRef.current = false;
     stopRecordingAndBlow();
@@ -2179,9 +2185,9 @@ export function CandleSequence({ phase, age, onCandleLit, onWishRecorded, recipi
              <button 
                onPointerDown={handlePressStart}
                onPointerUp={handlePressEnd}
-               onPointerLeave={handlePressEnd}
+               onPointerCancel={handlePressEnd}
                onContextMenu={(e) => e.preventDefault()}
-               style={{ WebkitUserSelect: "none", userSelect: "none" }}
+               style={{ WebkitUserSelect: "none", userSelect: "none", touchAction: "none" }}
                className={`mt-4 px-6 py-4 rounded-2xl border-2 border-white/40 shadow-lg backdrop-blur-md pointer-events-auto transition-all flex items-center gap-3 ${isPressing ? 'bg-pink-500 scale-105 border-pink-300' : 'bg-pink-600/70 hover:bg-pink-500/80'}`}
              >
                <i className={`fas fa-microphone text-2xl ${isPressing ? 'text-white animate-pulse' : 'text-white/90'}`} />
