@@ -2444,7 +2444,7 @@ function HangingItem({ x, startX, ropeLength, index, children, isLetter = false 
 
       <group position={[0, -0.84, 0]}>
         <Html transform distanceFactor={2.8}>
-          <div style={{ display: 'inline-block', transform: 'translateX(-50%)' }}>
+          <div style={{ position: 'absolute', left: 0, top: 0, transform: 'translate(-50%, 0)', width: 'max-content' }}>
             {children}
           </div>
         </Html>
