@@ -511,7 +511,7 @@ function BirthdayScene({
           )}
 
           {/* FIX LỖI MẤT BÓNG BAY: Hiển thị hiệu ứng nền chỉ ở phase music để tránh phase quẹt diêm bị thừa */}
-          {phase === "music" && (
+          {(phase === "music" || phase === "decorate-popup") && (
              <CakeBackgroundEffects active={true} />
           )}
 

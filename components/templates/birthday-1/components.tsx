@@ -447,8 +447,8 @@ export function CameraRig({
       targetCameraPos.set(0, musicActive ? 0.8 : 1.0, musicActive ? 3.0 : 3.5);
       lookY.current = musicActive ? -0.5 : -0.3; lookX.current = 0;
     } else if (phase === "decorate-popup") {
-      targetCameraPos.set(0, 1.8, 5.5);
-      lookY.current = 0.5; lookX.current = 0;
+      targetCameraPos.set(0, 1.4, 4.2);
+      lookY.current = 0.8; lookX.current = 0;
     } else if (phase === "cake-messages") {
       targetCameraPos.set(0, 1.2, 13.0); lookY.current = 0.5; lookX.current = 0;
     } else if (phase === "match-ignite") {
@@ -2474,6 +2474,9 @@ export function HangingGallery({
             line-height: 1.2;
             word-wrap: break-word;
           }
+          {(phase === "music" || phase === "decorate-popup") && (
+             <CakeBackgroundEffects active={true} />
+          )}
           .envelope-card {
             background: #fffaeb;
             padding: 30px;
