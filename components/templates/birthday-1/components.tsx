@@ -2442,7 +2442,7 @@ function HangingItem({ x, startX, ropeLength, index, children, isLetter = false 
         <meshStandardMaterial color="#8c5a35" roughness={0.9} />
       </mesh>
 
-      <group position={[0, -0.84, 0]}>
+      <group position={[0, -0.2, 0]}>
         <Html transform distanceFactor={2.8}>
           <div style={{ position: 'absolute', left: 0, top: 0, transform: 'translate(-50%, 0)', width: 'max-content' }}>
             {children}
