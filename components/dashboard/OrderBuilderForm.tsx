@@ -1185,7 +1185,11 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
 
     
     // Birthday Magic specific
-    if (cd.birthdayMessage) setBirthdayMessage(cd.birthdayMessage);
+    if (cd.messages && Array.isArray(cd.messages)) {
+      setBirthdayMessage(cd.messages.join('\n'));
+    } else if (cd.birthdayMessage) {
+      setBirthdayMessage(cd.birthdayMessage);
+    }
     if (cd.musicUrl) setGeneralAudioUrl(cd.musicUrl);
       if (cd.expiresAtDate) setExpiresAtDate(cd.expiresAtDate);
     if (cd.imageUrl) setStage1ImageUrl(cd.imageUrl);
