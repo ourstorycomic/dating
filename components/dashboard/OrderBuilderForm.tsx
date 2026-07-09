@@ -937,6 +937,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
         orderId: result.orderId,
         recipientName,
         buyerName,
+        templateId: selectedTemplate?.id,
       }),
     });
     const data = await response.json().catch(() => ({}));
@@ -1139,7 +1140,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     if (cd.stage1Accent) setStage1Accent(cd.stage1Accent);
     if (cd.stage2Background) setStage2Background(cd.stage2Background);
 
-    const loadedTemplateKey = `${template?.component_key ?? cd.componentKey ?? ""} ${template?.name ?? ""}`.toLowerCase();
+    const loadedTemplateKey = `${fullTemplate?.component_key ?? cd.componentKey ?? ""} ${fullTemplate?.name ?? ""}`.toLowerCase();
     if (loadedTemplateKey.includes("valentine-2") || loadedTemplateKey.includes("valentine #2")) {
       setValentine2Config((current) => ({
         ...current,

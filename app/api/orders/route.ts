@@ -77,10 +77,10 @@ export async function POST(request: Request) {
   }
 
   const isFreeOrder = session.role === "ADMIN" || (Boolean(body.isFreeOrder) && canCreateFree);
-  
+
   // Cho phép client truyền giá (dùng cho các gói dịch vụ khác nhau)
-  const amount = isFreeOrder 
-    ? 0 
+  const amount = isFreeOrder
+    ? 0
     : (body.amount && Number(body.amount) >= 2000 ? Number(body.amount) : Number(finalTemplate?.base_price || 0));
 
   if (!isFreeOrder && (!amount || amount < 2000)) {
@@ -104,7 +104,7 @@ export async function POST(request: Request) {
       recipient_name: body.recipientName ?? customData.recipientName ?? null,
       status: isFreeOrder ? "ACTIVE" : "PENDING_PAYMENT",
       template_id: templateId,
-        expires_at: customData.expiresAtDate ? new Date(customData.expiresAtDate).toISOString() : null,
+      expires_at: customData.expiresAtDate ? new Date(customData.expiresAtDate).toISOString() : null,
     })
     .select("id, public_id")
     .single();
@@ -167,6 +167,8 @@ export async function PATCH(request: Request) {
   const customData = body.customData ?? {};
   const recipientName = body.recipientName ?? customData.recipientName ?? null;
   const buyerName = body.buyerName ?? null;
+  // Update template_id when user switches template on an existing order
+  const newTemplateId = body.templateId ? String(body.templateId) : null;
 
   if (!orderId) {
     return NextResponse.json({ error: "Thiếu mã đơn." }, { status: 400 });
@@ -197,7 +199,8 @@ export async function PATCH(request: Request) {
       custom_data: customData,
       recipient_name: recipientName,
       buyer_name: buyerName !== null ? buyerName : undefined,
-        expires_at: customData.expiresAtDate ? new Date(customData.expiresAtDate).toISOString() : undefined,
+      ...(newTemplateId ? { template_id: newTemplateId } : {}),
+      expires_at: customData.expiresAtDate ? new Date(customData.expiresAtDate).toISOString() : undefined,
     })
     .eq("id", order.id);
 
@@ -209,7 +212,10 @@ export async function PATCH(request: Request) {
   await supabase.from("order_logs").insert({
     action: "ORDER_UPDATED",
     actor_id: session.userId,
-    metadata: { source: "dashboard_order_builder" },
+    metadata: {
+      source: "dashboard_order_builder",
+      ...(newTemplateId ? { newTemplateId } : {}),
+    },
     order_id: order.id,
   });
 
