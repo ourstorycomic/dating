@@ -1058,7 +1058,23 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
 
   function loadOrder(order: any) {
     const cd = order.custom_data || {};
-    const template = getRelationOne(order.templates) || templates.find(t => t.id === order.template_id) || templates.find(t => t.component_key === cd.componentKey || t.slug === cd.componentKey);
+    const partialTemplate = getRelationOne(order.templates);
+
+    // Always resolve to a FULL template from the templates prop array.
+    // The DB join only returns {id, name, component_key} — not enough for selectedComponentKey derivation.
+    const fullTemplate =
+      // 1. Match by template_id (UUID or MOCK id)
+      templates.find(t => String(t.id) === String(order.template_id)) ||
+      // 2. Match by the partial template's id from DB join
+      (partialTemplate ? templates.find(t => String(t.id) === String((partialTemplate as any).id)) : null) ||
+      // 3. Match by component_key stored in customData
+      templates.find(t => t.component_key === cd.componentKey || t.slug === cd.componentKey) ||
+      // 4. Match by component_key from DB join
+      (partialTemplate ? templates.find(t => t.component_key === (partialTemplate as any).component_key) : null) ||
+      // 5. Fall back to partial from DB join (may still work for display)
+      partialTemplate ||
+      null;
+
     const payment = getRelationOne(order.payments);
     const paid = order.status === "ACTIVE" || payment?.status === "PAID";
     
@@ -1080,10 +1096,10 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     setBuyerContact(order.buyer_contact || "");
     setRecipientName(order.recipient_name || "");
     setSenderName(order.custom_data?.senderName || "Anh");
-    if (template) {
-      setLoadedTemplate(template);
-      setSelectedTemplateId(template.id);
-      setTemplateSearch(template.name);
+    if (fullTemplate) {
+      setLoadedTemplate(fullTemplate as any);
+      setSelectedTemplateId((fullTemplate as any).id);
+      setTemplateSearch((fullTemplate as any).name);
     } else {
       setSelectedTemplateId(order.template_id);
     }
