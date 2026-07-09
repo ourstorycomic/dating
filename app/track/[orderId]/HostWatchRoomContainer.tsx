@@ -28,9 +28,9 @@ export function HostWatchRoomContainer({
       <WatchRoom
         roomId={roomId}
         movie={movie}
-        isHost
-        hostDisplayName={senderName}
-        guestDisplayName={recipientName}
+        isHost={false}
+        hostDisplayName={recipientName}
+        guestDisplayName={senderName}
       />
     </div>
   );

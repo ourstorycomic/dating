@@ -367,8 +367,8 @@ export function Valentine2WatchParty({
                 roomId={roomId || "preview-room"} 
                 movie={selectedMovie} 
                 isHost={isHost}
-                hostDisplayName={hostDisplayName ?? data.senderName ?? "Host"}
-                guestDisplayName={guestDisplayName ?? data.recipientName ?? "Guest"}
+                hostDisplayName={hostDisplayName ?? data.recipientName ?? "Người nhận"}
+                guestDisplayName={guestDisplayName ?? data.senderName ?? "Người gửi"}
                 onBackToLobby={isHost ? () => setStep(7) : undefined}
                 onChangeMovie={(movie) => {
                   setSelectedMovie(movie);

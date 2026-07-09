@@ -67,10 +67,10 @@ export function GiftFullscreenView({ order }: { order: GiftOrder }) {
         visualLabel={order.templates?.visual_label}
         hideNavigation
         fullScreen
-        isHost={false}
+        isHost
         initialStep={2}
-        hostDisplayName={senderName}
-        guestDisplayName={recipientName}
+        hostDisplayName={recipientName}
+        guestDisplayName={senderName}
         onResponse={handleResponse}
         roomId={order.public_id}
       />
