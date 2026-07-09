@@ -50,9 +50,20 @@ export function Step2Vibe({ onNext , customData = {}, autoPlay}: { onNext: () =>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-30 flex items-center justify-center p-6 bg-white/40 backdrop-blur-sm">
                 <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: -20 }} className="bg-pink-500 text-white px-8 py-6 rounded-3xl shadow-2xl text-center font-bold text-xl pointer-events-none drop-shadow-md border-4 border-pink-300">
                     {
-                      selectedOpt !== null && typeof (customData.vibeOptions || TPL_DATA.vibeOptions)[selectedOpt] === 'object' && (customData.vibeOptions || TPL_DATA.vibeOptions)[selectedOpt].response
-                        ? (customData.vibeOptions || TPL_DATA.vibeOptions)[selectedOpt].response
-                        : (customData.vibeTooltip || TPL_DATA.vibeTooltip)
+                      (() => {
+                        if (selectedOpt === null) return "";
+                        // If vibeTooltips array is provided from dashboard
+                        if (customData.vibeTooltips && customData.vibeTooltips[selectedOpt]) {
+                          return customData.vibeTooltips[selectedOpt];
+                        }
+                        // If vibeOptions has objects with response (default TPL_DATA behavior)
+                        const opt = (customData.vibeOptions || TPL_DATA.vibeOptions)[selectedOpt];
+                        if (typeof opt === 'object' && opt.response) {
+                          return opt.response;
+                        }
+                        // Fallbacks
+                        return customData.vibeTooltip || TPL_DATA.vibeTooltip;
+                      })()
                     }
                 </motion.div>
             </motion.div>

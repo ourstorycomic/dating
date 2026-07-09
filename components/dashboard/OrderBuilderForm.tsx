@@ -430,7 +430,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     radioHint: "Chạm để dò đúng tần số của tớ nhé 📻",
     vibeTitle: "Xin chào!\nHôm nay của cậu thế nào?",
     vibeOptions: ["Đang đói 🍕", "Hơi mệt 🥺", "Rất vui ✨"],
-    vibeTooltip: "Thế thì để tớ sạc năng lượng cho cậu nhé! ⚡",
+    vibeTooltips: ["Ngoan tớ dẫn đi ăn nhé! 🍕", "Thế thì để tớ sạc năng lượng cho cậu nhé! ⚡", "Tuyệt vời! Cùng tận hưởng nào! ✨"],
     scratchTitle: "Trạm sạc số 1:",
     scratchSubtitle: "Cào thẻ bên dưới nhé 🎁",
     scratchPrize: "Một buổi hẹn hò\nbao trọn gói!",
@@ -1667,9 +1667,11 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                 </Section>
                 <Section title="Bước 3: Tâm trạng">
                   <TextArea label="Tiêu đề hỏi thăm" value={dating2Config.vibeTitle} onChange={(v) => setDating2Config({ ...dating2Config, vibeTitle: v })} />
-                  <TextInput label="Câu tooltip dỗ dành" value={dating2Config.vibeTooltip} onChange={(v) => setDating2Config({ ...dating2Config, vibeTooltip: v })} />
                   <div className="md:col-span-2">
                      <ArrayInput label="Các lựa chọn tâm trạng" values={dating2Config.vibeOptions} onChange={(v) => setDating2Config({ ...dating2Config, vibeOptions: v })} />
+                  </div>
+                  <div className="md:col-span-2">
+                     <ArrayInput label="Các câu dỗ dành (tương ứng với từng tâm trạng trên)" values={dating2Config.vibeTooltips || []} onChange={(v) => setDating2Config({ ...dating2Config, vibeTooltips: v })} />
                   </div>
                 </Section>
                 <Section title="Bước 4: Thẻ cào">
