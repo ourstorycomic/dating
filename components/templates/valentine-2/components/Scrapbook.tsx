@@ -277,16 +277,16 @@ export function Scrapbook({
             className={`absolute inset-0 ${PAPER_BG} rounded-r-2xl px-4 pt-3 pb-4 flex flex-col ${RIGHT_PAGE_SHADOW} border-l border-black/5 [backface-visibility:hidden] cursor-pointer`}
             onClick={() => { if (page2ShowNext) nextPage(); }}
           >
-            <div className="relative w-full flex-shrink-0" style={{ height: '60%' }}>
+            <div className="relative w-full flex-shrink-0 overflow-hidden" style={{ height: '52%' }}>
               {currentPage >= 2 && data.polaroids.map((p: any, i: number) => (
                 <motion.div
                   key={p.id}
-                  className="absolute bg-white p-2 pb-8 rounded shadow-lg drop-shadow-xl border border-gray-100"
+                  className="absolute bg-white p-2 pb-5 rounded shadow-lg drop-shadow-xl border border-gray-100"
                   style={{ 
-                    top: i === 0 ? '2%' : i === 1 ? '8%' : '14%', 
-                    left: i === 0 ? '6%' : i === 1 ? '18%' : '30%',
-                    rotate: i === 0 ? '-3deg' : i === 1 ? '4deg' : '9deg',
-                    width: '50%',
+                    top: i === 0 ? '4%' : i === 1 ? '8%' : '4%', 
+                    left: i === 0 ? '3%' : i === 1 ? '30%' : '57%',
+                    rotate: i === 0 ? '-8deg' : i === 1 ? '0deg' : '8deg',
+                    width: '38%',
                     zIndex: i + 1,
                   }}
                   initial={{ y: -200, opacity: 0 }}
@@ -296,7 +296,7 @@ export function Scrapbook({
                   <div className="aspect-square bg-gray-200 w-full mb-2">
                     <MediaDisplay src={p.src} className="w-full h-full object-cover" alt="" />
                   </div>
-                  <p className="text-center font-[Caveat] text-lg text-slate-800 font-bold">{p.caption}</p>
+                  <p className="text-center font-[Caveat] text-sm leading-tight text-slate-800 font-bold">{p.caption}</p>
                   <div className={`${WASHI_TAPE} -top-2 left-1/2 -translate-x-1/2`} />
                 </motion.div>
               ))}
