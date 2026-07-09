@@ -32,9 +32,9 @@ type HomeTemplateGroup = {
 };
 
 
-function facebookLink(templateSlug?: string) {
-  const text = templateSlug
-    ? `Tôi muốn đặt mẫu ${templateSlug}. Tư vấn giúp tôi làm web tặng người yêu.`
+function facebookLink(templateName?: string) {
+  const text = templateName
+    ? `Tôi muốn đặt mẫu ${templateName}. Tư vấn giúp tôi làm web tặng người yêu.`
     : "Tôi muốn được tư vấn làm web tặng người yêu.";
   return `${FACEBOOK_URL}?text=${encodeURIComponent(text)}`;
 }
@@ -263,7 +263,7 @@ export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
                         </Link>
                         <a
                           className="rounded-full bg-gradient-to-r from-[#ff7eb8] to-[#ffd36f] px-4 py-3 text-center text-sm font-extrabold text-[#fff] shadow-[0_14px_30px_rgba(255,126,184,0.28)] transition hover:scale-[1.02]"
-                          href={facebookLink(template.slug)}
+                          href={facebookLink(template.name)}
                           target="_blank"
                           rel="noopener noreferrer"
                         >

@@ -590,10 +590,13 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const isBirthday1 = !!templateId && templateId.includes("birthday-1");
 
   const selectedTemplate = useMemo(
-    () =>
-      String(loadedTemplate?.id) === String(selectedTemplateId)
-        ? (loadedTemplate as any)
-        : templates.find((template) => String(template.id) === String(selectedTemplateId)) ?? valentineOne,
+    () => {
+      // If we have a loaded template (from editing an existing order), always prefer it
+      if (loadedTemplate) {
+        return loadedTemplate as any;
+      }
+      return templates.find((template) => String(template.id) === String(selectedTemplateId)) ?? valentineOne;
+    },
     [selectedTemplateId, templates, valentineOne, loadedTemplate],
   );
 

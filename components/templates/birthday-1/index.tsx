@@ -115,6 +115,12 @@ function BirthdayScene({
   useEffect(() => {
     if (forceStep !== undefined) {
       if (forceStep >= 0 && forceStep < PHASES.length) {
+        // Reset all overlay/transition states when jumping phases so we don't get stuck in a black screen
+        setBlackout(false);
+        setWhiteout(false);
+        setCircleWipeActive(false);
+        setBalloonCoverActive(false);
+        setVintageElapsed(0);
         setPhase(PHASES[forceStep] as BirthdayPhase);
       }
     }
