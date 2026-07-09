@@ -42,6 +42,8 @@ type Particle = {
   duration: number;
   delay: number;
   driftX: number;
+  driftY: number;
+  midDriftX: number;
   rotation: number;
   spinSpeed: number;
   spinDir: 1 | -1;
@@ -61,6 +63,8 @@ function makeParticles(count: number, cinema: boolean): Particle[] {
     duration:   Math.random() * 14 + 10,
     delay:      Math.random() * 20,
     driftX:     (Math.random() - 0.5) * 140,
+    driftY:     Math.random() * 320 + 380,
+    midDriftX:  (Math.random() - 0.5) * 80,
     rotation:   Math.random() * 360,
     spinSpeed:  Math.random() * 2 + 0.5,
     spinDir:    Math.random() > 0.5 ? 1 : -1,
@@ -127,8 +131,8 @@ export function FloatingParticles({
             rotate: p.rotation,
           }}
           animate={{
-            y:       [0, -(Math.random() * 350 + 380)],
-            x:       [0, p.driftX * 0.35, p.driftX],
+            y:       [0, -p.driftY],
+            x:       [0, p.midDriftX, p.driftX],
             opacity: cinema
               ? [0, 0.55, 0.55, 0]
               : [0, 0.8, 0.8, 0],

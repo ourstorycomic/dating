@@ -25,6 +25,8 @@ export function GiftFullscreenView({ order }: { order: GiftOrder }) {
   const [error, setError] = useState("");
 
   const customData = order.custom_data;
+  const senderName = customData.senderName ?? "Anh";
+  const recipientName = customData.recipientName ?? order.recipient_name ?? "Em";
 
   async function handleResponse(response: { answer: string; message?: string; audioDataUrl?: string; date?: string }) {
     try {
@@ -54,17 +56,21 @@ export function GiftFullscreenView({ order }: { order: GiftOrder }) {
   }
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black">
+    <div className="fixed inset-0 z-[100] bg-gradient-to-br from-[#fff6fa] via-[#ffe4ef] to-[#ffd4e5]">
       <InteractiveTemplatePreview
         componentKey={customData.componentKey ?? order.templates?.component_key ?? "val-starry-constellation"}
         customData={customData}
         gradient={order.templates?.gradient}
         question={customData.question}
-        recipientName={customData.recipientName ?? order.recipient_name ?? "Em"}
-        senderName={customData.senderName ?? "Anh"}
+        recipientName={recipientName}
+        senderName={senderName}
         visualLabel={order.templates?.visual_label}
         hideNavigation
         fullScreen
+        isHost
+        initialStep={2}
+        hostDisplayName={senderName}
+        guestDisplayName={recipientName}
         onResponse={handleResponse}
         roomId={order.public_id}
       />

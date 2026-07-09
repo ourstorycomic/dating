@@ -25,6 +25,8 @@ export type Valentine2Data = {
   page2Text: string;
   page3Hint: string;
   confessionText: string;
+  senderName?: string;
+  recipientName?: string;
 };
 
 export const DEFAULT_MEMORY_DATA: Valentine2Data = {
@@ -50,7 +52,69 @@ export type MovieData = {
   thumb_url: string;
   poster_url: string;
   year: number;
+  voteAverage?: number;
+  voteCount?: number;
+  categories?: Array<{ name?: string } | string>;
+  quality?: string;
+  lang?: string;
+  status?: string;
 };
+
+function progressStorageKey(roomId: string) {
+  return `valentine2-progress:${roomId}`;
+}
+
+/** Hard refresh (F5) should restart the flow; tab switch keeps React state in memory. */
+function isPageReload() {
+  if (typeof window === "undefined") return false;
+  const nav = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+  return nav?.type === "reload";
+}
+
+function clearStoredProgress(roomId: string) {
+  try {
+    sessionStorage.removeItem(progressStorageKey(roomId));
+  } catch {
+    // ignore
+  }
+}
+
+function parseMovieFromResponse(responseText: string | null): MovieData | null {
+  if (!responseText) return null;
+  try {
+    const parsed = JSON.parse(responseText) as { message?: string };
+    if (!parsed.message?.includes('"slug"')) return null;
+    const movie = JSON.parse(parsed.message) as MovieData;
+    return movie?.slug ? movie : null;
+  } catch {
+    return null;
+  }
+}
+
+function readStoredProgress(roomId: string): { step: number; selectedMovie: MovieData } | null {
+  try {
+    const raw = sessionStorage.getItem(progressStorageKey(roomId));
+    if (!raw) return null;
+    const data = JSON.parse(raw) as { step?: number; selectedMovie?: MovieData };
+    if (data.step === 9 && data.selectedMovie?.slug) {
+      return { step: 9, selectedMovie: data.selectedMovie };
+    }
+  } catch {
+    // ignore corrupt storage
+  }
+  return null;
+}
+
+function saveStoredProgress(roomId: string, step: number, selectedMovie: MovieData) {
+  try {
+    sessionStorage.setItem(
+      progressStorageKey(roomId),
+      JSON.stringify({ step, selectedMovie }),
+    );
+  } catch {
+    // ignore quota / private mode
+  }
+}
 
 export function Valentine2WatchParty({
   compact,
@@ -59,6 +123,9 @@ export function Valentine2WatchParty({
   data: inputData,
   roomId,
   isHost = false,
+  initialStep,
+  hostDisplayName,
+  guestDisplayName,
   autoPlay = false,
   isBuilderPreview = false,
   onResponse
@@ -69,17 +136,62 @@ export function Valentine2WatchParty({
   data?: Valentine2Data;
   roomId?: string;
   isHost?: boolean;
+  initialStep?: number;
+  hostDisplayName?: string;
+  guestDisplayName?: string;
   autoPlay?: boolean;
   isBuilderPreview?: boolean;
   onResponse?: (response: { answer: string; message?: string }) => void;
 }) {
   const data = { ...DEFAULT_MEMORY_DATA, ...inputData };
-  const [step, setStep] = useState(isHost ? 9 : 2); // Host goes straight to Watch, guest starts at 2
+  const [step, setStep] = useState(initialStep ?? (isHost ? 9 : 2));
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const [selectedMovie, setSelectedMovie] = useState<MovieData | null>(null);
+  const [restored, setRestored] = useState(!roomId || roomId === "preview-room");
 
   const [eggColor, setEggColor] = useState("from-pink-400 to-rose-500");
+
+  // Khôi phục tiến trình khi quay lại gift link trong cùng phiên tab (không phải F5)
+  useEffect(() => {
+    if (!roomId || roomId === "preview-room") {
+      setRestored(true);
+      return;
+    }
+
+    if (isPageReload()) {
+      clearStoredProgress(roomId);
+      setRestored(true);
+      return;
+    }
+
+    const stored = readStoredProgress(roomId);
+    if (stored) {
+      setSelectedMovie(stored.selectedMovie);
+      setStep(stored.step);
+      setRestored(true);
+      return;
+    }
+
+    let mounted = true;
+    const restoreFromApi = async () => {
+      try {
+        const res = await fetch(`/api/orders/${roomId}/response`, { cache: "no-store" });
+        if (!res.ok || !mounted) return;
+        const data = await res.json() as { responseText?: string | null };
+        const movie = parseMovieFromResponse(data.responseText ?? null);
+        if (!movie || !mounted) return;
+        setSelectedMovie(movie);
+        setStep(9);
+        saveStoredProgress(roomId, 9, movie);
+      } finally {
+        if (mounted) setRestored(true);
+      }
+    };
+
+    void restoreFromApi();
+    return () => { mounted = false; };
+  }, [roomId, isHost]);
 
   const playMusic = () => {
     if (audioRef.current) {
@@ -120,7 +232,7 @@ export function Valentine2WatchParty({
   // Remove the blind autoPlay interval. The children components will advance automatically using their callbacks when autoPlay is true.
   // We keep the container class.
 
-  let containerClass = "w-full overflow-hidden transition-colors duration-[2000ms] mx-auto text-gray-800 [perspective:1500px] ";
+  let containerClass = "w-full overflow-x-hidden overflow-y-auto transition-colors duration-[2000ms] mx-auto text-gray-800 [perspective:1500px] ";
 
   const isCinemaMode = step >= 7;
   const bgClass = isCinemaMode
@@ -145,7 +257,22 @@ export function Valentine2WatchParty({
       {!compact && !isCinemaMode && <FloatingParticles fullWidth={fullScreen} cinema={false} />}
 
       <AnimatePresence mode="wait">
-        {step === 2 && (
+        {!restored && (
+          <motion.div
+            key="restoring"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-40 flex items-center justify-center bg-[#fff6fa]/80 backdrop-blur-sm"
+          >
+            <div className="flex flex-col items-center gap-3">
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-rose-300 border-t-rose-600" />
+              <p className="text-sm font-semibold text-rose-700">Đang mở lại phòng xem phim...</p>
+            </div>
+          </motion.div>
+        )}
+
+        {restored && step === 2 && (
           <Scrapbook
             key="scrapbook"
             data={data}
@@ -156,7 +283,7 @@ export function Valentine2WatchParty({
           />
         )}
 
-        {step === 5 && (
+        {restored && step === 5 && (
           <Valentine2ClawMachine
             key="clawMachine"
             onEggGrabbed={(color) => {
@@ -168,7 +295,7 @@ export function Valentine2WatchParty({
           />
         )}
 
-        {step === 6 && (
+        {restored && step === 6 && (
           <Step6Popup
             key="step6"
             confession={data.confessionText}
@@ -179,7 +306,7 @@ export function Valentine2WatchParty({
           />
         )}
 
-        {step === 7 && (
+        {restored && step === 7 && (
           <Step7Lobby
             key="step7"
             compact={compact}
@@ -187,50 +314,58 @@ export function Valentine2WatchParty({
             autoPlay={autoPlay}
             onSelectMovie={(movie) => {
               setSelectedMovie(movie);
+              if (roomId && roomId !== "preview-room") {
+                saveStoredProgress(roomId, 9, movie);
+              }
               onResponse?.({ answer: "YES", message: JSON.stringify(movie) });
               setStep(9);
             }}
           />
         )}
 
-        {step === 9 && selectedMovie && (
+        {restored && step === 9 && selectedMovie && (
           <motion.div 
             key="watchRoom"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-slate-950 z-50 overflow-hidden rounded-[inherit]"
+            className="absolute inset-0 bg-gradient-to-br from-[#fff6fa] via-[#ffe4ef] to-[#ffd4e5] z-50 overflow-x-hidden overflow-y-auto rounded-[inherit]"
           >
             {(roomId || compact || autoPlay || !roomId || roomId === "preview-room") ? (
               <WatchRoom 
                 roomId={roomId || "preview-room"} 
                 movie={selectedMovie} 
-                isHost={true} 
-                onBackToLobby={() => setStep(7)} 
+                isHost={isHost}
+                hostDisplayName={hostDisplayName ?? data.senderName ?? "Host"}
+                guestDisplayName={guestDisplayName ?? data.recipientName ?? "Guest"}
+                onBackToLobby={isHost ? () => setStep(7) : undefined}
                 onChangeMovie={(movie) => {
                   setSelectedMovie(movie);
+                  if (roomId && roomId !== "preview-room") {
+                    saveStoredProgress(roomId, 9, movie);
+                  }
                   onResponse?.({ answer: "YES", message: JSON.stringify(movie) });
                 }}
                 compact={compact}
                 isPreview={!roomId || roomId === "preview-room"}
               />
             ) : (
-              <div className="flex flex-col items-center justify-center h-full gap-6 p-6">
-                <div className="relative w-40 h-60 rounded-2xl overflow-hidden shadow-2xl ring-4 ring-rose-500/40">
+              <div className="flex flex-col items-center justify-center h-full gap-6 p-6 bg-gradient-to-br from-[#fff6fa] via-[#ffe4ef] to-[#ffd4e5]">
+                <div className="relative w-40 h-60 rounded-2xl overflow-hidden shadow-xl shadow-pink-200/40 ring-4 ring-pink-200/60">
                   <MediaDisplay src={selectedMovie.thumb_url} alt={selectedMovie.name} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-rose-900/40 to-transparent" />
                 </div>
                 <div className="text-center">
-                  <p className="text-rose-300 text-xs font-bold uppercase tracking-widest mb-1">Đã chọn phim</p>
-                  <h3 className="text-white text-lg font-bold">{selectedMovie.name}</h3>
-                  <p className="text-slate-400 text-sm mt-1">{selectedMovie.year}</p>
+                  <p className="text-rose-500 text-xs font-bold uppercase tracking-widest mb-1">Đã chọn phim</p>
+                  <h3 className="text-rose-950 text-lg font-bold">{selectedMovie.name}</h3>
+                  <p className="text-rose-600 text-sm mt-1">{selectedMovie.year}</p>
                 </div>
-                <div className="text-center text-slate-400 text-sm max-w-[240px]">
+                <div className="text-center text-rose-600 text-sm max-w-[240px]">
                   <div className="flex items-center gap-2 justify-center mb-2">
                     <div className="w-2 h-2 bg-rose-400 rounded-full animate-ping" />
-                    <span className="text-rose-300 font-semibold">Đang chờ bên kia xác nhận...</span>
+                    <span className="text-rose-500 font-semibold">Đang chờ bên kia xác nhận...</span>
                   </div>
-                  <p className="text-xs opacity-70">Khi cả hai đồng ý, phòng chiếu sẽ tự động mở</p>
+                  <p className="text-xs opacity-70">Khi cả hai đồng ý, phòng chiếu sẽ tự động mở 💕</p>
                 </div>
               </div>
             )}

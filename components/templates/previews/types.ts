@@ -12,6 +12,10 @@ export type TemplatePreviewProps = {
   fullScreen?: boolean;
   hideNavigation?: boolean;
   isBuilderPreview?: boolean;
+  isHost?: boolean;
+  hostDisplayName?: string;
+  guestDisplayName?: string;
+  initialStep?: number;
   autoPlay?: boolean;
   roomId?: string;
   onResponse?: (response: { answer: string; message?: string; audioDataUrl?: string; date?: string }) => void;

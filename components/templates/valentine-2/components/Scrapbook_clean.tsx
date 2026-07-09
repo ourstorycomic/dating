@@ -157,7 +157,7 @@ export function Scrapbook({
                   dragConstraints={{ top: -170, bottom: 0 }}
                   dragElastic={0.08}
                   onDrag={(_e, info) => {
-                    // Only track position during drag — NOT activate
+                    // Only track position during drag ??? NOT activate
                     setDragY({ y: info.offset.y, extracted: false });
                   }}
                   onDragEnd={(_e, info) => {
@@ -182,23 +182,23 @@ export function Scrapbook({
                     <div className="w-6 h-px bg-white/15" />
                     {/* Hint text: changes to checkmark when past threshold */}
                     {dragY.y < -130 ? (
-                      <div className="text-green-300 text-[9px] font-bold tracking-widest mt-auto mb-2 select-none">✓ THẢ!</div>
+                      <div className="text-green-300 text-[9px] font-bold tracking-widest mt-auto mb-2 select-none">??? TH???!</div>
                     ) : (
                       <motion.div
                         animate={compact ? undefined : { y: [0, -4, 0] }}
                         transition={{ repeat: Infinity, duration: 1, ease: "easeInOut" }}
                         className="text-white/50 text-[9px] font-bold tracking-widest mt-auto mb-2 select-none"
-                      >KÉO ↑</motion.div>
+                      >K??O ???</motion.div>
                     )}
                   </div>
-                  {/* XU ở đáy card */}
+                  {/* XU ??? ????y card */}
                   <div className="w-14 h-14 bg-gradient-to-br from-yellow-300 via-yellow-400 to-yellow-600 rounded-full border-[3px] border-yellow-200 flex items-center justify-center shadow-[0_6px_18px_rgba(234,179,8,0.5)]">
                     <span className="text-yellow-900 font-black text-xs tracking-tight select-none">1 XU</span>
                   </div>
                 </motion.div>
               )}
 
-              {/* Xu bay lên sau khi extracted */}
+              {/* Xu bay l??n sau khi extracted */}
               {dragY.extracted && (
                 <motion.div
                   key="coin-extracted"
@@ -219,7 +219,7 @@ export function Scrapbook({
               )}
             </AnimatePresence>
 
-            {/* Pocket envelope — z-20 che xu ở đáy card */}
+            {/* Pocket envelope ??? z-20 che xu ??? ????y card */}
             <div className={`absolute bottom-0 w-4/5 h-28 ${PAPER_BG} rounded-t-xl border-t-2 border-dashed border-slate-300 shadow-[0_-5px_15px_rgba(0,0,0,0.07)] z-20 flex flex-col items-center justify-center gap-1`}>
               <span className="text-slate-400 text-[9px] font-bold tracking-[0.2em] opacity-50 uppercase">Secret Pocket</span>
               <div className="w-12 h-px bg-slate-200 opacity-60" />
@@ -240,26 +240,26 @@ export function Scrapbook({
                   <span className="text-yellow-100 font-black text-2xl drop-shadow-md">1 XU</span>
                 </div>
                 <p className="text-slate-800 font-[Dancing_Script] text-xl font-bold mb-6 leading-relaxed">
-                  {data.page3SecretText || 'Tớ có một món quà bí mật, nhưng cậu phải tự tay giành lấy nó nhé!'}
+                  T??? c?? m???t m??n qu?? b?? m???t, nh??ng c???u ph???i t??? tay gi??nh l???y n?? nh??!
                 </p>
                 <button
                   onClick={() => { playTada(compact && !autoPlay); onExtractLetter(); }}
                   className="bg-gradient-to-r from-rose-500 to-pink-600 text-white font-bold py-3 px-8 rounded-full shadow-[0_10px_20px_rgba(225,29,72,0.4)] hover:scale-105 transition-transform"
                 >
-                  {data.page3ButtonText || 'Đi lấy quà 🕹️'}
+                  ??i l???y qu?? ???????
                 </button>
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Escape nếu bị kẹt */}
+          {/* Escape n???u b??? k???t */}
           {!dragY.extracted && currentPage === 3 && (
             <motion.button
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 5 }}
               onClick={onExtractLetter}
               className="absolute bottom-3 right-3 z-50 text-slate-400 text-xs underline opacity-50 hover:opacity-100 transition-opacity"
             >
-              Bỏ qua →
+              B??? qua ???
             </motion.button>
           )}
         </div>
@@ -277,17 +277,17 @@ export function Scrapbook({
             className={`absolute inset-0 ${PAPER_BG} rounded-r-2xl px-4 pt-3 pb-4 flex flex-col ${RIGHT_PAGE_SHADOW} border-l border-black/5 [backface-visibility:hidden] cursor-pointer`}
             onClick={() => { if (page2ShowNext) nextPage(); }}
           >
-            <div className="relative w-full flex-shrink-0 overflow-hidden" style={{ height: '52%' }}>
+            <div className="relative w-full flex-shrink-0" style={{ height: '60%' }}>
               {currentPage >= 2 && data.polaroids.map((p: any, i: number) => (
                 <motion.div
                   key={p.id}
-                  className="absolute bg-white p-2 pb-5 rounded shadow-lg drop-shadow-xl border border-gray-100"
+                  className="absolute bg-white p-2 pb-8 rounded shadow-lg drop-shadow-xl border border-gray-100"
                   style={{ 
-                    top: i === 0 ? '4%' : i === 1 ? '8%' : '4%', 
-                    left: i === 0 ? '3%' : i === 1 ? '30%' : '57%',
-                    rotate: i === 0 ? '-8deg' : i === 1 ? '0deg' : '8deg',
-                    width: '38%',
-                    zIndex: i + 1,
+                    top: i === 0 ? '8%' : '14%', 
+                    left: i === 0 ? '4%' : '22%',
+                    rotate: i === 0 ? '-3deg' : '4deg',
+                    width: '58%',
+                    zIndex: i === 0 ? 1 : 2,
                   }}
                   initial={{ y: -200, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -296,7 +296,7 @@ export function Scrapbook({
                   <div className="aspect-square bg-gray-200 w-full mb-2">
                     <MediaDisplay src={p.src} className="w-full h-full object-cover" alt="" />
                   </div>
-                  <p className="text-center font-[Caveat] text-sm leading-tight text-slate-800 font-bold">{p.caption}</p>
+                  <p className="text-center font-[Caveat] text-lg text-slate-800 font-bold">{p.caption}</p>
                   <div className={`${WASHI_TAPE} -top-2 left-1/2 -translate-x-1/2`} />
                 </motion.div>
               ))}
@@ -334,12 +334,12 @@ export function Scrapbook({
           style={{ transformOrigin: "left center" }}
           className="absolute inset-0 origin-left [transform-style:preserve-3d] z-[3]"
         >
-          {/* Front Face (Right Page) — absolute layout so text never pushes image */}
+          {/* Front Face (Right Page) ??? absolute layout so text never pushes image */}
           <div
             className={`absolute inset-0 ${PAPER_BG} rounded-r-2xl ${RIGHT_PAGE_SHADOW} border-l border-black/5 [backface-visibility:hidden] cursor-pointer overflow-hidden`}
             onClick={() => { if (page1ShowNext) nextPage(); }}
           >
-            {/* Text pinned to top area — overflows upward only, never affects image */}
+            {/* Text pinned to top area ??? overflows upward only, never affects image */}
             <div className="absolute top-0 left-0 right-0 px-5 pt-6 overflow-hidden" style={{ bottom: '185px' }}>
               {currentPage >= 1 && (
                 <p className="text-slate-800 font-[Dancing_Script] text-2xl leading-relaxed font-bold whitespace-pre-line">
@@ -349,7 +349,7 @@ export function Scrapbook({
               )}
             </div>
 
-            {/* Image pinned to bottom — always same position regardless of text length */}
+            {/* Image pinned to bottom ??? always same position regardless of text length */}
             <div className="absolute bottom-5 left-5 right-5 h-[165px] bg-white p-3 pb-8 shadow-md drop-shadow-xl rotate-[-2deg]">
               {currentPage >= 1 && (
                 <motion.img
@@ -406,7 +406,7 @@ export function Scrapbook({
               onClick={nextPage} 
               className={`${compact ? '' : 'animate-pulse'} bg-[#fdfbf7]/90 text-slate-800 px-8 py-3 rounded border border-slate-300 font-serif font-bold tracking-widest shadow-[0_5px_15px_rgba(0,0,0,0.5)] hover:bg-white transition-colors relative z-10`}
             >
-              MỞ SỔ TAY
+              M??? S??? TAY
             </button>
           </div>
           
@@ -424,7 +424,7 @@ export function Scrapbook({
 
       </motion.div>
 
-      {/* "Trang tiếp" button — absolutely positioned so it never shifts the book */}
+      {/* "Trang ti???p" button ??? absolutely positioned so it never shifts the book */}
       <AnimatePresence>
         {(page1ShowNext && currentPage === 1) && (
           <motion.button
@@ -435,7 +435,7 @@ export function Scrapbook({
             onClick={nextPage}
             className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-white/90 hover:bg-white text-slate-800 px-7 py-2.5 rounded-full font-bold text-sm shadow-xl border border-slate-200 transition-colors backdrop-blur-sm whitespace-nowrap z-20"
           >
-            Trang tiếp →
+            Trang ti???p ???
           </motion.button>
         )}
         {(page2ShowNext && currentPage === 2) && (
@@ -447,7 +447,7 @@ export function Scrapbook({
             onClick={nextPage}
             className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-white/90 hover:bg-white text-slate-800 px-7 py-2.5 rounded-full font-bold text-sm shadow-xl border border-slate-200 transition-colors backdrop-blur-sm whitespace-nowrap z-20"
           >
-            Trang tiếp →
+            Trang ti???p ???
           </motion.button>
         )}
       </AnimatePresence>

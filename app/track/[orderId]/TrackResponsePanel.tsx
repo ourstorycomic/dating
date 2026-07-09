@@ -43,10 +43,12 @@ export function TrackResponsePanel({
   orderId,
   initialResponseText,
   senderName,
+  recipientName,
 }: {
   orderId: string;
   initialResponseText: string | null;
   senderName: string;
+  recipientName: string;
 }) {
   const [responseText, setResponseText] = useState<string | null>(initialResponseText);
   const [respondedAt, setRespondedAt] = useState<string | null>(null);
@@ -90,11 +92,11 @@ export function TrackResponsePanel({
   return (
     <GlassCard
       hover={false}
-      className="border border-pink-200 bg-white/80 p-5 text-rose-950 shadow-2xl shadow-pink-200/20 backdrop-blur-xl"
+      className="border border-pink-200 bg-gradient-to-br from-white via-[#fff8fc] to-[#ffeef5] p-5 text-rose-950 shadow-2xl shadow-pink-200/25"
     >
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-2xl font-semibold">Phản hồi của người nhận</h2>
-        <span className="animate-pulse rounded-full bg-rose-100 px-3 py-1 text-[10px] font-black uppercase tracking-[0.3em] text-rose-500">
+        <h2 className="text-2xl font-bold text-rose-950">💌 Phản hồi của người nhận</h2>
+        <span className="animate-pulse rounded-full bg-gradient-to-r from-pink-100 to-rose-100 px-3 py-1 text-[10px] font-black uppercase tracking-[0.3em] text-rose-500 border border-pink-200">
           Live
         </span>
       </div>
@@ -122,6 +124,7 @@ export function TrackResponsePanel({
               roomId={orderId}
               movieStr={response.message}
               senderName={senderName}
+              recipientName={recipientName}
             />
           ) : null}
 

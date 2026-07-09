@@ -23,23 +23,31 @@ export function Step7Lobby({ onSelectMovie, compact: propCompact, fullScreen, au
     const { searchQuery = "", tl = "phim-le", cat = "", ctr = "", yr = "", pg = 1 } = opts;
     setLoading(true);
     try {
-      let url = "";
+      const proxyBase = "/api/kkphim";
+      let endpoint = "";
+      const params = new URLSearchParams();
       if (searchQuery) {
-        url = `https://phimapi.com/v1/api/tim-kiem?keyword=${encodeURIComponent(searchQuery)}&limit=24&page=${pg}`;
+        endpoint = "v1/api/tim-kiem";
+        params.set("keyword", searchQuery);
+        params.set("limit", String(ITEMS_PER_PAGE));
+        params.set("page", String(pg));
       } else {
-        url = `https://phimapi.com/v1/api/danh-sach/${tl}?page=${pg}&limit=${ITEMS_PER_PAGE}`;
-        if (cat) url += `&category=${cat}`;
-        if (ctr) url += `&country=${ctr}`;
-        if (yr) url += `&year=${yr}`;
+        endpoint = `v1/api/danh-sach/${tl}`;
+        params.set("page", String(pg));
+        params.set("limit", String(ITEMS_PER_PAGE));
+        if (cat) params.set("category", cat);
+        if (ctr) params.set("country", ctr);
+        if (yr) params.set("year", yr);
       }
 
-      const res = await fetch(url);
+      const res = await fetch(`${proxyBase}?endpoint=${encodeURIComponent(endpoint)}&${params.toString()}`, { headers: { accept: "application/json" } });
       const data = await res.json();
 
-      const imageDomain = "https://phimimg.com/";
-      const items = data.data?.items || [];
-      const pagination = data.data?.params?.pagination;
-      const total = pagination ? Math.ceil(pagination.totalItems / (pagination.totalItemsPerPage || ITEMS_PER_PAGE)) : 1;
+      const imageDomain = "https://img.phimapi.com/";
+      const items = data.data?.items || data.items || [];
+      const pagination = data.data?.params?.pagination || data.pagination;
+      const totalItems = pagination?.totalItems ?? items.length ?? 0;
+      const total = pagination ? Math.max(1, Math.ceil(totalItems / (pagination.totalItemsPerPage || ITEMS_PER_PAGE))) : 1;
 
       const formatted = items.map((m: any) => ({
         _id: m._id,
@@ -48,6 +56,12 @@ export function Step7Lobby({ onSelectMovie, compact: propCompact, fullScreen, au
         thumb_url: m.thumb_url?.startsWith("http") ? m.thumb_url : `${imageDomain}${m.thumb_url}`,
         poster_url: m.poster_url?.startsWith("http") ? m.poster_url : `${imageDomain}${m.poster_url}`,
         year: m.year,
+        voteAverage: typeof m?.tmdb?.vote_average === "number" ? m.tmdb.vote_average : (typeof m?.imdb?.vote_average === "number" ? m.imdb.vote_average : (typeof m.vote_average === "number" ? m.vote_average : undefined)),
+        voteCount: typeof m?.tmdb?.vote_count === "number" ? m.tmdb.vote_count : (typeof m?.imdb?.vote_count === "number" ? m.imdb.vote_count : (typeof m.vote_count === "number" ? m.vote_count : undefined)),
+        categories: Array.isArray(m.category) ? m.category : (Array.isArray(m.categories) ? m.categories : []),
+        quality: typeof m.quality === "string" ? m.quality : (typeof m.quality === "number" ? String(m.quality) : undefined),
+        lang: typeof m.lang === "string" ? m.lang : undefined,
+        status: typeof m.status === "string" ? m.status : (typeof m.episode_current === "string" ? m.episode_current : undefined),
       }));
 
       setMovies(formatted);
@@ -104,6 +118,24 @@ export function Step7Lobby({ onSelectMovie, compact: propCompact, fullScreen, au
     const end = Math.min(totalPages, start + 4);
     for (let i = start; i <= end; i++) pages.push(i);
     return pages;
+  };
+
+  const getPrimaryGenre = (movie: MovieData) => {
+    const rawGenre = movie.categories?.[0];
+    if (!rawGenre) return "Chưa rõ thể loại";
+    if (typeof rawGenre === "string") return rawGenre;
+    return rawGenre.name || "Chưa rõ thể loại";
+  };
+
+  const getRatingText = (movie: MovieData) => {
+    const rating = Number(movie.voteAverage);
+    if (!Number.isFinite(rating) || rating <= 0) return "Chưa rõ điểm";
+    return rating.toFixed(1);
+  };
+
+  const getVoteCountText = (movie: MovieData) => {
+    if (typeof movie.voteCount !== "number") return "Chưa rõ lượt";
+    return `${movie.voteCount.toLocaleString("vi-VN")} lượt`;
   };
 
   return (
@@ -188,7 +220,7 @@ export function Step7Lobby({ onSelectMovie, compact: propCompact, fullScreen, au
           )}
         </div>
 
-        {/* Movie grid — responsive for PC */}
+        {/* Movie grid — original layout */}
         <div className="flex-1 overflow-y-auto px-2 sm:px-6 md:px-8 pt-1 no-scrollbar custom-scrollbar">
           <div className="w-full max-w-[1400px] mx-auto">
           {loading ? (
@@ -220,16 +252,32 @@ export function Step7Lobby({ onSelectMovie, compact: propCompact, fullScreen, au
 
                   {/* Title — z-10 so it's ABOVE hover overlay */}
                   <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 z-10 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                    <h3 
-                      className="text-white font-bold text-[13px] sm:text-[15px] line-clamp-2 leading-tight mb-1"
-                      style={{ color: "white", textShadow: "0px 2px 4px rgba(0,0,0,0.8), 0px 0px 10px rgba(0,0,0,0.5)" }}
+                    <div className="flex flex-wrap items-center gap-1.5 text-[10px] text-rose-100 font-semibold opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 mb-1">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-black/40 px-2 py-1 backdrop-blur-md border border-white/10">
+                        <Star size={10} fill="currentColor" />
+                        <span>{getRatingText(movie)}</span>
+                      </span>
+                      <span className="rounded-full bg-black/40 px-2 py-1 backdrop-blur-md border border-white/10 max-w-[110px] truncate">
+                        {getPrimaryGenre(movie)}
+                      </span>
+                      <span className="rounded-full bg-black/40 px-2 py-1 backdrop-blur-md border border-white/10">
+                        {movie.year}
+                      </span>
+                      <span className="rounded-full bg-black/40 px-2 py-1 backdrop-blur-md border border-white/10">
+                        {getVoteCountText(movie)}
+                      </span>
+                      {movie.quality ? (
+                        <span className={`rounded-full px-2 py-1 backdrop-blur-md border border-white/10 ${String(movie.quality).toLowerCase().includes("cam") ? "bg-rose-500/50" : "bg-emerald-500/45"}`}>
+                          {movie.quality}
+                        </span>
+                      ) : null}
+                    </div>
+                    <h3
+                      className="font-bold text-[13px] sm:text-[15px] line-clamp-2 leading-tight"
+                      style={{ color: "#fff", textShadow: "0px 2px 4px rgba(0,0,0,0.8), 0px 0px 10px rgba(0,0,0,0.5)" }}
                     >
                       {movie.name}
                     </h3>
-                    <div className="flex items-center gap-1.5 text-[11px] text-rose-300 font-semibold opacity-80 group-hover:opacity-100 transition-opacity">
-                      <Star size={10} fill="currentColor" />
-                      <span>{movie.year}</span>
-                    </div>
                   </div>
 
                   {/* Hover: semi-transparent overlay + play button (z-5, below title) */}

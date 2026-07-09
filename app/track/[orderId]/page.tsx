@@ -53,6 +53,12 @@ function answerLabel(answer?: string | null) {
   return "Chưa trả lời";
 }
 
+function getOrderName(customData: unknown, key: "senderName" | "recipientName", fallback: string) {
+  if (!customData || typeof customData !== "object") return fallback;
+  const value = (customData as Record<string, unknown>)[key];
+  return typeof value === "string" && value.trim() ? value : fallback;
+}
+
 export default async function TrackPage({
   params,
 }: {
@@ -64,13 +70,15 @@ export default async function TrackPage({
   if (!order) notFound();
 
   return (
-    <div className="min-h-screen px-4 py-8 text-white sm:px-6 lg:px-10">
+    <div className="min-h-screen px-4 py-8 text-rose-950 sm:px-6 lg:px-10">
       <main className="mx-auto grid max-w-5xl gap-6">
-        <header className="glass-panel rounded-2xl p-5 sm:p-6">
-          <p className="text-sm font-semibold text-pink-100/80">Track link cho người mua</p>
-          <h1 className="mt-2 text-3xl font-semibold sm:text-4xl">Theo dõi phản hồi đơn {order.public_id}</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-romance-muted">
-            Link này dùng để xem người nhận đã mở quà, trả lời gì và nghe lại ghi âm nếu người nhận gửi.
+        <header className="relative overflow-hidden rounded-2xl border border-pink-200/60 bg-gradient-to-br from-white via-[#fff8fc] to-[#ffeef5] p-5 text-rose-950 shadow-xl shadow-pink-200/25 sm:p-6">
+          <div className="pointer-events-none absolute -right-4 -top-4 text-5xl opacity-20">💕</div>
+          <div className="pointer-events-none absolute bottom-2 right-16 text-2xl opacity-15">🌸</div>
+          <p className="text-sm font-semibold text-rose-500">Track link cho người mua</p>
+          <h1 className="mt-2 text-3xl font-semibold text-rose-950 sm:text-4xl">Theo dõi phản hồi đơn {order.public_id}</h1>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-rose-700/75">
+            Link này dùng để xem người nhận đã mở quà, trả lời gì và xem phim cùng nhau nếu đã chọn phim nhé 💕
           </p>
         </header>
 
@@ -81,9 +89,9 @@ export default async function TrackPage({
             ["Câu trả lời", answerLabel(order.recipient_response)],
             [getExpiresStatus((order as any).expires_at).label, getExpiresStatus((order as any).expires_at).value],
           ].map(([label, value]) => (
-            <GlassCard key={label} hover={false} className="p-5">
-              <p className="text-sm text-white/58">{label}</p>
-              <p className="mt-3 text-2xl font-semibold text-pink-100">{value}</p>
+            <GlassCard key={label} hover={false} className="border border-pink-100 bg-white/95 p-5 text-rose-950 shadow-lg shadow-pink-100/40">
+              <p className="text-sm font-medium text-rose-500/80">{label}</p>
+              <p className="mt-3 text-xl font-bold text-rose-950 sm:text-2xl">{value}</p>
             </GlassCard>
           ))}
         </section>
@@ -91,9 +99,8 @@ export default async function TrackPage({
         <TrackResponsePanel
           orderId={order.public_id}
           initialResponseText={order.response_text}
-          senderName={(order.custom_data && typeof order.custom_data === "object" && "senderName" in order.custom_data)
-            ? (order.custom_data.senderName as string)
-            : "Host"}
+          senderName={getOrderName(order.custom_data, "senderName", "Host")}
+          recipientName={getOrderName(order.custom_data, "recipientName", order.recipient_name ?? "Guest")}
         />
       </main>
     </div>

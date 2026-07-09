@@ -17,6 +17,10 @@ export function Valentine2Preview({
       isBuilderPreview={isBuilderPreview}
       data={props.customData || (props as any)}
       roomId={roomId}
+      isHost={props.isHost}
+      initialStep={props.initialStep}
+      hostDisplayName={props.hostDisplayName}
+      guestDisplayName={props.guestDisplayName}
       autoPlay={props.autoPlay}
       onResponse={props.onResponse}
     />

@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 export function FloatingParticles() {
-  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; scale: number; duration: number; type: "flower" | "star" }>>([]);
+  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; scale: number; duration: number; delay: number; driftX: number; type: "flower" | "star" }>>([]);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -20,6 +20,8 @@ export function FloatingParticles() {
         y: Math.random() * 100 + 100, // Start below screen
         scale: Math.random() * 0.8 + 0.4,
         duration: Math.random() * 8 + 8, // 8-16s
+        delay: Math.random() * 5,
+        driftX: (Math.random() - 0.5) * 10,
         type: Math.random() > 0.5 ? ("flower" as const) : ("star" as const),
       }));
       setParticles(newParticles);
@@ -36,13 +38,13 @@ export function FloatingParticles() {
           animate={{ 
             opacity: [0, 0.6, 0], 
             y: "-20%", 
-            x: [`${p.x}vw`, `${p.x + (Math.random() * 10 - 5)}vw`] 
+            x: [`${p.x}vw`, `${p.x + p.driftX}vw`] 
           }}
           transition={{
             duration: p.duration,
             repeat: Infinity,
             ease: "linear",
-            delay: Math.random() * 5,
+            delay: p.delay,
           }}
           className="absolute"
           style={{ scale: p.scale }}

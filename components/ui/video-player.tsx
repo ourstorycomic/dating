@@ -248,6 +248,7 @@ export function VideoPlayer({
   useEffect(() => {
     const onFullscreenChange = () => setIsFullscreen(Boolean(document.fullscreenElement));
     document.addEventListener("fullscreenchange", onFullscreenChange);
+    onFullscreenChange();
     return () => document.removeEventListener("fullscreenchange", onFullscreenChange);
   }, []);
 
@@ -383,6 +384,21 @@ export function VideoPlayer({
   }
 
   function toggleFullscreen() {
+    const container = containerRef.current;
+    if (!container) return;
+
+    if (document.fullscreenElement) {
+      void document.exitFullscreen().catch(() => undefined);
+      return;
+    }
+
+    if (container.requestFullscreen) {
+      void container.requestFullscreen({ navigationUI: "hide" } as FullscreenOptions).catch(() => {
+        setIsFakeFullscreen((prev) => !prev);
+      });
+      return;
+    }
+
     setIsFakeFullscreen((prev) => !prev);
   }
 
@@ -579,13 +595,13 @@ export function VideoPlayer({
       onMouseMove={showControlsTemporarily}
       onMouseEnter={showControlsTemporarily}
       onTouchStart={showControlsTemporarily}
-      className={`pmovies-player group ${isFakeFullscreen ? "fixed inset-0 z-[9999] bg-black" : "relative aspect-video overflow-hidden rounded-md bg-black shadow-2xl shadow-black/60"} ${controlsVisible ? "cursor-auto" : "cursor-none"}`}
+      className={`pmovies-player group ${(isFullscreen || isFakeFullscreen) ? "fixed inset-0 z-[9999] overflow-hidden rounded-none bg-black" : "relative aspect-video overflow-hidden rounded-md bg-black shadow-2xl shadow-black/60"} ${controlsVisible ? "cursor-auto" : "cursor-none"}`}
     >
       <div ref={videoSlotRef} className="absolute inset-0">
         <video ref={videoRef} poster={poster} playsInline muted={locked} preload="auto" className="h-full w-full object-contain" />
       </div>
       <button type="button" onClick={togglePlay} className="absolute inset-0 z-10" aria-label={locked ? "Request playback change" : "Toggle playback"} />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/15 opacity-100 transition" />
+      <div className={`pointer-events-none absolute inset-0 transition ${isFullscreen || isFakeFullscreen ? "bg-gradient-to-t from-black/65 via-transparent to-black/5" : "bg-gradient-to-t from-black/90 via-transparent to-black/15"}`} />
       {(!ready || buffering) && !streamError && (
         <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center text-pink-400 drop-shadow-[0_0_12px_rgba(244,114,182,0.8)]">
           <Loader2 className="h-12 w-12 animate-spin" />
@@ -611,11 +627,11 @@ export function VideoPlayer({
       )}
       {pendingRequest && pendingRequest.type !== "seek" && (
         <div className="absolute inset-0 z-30 flex pointer-events-none items-center justify-center">
-          <div className="pointer-events-auto flex items-center gap-3 rounded-md border border-amber-300/25 bg-black/70 px-4 py-3 text-white shadow-2xl shadow-black/50 backdrop-blur-xl">
+          <div className="pointer-events-auto flex items-center gap-3 rounded-xl border border-amber-300/40 bg-slate-900/90 px-4 py-3 shadow-2xl shadow-black/50 backdrop-blur-xl">
             <div className="rounded-md bg-amber-300 p-2 text-slate-950">{pendingRequest.type === "play" ? <Play size={18} /> : <Pause size={18} />}</div>
-            <div>
-              <p className="text-sm font-bold">{pendingRequest.guestName}</p>
-              <p className="text-xs text-slate-300">requests {pendingRequest.type}</p>
+            <div className="text-white">
+              <p className="text-sm font-bold text-white">{pendingRequest.guestName}</p>
+              <p className="text-xs text-amber-100">yêu cầu {pendingRequest.type === "play" ? "phát" : "dừng"}</p>
             </div>
             <button onClick={() => onRespondRequest?.(true)} className="rounded-md bg-emerald-400 p-2 text-slate-950"><Check size={16} /></button>
             <button onClick={() => onRespondRequest?.(false)} className="rounded-md bg-rose-400 p-2 text-white"><X size={16} /></button>
@@ -624,9 +640,9 @@ export function VideoPlayer({
       )}
       {locked && localRequest && localRequest.type !== "seek" && (
         <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center">
-          <div className="pointer-events-auto flex items-center gap-3 rounded-md border border-amber-300/25 bg-black/70 px-4 py-3 text-amber-100 shadow-2xl backdrop-blur-xl">
-            <span>Request sent: {localRequest.type}</span>
-            <button onClick={cancelLocalRequest} className="rounded-md bg-white/10 p-1.5 text-white hover:bg-rose-400">
+          <div className="pointer-events-auto flex items-center gap-3 rounded-xl border border-amber-300/40 bg-slate-900/90 px-4 py-3 text-amber-50 shadow-2xl backdrop-blur-xl">
+            <span className="font-semibold text-amber-50">Đã gửi yêu cầu: {localRequest.type === "play" ? "phát" : "dừng"}</span>
+            <button onClick={cancelLocalRequest} className="rounded-md bg-white/15 p-1.5 text-white hover:bg-rose-400">
               <X size={14} />
             </button>
           </div>
@@ -653,14 +669,14 @@ export function VideoPlayer({
         </button>
       )}
 
-      {fullscreenOverlay && isFullscreen && (
+      {fullscreenOverlay && (isFullscreen || isFakeFullscreen) && (
         <div className={`pointer-events-none absolute right-3 top-3 z-30 hidden w-[min(340px,32vw)] transition duration-300 md:block ${controlsVisible ? "translate-x-0 opacity-100" : "translate-x-3 opacity-0"}`}>
           <div className="pointer-events-auto">{fullscreenOverlay}</div>
         </div>
       )}
       <div className={`absolute inset-x-0 bottom-0 z-20 space-y-2 p-2 transition duration-300 sm:space-y-3 sm:p-4 ${controlsVisible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0"}`}>
         <div onClick={handleTimeline} onMouseMove={handleTimelineHover} onMouseLeave={() => setHoverProgress(null)} className="group/timeline h-7 cursor-pointer py-3 sm:h-6 sm:py-2">
-          <div className="relative h-1.5 rounded-full bg-white/20 transition-transform group-hover/timeline:scale-y-[1.5]">
+          <div className="relative h-1.5 rounded-full bg-white/20">
             {hoverProgress !== null && (
               <div
                 className="absolute bottom-full mb-2 -translate-x-1/2 rounded bg-pink-500 px-2.5 py-1 text-[10px] sm:text-xs font-bold text-white shadow-lg shadow-pink-500/30 transition-all pointer-events-none whitespace-nowrap"
@@ -673,8 +689,10 @@ export function VideoPlayer({
             <div className="h-full rounded-full bg-pink-400 shadow-[0_0_18px_rgba(244,114,182,.65)]" style={{ width: `${progress}%` }} />
             {requestProgress !== null && (
               <div className="absolute top-1/2 h-4 w-1 -translate-y-1/2 rounded-full bg-amber-300 shadow-[0_0_16px_rgba(252,211,77,.85)]" style={{ left: `${requestProgress}%` }}>
-                <div className="absolute bottom-5 left-1/2 w-44 -translate-x-1/2 rounded-md border border-amber-300/25 bg-black/75 p-2 text-xs text-amber-50 shadow-xl backdrop-blur-xl sm:w-52">
-                  <p className="font-bold">{shownRequest?.guestName} {pendingRequest ? "requests" : "requested"} {formatTime(shownRequest?.time ?? 0)}</p>
+                <div className="absolute bottom-5 left-1/2 w-44 -translate-x-1/2 rounded-lg border border-amber-300/40 bg-slate-900/95 p-2.5 text-xs shadow-xl backdrop-blur-xl sm:w-52">
+                  <p className="font-bold text-amber-50">
+                    {shownRequest?.guestName} {pendingRequest ? "yêu cầu tua" : "đã yêu cầu tua"} {formatTime(shownRequest?.time ?? 0)}
+                  </p>
                   {pendingRequest && (
                     <div className="mt-2 flex gap-2">
                       <button onClick={(event) => { event.stopPropagation(); onRespondRequest?.(true); }} className="rounded-md bg-emerald-400 p-1.5 text-slate-950"><Check size={14} /></button>
@@ -682,7 +700,7 @@ export function VideoPlayer({
                     </div>
                   )}
                   {!pendingRequest && localRequest?.type === "seek" && (
-                    <button onClick={cancelLocalRequest} className="mt-2 rounded-md bg-white/10 p-1.5 text-white hover:bg-rose-400">
+                    <button onClick={cancelLocalRequest} className="mt-2 rounded-md bg-white/15 p-1.5 text-white hover:bg-rose-400">
                       <X size={14} />
                     </button>
                   )}
@@ -726,7 +744,7 @@ export function VideoPlayer({
           )}
           
           <button type="button" onClick={toggleFullscreen} className={`ml-auto shrink-0 rounded-md p-1.5 sm:p-2 transition-colors ${compact ? "bg-pink-500 hover:bg-pink-400" : "bg-pink-500/80 hover:bg-pink-500"}`}>
-            {isFakeFullscreen ? <Minimize size={compact ? 14 : 16} /> : <Maximize size={compact ? 14 : 16} />}
+            {(isFullscreen || isFakeFullscreen) ? <Minimize size={compact ? 14 : 16} /> : <Maximize size={compact ? 14 : 16} />}
           </button>
         </div>
       </div>

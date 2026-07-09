@@ -387,6 +387,7 @@ function Section({
 
 export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFree, initialOrder }: { currentRole: "ADMIN" | "STAFF" | "EMPLOYEE"; myOrders: MyOrderRow[]; templates: TemplateCatalogItem[]; canCreateFree?: boolean; initialOrder?: any }) {
   const router = useRouter();
+  const [isMobileDevice, setIsMobileDevice] = useState(false);
   const valentineOne = templates.find((template) => template.component_key.includes("constellation")) ?? templates[0];
   const [selectedTemplateId, setSelectedTemplateId] = useState(valentineOne?.id ?? "");
   const [selectedPackage, setSelectedPackage] = useState(SERVICE_PACKAGES[2].id); // Mặc định gói phổ biến
@@ -407,6 +408,13 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("touchstart", handleClickOutside);
     };
+  }, []);
+
+  useEffect(() => {
+    const updateMobileState = () => setIsMobileDevice(window.innerWidth < 1024);
+    updateMobileState();
+    window.addEventListener("resize", updateMobileState);
+    return () => window.removeEventListener("resize", updateMobileState);
   }, []);
 
   // If an initialOrder is provided (e.g. navigating directly to /dashboard/orders/[orderId]), auto-load it
@@ -573,6 +581,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     ],
     page2Text: "Tớ yêu cái cách cậu quan tâm đến những điều nhỏ nhất...",
     page3Hint: "Kéo ruy băng nhé",
+    page3SecretText: "Tớ có một món quà bí mật, nhưng cậu phải tự tay giành lấy nó nhé!",
+    page3ButtonText: "Đi lấy quà 🕹️",
     confessionText: "Trang sách này tớ muốn để ngỏ, chờ cậu cùng viết tiếp. Tối nay đi xem phim với tớ nhé?",
   });
 
@@ -1870,6 +1880,10 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                     <TextArea label="Lời nhắn trang 2" value={valentine2Config.page2Text} onChange={(v) => setValentine2Config({ ...valentine2Config, page2Text: v })} />
                     <div className="mt-4" />
                     <TextInput label="Gợi ý kéo ruy băng" value={valentine2Config.page3Hint} onChange={(v) => setValentine2Config({ ...valentine2Config, page3Hint: v })} />
+                    <div className="mt-4" />
+                    <TextArea label="Nội dung bí mật trong túi" value={valentine2Config.page3SecretText} onChange={(v) => setValentine2Config({ ...valentine2Config, page3SecretText: v })} />
+                    <div className="mt-4" />
+                    <TextInput label="Nút lấy quà" value={valentine2Config.page3ButtonText} onChange={(v) => setValentine2Config({ ...valentine2Config, page3ButtonText: v })} />
                   </div>
                 </Section>
                 <Section title="Bước 2: Lời Ngỏ Thư Tay">
@@ -2406,9 +2420,10 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
         };
         const normalizedKey = selectedComponentKey.replace(" #", "-");
         const currentConfig = previewStepsMap[normalizedKey] || { totalSteps: 1, labels: ["Preview"] };
+        const previewIsCompact = !isMobileDevice;
 
         return (
-      <aside className="glass-panel-soft rounded-2xl p-4 xl:sticky xl:top-5 xl:h-[calc(100dvh-40px)] flex flex-col w-full xl:w-[450px]">
+      <aside className="glass-panel-soft rounded-2xl p-4 xl:sticky xl:top-5 xl:h-[calc(100dvh-40px)] min-h-[72svh] xl:min-h-0 flex flex-col w-full xl:w-[450px]">
         <div className="px-1 pb-4 shrink-0 flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-semibold">Live Preview</h2>
@@ -2419,7 +2434,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
             <input type="range" min="0" max="1" step="0.05" value={builderVolume} onChange={(e) => setBuilderVolume(Number(e.target.value))} className="w-24 accent-pink-500" />
           </div>
         </div>
-        <div id="builder-preview" className="flex-1 w-full min-h-0 flex items-center justify-center relative">
+        <div id="builder-preview" className="flex-1 w-full min-h-[58svh] xl:min-h-0 flex items-center justify-center relative">
             <InteractiveTemplatePreview
               componentKey={selectedComponentKey}
               customData={customData}
@@ -2429,7 +2444,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               visualLabel={selectedTemplate?.visual_label}
               generalAudioUrl={generalAudioUrl}
               musicUrl={generalAudioUrl}
-              compact={true}
+              compact={previewIsCompact}
               isBuilderPreview={true}
               fullScreen={false}
             />

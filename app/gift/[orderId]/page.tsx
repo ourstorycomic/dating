@@ -20,7 +20,7 @@ export default async function GiftPage({
   }
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-black text-white">
+    <div className="h-screen w-screen overflow-hidden bg-gradient-to-br from-[#fff6fa] via-[#ffe4ef] to-[#ffd4e5] text-rose-950">
       <GiftFullscreenView order={order} />
     </div>
   );
