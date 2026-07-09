@@ -844,13 +844,18 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
 
   // Dedicated background music previewer
   useEffect(() => {
-    if (typeof window === "undefined" || !generalAudioUrl) return;
+    if (typeof window === "undefined") return;
+    
+    let urlToPlay = generalAudioUrl;
+    if (!urlToPlay) {
+      urlToPlay = GENERAL_SONGS[Math.floor(Math.random() * GENERAL_SONGS.length)];
+    }
     
     if (previewAudioRef.current) {
       previewAudioRef.current.pause();
     }
     
-    const audio = new Audio(generalAudioUrl);
+    const audio = new Audio(urlToPlay);
     previewAudioRef.current = audio;
     audio.volume = builderVolume;
     audio.loop = true;
