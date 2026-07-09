@@ -603,8 +603,9 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
 
   const selectedTemplate = useMemo(
     () => {
-      // If we have a loaded template (from editing an existing order), always prefer it
-      if (loadedTemplate) {
+      // If we have a loaded template and its ID matches what's selected, use it
+      // (covers cases where the template is a MOCK and not in the DB templates array)
+      if (loadedTemplate && String(loadedTemplate.id) === String(selectedTemplateId)) {
         return loadedTemplate as any;
       }
       return templates.find((template) => String(template.id) === String(selectedTemplateId)) ?? valentineOne;
@@ -1239,7 +1240,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                           setSelectedTemplateId(template.id);
                           setTemplateSearch(template.name);
                           setIsDropdownOpen(false);
-
+                          // Clear loaded template so the dropdown selection takes effect
+                          setLoadedTemplate(null);
                           // Load defaults manually so it doesn't overwrite loadOrder
                           const rawKey = template.component_key ?? "";
                           const templateName = template.name?.toLowerCase() ?? "";
