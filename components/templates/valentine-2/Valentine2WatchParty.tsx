@@ -146,6 +146,7 @@ export function Valentine2WatchParty({
   const data = { ...DEFAULT_MEMORY_DATA, ...inputData };
   const [step, setStep] = useState(initialStep ?? (isHost ? 9 : 2));
   const audioRef = useRef<HTMLAudioElement>(null);
+  const fadeOutFrameRef = useRef<number | null>(null);
 
   const [selectedMovie, setSelectedMovie] = useState<MovieData | null>(null);
   const [restored, setRestored] = useState(!roomId || roomId === "preview-room");
@@ -213,12 +214,42 @@ export function Valentine2WatchParty({
     }
   }, [data.musicUrl, autoPlay]);
 
-  useEffect(() => {
+  const fadeOutMusic = (durationMs = 1800) => {
     const audio = audioRef.current;
-    if (!audio) return;
-    if (step >= 9) {
-      audio.pause();
+    if (!audio || audio.paused) return;
+
+    if (fadeOutFrameRef.current !== null) {
+      cancelAnimationFrame(fadeOutFrameRef.current);
     }
+
+    const startVolume = audio.volume;
+    const startTime = performance.now();
+
+    const tick = (now: number) => {
+      const progress = Math.min((now - startTime) / durationMs, 1);
+      audio.volume = startVolume * (1 - progress);
+      if (progress < 1) {
+        fadeOutFrameRef.current = requestAnimationFrame(tick);
+      } else {
+        audio.pause();
+        audio.volume = 0.3;
+        fadeOutFrameRef.current = null;
+      }
+    };
+
+    fadeOutFrameRef.current = requestAnimationFrame(tick);
+  };
+
+  useEffect(() => {
+    if (step >= 9) {
+      fadeOutMusic();
+    }
+    return () => {
+      if (fadeOutFrameRef.current !== null) {
+        cancelAnimationFrame(fadeOutFrameRef.current);
+        fadeOutFrameRef.current = null;
+      }
+    };
   }, [step]);
 
   useEffect(() => {
