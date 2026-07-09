@@ -907,6 +907,11 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     setQrKey(Date.now());
     setIsLocked(false);
     setEditUnlockCount(0);
+
+    // Update URL to the newly created order so it's bookmarkable and shareable
+    if (data.orderId) {
+      router.replace(`/dashboard/orders/${data.orderId}`, { scroll: false });
+    }
   }
 
   function showCopyMessage(message: string) {
