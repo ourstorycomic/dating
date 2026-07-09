@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import type { TemplateCatalogItem } from "@/lib/supabase/server";
 import { InteractiveTemplatePreview } from "@/components/templates/InteractiveTemplatePreview";
 import { FormStepNavigator } from "./FormStepNavigator";
@@ -384,7 +385,8 @@ function Section({
   );
 }
 
-export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFree }: { currentRole: "ADMIN" | "STAFF" | "EMPLOYEE"; myOrders: MyOrderRow[]; templates: TemplateCatalogItem[]; canCreateFree?: boolean }) {
+export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFree, initialOrder }: { currentRole: "ADMIN" | "STAFF" | "EMPLOYEE"; myOrders: MyOrderRow[]; templates: TemplateCatalogItem[]; canCreateFree?: boolean; initialOrder?: any }) {
+  const router = useRouter();
   const valentineOne = templates.find((template) => template.component_key.includes("constellation")) ?? templates[0];
   const [selectedTemplateId, setSelectedTemplateId] = useState(valentineOne?.id ?? "");
   const [selectedPackage, setSelectedPackage] = useState(SERVICE_PACKAGES[2].id); // Mặc định gói phổ biến
@@ -405,6 +407,16 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("touchstart", handleClickOutside);
     };
+  }, []);
+
+  // If an initialOrder is provided (e.g. navigating directly to /dashboard/orders/[orderId]), auto-load it
+  useEffect(() => {
+    if (initialOrder) {
+      // Small delay so templates list is ready
+      const t = setTimeout(() => loadOrder(initialOrder), 50);
+      return () => clearTimeout(t);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const dating1Stages = ["question", "success", "location", "datetime", "food", "drink", "completion"];
@@ -1157,6 +1169,10 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     setEditUnlockCount(cd.editUnlockCount ?? 0);
 
     window.scrollTo({ top: 0, behavior: "smooth" });
+    // Update URL to reflect the order being edited (without full page reload)
+    if (order.public_id) {
+      router.replace(`/dashboard/orders/${order.public_id}`, { scroll: false });
+    }
   }
 
   const orderIsLocked = !!result && !result.unlocked;
