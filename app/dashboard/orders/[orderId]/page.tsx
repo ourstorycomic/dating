@@ -29,7 +29,7 @@ export default async function EditOrderPage({ params }: Props) {
     supabase
       .from("orders")
       .select(
-        "id, public_id, template_id, buyer_name, buyer_contact, recipient_name, custom_data, amount, status, created_at, expires_at, templates(id, name, component_key), payments(payment_code, status, paid_at)",
+        "id, public_id, template_id, buyer_name, buyer_contact, recipient_name, custom_data, amount, status, created_at, expires_at, created_by_id, templates(id, name, component_key), payments(payment_code, status, paid_at)",
       )
       .eq("public_id", orderId)
       .maybeSingle(),
