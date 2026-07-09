@@ -283,11 +283,11 @@ export function Scrapbook({
                   key={p.id}
                   className="absolute bg-white p-2 pb-8 rounded shadow-lg drop-shadow-xl border border-gray-100"
                   style={{ 
-                    top: i === 0 ? '8%' : '14%', 
-                    left: i === 0 ? '4%' : '22%',
-                    rotate: i === 0 ? '-3deg' : '4deg',
+                    top: i === 0 ? '8%' : i === 1 ? '14%' : '20%', 
+                    left: i === 0 ? '4%' : i === 1 ? '16%' : '28%',
+                    rotate: i === 0 ? '-3deg' : i === 1 ? '4deg' : '9deg',
                     width: '58%',
-                    zIndex: i === 0 ? 1 : 2,
+                    zIndex: i + 1,
                   }}
                   initial={{ y: -200, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
