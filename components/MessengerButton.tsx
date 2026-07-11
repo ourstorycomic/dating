@@ -1,9 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
+import { usePathname } from "next/navigation";
 import { FACEBOOK_URL } from "@/lib/constants";
 
 export function MessengerButton() {
+  const pathname = usePathname();
+  const isWedding = pathname?.includes('/wedding');
+  
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -104,25 +108,46 @@ export function MessengerButton() {
             <div className="bg-white px-4 py-2.5 rounded-2xl rounded-tl-sm shadow-sm border border-gray-100 text-sm text-gray-700 leading-relaxed max-w-[85%]">
               Chào bạn! 💕<br/>
               Cảm ơn bạn đã ghé thăm Lovora.<br/>
-              Bạn đang cần tìm mẫu web để tỏ tình, xin lỗi hay chúc mừng sinh nhật vậy ạ?
+              {isWedding 
+                ? "Bạn đang tìm kiếm mẫu thiệp cưới số hóa sang trọng, tinh tế cho ngày trọng đại của mình đúng không ạ?"
+                : "Bạn đang cần tìm mẫu web để tỏ tình, xin lỗi hay chúc mừng sinh nhật vậy ạ?"}
             </div>
           </div>
 
           <div className="flex gap-2">
             <div className="w-7 shrink-0"></div>
             <div className="flex flex-col gap-2 w-full items-start">
-               <button 
-                onClick={() => { setMessage("Mình muốn xem các mẫu tỏ tình."); }} 
-                className="text-left text-sm text-pink-500 border border-pink-300/30 bg-pink-50 px-4 py-2 rounded-2xl hover:bg-pink-500 hover:text-white hover:border-pink-500 transition-all max-w-fit shadow-sm"
-               >
-                 Mình muốn xem mẫu tỏ tình
-               </button>
-               <button 
-                onClick={() => { setMessage("Mình cần mẫu sinh nhật."); }} 
-                className="text-left text-sm text-pink-500 border border-pink-300/30 bg-pink-50 px-4 py-2 rounded-2xl hover:bg-pink-500 hover:text-white hover:border-pink-500 transition-all max-w-fit shadow-sm"
-               >
-                 Mình cần mẫu sinh nhật
-               </button>
+               {isWedding ? (
+                 <>
+                   <button 
+                    onClick={() => { setMessage("Mình cần tư vấn làm thiệp cưới."); }} 
+                    className="text-left text-sm text-pink-500 border border-pink-300/30 bg-pink-50 px-4 py-2 rounded-2xl hover:bg-pink-500 hover:text-white hover:border-pink-500 transition-all max-w-fit shadow-sm"
+                   >
+                     Mình cần tư vấn làm thiệp cưới
+                   </button>
+                   <button 
+                    onClick={() => { setMessage("Tư vấn bảng giá thiệp cưới giúp mình."); }} 
+                    className="text-left text-sm text-pink-500 border border-pink-300/30 bg-pink-50 px-4 py-2 rounded-2xl hover:bg-pink-500 hover:text-white hover:border-pink-500 transition-all max-w-fit shadow-sm"
+                   >
+                     Xem bảng giá thiệp cưới
+                   </button>
+                 </>
+               ) : (
+                 <>
+                   <button 
+                    onClick={() => { setMessage("Mình muốn xem các mẫu tỏ tình."); }} 
+                    className="text-left text-sm text-pink-500 border border-pink-300/30 bg-pink-50 px-4 py-2 rounded-2xl hover:bg-pink-500 hover:text-white hover:border-pink-500 transition-all max-w-fit shadow-sm"
+                   >
+                     Mình muốn xem mẫu tỏ tình
+                   </button>
+                   <button 
+                    onClick={() => { setMessage("Mình cần mẫu sinh nhật."); }} 
+                    className="text-left text-sm text-pink-500 border border-pink-300/30 bg-pink-50 px-4 py-2 rounded-2xl hover:bg-pink-500 hover:text-white hover:border-pink-500 transition-all max-w-fit shadow-sm"
+                   >
+                     Mình cần mẫu sinh nhật
+                   </button>
+                 </>
+               )}
             </div>
           </div>
         </div>
