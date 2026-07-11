@@ -91,27 +91,33 @@ export function WeddingSixExperience({
   }, [autoPlay, compact, isBuilderPreview, musicUrl]);
 
   useEffect(() => {
-    if (autoPlay && containerRef.current) {
-      let scrollAmount = 0;
-      const speed = 0.3; // Much slower scroll
+    if (autoPlay && isOpened && containerRef.current) {
       let reqId: number;
+      const timeoutId = setTimeout(() => {
+        let scrollAmount = 0;
+        const speed = 0.3; // Much slower scroll
 
-      const step = () => {
-        if (containerRef.current) {
-          scrollAmount += speed;
-          containerRef.current.scrollTop = scrollAmount;
-          if (containerRef.current.scrollTop + containerRef.current.clientHeight >= containerRef.current.scrollHeight - 2) {
-             scrollAmount = 0;
-             containerRef.current.scrollTop = 0;
+        const step = () => {
+          if (containerRef.current) {
+            scrollAmount += speed;
+            containerRef.current.scrollTop = scrollAmount;
+            if (containerRef.current.scrollTop + containerRef.current.clientHeight >= containerRef.current.scrollHeight - 2) {
+               scrollAmount = 0;
+               containerRef.current.scrollTop = 0;
+            }
           }
-        }
+          reqId = requestAnimationFrame(step);
+        };
+        
         reqId = requestAnimationFrame(step);
-      };
+      }, 1500); // Wait for doors to open
       
-      reqId = requestAnimationFrame(step);
-      return () => cancelAnimationFrame(reqId);
+      return () => {
+        clearTimeout(timeoutId);
+        if (reqId) cancelAnimationFrame(reqId);
+      };
     }
-  }, [autoPlay]);
+  }, [autoPlay, isOpened]);
 
   const toggleAudio = () => {
     if (audioRef.current) {
@@ -175,45 +181,73 @@ export function WeddingSixExperience({
       {/* Intro Traditional Screen */}
       <AnimatePresence>
         {!isOpened && (
-          <motion.div
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 1.1 }}
-            transition={{ duration: 1.2, ease: "easeInOut" }}
-            className="absolute inset-0 z-[100] flex flex-col items-center justify-center bg-[#c62828] text-white cursor-pointer pointer-events-auto overflow-hidden"
-            onClick={() => {
-              setIsOpened(true);
-              if (audioRef.current && !isPlaying) {
-                audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
-              }
-            }}
-          >
-            {/* Subtle traditional pattern background */}
-            <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(#d4af37 2px, transparent 2px)", backgroundSize: "30px 30px" }} />
+          <>
+            <motion.div
+              key="door-left"
+              initial={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-y-0 left-0 w-1/2 z-[100] bg-[#c62828] border-r-8 border-[#d4af37] shadow-[10px_0_30px_rgba(0,0,0,0.5)] pointer-events-none overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/wood-pattern.png')] opacity-30 mix-blend-multiply" />
+              <div className="absolute right-4 top-12 bottom-12 flex flex-col justify-between z-10">
+                {[1,2,3,4,5,6].map(i => (
+                  <div key={i} className="w-5 h-5 rounded-full bg-gradient-to-br from-[#ffe55c] via-[#d4af37] to-[#8a6d1c] shadow-[inset_0_-2px_4px_rgba(0,0,0,0.4),0_3px_5px_rgba(0,0,0,0.6)]" />
+                ))}
+              </div>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-[50%] w-48 h-48 bg-gradient-to-br from-[#ffe55c] via-[#d4af37] to-[#8a6d1c] rounded-full border-[6px] border-[#8a6d1c] shadow-[0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center z-20" style={{ clipPath: "inset(0 50% 0 0)" }}>
+                <span className="text-[90px] font-bold text-[#8a0000] drop-shadow-md" style={{ fontFamily: "SimSun, serif" }}>囍</span>
+              </div>
+            </motion.div>
             
-            <div className="relative z-10 flex flex-col items-center px-6 text-center w-full max-w-sm">
-              <motion.div 
-                animate={{ rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                className="w-32 h-32 border-[4px] border-[#d4af37] rounded-full flex items-center justify-center mb-8"
-              >
-                <div className="w-28 h-28 border-[1px] border-[#d4af37] rounded-full flex items-center justify-center">
-                  <span className="text-6xl text-[#d4af37] font-bold" style={{ fontFamily: "SimSun, serif" }}>囍</span>
-                </div>
-              </motion.div>
-              
-              <h1 className="text-4xl font-bold text-white mb-2 tracking-wider">{brideName}</h1>
-              <span className="text-xl text-[#d4af37] font-light italic my-2" style={{ fontFamily: "'Dancing Script', cursive" }}>&amp;</span>
-              <h1 className="text-4xl font-bold text-white mt-2 tracking-wider">{groomName}</h1>
-              
-              <motion.p 
-                animate={{ opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="mt-16 text-[10px] uppercase tracking-[0.3em] font-bold text-[#d4af37] border-b border-[#d4af37] pb-1"
-              >
-                Chạm để mở thiệp
-              </motion.p>
-            </div>
-          </motion.div>
+            <motion.div
+              key="door-right"
+              initial={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-y-0 right-0 w-1/2 z-[100] bg-[#c62828] border-l-8 border-[#d4af37] shadow-[-10px_0_30px_rgba(0,0,0,0.5)] pointer-events-none overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/wood-pattern.png')] opacity-30 mix-blend-multiply" />
+              <div className="absolute left-4 top-12 bottom-12 flex flex-col justify-between z-10">
+                {[1,2,3,4,5,6].map(i => (
+                  <div key={i} className="w-5 h-5 rounded-full bg-gradient-to-br from-[#ffe55c] via-[#d4af37] to-[#8a6d1c] shadow-[inset_0_-2px_4px_rgba(0,0,0,0.4),0_3px_5px_rgba(0,0,0,0.6)]" />
+                ))}
+              </div>
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-[50%] w-48 h-48 bg-gradient-to-br from-[#ffe55c] via-[#d4af37] to-[#8a6d1c] rounded-full border-[6px] border-[#8a6d1c] shadow-[0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center z-20" style={{ clipPath: "inset(0 0 0 50%)" }}>
+                <span className="text-[90px] font-bold text-[#8a0000] drop-shadow-md" style={{ fontFamily: "SimSun, serif" }}>囍</span>
+              </div>
+            </motion.div>
+
+            <motion.div
+              key="content"
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="absolute inset-0 z-[101] flex flex-col items-center justify-center cursor-pointer pointer-events-auto bg-transparent overflow-hidden text-white"
+              onClick={() => {
+                setIsOpened(true);
+                if (audioRef.current && !isPlaying) {
+                  audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+                }
+              }}
+            >
+              <div className="relative z-10 flex flex-col items-center px-6 text-center w-full max-w-sm mt-32">
+                <p className="text-[10px] uppercase tracking-[0.4em] text-[#d4af37] mb-8 font-bold drop-shadow-md bg-black/40 px-4 py-1 rounded-full">Thân Mời</p>
+                
+                <h1 className="text-5xl @sm:text-6xl font-bold text-[#fdfbf7] drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] mb-2 tracking-wider" style={{ fontFamily: "'Dancing Script', cursive" }}>{brideName}</h1>
+                <span className="text-3xl text-[#d4af37] font-light italic my-2 drop-shadow-[0_2px_5px_rgba(0,0,0,0.8)]" style={{ fontFamily: "'Dancing Script', cursive" }}>&amp;</span>
+                <h1 className="text-5xl @sm:text-6xl font-bold text-[#fdfbf7] drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] mt-2 tracking-wider" style={{ fontFamily: "'Dancing Script', cursive" }}>{groomName}</h1>
+                
+                <motion.p 
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="mt-20 text-[10px] uppercase tracking-[0.3em] font-bold text-[#d4af37] border-b border-[#d4af37] pb-1 drop-shadow-[0_2px_5px_rgba(0,0,0,0.8)] bg-black/40 px-4 rounded-full"
+                >
+                  Chạm để mở thiệp
+                </motion.p>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 

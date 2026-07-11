@@ -283,7 +283,7 @@ export const MOCK_TEMPLATES: any[] = [
     component_key: slug,
     description: "Mẫu thiệp cưới",
     tagline: "Sang Trọng",
-    base_price: 3000,
+    base_price: 0,
     visual_label: "HOT",
     gradient: "from-amber-100 to-yellow-900",
     status_label: "Mới",

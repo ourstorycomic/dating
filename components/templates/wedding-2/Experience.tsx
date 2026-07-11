@@ -26,7 +26,7 @@ export function WeddingTwoExperience({
   mapUrl = "https://maps.app.goo.gl/xxx",
   mapImage = "/assets/lovepics/map-preview.jpg",
   dividerImage = "/assets/lovepics/5.jpg",
-  footerImage = "/assets/lovepics/6.jpg",
+  footerImage = "/assets/lovepics/4.jpg",
   musicUrl = "",
   isBuilderPreview = false,
   onComplete,
@@ -68,7 +68,14 @@ export function WeddingTwoExperience({
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [isMounted, setIsMounted] = useState(false);
-  const [isOpened, setIsOpened] = useState(autoPlay || isBuilderPreview || compact);
+  const [isOpened, setIsOpened] = useState(isBuilderPreview);
+
+  useEffect(() => {
+    if (autoPlay && !isBuilderPreview && !isOpened) {
+      const timer = setTimeout(() => setIsOpened(true), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [autoPlay, isBuilderPreview, isOpened]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -91,27 +98,33 @@ export function WeddingTwoExperience({
   }, [autoPlay, compact, isBuilderPreview, musicUrl]);
 
   useEffect(() => {
-    if (autoPlay && containerRef.current) {
-      let scrollAmount = 0;
-      const speed = 0.3; // Much slower scroll
+    if (autoPlay && isOpened && containerRef.current) {
       let reqId: number;
+      const timeoutId = setTimeout(() => {
+        let scrollAmount = 0;
+        const speed = 0.3; // Much slower scroll
 
-      const step = () => {
-        if (containerRef.current) {
-          scrollAmount += speed;
-          containerRef.current.scrollTop = scrollAmount;
-          if (containerRef.current.scrollTop + containerRef.current.clientHeight >= containerRef.current.scrollHeight - 2) {
-             scrollAmount = 0;
-             containerRef.current.scrollTop = 0;
+        const step = () => {
+          if (containerRef.current) {
+            scrollAmount += speed;
+            containerRef.current.scrollTop = scrollAmount;
+            if (containerRef.current.scrollTop + containerRef.current.clientHeight >= containerRef.current.scrollHeight - 2) {
+               scrollAmount = 0;
+               containerRef.current.scrollTop = 0;
+            }
           }
-        }
+          reqId = requestAnimationFrame(step);
+        };
+        
         reqId = requestAnimationFrame(step);
-      };
+      }, 1500); // Wait for doors to open
       
-      reqId = requestAnimationFrame(step);
-      return () => cancelAnimationFrame(reqId);
+      return () => {
+        clearTimeout(timeoutId);
+        if (reqId) cancelAnimationFrame(reqId);
+      };
     }
-  }, [autoPlay]);
+  }, [autoPlay, isOpened]);
 
   const toggleAudio = () => {
     if (audioRef.current) {
@@ -175,36 +188,71 @@ export function WeddingTwoExperience({
       {/* Intro Curtain Screen */}
       <AnimatePresence>
         {!isOpened && (
-          <motion.div
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 1.05 }}
-            transition={{ duration: 1.5, ease: "easeInOut" }}
-            className="absolute inset-0 z-[100] flex flex-col items-center justify-center bg-[#fdfbf7] cursor-pointer pointer-events-auto"
-            onClick={() => {
-              setIsOpened(true);
-              if (audioRef.current && !isPlaying) {
-                audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
-              }
-            }}
-          >
-            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] opacity-60" />
+          <>
+            <motion.div
+              key="door-left"
+              initial={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-y-0 left-0 w-1/2 z-[100] bg-gradient-to-b from-[#fff0f5] to-[#ffe4e1] border-r border-white/60 shadow-[5px_0_15px_rgba(0,0,0,0.05)] pointer-events-none overflow-hidden"
+            >
+              <div className="absolute right-0 bottom-0 w-[80vw] h-[40vh] bg-white rounded-full blur-[2px] opacity-60 translate-x-[20%] translate-y-[30%]" />
+              <div className="absolute right-0 top-[20%] w-[50vw] h-[30vh] bg-white rounded-full blur-[1px] opacity-70 translate-x-[30%]" />
+              <div className="absolute right-0 bottom-[30%] w-[60vw] h-[40vh] bg-white rounded-full blur-[2px] opacity-80 translate-x-[40%]" />
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-[50%] w-48 h-32 z-20" style={{ clipPath: "inset(0 50% 0 0)" }}>
+                 <div className="w-full h-full bg-white rounded-[50px] shadow-[0_5px_15px_rgba(0,0,0,0.08)] border-[3px] border-[#fde5e5] flex items-center justify-center">
+                    <span className="text-[#e2a8a8] text-3xl font-bold" style={{ fontFamily: "'Dancing Script', cursive" }}>Love</span>
+                 </div>
+              </div>
+            </motion.div>
             
-            <div className="relative z-10 flex flex-col items-center px-6 text-center">
-              <p className="text-[10px] uppercase tracking-[0.4em] text-[#c7b087] mb-6 font-bold">The Wedding Of</p>
-              <h1 className="text-5xl @sm:text-6xl font-normal text-[#3a3532] mb-2" style={{ fontFamily: "'Dancing Script', cursive" }}>{brideName}</h1>
-              <span className="text-2xl text-[#d8c3a5] font-light italic my-1" style={{ fontFamily: "'Dancing Script', cursive" }}>&amp;</span>
-              <h1 className="text-5xl @sm:text-6xl font-normal text-[#3a3532] mt-2" style={{ fontFamily: "'Dancing Script', cursive" }}>{groomName}</h1>
-              
-              <motion.div 
-                animate={{ scale: [1, 1.15, 1], boxShadow: ["0 0 0 0 rgba(199,176,135,0.4)", "0 0 0 20px rgba(199,176,135,0)", "0 0 0 0 rgba(199,176,135,0)"] }} 
-                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                className="mt-16 bg-white border border-[#c7b087] text-[#c7b087] rounded-full w-12 h-12 flex items-center justify-center shadow-lg"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-              </motion.div>
-              <p className="mt-4 text-[9px] uppercase tracking-[0.2em] font-bold text-[#c7b087]">Mở thiệp mời</p>
-            </div>
-          </motion.div>
+            <motion.div
+              key="door-right"
+              initial={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-y-0 right-0 w-1/2 z-[100] bg-gradient-to-b from-[#fff0f5] to-[#ffe4e1] border-l border-white/60 shadow-[-5px_0_15px_rgba(0,0,0,0.05)] pointer-events-none overflow-hidden"
+            >
+              <div className="absolute left-0 bottom-0 w-[80vw] h-[40vh] bg-white rounded-full blur-[2px] opacity-60 -translate-x-[20%] translate-y-[30%]" />
+              <div className="absolute left-0 top-[20%] w-[50vw] h-[30vh] bg-white rounded-full blur-[1px] opacity-70 -translate-x-[30%]" />
+              <div className="absolute left-0 bottom-[30%] w-[60vw] h-[40vh] bg-white rounded-full blur-[2px] opacity-80 -translate-x-[40%]" />
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-[50%] w-48 h-32 z-20" style={{ clipPath: "inset(0 0 0 50%)" }}>
+                 <div className="w-full h-full bg-white rounded-[50px] shadow-[0_5px_15px_rgba(0,0,0,0.08)] border-[3px] border-[#fde5e5] flex items-center justify-center">
+                    <span className="text-[#e2a8a8] text-3xl font-bold" style={{ fontFamily: "'Dancing Script', cursive" }}>Love</span>
+                 </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              key="content"
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="absolute inset-0 z-[101] flex flex-col items-center justify-center cursor-pointer pointer-events-auto"
+              onClick={() => {
+                setIsOpened(true);
+                if (audioRef.current && !isPlaying) {
+                  audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+                }
+              }}
+            >
+              <div className="relative z-10 flex flex-col items-center px-6 text-center">
+                <p className="text-[10px] uppercase tracking-[0.4em] text-[#c7b087] mb-6 font-bold">The Wedding Of</p>
+                <h1 className="text-5xl @sm:text-6xl font-normal text-[#3a3532] mb-2" style={{ fontFamily: "'Dancing Script', cursive" }}>{brideName}</h1>
+                <span className="text-2xl text-[#d8c3a5] font-light italic my-1" style={{ fontFamily: "'Dancing Script', cursive" }}>&amp;</span>
+                <h1 className="text-5xl @sm:text-6xl font-normal text-[#3a3532] mt-2" style={{ fontFamily: "'Dancing Script', cursive" }}>{groomName}</h1>
+                
+                <motion.div 
+                  animate={{ scale: [1, 1.15, 1], boxShadow: ["0 0 0 0 rgba(199,176,135,0.4)", "0 0 0 20px rgba(199,176,135,0)", "0 0 0 0 rgba(199,176,135,0)"] }} 
+                  transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                  className="mt-16 bg-white border border-[#c7b087] text-[#c7b087] rounded-full w-12 h-12 flex items-center justify-center shadow-lg"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                </motion.div>
+                <p className="mt-4 text-[9px] uppercase tracking-[0.2em] font-bold text-[#c7b087]">Mở thiệp mời</p>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 
@@ -215,7 +263,7 @@ export function WeddingTwoExperience({
       {!autoPlay && (
         <button 
           onClick={toggleAudio}
-          className="fixed top-4 right-4 z-50 w-10 h-10 bg-white/60 backdrop-blur-md border border-[#f0eadd] rounded-full flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.05)] transition-transform active:scale-95 pointer-events-auto"
+          className="absolute top-4 right-4 z-50 w-10 h-10 bg-white/60 backdrop-blur-md border border-[#f0eadd] rounded-full flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.05)] transition-transform active:scale-95 pointer-events-auto"
         >
           {isPlaying ? (
              <svg className="w-4 h-4 text-[#c7b087] animate-spin-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>

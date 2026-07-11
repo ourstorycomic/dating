@@ -26,7 +26,7 @@ export function WeddingOneExperience({
   mapUrl = "https://maps.app.goo.gl/xxx",
   mapImage = "/assets/lovepics/map-preview.jpg",
   dividerImage = "/assets/lovepics/5.jpg",
-  footerImage = "/assets/lovepics/6.jpg",
+  footerImage = "/assets/lovepics/4.jpg",
   musicUrl = "",
   isBuilderPreview = false,
   onComplete,
@@ -68,7 +68,14 @@ export function WeddingOneExperience({
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [isMounted, setIsMounted] = useState(false);
-  const [isOpened, setIsOpened] = useState(autoPlay || isBuilderPreview || compact);
+  const [isOpened, setIsOpened] = useState(isBuilderPreview);
+
+  useEffect(() => {
+    if (autoPlay && !isBuilderPreview && !isOpened) {
+      const timer = setTimeout(() => setIsOpened(true), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [autoPlay, isBuilderPreview, isOpened]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -91,27 +98,33 @@ export function WeddingOneExperience({
   }, [autoPlay, compact, isBuilderPreview, musicUrl]);
 
   useEffect(() => {
-    if (autoPlay && containerRef.current) {
-      let scrollAmount = 0;
-      const speed = 0.3; // Much slower scroll
+    if (autoPlay && isOpened && containerRef.current) {
       let reqId: number;
+      const timeoutId = setTimeout(() => {
+        let scrollAmount = 0;
+        const speed = 0.3; // Much slower scroll
 
-      const step = () => {
-        if (containerRef.current) {
-          scrollAmount += speed;
-          containerRef.current.scrollTop = scrollAmount;
-          if (containerRef.current.scrollTop + containerRef.current.clientHeight >= containerRef.current.scrollHeight - 2) {
-             scrollAmount = 0;
-             containerRef.current.scrollTop = 0;
+        const step = () => {
+          if (containerRef.current) {
+            scrollAmount += speed;
+            containerRef.current.scrollTop = scrollAmount;
+            if (containerRef.current.scrollTop + containerRef.current.clientHeight >= containerRef.current.scrollHeight - 2) {
+               scrollAmount = 0;
+               containerRef.current.scrollTop = 0;
+            }
           }
-        }
+          reqId = requestAnimationFrame(step);
+        };
+        
         reqId = requestAnimationFrame(step);
-      };
+      }, 1500); // Wait for doors to open
       
-      reqId = requestAnimationFrame(step);
-      return () => cancelAnimationFrame(reqId);
+      return () => {
+        clearTimeout(timeoutId);
+        if (reqId) cancelAnimationFrame(reqId);
+      };
     }
-  }, [autoPlay]);
+  }, [autoPlay, isOpened]);
 
   const toggleAudio = () => {
     if (audioRef.current) {
@@ -172,42 +185,77 @@ export function WeddingOneExperience({
       {/* Intro Curtain Screen */}
       <AnimatePresence>
         {!isOpened && (
-          <motion.div
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 1.05 }}
-            transition={{ duration: 1.5, ease: "easeInOut" }}
-            className="absolute inset-0 z-[100] flex flex-col items-center justify-center bg-[#fdfbf7] cursor-pointer pointer-events-auto"
-            onClick={() => {
-              setIsOpened(true);
-              if (audioRef.current && !isPlaying) {
-                audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
-              }
-            }}
-          >
-            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] opacity-60" />
+          <>
+            <motion.div
+              key="door-left"
+              initial={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-y-0 left-0 w-1/2 z-[100] bg-[#fdfbf7] shadow-[10px_0_20px_rgba(0,0,0,0.1)] pointer-events-none overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] opacity-60 mix-blend-multiply" />
+              <div className="absolute inset-y-3 left-3 right-0 border-y-2 border-l-2 border-[#d8c3a5]/60 rounded-l-md" />
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-[50%] w-[35vh] h-[35vh] border-[2px] border-[#d8c3a5] rounded-full flex items-center justify-center opacity-80 z-10" style={{ clipPath: "inset(0 50% 0 0)" }}>
+                <div className="w-[85%] h-[85%] border-[1px] border-[#d8c3a5] rounded-full border-dashed" />
+                <div className="absolute w-[70%] h-[70%] border-[2px] border-[#d8c3a5] rounded-full flex items-center justify-center">
+                  <div className="w-[50%] h-[50%] bg-[#d8c3a5]/30 rounded-full border border-[#c3ad8c]" />
+                </div>
+              </div>
+            </motion.div>
             
-            <div className="relative z-10 flex flex-col items-center px-6 text-center">
-              <p className="text-xs uppercase tracking-[0.4em] text-[#a69680] mb-8">You are invited</p>
-              <h1 className="text-5xl @sm:text-7xl font-bold text-[#3a3532] italic mb-4" style={{ fontFamily: "'Dancing Script', cursive" }}>{brideName}</h1>
-              <span className="text-3xl text-[#d8c3a5] font-light italic" style={{ fontFamily: "'Dancing Script', cursive" }}>&amp;</span>
-              <h1 className="text-5xl @sm:text-7xl font-bold text-[#3a3532] italic mt-4" style={{ fontFamily: "'Dancing Script', cursive" }}>{groomName}</h1>
-              
-              <motion.div 
-                animate={{ scale: [1, 1.1, 1], boxShadow: ["0 0 0 0 rgba(216,195,165,0.7)", "0 0 0 15px rgba(216,195,165,0)", "0 0 0 0 rgba(216,195,165,0)"] }} 
-                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                className="mt-20 bg-[#d8c3a5] text-white rounded-full w-14 h-14 flex items-center justify-center"
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M21.5 5.5H2.5a.5.5 0 0 0-.5.5v12a.5.5 0 0 0 .5.5h19a.5.5 0 0 0 .5-.5V6a.5.5 0 0 0-.5-.5zM12 11.23L4.2 6.5h15.6L12 11.23z" /></svg>
-              </motion.div>
-              <p className="mt-6 text-[10px] uppercase tracking-[0.2em] font-bold text-[#a69680]">Chạm để mở lời mời</p>
-            </div>
-          </motion.div>
+            <motion.div
+              key="door-right"
+              initial={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-y-0 right-0 w-1/2 z-[100] bg-[#fdfbf7] shadow-[-10px_0_20px_rgba(0,0,0,0.1)] pointer-events-none overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] opacity-60 mix-blend-multiply" />
+              <div className="absolute inset-y-3 right-3 left-0 border-y-2 border-r-2 border-[#d8c3a5]/60 rounded-r-md" />
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-[50%] w-[35vh] h-[35vh] border-[2px] border-[#d8c3a5] rounded-full flex items-center justify-center opacity-80 z-10" style={{ clipPath: "inset(0 0 0 50%)" }}>
+                <div className="w-[85%] h-[85%] border-[1px] border-[#d8c3a5] rounded-full border-dashed" />
+                <div className="absolute w-[70%] h-[70%] border-[2px] border-[#d8c3a5] rounded-full flex items-center justify-center">
+                  <div className="w-[50%] h-[50%] bg-[#d8c3a5]/30 rounded-full border border-[#c3ad8c]" />
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              key="content"
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="absolute inset-0 z-[101] flex flex-col items-center justify-center cursor-pointer pointer-events-auto"
+              onClick={() => {
+                setIsOpened(true);
+                if (audioRef.current && !isPlaying) {
+                  audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+                }
+              }}
+            >
+              <div className="relative z-10 flex flex-col items-center px-6 text-center">
+                <p className="text-xs uppercase tracking-[0.4em] text-[#a69680] mb-8">You are invited</p>
+                <h1 className="text-5xl @sm:text-7xl font-bold text-[#3a3532] italic mb-4" style={{ fontFamily: "'Dancing Script', cursive" }}>{brideName}</h1>
+                <span className="text-3xl text-[#d8c3a5] font-light italic" style={{ fontFamily: "'Dancing Script', cursive" }}>&amp;</span>
+                <h1 className="text-5xl @sm:text-7xl font-bold text-[#3a3532] italic mt-4" style={{ fontFamily: "'Dancing Script', cursive" }}>{groomName}</h1>
+                
+                <motion.div 
+                  animate={{ scale: [1, 1.1, 1], boxShadow: ["0 0 0 0 rgba(216,195,165,0.7)", "0 0 0 15px rgba(216,195,165,0)", "0 0 0 0 rgba(216,195,165,0)"] }} 
+                  transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                  className="mt-20 bg-[#d8c3a5] text-white rounded-full w-14 h-14 flex items-center justify-center"
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M21.5 5.5H2.5a.5.5 0 0 0-.5.5v12a.5.5 0 0 0 .5.5h19a.5.5 0 0 0 .5-.5V6a.5.5 0 0 0-.5-.5zM12 11.23L4.2 6.5h15.6L12 11.23z" /></svg>
+                </motion.div>
+                <p className="mt-6 text-[10px] uppercase tracking-[0.2em] font-bold text-[#a69680]">Chạm để mở lời mời</p>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 
       {/* Ambient Particles Layer */}
       {isMounted && (
-        <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none mix-blend-multiply">
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none mix-blend-multiply">
           {[...Array(25)].map((_, i) => (
             <motion.div
               key={`ambient-${i}`}
@@ -242,7 +290,7 @@ export function WeddingOneExperience({
       {!autoPlay && (
         <button 
           onClick={toggleAudio}
-          className="fixed top-4 right-4 z-50 w-10 h-10 bg-white/80 backdrop-blur-md border border-gray-200 rounded-full flex items-center justify-center shadow-lg transition-transform active:scale-95 pointer-events-auto"
+          className="absolute top-4 right-4 z-50 w-10 h-10 bg-white/80 backdrop-blur-md border border-gray-200 rounded-full flex items-center justify-center shadow-lg transition-transform active:scale-95 pointer-events-auto"
         >
           {isPlaying ? (
              <svg className="w-5 h-5 text-gray-700 animate-spin-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>

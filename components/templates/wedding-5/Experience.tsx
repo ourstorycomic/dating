@@ -91,27 +91,33 @@ export function WeddingFiveExperience({
   }, [autoPlay, compact, isBuilderPreview, musicUrl]);
 
   useEffect(() => {
-    if (autoPlay && containerRef.current) {
-      let scrollAmount = 0;
-      const speed = 0.3; // Much slower scroll
+    if (autoPlay && isOpened && containerRef.current) {
       let reqId: number;
+      const timeoutId = setTimeout(() => {
+        let scrollAmount = 0;
+        const speed = 0.3; // Much slower scroll
 
-      const step = () => {
-        if (containerRef.current) {
-          scrollAmount += speed;
-          containerRef.current.scrollTop = scrollAmount;
-          if (containerRef.current.scrollTop + containerRef.current.clientHeight >= containerRef.current.scrollHeight - 2) {
-             scrollAmount = 0;
-             containerRef.current.scrollTop = 0;
+        const step = () => {
+          if (containerRef.current) {
+            scrollAmount += speed;
+            containerRef.current.scrollTop = scrollAmount;
+            if (containerRef.current.scrollTop + containerRef.current.clientHeight >= containerRef.current.scrollHeight - 2) {
+               scrollAmount = 0;
+               containerRef.current.scrollTop = 0;
+            }
           }
-        }
+          reqId = requestAnimationFrame(step);
+        };
+        
         reqId = requestAnimationFrame(step);
-      };
+      }, 1500); // Wait for doors to open
       
-      reqId = requestAnimationFrame(step);
-      return () => cancelAnimationFrame(reqId);
+      return () => {
+        clearTimeout(timeoutId);
+        if (reqId) cancelAnimationFrame(reqId);
+      };
     }
-  }, [autoPlay]);
+  }, [autoPlay, isOpened]);
 
   const toggleAudio = () => {
     if (audioRef.current) {
@@ -175,54 +181,57 @@ export function WeddingFiveExperience({
       {/* Intro Envelope Screen */}
       <AnimatePresence>
         {!isOpened && (
-          <motion.div
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 1.1 }}
-            transition={{ duration: 1.2, ease: "easeInOut" }}
-            className="absolute inset-0 z-[100] flex flex-col items-center justify-center bg-[#e9e4d5] cursor-pointer pointer-events-auto"
-            onClick={() => {
-              setIsOpened(true);
-              if (audioRef.current && !isPlaying) {
-                audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
-              }
-            }}
-          >
-            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] opacity-60 mix-blend-multiply" />
+          <>
+            <motion.div
+              key="door-left"
+              initial={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-y-0 left-0 w-1/2 z-[100] bg-[#e9e4d5] border-r border-[#6e855a]/40 shadow-[5px_0_20px_rgba(0,0,0,0.1)] pointer-events-none overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] opacity-60 mix-blend-multiply" />
+            </motion.div>
             
-            <div className="relative z-10 flex flex-col items-center px-6 text-center w-full max-w-sm">
-              <p className="text-[12px] uppercase tracking-[0.4em] text-[#6e855a] mb-6 font-bold" style={{ fontFamily: "'Dancing Script', cursive" }}>Save our date</p>
-              
-              {/* Envelope Graphic */}
-              <motion.div 
-                animate={{ y: [0, -10, 0] }}
-                transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-                className="relative w-56 h-40 bg-[#2c4623] rounded-md shadow-2xl mb-8 flex items-end justify-center border-t border-[#3e6132] overflow-hidden"
-              >
-                {/* Photo sticking out of envelope */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-32 bg-white p-1 rounded-sm shadow-inner -mt-10 rotate-[-5deg]">
-                  <MediaDisplay src={heroImage} alt="Preview" className="w-full h-full object-cover" />
-                </div>
-                
-                {/* Envelope flap bottom */}
-                <div className="absolute bottom-0 w-0 h-0 border-l-[112px] border-l-transparent border-r-[112px] border-r-transparent border-b-[80px] border-b-[#233a1b]" />
-                
-                {/* Wax seal */}
-                <motion.div 
-                  animate={{ scale: [1, 1.1, 1] }} 
-                  transition={{ repeat: Infinity, duration: 2 }}
-                  className="absolute z-10 w-12 h-12 bg-[#c43333] rounded-full shadow-lg flex items-center justify-center border-2 border-[#9b2626] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-                >
-                  <span className="text-white text-xl">♥</span>
-                </motion.div>
-              </motion.div>
+            <motion.div
+              key="door-right"
+              initial={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-y-0 right-0 w-1/2 z-[100] bg-[#e9e4d5] border-l border-[#6e855a]/40 shadow-[-5px_0_20px_rgba(0,0,0,0.1)] pointer-events-none overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] opacity-60 mix-blend-multiply" />
+            </motion.div>
 
-              <h1 className="text-4xl font-bold text-[#c43333] mb-1">{brideName}</h1>
-              <span className="text-lg text-[#6e855a] font-light italic my-0" style={{ fontFamily: "'Dancing Script', cursive" }}>&amp;</span>
-              <h1 className="text-4xl font-bold text-[#c43333] mt-1">{groomName}</h1>
-              
-              <p className="mt-12 text-[10px] uppercase tracking-[0.2em] font-bold text-[#2c4623] border-b border-[#6e855a] pb-1">Chạm để mở thiệp</p>
-            </div>
-          </motion.div>
+            <motion.div
+              key="content"
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="absolute inset-0 z-[101] flex flex-col items-center justify-center cursor-pointer pointer-events-auto bg-transparent"
+              onClick={() => {
+                setIsOpened(true);
+                if (audioRef.current && !isPlaying) {
+                  audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+                }
+              }}
+            >
+              <div className="relative z-10 flex flex-col items-center px-6 text-center w-full max-w-sm bg-[#e9e4d5]/90 py-12 rounded-2xl shadow-xl backdrop-blur-sm border border-[#6e855a]/20">
+                <p className="text-[10px] uppercase tracking-[0.4em] text-[#6e855a] mb-8 font-bold drop-shadow-md">Thân Mời</p>
+                
+                <h1 className="text-5xl @sm:text-6xl font-bold text-[#2c4623] drop-shadow-md mb-1" style={{ fontFamily: "'Dancing Script', cursive" }}>{brideName}</h1>
+                <span className="text-2xl text-[#c43333] font-light italic my-2 drop-shadow-md" style={{ fontFamily: "'Dancing Script', cursive" }}>&amp;</span>
+                <h1 className="text-5xl @sm:text-6xl font-bold text-[#2c4623] drop-shadow-md mt-1" style={{ fontFamily: "'Dancing Script', cursive" }}>{groomName}</h1>
+                
+                <motion.p 
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="mt-16 text-[10px] uppercase tracking-[0.3em] font-bold text-[#c43333] border-b border-[#c43333] pb-1 drop-shadow-md"
+                >
+                  Chạm để mở thiệp
+                </motion.p>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 

@@ -18,6 +18,6 @@ export const WEDDING_DATA = {
   mapUrl: "https://maps.app.goo.gl/xxx",
   mapImage: "/assets/lovepics/map-preview.jpg",
   dividerImage: "/assets/lovepics/5.jpg",
-  footerImage: "/assets/lovepics/6.jpg",
+  footerImage: "/assets/lovepics/4.jpg",
   musicUrl: "/assets/songs/general/Da LAB - Từ Ngày Em Đến (Official Music Video)_128k.mp3",
 };

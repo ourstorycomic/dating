@@ -17,14 +17,13 @@ function facebookLink(templateName?: string) {
   return `${FACEBOOK_URL}?text=${encodeURIComponent(text)}`;
 }
 
-// Dữ liệu Features tạm thời fix cứng vì Database hiện chưa có cột này
-const DEFAULT_FEATURES = [
-  { icon: "✨", text: "Hiệu ứng rơi cánh hoa lấp lánh (Sparkles)" },
-  { icon: "🎵", text: "Tích hợp nhạc nền tự động phát" },
-  { icon: "⏳", text: "Đếm ngược đến ngày cưới" },
-  { icon: "✉️", text: "Form xác nhận tham dự (RSVP) thông minh" },
-  { icon: "📍", text: "Tích hợp Google Maps chỉ đường" },
-  { icon: "🖼️", text: "Thư viện ảnh cưới (Gallery)" }
+const OTHER_TEMPLATES = [
+  { name: "Classic Elegance", image: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000&auto=format&fit=crop", componentKey: "wedding-1" },
+  { name: "Modern Romance", image: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1000&auto=format&fit=crop", componentKey: "wedding-2" },
+  { name: "Crimson Love", image: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1000&auto=format&fit=crop", componentKey: "wedding-3" },
+  { name: "Blue Envelope", image: "https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=1000&auto=format&fit=crop", componentKey: "wedding-4" },
+  { name: "Earth & Greenery", image: "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?q=80&w=1000&auto=format&fit=crop", componentKey: "wedding-5" },
+  { name: "Double Happiness", image: "https://images.unsplash.com/photo-1621252179027-94459d278660?q=80&w=1000&auto=format&fit=crop", componentKey: "wedding-6" },
 ];
 
 export default function TemplatePreviewPage({ params }: { params: Promise<{ id: string }> }) {
@@ -52,6 +51,14 @@ export default function TemplatePreviewPage({ params }: { params: Promise<{ id: 
       setIsLoading(false);
     }
     fetchTemplate();
+  }, [componentKey]);
+
+  const [randomTemplates, setRandomTemplates] = useState<typeof OTHER_TEMPLATES>([]);
+
+  useEffect(() => {
+    const available = OTHER_TEMPLATES.filter(t => t.componentKey !== componentKey);
+    const shuffled = [...available].sort(() => 0.5 - Math.random());
+    setRandomTemplates(shuffled.slice(0, 2));
   }, [componentKey]);
 
   useEffect(() => {
@@ -203,36 +210,33 @@ export default function TemplatePreviewPage({ params }: { params: Promise<{ id: 
                   {dbTemplate?.description || "Template cưới tuyệt đẹp."}
                 </p>
 
-                <div className="space-y-6">
-                  <h3 className="text-xs font-bold text-[#A89F9A] uppercase tracking-widest">Tính năng nổi bật</h3>
-                  <ul className="space-y-5">
-                    {DEFAULT_FEATURES.map((feature: any, i: number) => (
-                      <li key={i} className="flex items-start gap-4 text-sm text-[#4A4542]">
-                        <span className="text-lg leading-none">{feature.icon}</span>
-                        <span className="leading-relaxed font-medium">{feature.text}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              <div className="p-8 lg:p-12 border-t border-[#F4EFEA] bg-[#FAFAFA] shrink-0">
-                <div className="flex items-end justify-between mb-8">
-                  <span className="text-sm text-[#7A726D] font-medium">Giá thiết kế từ</span>
-                  <span className="font-serif-elegant text-3xl font-bold text-[#C5A880]">
-                    {dbTemplate?.base_price ? `${Number(dbTemplate.base_price).toLocaleString('vi-VN')}đ` : "Liên hệ"}
-                  </span>
-                </div>
 
                 <a
                   href={facebookLink(dbTemplate?.name || componentKey)}
                   target="_blank" rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-2 bg-[#C5A880] text-[#2D2A28] py-4 rounded-xl text-base font-bold transition-all shadow-[0_4px_14px_rgba(197,168,128,0.25)] hover:bg-[#B3966D] hover:-translate-y-0.5"
+                  className="w-full flex items-center justify-center gap-2 bg-[#C5A880] text-[#2D2A28] py-4 rounded-xl text-base font-bold transition-all shadow-[0_4px_14px_rgba(197,168,128,0.25)] hover:bg-[#B3966D] hover:-translate-y-0.5 mb-2 mt-4"
                 >
                   Chọn & Nhắn Page
                   <ArrowRight className="w-5 h-5" />
                 </a>
-                <p className="text-center text-xs text-[#A89F9A] mt-5 font-medium">Có thể tùy chỉnh toàn bộ nội dung & hình ảnh</p>
+                <p className="text-center text-xs text-[#A89F9A] mb-12 font-medium">Có thể tùy chỉnh toàn bộ nội dung & hình ảnh</p>
+
+                <div className="pt-8 border-t border-[#F4EFEA]">
+                  <h3 className="text-xs font-bold text-[#A89F9A] uppercase tracking-widest mb-6">Khám phá mẫu khác</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    {randomTemplates.map((t) => (
+                      <Link href={`/wedding/preview/${t.componentKey}`} key={t.componentKey} className="group block rounded-xl overflow-hidden border border-[#F4EFEA] hover:border-[#C5A880] transition shadow-sm hover:shadow-md">
+                        <div className="aspect-[3/4] overflow-hidden relative bg-[#F8F6F0]">
+                          <img src={t.image} alt={t.name} className="absolute inset-0 w-full h-full object-cover transition duration-500 group-hover:scale-110" />
+                        </div>
+                        <div className="p-3 bg-white text-center">
+                          <p className="text-xs font-semibold text-[#2D2A28] truncate">{t.name}</p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
               </div>
             </>
           )}

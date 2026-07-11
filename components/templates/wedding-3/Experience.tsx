@@ -26,7 +26,7 @@ export function WeddingThreeExperience({
   mapUrl = "https://maps.app.goo.gl/xxx",
   mapImage = "/assets/lovepics/map-preview.jpg",
   dividerImage = "/assets/lovepics/5.jpg",
-  footerImage = "/assets/lovepics/6.jpg",
+  footerImage = "/assets/lovepics/4.jpg",
   musicUrl = "",
   isBuilderPreview = false,
   onComplete,
@@ -68,7 +68,14 @@ export function WeddingThreeExperience({
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [isMounted, setIsMounted] = useState(false);
-  const [isOpened, setIsOpened] = useState(autoPlay || isBuilderPreview || compact);
+  const [isOpened, setIsOpened] = useState(isBuilderPreview);
+
+  useEffect(() => {
+    if (autoPlay && !isBuilderPreview && !isOpened) {
+      const timer = setTimeout(() => setIsOpened(true), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [autoPlay, isBuilderPreview, isOpened]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -91,27 +98,33 @@ export function WeddingThreeExperience({
   }, [autoPlay, compact, isBuilderPreview, musicUrl]);
 
   useEffect(() => {
-    if (autoPlay && containerRef.current) {
-      let scrollAmount = 0;
-      const speed = 0.3; // Much slower scroll
+    if (autoPlay && isOpened && containerRef.current) {
       let reqId: number;
+      const timeoutId = setTimeout(() => {
+        let scrollAmount = 0;
+        const speed = 0.3; // Much slower scroll
 
-      const step = () => {
-        if (containerRef.current) {
-          scrollAmount += speed;
-          containerRef.current.scrollTop = scrollAmount;
-          if (containerRef.current.scrollTop + containerRef.current.clientHeight >= containerRef.current.scrollHeight - 2) {
-             scrollAmount = 0;
-             containerRef.current.scrollTop = 0;
+        const step = () => {
+          if (containerRef.current) {
+            scrollAmount += speed;
+            containerRef.current.scrollTop = scrollAmount;
+            if (containerRef.current.scrollTop + containerRef.current.clientHeight >= containerRef.current.scrollHeight - 2) {
+               scrollAmount = 0;
+               containerRef.current.scrollTop = 0;
+            }
           }
-        }
+          reqId = requestAnimationFrame(step);
+        };
+        
         reqId = requestAnimationFrame(step);
-      };
+      }, 1500); // Wait for doors to open
       
-      reqId = requestAnimationFrame(step);
-      return () => cancelAnimationFrame(reqId);
+      return () => {
+        clearTimeout(timeoutId);
+        if (reqId) cancelAnimationFrame(reqId);
+      };
     }
-  }, [autoPlay]);
+  }, [autoPlay, isOpened]);
 
   const toggleAudio = () => {
     if (audioRef.current) {
@@ -175,36 +188,69 @@ export function WeddingThreeExperience({
       {/* Intro Curtain Screen */}
       <AnimatePresence>
         {!isOpened && (
-          <motion.div
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0, y: "-100%" }}
-            transition={{ duration: 1.2, ease: "easeInOut" }}
-            className="absolute inset-0 z-[100] flex flex-col items-center justify-center bg-[#9e1b1b] text-white cursor-pointer pointer-events-auto"
-            onClick={() => {
-              setIsOpened(true);
-              if (audioRef.current && !isPlaying) {
-                audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
-              }
-            }}
-          >
-            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 mix-blend-overlay" />
+          <>
+            <motion.div
+              key="door-left"
+              initial={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-y-0 left-0 w-1/2 z-[100] bg-[#8b0000] border-r border-[#d4af37]/50 shadow-[10px_0_30px_rgba(0,0,0,0.5)] pointer-events-none"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent mix-blend-overlay" />
+              <div className="absolute inset-y-4 left-4 right-2 border-2 border-[#d4af37]/40 rounded-l-sm" />
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-[50%] w-32 h-32 bg-gradient-to-br from-[#c8102e] via-[#9e1b1b] to-[#5a0000] rounded-full flex items-center justify-center shadow-[0_10px_20px_rgba(0,0,0,0.6),inset_0_2px_5px_rgba(255,255,255,0.4),inset_0_-2px_5px_rgba(0,0,0,0.6)] z-10 border-[2px] border-[#3a0000]" style={{ clipPath: "inset(0 50% 0 0)" }}>
+                <div className="w-28 h-28 border-[2px] border-[#8b0000] rounded-full flex items-center justify-center shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]">
+                  <span className="text-[#d4af37] text-5xl font-bold shadow-sm" style={{ fontFamily: "'Great Vibes', cursive" }}>W</span>
+                </div>
+              </div>
+            </motion.div>
             
-            <div className="relative z-10 flex flex-col items-center px-6 text-center">
-              <p className="text-[10px] uppercase tracking-[0.4em] text-white/70 mb-6 font-bold">Lễ Thành Hôn</p>
-              <h1 className="text-5xl @sm:text-6xl font-normal mb-2" style={{ fontFamily: "'Great Vibes', cursive" }}>{brideName}</h1>
-              <span className="text-2xl text-white/50 font-light italic my-1" style={{ fontFamily: "'Great Vibes', cursive" }}>&amp;</span>
-              <h1 className="text-5xl @sm:text-6xl font-normal mt-2" style={{ fontFamily: "'Great Vibes', cursive" }}>{groomName}</h1>
-              
-              <motion.div 
-                animate={{ scale: [1, 1.15, 1], boxShadow: ["0 0 0 0 rgba(255,255,255,0.4)", "0 0 0 20px rgba(255,255,255,0)", "0 0 0 0 rgba(255,255,255,0)"] }} 
-                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                className="mt-16 bg-white text-[#9e1b1b] rounded-full w-12 h-12 flex items-center justify-center shadow-xl"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-              </motion.div>
-              <p className="mt-4 text-[9px] uppercase tracking-[0.2em] font-bold text-white/80">Mở Lời Mời</p>
-            </div>
-          </motion.div>
+            <motion.div
+              key="door-right"
+              initial={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-y-0 right-0 w-1/2 z-[100] bg-[#8b0000] border-l border-[#d4af37]/50 shadow-[-10px_0_30px_rgba(0,0,0,0.5)] pointer-events-none"
+            >
+              <div className="absolute inset-0 bg-gradient-to-l from-black/40 to-transparent mix-blend-overlay" />
+              <div className="absolute inset-y-4 right-4 left-2 border-2 border-[#d4af37]/40 rounded-r-sm" />
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-[50%] w-32 h-32 bg-gradient-to-br from-[#c8102e] via-[#9e1b1b] to-[#5a0000] rounded-full flex items-center justify-center shadow-[0_10px_20px_rgba(0,0,0,0.6),inset_0_2px_5px_rgba(255,255,255,0.4),inset_0_-2px_5px_rgba(0,0,0,0.6)] z-10 border-[2px] border-[#3a0000]" style={{ clipPath: "inset(0 0 0 50%)" }}>
+                <div className="w-28 h-28 border-[2px] border-[#8b0000] rounded-full flex items-center justify-center shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]">
+                  <span className="text-[#d4af37] text-5xl font-bold shadow-sm" style={{ fontFamily: "'Great Vibes', cursive" }}>W</span>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              key="content"
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="absolute inset-0 z-[101] flex flex-col items-center justify-center cursor-pointer pointer-events-auto"
+              onClick={() => {
+                setIsOpened(true);
+                if (audioRef.current && !isPlaying) {
+                  audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+                }
+              }}
+            >
+              <div className="relative z-10 flex flex-col items-center px-6 text-center text-white">
+                <p className="text-[10px] uppercase tracking-[0.4em] text-white/70 mb-6 font-bold">Lễ Thành Hôn</p>
+                <h1 className="text-5xl @sm:text-6xl font-normal mb-2" style={{ fontFamily: "'Great Vibes', cursive" }}>{brideName}</h1>
+                <span className="text-2xl text-white/50 font-light italic my-1" style={{ fontFamily: "'Great Vibes', cursive" }}>&amp;</span>
+                <h1 className="text-5xl @sm:text-6xl font-normal mt-2" style={{ fontFamily: "'Great Vibes', cursive" }}>{groomName}</h1>
+                
+                <motion.div 
+                  animate={{ scale: [1, 1.15, 1], boxShadow: ["0 0 0 0 rgba(255,255,255,0.4)", "0 0 0 20px rgba(255,255,255,0)", "0 0 0 0 rgba(255,255,255,0)"] }} 
+                  transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                  className="mt-16 bg-white text-[#9e1b1b] rounded-full w-12 h-12 flex items-center justify-center shadow-xl"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                </motion.div>
+                <p className="mt-4 text-[9px] uppercase tracking-[0.2em] font-bold text-white/80">Mở Lời Mời</p>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 
@@ -215,7 +261,7 @@ export function WeddingThreeExperience({
       {!autoPlay && (
         <button 
           onClick={toggleAudio}
-          className="fixed top-4 right-4 z-50 w-10 h-10 bg-white/90 backdrop-blur-md border border-gray-100 rounded-full flex items-center justify-center shadow-[0_4px_20px_rgba(158,27,27,0.15)] transition-transform active:scale-95 pointer-events-auto"
+          className="absolute top-4 right-4 z-50 w-10 h-10 bg-white/90 backdrop-blur-md border border-gray-100 rounded-full flex items-center justify-center shadow-[0_4px_20px_rgba(158,27,27,0.15)] transition-transform active:scale-95 pointer-events-auto"
         >
           {isPlaying ? (
              <svg className="w-4 h-4 text-[#9e1b1b] animate-spin-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
