@@ -6,7 +6,8 @@ import { useEffect, useRef } from "react";
 import { motion, Variants } from "framer-motion";
 import { PackageOpen } from "lucide-react";
 
-export function Step4Unbox({ photos, onNext, autoPlay = false, compact = false }: { photos: { url: string; note: string }[]; onNext: () => void; autoPlay?: boolean; compact?: boolean }) {
+import type { Birthday2Config } from "../config";
+export function Step4Unbox({ photos, onNext, autoPlay = false, compact = false, config = {} }: { photos: { url: string; note: string }[]; onNext: () => void; autoPlay?: boolean; compact?: boolean; config?: Birthday2Config }) {
   const popSoundRef = useRef<HTMLAudioElement>(null);
   
   useEffect(() => {
@@ -107,7 +108,7 @@ export function Step4Unbox({ photos, onNext, autoPlay = false, compact = false }
           }}
           className="w-full py-4 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold text-lg shadow-[0_10px_20px_rgba(225,29,72,0.3)] hover:scale-105 active:scale-95 transition-transform"
         >
-          Xem Tiếp ✨
+          {config?.XemTip || "Xem Tiếp ✨"}
         </button>
       </motion.div>
     </motion.div>

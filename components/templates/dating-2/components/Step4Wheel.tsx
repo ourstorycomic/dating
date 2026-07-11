@@ -9,17 +9,25 @@ export function Step4Wheel({ onNext , customData = {}, autoPlay}: { onNext: (res
   const [done, setDone] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const colors = ["#ff9a9e", "#ffb3d9", "#ff7eb3", "#fecfef", "#ff66b2", "#ff99cc"];
+  const wheelOptions: string[] = customData.wheelOptions || TPL_DATA.wheelOptions;
 
   useEffect(() => {
-    if (!canvasRef.current) return;
+    setSpinning(false);
+    setRotation(0);
+    setDone(false);
+    setResult("Bấm tim để quay nhé!");
+  }, [wheelOptions]);
+
+  useEffect(() => {
+    if (!canvasRef.current || wheelOptions.length === 0) return;
     const ctx = canvasRef.current.getContext('2d');
     if (!ctx) return;
     const w = canvasRef.current.width, h = canvasRef.current.height;
     const r = w / 2;
-    const arc = (Math.PI * 2) / (customData.wheelOptions || TPL_DATA.wheelOptions).length;
+    const arc = (Math.PI * 2) / wheelOptions.length;
     
     ctx.clearRect(0,0,w,h);
-    (customData.wheelOptions || TPL_DATA.wheelOptions).forEach((opt: string, i: number) => {
+    wheelOptions.forEach((opt: string, i: number) => {
       const angle = -Math.PI / 2 + i * arc;
       ctx.beginPath();
       ctx.fillStyle = colors[i % colors.length];
@@ -39,7 +47,7 @@ export function Step4Wheel({ onNext , customData = {}, autoPlay}: { onNext: (res
       ctx.fillText(opt, r - 30, 6);
       ctx.restore();
     });
-  }, []);
+  }, [wheelOptions]);
 
   const spin = () => {
     if (spinning || done) return;
@@ -55,10 +63,10 @@ export function Step4Wheel({ onNext , customData = {}, autoPlay}: { onNext: (res
     setTimeout(() => {
       setSpinning(false);
       const deg = newRot % 360;
-      const sliceAngle = 360 / (customData.wheelOptions || TPL_DATA.wheelOptions).length;
-      const index = Math.floor((360 - deg) / sliceAngle) % (customData.wheelOptions || TPL_DATA.wheelOptions).length;
-      const safeIndex = index < 0 ? index + (customData.wheelOptions || TPL_DATA.wheelOptions).length : index;
-      const resText = (customData.wheelOptions || TPL_DATA.wheelOptions)[safeIndex];
+      const sliceAngle = 360 / wheelOptions.length;
+      const index = Math.floor((360 - deg) / sliceAngle) % wheelOptions.length;
+      const safeIndex = index < 0 ? index + wheelOptions.length : index;
+      const resText = wheelOptions[safeIndex];
       setResult(`Chốt: ${resText} 🎉`);
       setDone(true);
       if (autoPlay) {

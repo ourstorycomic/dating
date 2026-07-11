@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useAnimation, useMotionValue, useTransform } from "framer-motion";
 import { Bell, ChevronRight } from "lucide-react";
+import type { Birthday2Config } from "../config";
 
-export function Step1Alarm({ onNext, autoPlay = false, compact = false }: { onNext: () => void; autoPlay?: boolean; compact?: boolean }) {
+export function Step1Alarm({ onNext, autoPlay = false, compact = false, config = {} }: { onNext: () => void; autoPlay?: boolean; compact?: boolean; config?: Birthday2Config }) {
   const [currentTime, setCurrentTime] = useState("07:00");
   const audioRef = useRef<HTMLAudioElement>(null);
   const x = useMotionValue(0);
@@ -84,7 +85,7 @@ export function Step1Alarm({ onNext, autoPlay = false, compact = false }: { onNe
         className="mt-20 text-center flex flex-col items-center gap-1 drop-shadow-lg z-10"
       >
         <h1 className="text-8xl font-black tracking-tighter text-pink-50 drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]">{currentTime}</h1>
-        <p className="text-xl text-pink-200 font-bold drop-shadow-md">Thứ 2, ngày 14 tháng 2</p>
+        <p className="text-xl text-pink-200 font-bold drop-shadow-md">{config.Th2ngy14thng2 || "Thứ 2, ngày 14 tháng 2"}</p>
       </motion.div>
 
       <div className="relative z-10 flex flex-col items-center gap-6 w-full px-8">
@@ -98,16 +99,16 @@ export function Step1Alarm({ onNext, autoPlay = false, compact = false }: { onNe
             transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
             className="mb-2"
           >
-            <img src="/assets/dumb/auau.webp" className="w-24 h-24 object-contain drop-shadow-xl" alt="alarm" />
+            <img src="/assets/dumb/auau.webp" className="w-24 h-24 object-contain drop-shadow-xl" alt={config.alarm || "alarm"} />
           </motion.div>
-          <h2 className="text-4xl font-extrabold tracking-tight text-pink-50 drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]">Báo thức</h2>
-          <p className="text-pink-200 font-bold text-lg drop-shadow-md">Dậy thôi lợn con ơi! 🐷</p>
+          <h2 className="text-4xl font-extrabold tracking-tight text-pink-50 drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]">{config?.Bothc || "Báo thức"}</h2>
+          <p className="text-pink-200 font-bold text-lg drop-shadow-md">{config?.Dythilnconi || "Dậy thôi lợn con ơi! 🐷"}</p>
         </motion.div>
 
         <div className="relative w-full h-16 bg-pink-500/30 backdrop-blur-md rounded-full border border-pink-200/50 flex items-center overflow-hidden shadow-[0_8px_32px_rgba(236,72,153,0.3)]">
           <motion.div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ opacity }}>
             <span className="text-pink-50 font-bold tracking-widest pl-12 text-[15px] whitespace-nowrap drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
-              Vuốt để tắt báo thức
+              {config?.Vutttbothc || "Vuốt để tắt báo thức"}
             </span>
           </motion.div>
           <motion.div

@@ -37,6 +37,17 @@ const SERVICE_PACKAGES = [
   { id: "goi3-gap", label: "GÓI 3: ĐẶC BIỆT (Làm gấp - Từ 178.000đ)", price: 178000 },
 ];
 
+const WEDDING_SERVICE_PACKAGES = [
+  { id: "wedding-goi1-thuong", label: "GÓI 1 (1 thiệp Nhà Trai HOẶC Nhà Gái) - Làm thường (2-3 ngày): 139.000 VNĐ", price: 139000 },
+  { id: "wedding-goi1-gap", label: "GÓI 1 (1 thiệp Nhà Trai HOẶC Nhà Gái) - Làm gấp (<24h): 189.000 VNĐ", price: 189000 },
+  { id: "wedding-goi2-thuong", label: "GÓI 2 (1 thiệp chung cho cả 2 nhà) - Làm thường (2-3 ngày): 209.000 VNĐ", price: 209000 },
+  { id: "wedding-goi2-gap", label: "GÓI 2 (1 thiệp chung cho cả 2 nhà) - Làm gấp (<24h): 279.000 VNĐ", price: 279000 },
+  { id: "wedding-goi3-chung-thuong", label: "GÓI 3 (Combo 2 thiệp) Chung mẫu - Làm thường (2-3 ngày): 239.000 VNĐ", price: 239000 },
+  { id: "wedding-goi3-chung-gap", label: "GÓI 3 (Combo 2 thiệp) Chung mẫu - Làm gấp (<24h): 319.000 VNĐ", price: 319000 },
+  { id: "wedding-goi3-khac-thuong", label: "GÓI 3 (Combo 2 thiệp) Khác mẫu - Làm thường (2-3 ngày): 269.000 VNĐ", price: 269000 },
+  { id: "wedding-goi3-khac-gap", label: "GÓI 3 (Combo 2 thiệp) Khác mẫu - Làm gấp (<24h): 359.000 VNĐ", price: 359000 },
+];
+
 type MyOrderRow = {
   amount: number;
   buyer_contact: string | null;
@@ -225,6 +236,86 @@ function ColorInput({
       />
       <span className="text-[11px] text-white/38">Chọn xong màu rồi thả chuột để áp dụng.</span>
     </label>
+  );
+}
+
+function PinCodeInput({
+  label,
+  onChange,
+  value,
+}: {
+  label: string;
+  onChange: (value: string) => void;
+  value: string;
+}) {
+  const digits = (value ?? "").replace(/\D/g, "").slice(0, 4);
+
+  useEffect(() => {
+    const clean = (value ?? "").replace(/\D/g, "").slice(0, 4);
+    if (clean !== (value ?? "")) onChange(clean);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- chỉ sanitize khi value đổi
+  }, [value]);
+
+  const pressDigit = (num: number) => {
+    if (digits.length < 4) onChange(digits + String(num));
+  };
+
+  const backspace = () => onChange(digits.slice(0, -1));
+
+  return (
+    <div className="grid gap-2 text-sm md:col-span-2">
+      <span className="text-white/64">{label}</span>
+      <div className="rounded-xl border border-white/10 bg-white/[0.07] p-4">
+        <div className="mb-4 flex justify-center gap-3">
+          {[0, 1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className={`flex h-12 w-10 items-center justify-center rounded-xl border-2 text-xl font-semibold tabular-nums transition-colors ${
+                digits[i]
+                  ? "border-pink-400 bg-pink-500/15 text-pink-100"
+                  : "border-white/20 bg-white/[0.04] text-white/20"
+              }`}
+            >
+              {digits[i] ?? ""}
+            </div>
+          ))}
+        </div>
+        <div className="mx-auto grid max-w-[220px] grid-cols-3 gap-2">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
+            <button
+              key={n}
+              type="button"
+              onClick={() => pressDigit(n)}
+              disabled={digits.length >= 4}
+              className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.08] text-lg font-semibold text-pink-200 transition-all hover:bg-white/[0.14] active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {n}
+            </button>
+          ))}
+          <div />
+          <button
+            type="button"
+            onClick={() => pressDigit(0)}
+            disabled={digits.length >= 4}
+            className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.08] text-lg font-semibold text-pink-200 transition-all hover:bg-white/[0.14] active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            0
+          </button>
+          <button
+            type="button"
+            onClick={backspace}
+            disabled={digits.length === 0}
+            className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-pink-500/10 text-pink-200 transition-all hover:bg-pink-500/20 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+            aria-label="Xóa số cuối"
+          >
+            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z" />
+            </svg>
+          </button>
+        </div>
+        <p className="mt-3 text-center text-[11px] text-white/38">Bấm số trên bàn phím để đặt mật mã (đúng 4 số).</p>
+      </div>
+    </div>
   );
 }
 
@@ -645,6 +736,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     return "val-starry-constellation-01";
   }, [selectedTemplate]);
 
+  const [orderCategory, setOrderCategory] = useState<"ALL" | "REGULAR" | "WEDDING">("ALL");
+
   const isWillYouDateMe = selectedComponentKey === "will-you-date-me" || selectedComponentKey === "dating-1" || selectedComponentKey === "dating #1";
   const isBirthdayMagic = selectedComponentKey === "birthday-magic" || selectedComponentKey === "birthday-1" || selectedComponentKey === "birthday #1";
   const isDating2 = selectedComponentKey === "dating-2" || selectedComponentKey === "dating #2";
@@ -656,6 +749,25 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const isSorry1 = selectedComponentKey.includes("sorry-1") || selectedComponentKey.includes("sorry #1");
   const isSorry2 = selectedComponentKey.includes("sorry-2") || selectedComponentKey.includes("sorry #2");
   const isSorry3 = selectedComponentKey.includes("sorry-3") || selectedComponentKey.includes("sorry #3");
+  const isWedding1 = selectedComponentKey === "wedding-1" || selectedComponentKey === "wedding #1";
+  const isWedding = selectedComponentKey.includes("wedding");
+  const ALL_PACKAGES = [...SERVICE_PACKAGES, ...WEDDING_SERVICE_PACKAGES];
+
+  useEffect(() => {
+    // Tự động chuyển Mẫu giao diện nếu Gói dịch vụ thay đổi loại (Cưới <-> Thường)
+    // Điều này ngăn chặn lỗi "nhảy về gói thường" khi người dùng cố chọn gói cưới.
+    const isCurrentPackageWedding = selectedPackage.includes("wedding");
+    if (isCurrentPackageWedding && !isWedding) {
+      const firstWedding = templates.find(t => t.component_key.includes("wedding"));
+      if (firstWedding) {
+        setSelectedTemplateId(firstWedding.id);
+        setTemplateSearch(firstWedding.name);
+      }
+    } else if (!isCurrentPackageWedding && isWedding) {
+      setSelectedTemplateId(valentineOne?.id ?? templates[0]?.id);
+      setTemplateSearch(valentineOne?.name ?? templates[0]?.name ?? "");
+    }
+  }, [selectedPackage, isWedding, templates, valentineOne]);
   const isEditing = !!result;
   const canEditTemplate = isEditing && result.unlocked;
 
@@ -820,6 +932,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
       backgroundColor: stage2Background,
       accentColor: stage1Accent,
     } : {}),
+    ...dynamicData,
   };
 
   useEffect(() => {
@@ -888,7 +1001,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        amount: SERVICE_PACKAGES.find(p => p.id === selectedPackage)?.price ?? 99000,
+        amount: ALL_PACKAGES.find(p => p.id === selectedPackage)?.price ?? (isWedding ? 209000 : 99000),
         buyerContact,
         buyerName,
         customData,
@@ -908,7 +1021,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     toast.success("Tạo đơn thành công!");
 
     setResult({
-      amount: Number(data.amount ?? SERVICE_PACKAGES.find(p => p.id === selectedPackage)?.price ?? 0),
+      amount: Number(data.amount ?? ALL_PACKAGES.find(p => p.id === selectedPackage)?.price ?? (isWedding ? 209000 : 0)),
       giftLink: absoluteUrl(data.giftPath),
       orderId: data.orderId,
       paymentCode: data.paymentCode,
@@ -1222,7 +1335,29 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
         <Section title="Thông tin đơn" className={`relative z-50 ${orderIsLocked ? "pointer-events-none opacity-60" : ""}`}>
           <TextInput label="Tên khách mua" onChange={setBuyerName} value={buyerName} />
           <TextInput label="TikTok / SĐT khách" onChange={setBuyerContact} value={buyerContact} />
-          
+          {/* BỘ LỌC LOẠI ĐƠN */}
+          <div className="md:col-span-2 mt-2 mb-2 flex items-center gap-6">
+            <span className="text-white/64 text-sm font-medium">Phân loại:</span>
+            <label className="flex items-center gap-2 cursor-pointer text-sm">
+              <input type="radio" disabled={!!result} checked={orderCategory === "ALL"} onChange={() => setOrderCategory("ALL")} className="text-pink-500" />
+              <span className={orderCategory === "ALL" ? "text-pink-300 font-bold" : "text-white/80"}>Tất cả</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer text-sm">
+              <input type="radio" disabled={!!result} checked={orderCategory === "REGULAR"} onChange={() => {
+                setOrderCategory("REGULAR");
+                if (selectedPackage.includes("wedding")) setSelectedPackage(SERVICE_PACKAGES[2]?.id || SERVICE_PACKAGES[0].id);
+              }} className="text-pink-500" />
+              <span className={orderCategory === "REGULAR" ? "text-pink-300 font-bold" : "text-white/80"}>Thiệp Thường</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer text-sm">
+              <input type="radio" disabled={!!result} checked={orderCategory === "WEDDING"} onChange={() => {
+                setOrderCategory("WEDDING");
+                if (!selectedPackage.includes("wedding")) setSelectedPackage(WEDDING_SERVICE_PACKAGES[0].id);
+              }} className="text-pink-500" />
+              <span className={orderCategory === "WEDDING" ? "text-pink-300 font-bold" : "text-white/80"}>Thiệp Cưới</span>
+            </label>
+          </div>
+
           <label className="grid gap-2 text-sm md:col-span-2">
             <span className="text-white/64">Gói dịch vụ (Tính giá)</span>
             <select
@@ -1231,11 +1366,24 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               onChange={(e) => setSelectedPackage(e.target.value)}
               disabled={!!result}
             >
-              {SERVICE_PACKAGES.map((pkg) => (
-                <option key={pkg.id} value={pkg.id} className="text-black">
-                  {pkg.label}
-                </option>
-              ))}
+              {orderCategory !== "WEDDING" && (
+                <optgroup label="Gói Thiệp Thường (Valentine, Sinh nhật, Tỏ tình)">
+                  {SERVICE_PACKAGES.map((pkg) => (
+                    <option key={pkg.id} value={pkg.id} className="text-black">
+                      {pkg.label}
+                    </option>
+                  ))}
+                </optgroup>
+              )}
+              {orderCategory !== "REGULAR" && (
+                <optgroup label="Gói Thiệp Cưới (Wedding)">
+                  {WEDDING_SERVICE_PACKAGES.map((pkg) => (
+                    <option key={pkg.id} value={pkg.id} className="text-black">
+                      {pkg.label}
+                    </option>
+                  ))}
+                </optgroup>
+              )}
             </select>
           </label>
 
@@ -1262,9 +1410,34 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                 {filteredTemplates.length === 0 ? (
                   <li className="px-4 py-3 text-gray-500">Không tìm thấy mẫu nào phù hợp.</li>
                 ) : (
-                  filteredTemplates.map((template) => {
-                    const isSelected = template.id === selectedTemplateId;
-                    return (
+                  Object.entries(
+                    filteredTemplates.reduce((acc, template) => {
+                      const searchable = `${template.component_key} ${template.name} ${(template as any).slug || ""}`.toLowerCase();
+                      let categoryName = "Valentine";
+                      if (searchable.includes("wedding")) categoryName = "Cưới hỏi";
+                      else if (searchable.includes("dating") || searchable.includes("gacha") || searchable.includes("will-you-date-me") || searchable.includes("vé hẹn hò") || searchable.includes("mật mã")) categoryName = "Tỏ tình";
+                      else if (searchable.includes("birthday") || searchable.includes("sinh nhật") || searchable.includes("báo thức") || searchable.includes("hộp quà")) categoryName = "Sinh nhật";
+                      else if (searchable.includes("sorry") || searchable.includes("xin lỗi") || searchable.includes("làm hòa") || searchable.includes("xả giận") || searchable.includes("khủng long")) categoryName = "Xin lỗi";
+
+                      const isWeddingTemp = categoryName === "Cưới hỏi";
+                      const isPackageWedding = selectedPackage.includes("wedding");
+                      
+                      // Bắt buộc: Loại Mẫu giao diện phải khớp hoàn toàn với loại Gói dịch vụ đã chọn
+                      if (isPackageWedding && !isWeddingTemp) return acc;
+                      if (!isPackageWedding && isWeddingTemp) return acc;
+                      
+                      if (!acc[categoryName]) acc[categoryName] = [];
+                      acc[categoryName].push(template);
+                      return acc;
+                    }, {} as Record<string, typeof filteredTemplates>)
+                  ).map(([categoryName, templatesInCategory]) => (
+                    <div key={categoryName}>
+                      <li className="px-4 py-2 bg-gray-50 text-xs font-bold text-gray-400 uppercase tracking-wider sticky top-0 z-10 border-b border-gray-100">
+                        {categoryName}
+                      </li>
+                      {templatesInCategory.map((template) => {
+                        const isSelected = template.id === selectedTemplateId;
+                        return (
                       <li
                         key={template.id}
                         className={`cursor-pointer rounded-lg px-4 py-3 transition hover:bg-gray-100 ${isSelected ? "bg-pink-50 text-pink-600" : ""}`}
@@ -1326,7 +1499,9 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                           <p className="font-semibold">{template.name}</p>
                       </li>
                     );
-                  })
+                  })}
+                    </div>
+                  ))
                 )}
               </ul>
             )}
@@ -1354,6 +1529,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               <label className="mb-2 block text-sm font-semibold opacity-90">Ngày hết hạn đơn (Mặc định 10 ngày)</label>
               <input
                 type="datetime-local"
+                suppressHydrationWarning
                 min={new Date().toISOString().slice(0, 16)}
                 value={expiresAtDate}
                 onChange={(e) => setExpiresAtDate(e.target.value)}
@@ -1633,7 +1809,51 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
             </div>
           ) : (
           <>
-            {isBirthdayMagic ? (
+            {isWedding1 ? (
+              <>
+                <Section title="Thông tin chung">
+                  <TextInput label="Tên Chú rể" value={dynamicData.groomName || "Minh Trí"} onChange={(v) => setDynamicData(d => ({ ...d, groomName: v }))} />
+                  <TextInput label="Tên Cô dâu" value={dynamicData.brideName || "Thanh Hằng"} onChange={(v) => setDynamicData(d => ({ ...d, brideName: v }))} />
+                  <DateInput 
+                    label="Thời gian diễn ra lễ cưới" 
+                    value={dynamicData.weddingDate || "2025-02-15T09:00"} 
+                    onChange={(v) => {
+                      if (!v) return setDynamicData(d => ({ ...d, weddingDate: v }));
+                      const date = new Date(v);
+                      if (isNaN(date.getTime())) return setDynamicData(d => ({ ...d, weddingDate: v }));
+                      
+                      const dayOfWeekNames = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+                      
+                      setDynamicData(d => ({
+                        ...d, 
+                        weddingDate: v,
+                        weddingDay: date.getDate().toString(),
+                        weddingMonth: `Tháng ${date.getMonth() + 1}`,
+                        weddingYear: date.getFullYear().toString(),
+                        weddingDayOfWeek: dayOfWeekNames[date.getDay()]
+                      }));
+                    }} 
+                  />
+                </Section>
+                <Section title="Hình ảnh nổi bật">
+                  <MediaInput label="Ảnh cover / Hero Image" accept="image/*" onChange={(url) => setDynamicData(d => ({ ...d, heroImage: url }))} />
+                  <MediaInput label="Ảnh Cô dâu" accept="image/*" onChange={(url) => setDynamicData(d => ({ ...d, brideImage: url }))} />
+                  <MediaInput label="Ảnh Chú rể" accept="image/*" onChange={(url) => setDynamicData(d => ({ ...d, groomImage: url }))} />
+                  <MediaInput label="Ảnh ngăn cách (Divider)" accept="image/*" onChange={(url) => setDynamicData(d => ({ ...d, dividerImage: url }))} />
+                  <MediaInput label="Ảnh cuối trang (Footer)" accept="image/*" onChange={(url) => setDynamicData(d => ({ ...d, footerImage: url }))} />
+                </Section>
+                <Section title="Lời mời & Thông tin gia đình">
+                  <TextArea label="Lời mời chân thành" value={dynamicData.letterText || "Tình yêu không phải là tìm thấy một người hoàn hảo..."} onChange={(v) => setDynamicData(d => ({ ...d, letterText: v }))} />
+                  <TextArea label="Đại diện nhà trai" value={dynamicData.groomFamily || "Ông Nguyễn Văn A\nBà Trần Thị B"} onChange={(v) => setDynamicData(d => ({ ...d, groomFamily: v }))} />
+                  <TextArea label="Đại diện nhà gái" value={dynamicData.brideFamily || "Ông Lê Văn C\nBà Phạm Thị D"} onChange={(v) => setDynamicData(d => ({ ...d, brideFamily: v }))} />
+                </Section>
+                <Section title="Bản đồ & Sự kiện">
+                  <TextArea label="Địa chỉ tổ chức" value={dynamicData.eventAddress || "Trung tâm tiệc cưới mẫu..."} onChange={(v) => setDynamicData(d => ({ ...d, eventAddress: v }))} />
+                  <TextInput label="Link Google Maps" value={dynamicData.mapUrl || "https://maps.app.goo.gl/xxx"} onChange={(v) => setDynamicData(d => ({ ...d, mapUrl: v }))} />
+                  <MediaInput label="Ảnh bản đồ (Screenshot)" accept="image/*" onChange={(url) => setDynamicData(d => ({ ...d, mapImage: url }))} />
+                </Section>
+              </>
+            ) : isBirthdayMagic ? (
               <>
                 <Section title="Đoạn 4/10: Lời chúc (Bong bóng)">
                   <div className="md:col-span-2">
@@ -1669,7 +1889,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               <>
 
                 <Section title="Bước 1: Mật mã mở khóa">
-                  <TextInput label="Mật mã mở khóa (4 số)" value={dating2Config.pinCode} onChange={(v) => setDating2Config({ ...dating2Config, pinCode: v })} />
+                  <PinCodeInput label="Mật mã mở khóa (4 số)" value={dating2Config.pinCode} onChange={(v) => setDating2Config({ ...dating2Config, pinCode: v })} />
                   <TextInput label="Tiêu đề nhập mật khẩu" value={dating2Config.loginTitle || "Nhập Mật Khẩu"} onChange={(v) => setDating2Config({ ...dating2Config, loginTitle: v })} />
                   <TextInput label="Dòng gợi ý mật khẩu" value={dating2Config.loginHint || "(Gợi ý: {pin})"} onChange={(v) => setDating2Config({ ...dating2Config, loginHint: v })} />
                   <TextInput label="Thông báo sai mật khẩu" value={dating2Config.loginErrorText || "Sai mật khẩu rồi!"} onChange={(v) => setDating2Config({ ...dating2Config, loginErrorText: v })} />
@@ -1703,11 +1923,9 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                 <Section title="Bước 6: Thời gian">
                   <TextInput label="Tiêu đề thời gian" value={dating2Config.dtTitle} onChange={(v) => setDating2Config({ ...dating2Config, dtTitle: v })} />
                   <TextInput label="Nút hoàn tất chọn giờ" value={dating2Config.dtBtn} onChange={(v) => setDating2Config({ ...dating2Config, dtBtn: v })} />
-                  <div className="md:col-span-2">
-                     <ArrayInput label="Các tùy chọn Ngày" values={dating2Config.dtDates} onChange={(v) => setDating2Config({ ...dating2Config, dtDates: v })} />
-                     <div className="h-4" />
-                     <ArrayInput label="Các tùy chọn Giờ" values={dating2Config.dtTimes} onChange={(v) => setDating2Config({ ...dating2Config, dtTimes: v })} />
-                  </div>
+                  <p className="md:col-span-2 text-xs leading-5 text-white/45">
+                    Khách tự chọn ngày và giờ trên lịch trong sản phẩm — không cần cấu hình danh sách lựa chọn.
+                  </p>
                 </Section>
                 <Section title="Bước 7: Lá thư chốt đơn">
                   <TextInput label="Tiêu đề lá thư" value={dating2Config.finaleLetterTitle} onChange={(v) => setDating2Config({ ...dating2Config, finaleLetterTitle: v })} />
@@ -2242,6 +2460,9 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                         }
                         if (field.type === "textarea") {
                           return <TextArea key={i} label={field.label} value={val} onChange={v => setDynamicData(d => ({ ...d, [field.key]: v }))} />;
+                        }
+                        if (field.type === "date" || field.type === "datetime") {
+                          return <DateInput key={i} label={field.label} value={val} onChange={v => setDynamicData(d => ({ ...d, [field.key]: v }))} />;
                         }
                         return <TextInput key={i} label={field.label} value={val} onChange={v => setDynamicData(d => ({ ...d, [field.key]: v }))} />;
                       })}

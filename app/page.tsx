@@ -22,6 +22,10 @@ const categoryOrder = ["valentine", "dating", "birthday", "sorry"];
 
 function getTemplateKind(template: { component_key: string; name: string; slug: string }) {
   const searchable = `${template.component_key} ${template.name} ${template.slug}`.toLowerCase();
+  
+  if (searchable.includes("wedding")) {
+    return "wedding";
+  }
   if (
     searchable.includes("dating-1") ||
     searchable.includes("dating #1") ||
@@ -30,32 +34,41 @@ function getTemplateKind(template: { component_key: string; name: string; slug: 
     searchable.includes("dating-3") ||
     searchable.includes("dating #3") ||
     searchable.includes("gacha") ||
-    searchable.includes("will-you-date-me")
+    searchable.includes("will-you-date-me") ||
+    searchable.includes("vé hẹn hò") ||
+    searchable.includes("mật mã hẹn hò")
   ) {
     return "dating";
   }
   if (
-    searchable.includes("birthday-1") ||
-    searchable.includes("birthday #1") ||
-    searchable.includes("birthday-2") ||
-    searchable.includes("birthday #2") ||
-    searchable.includes("birthday 2") ||
-    searchable.includes("birthday2") ||
-    searchable.includes("birthday_2") ||
-    searchable.includes("birthday-3") ||
-    searchable.includes("birthday #3") ||
-    searchable.includes("birthday-magic")
+    searchable.includes("birthday") ||
+    searchable.includes("phép thuật sinh nhật") ||
+    searchable.includes("báo thức diệu kì") ||
+    searchable.includes("hộp quà bất ngờ")
   ) {
     return "birthday";
   }
   if (
     searchable.includes("sorry") ||
     searchable.includes("xin loi") ||
-    searchable.includes("xin lỗi")
+    searchable.includes("xin lỗi") ||
+    searchable.includes("làm hòa") ||
+    searchable.includes("xả giận") ||
+    searchable.includes("khủng long")
   ) {
     return "sorry";
   }
-  return "valentine";
+  if (
+    searchable.includes("valentine") ||
+    searchable.includes("starry") ||
+    searchable.includes("constellation") ||
+    searchable.includes("vũ trụ trái tim") ||
+    searchable.includes("trạm phim kỷ niệm") ||
+    searchable.includes("nhật ký tình yêu")
+  ) {
+    return "valentine";
+  }
+  return "other";
 }
 
 const categoryCopy = {
@@ -113,6 +126,9 @@ export default async function Home() {
                 </span>
               }
             />
+            <Link className="transition hover:text-[#ff6b9d] hover:-translate-y-1 inline-block" href="/wedding">
+              Thiệp cưới
+            </Link>
             <a className="transition hover:text-[#ff6b9d] hover:-translate-y-1 inline-block" href="#quy-trinh">
               Quy trình
             </a>

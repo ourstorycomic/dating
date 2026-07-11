@@ -66,12 +66,30 @@ export async function POST(
   const supabase = createServerSupabaseClient();
   const { data: order, error: loadError } = await supabase
     .from("orders")
-    .select("id")
+    .select("id, response_text")
     .eq("public_id", orderId)
     .maybeSingle();
 
   if (loadError || !order) {
     return NextResponse.json({ error: "Không tìm thấy đơn." }, { status: 404 });
+  }
+
+  let newResponseText;
+  if (message.startsWith("RSVP: {")) {
+    let existingResponses: any[] = [];
+    if (order.response_text) {
+      try {
+        const parsed = JSON.parse(order.response_text);
+        if (Array.isArray(parsed)) existingResponses = parsed;
+        else existingResponses = [parsed];
+      } catch {
+        existingResponses = [{ message: order.response_text }];
+      }
+    }
+    existingResponses.unshift(responsePayload);
+    newResponseText = JSON.stringify(existingResponses);
+  } else {
+    newResponseText = JSON.stringify(responsePayload);
   }
 
   const { error } = await supabase
@@ -80,7 +98,7 @@ export async function POST(
       status: "RESPONDED",
       gift_opened_at: new Date().toISOString(),
       recipient_response: normalizeAnswer(answer),
-      response_text: JSON.stringify(responsePayload),
+      response_text: newResponseText,
       responded_at: new Date().toISOString(),
     })
     .eq("id", order.id);

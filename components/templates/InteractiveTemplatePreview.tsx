@@ -16,6 +16,12 @@ import { Sorry2Preview } from "./sorry-2/preview";
 import { Sorry3Preview } from "./sorry-3/preview";
 
 import Birthday3Preview from "./birthday-3/preview";
+import { WeddingOnePreview } from "./wedding-1/preview";
+import { WeddingTwoPreview } from "./wedding-2/preview";
+import { WeddingThreePreview } from "./wedding-3/preview";
+import { WeddingFourPreview } from "./wedding-4/preview";
+import { WeddingFivePreview } from "./wedding-5/preview";
+import { WeddingSixPreview } from "./wedding-6/preview";
 
 type InteractiveTemplatePreviewProps = TemplatePreviewProps & {
   componentKey: string;
@@ -55,6 +61,18 @@ const previewRegistry = [
   { match: "sorry #2", Component: Sorry2Preview },
   { match: "sorry-3", Component: Sorry3Preview },
   { match: "sorry #3", Component: Sorry3Preview },
+  { match: "wedding-1", Component: WeddingOnePreview },
+  { match: "wedding #1", Component: WeddingOnePreview },
+  { match: "wedding-2", Component: WeddingTwoPreview },
+  { match: "wedding #2", Component: WeddingTwoPreview },
+  { match: "wedding-3", Component: WeddingThreePreview },
+  { match: "wedding #3", Component: WeddingThreePreview },
+  { match: "wedding-4", Component: WeddingFourPreview },
+  { match: "wedding #4", Component: WeddingFourPreview },
+  { match: "wedding-5", Component: WeddingFivePreview },
+  { match: "wedding #5", Component: WeddingFivePreview },
+  { match: "wedding-6", Component: WeddingSixPreview },
+  { match: "wedding #6", Component: WeddingSixPreview },
 ];
 
 // This bot automatically plays through ANY template by clicking buttons intelligently

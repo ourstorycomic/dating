@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { TPL_DATA } from "../config";
 
-export function Step6Finale({ dateTime, wheelResult, onComplete, customData = {}, autoPlay }: { dateTime: {date: string, time: string}, wheelResult?: string, onComplete: () => void, customData?: any, autoPlay?: boolean }) {
+export function Step6Finale({ dateTime, wheelResult, onComplete, customData = {}, autoPlay, compact, isBuilderPreview }: { dateTime: {date: string, time: string}, wheelResult?: string, onComplete: () => void, customData?: any, autoPlay?: boolean, compact?: boolean, isBuilderPreview?: boolean }) {
   const [typedText, setTypedText] = useState("");
   const [done, setDone] = useState(false);
   const [noPos, setNoPos] = useState({ x: 30, y: 30 }); // relative absolute left/bottom initially
@@ -14,7 +14,14 @@ export function Step6Finale({ dateTime, wheelResult, onComplete, customData = {}
   const content = (customData.finaleLetterBody || TPL_DATA.finaleLetterBody).replace("{date}", dateTime.date).replace("{time}", dateTime.time);
 
   useEffect(() => {
+    if (isBuilderPreview) {
+      setTypedText(content);
+      setDone(true);
+      return;
+    }
     let i = 0;
+    setTypedText("");
+    setDone(false);
     const interval = setInterval(() => {
       setTypedText(content.substring(0, i));
       i++;
@@ -24,7 +31,7 @@ export function Step6Finale({ dateTime, wheelResult, onComplete, customData = {}
       }
     }, 40);
     return () => clearInterval(interval);
-  }, [content]);
+  }, [content, isBuilderPreview]);
 
   useEffect(() => {
     if (autoPlay && done && !isAccepted && !isRejected) {
@@ -52,22 +59,27 @@ export function Step6Finale({ dateTime, wheelResult, onComplete, customData = {}
   };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="absolute inset-0 z-10 flex flex-col items-center justify-center p-4">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="absolute inset-0 z-10 flex flex-col items-center justify-center overflow-hidden p-4 pb-16">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-md z-0"></div>
       
-      <div className="w-11/12 max-w-[360px] bg-[#fffaf0] p-6 pt-10 rounded-sm z-10 flex flex-col items-center shadow-2xl relative border border-[#e2d5c3]" style={{ backgroundImage: 'repeating-linear-gradient(transparent, transparent 31px, #f4bfdb 31px, #f4bfdb 32px)', backgroundAttachment: 'local' }}>
+      <div
+        className={`z-10 flex w-11/12 max-w-[360px] flex-col overflow-hidden rounded-sm border border-[#e2d5c3] bg-[#fffaf0] shadow-2xl relative ${compact ? "max-h-[calc(100%-4.5rem)]" : "max-h-[90%]"}`}
+        style={{ backgroundImage: 'repeating-linear-gradient(transparent, transparent 31px, #f4bfdb 31px, #f4bfdb 32px)', backgroundAttachment: 'local' }}
+      >
         
         {/* Cute Pin/Tape at the top */}
-        <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-16 h-8 bg-pink-200/60 backdrop-blur-sm -rotate-2 transform skew-x-6 shadow-sm"></div>
+        <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-16 h-8 bg-pink-200/60 backdrop-blur-sm -rotate-2 transform skew-x-6 shadow-sm z-10"></div>
         
-        <h2 className="text-3xl font-bold text-pink-600 mb-6 letter-font w-full text-left bg-[#fffaf0]">{(customData.finaleLetterTitle || TPL_DATA.finaleLetterTitle)}</h2>
-        
-        <div className="font-medium text-gray-800 text-lg leading-[32px] w-full text-left mb-10 min-h-[160px] whitespace-pre-wrap letter-font font-bold">
-            {typedText}
-            {!done && <span className="typing-cursor"></span>}
+        <div className="min-h-0 flex-1 overflow-y-auto no-scrollbar px-6 pt-10 pb-3">
+          <h2 className="text-3xl font-bold text-pink-600 mb-4 letter-font w-full text-left bg-[#fffaf0] sticky top-0 z-[1]">{(customData.finaleLetterTitle || TPL_DATA.finaleLetterTitle)}</h2>
+          
+          <div className="font-medium text-gray-800 text-lg leading-[32px] w-full text-left whitespace-pre-wrap letter-font font-bold">
+              {typedText}
+              {!done && <span className="typing-cursor"></span>}
+          </div>
         </div>
 
-        <div className="flex w-full justify-center items-center gap-4 mt-4 h-12" style={{ opacity: done ? 1 : 0, transition: "opacity 0.5s" }}>
+        <div className="flex shrink-0 w-full justify-center items-center gap-4 px-6 py-4 border-t border-[#f4bfdb]/60 bg-[#fffaf0]" style={{ opacity: done ? 1 : 0, transition: "opacity 0.5s" }}>
             {!isAccepted && !isRejectAnimDone && (
                 <motion.button 
                     key="btn-no"
@@ -97,7 +109,7 @@ export function Step6Finale({ dateTime, wheelResult, onComplete, customData = {}
         </div>
 
         {/* Small decorative heart */}
-        <div className="absolute bottom-4 right-6 opacity-30">
+        <div className="absolute bottom-16 right-6 opacity-30 pointer-events-none">
             <svg className="w-10 h-10 text-pink-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
         </div>
 

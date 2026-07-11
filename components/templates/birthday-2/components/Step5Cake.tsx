@@ -3,7 +3,8 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export function Step5Cake({ onNext, autoPlay = false, compact = false }: { onNext: () => void; autoPlay?: boolean; compact?: boolean }) {
+import type { Birthday2Config } from "../config";
+export function Step5Cake({ onNext, autoPlay = false, compact = false, config = {} }: { onNext: () => void; autoPlay?: boolean; compact?: boolean; config?: Birthday2Config }) {
   const [phase, setPhase] = useState<"record" | "blow">("record");
   const [holding, setHolding] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -105,13 +106,13 @@ export function Step5Cake({ onNext, autoPlay = false, compact = false }: { onNex
         className="text-center z-20 mb-20"
       >
         <h2 className="text-2xl font-black text-amber-200 mb-3 drop-shadow-[0_0_10px_rgba(253,230,138,0.5)]">
-          {phase === "record" ? "Điều ước của bạn" : "Make a Wish ✨"}
+          {phase === "record" ? (config?.Niiubnmungigm || "Điều ước của bạn") : "Make a Wish ✨"}
         </h2>
         <p className="text-slate-300 font-medium leading-relaxed h-12">
           {phase === "record" ? (
-            <>Nói điều bạn muốn gửi gắm<br />Bằng cách <span className="text-amber-400 font-bold">nhấn giữ nút Mic</span> bên dưới</>
+            <>{config?.Niiubnmungigm || "Điều ước của bạn"}<br />{config?.Bngcch || "Bằng cách "}<span className="text-amber-400 font-bold">{config?.nhngintMic || "nhấn giữ nút Mic"}</span>{config?.bndi || " bên dưới"}</>
           ) : (
-            <>Nhắm mắt lại, nghĩ về điều ước<br />và <span className="text-amber-400 font-bold">giữ lỳ vào ngọn nến</span> để thổi nhé!</>
+            <>{config?.Nhmmtlinghviuc || "Nhắm mắt lại, nghĩ về điều ước"}<br />{config?.v || "và "}<span className="text-amber-400 font-bold">{config?.gilvongnnn || "giữ lỳ vào ngọn nến"}</span>{config?.thinh || " để thổi nhé!"}</>
           )}
         </p>
       </motion.div>
@@ -199,10 +200,10 @@ export function Step5Cake({ onNext, autoPlay = false, compact = false }: { onNex
               {isRecording ? (
                 <div className="flex items-center gap-2 text-pink-400 font-bold">
                   <span className="relative flex h-3 w-3"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-pink-400 opacity-75"></span><span className="relative inline-flex h-3 w-3 rounded-full bg-pink-500"></span></span>
-                  Đang ghi âm điều ước...
+                  {config?.angghimiuc || "Đang ghi âm điều ước..."}
                 </div>
               ) : (
-                <div className="text-slate-400 text-sm">Sẵn sàng ghi âm</div>
+                <div className="text-slate-400 text-sm">{config?.Snsngghim || "Sẵn sàng ghi âm"}</div>
               )}
             </div>
             

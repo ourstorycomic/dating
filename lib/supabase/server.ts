@@ -69,6 +69,18 @@ const allowedTemplateMatches = [
   "sorry #3",
   "birthday-3",
   "birthday #3",
+  "wedding-1",
+  "wedding #1",
+  "wedding-2",
+  "wedding #2",
+  "wedding-3",
+  "wedding #3",
+  "wedding-4",
+  "wedding #4",
+  "wedding-5",
+  "wedding #5",
+  "wedding-6",
+  "wedding #6",
 ];
 
 export const MOCK_TEMPLATES: any[] = [
@@ -263,7 +275,39 @@ export const MOCK_TEMPLATES: any[] = [
     ],
     sample_data: { screens: ["Gõ cửa", "Bật đèn", "Bóng bay", "Thổi nến", "Lật thiệp", "Ảnh kỷ niệm", "Xé quà", "Nhận quà"] },
     template_categories: { slug: "birthday", name: "Birthday", description: null }
-  }
+  },
+  ...['wedding-1', 'wedding-2', 'wedding-3', 'wedding-4', 'wedding-5', 'wedding-6'].map(slug => ({
+    id: `${slug}-mock`,
+    slug: slug,
+    name: slug === 'wedding-1' ? 'Classic Romance' : slug === 'wedding-2' ? 'Elegant Beige' : slug === 'wedding-3' ? 'Floral Garden' : slug === 'wedding-4' ? 'Blue Envelope' : slug === 'wedding-5' ? 'Earth & Greenery' : 'Double Happiness',
+    component_key: slug,
+    description: "Mẫu thiệp cưới",
+    tagline: "Sang Trọng",
+    base_price: 3000,
+    visual_label: "HOT",
+    gradient: "from-amber-100 to-yellow-900",
+    status_label: "Mới",
+    sort_order: 30,
+    data_schema: [
+      { section: "1. Chú Rể & Cô Dâu", key: "groomName", label: "Tên Chú Rể", type: "text", default: "Minh Trí" },
+      { section: "1. Chú Rể & Cô Dâu", key: "brideName", label: "Tên Cô Dâu", type: "text", default: "Thanh Hằng" },
+      { section: "1. Chú Rể & Cô Dâu", key: "heroImage", label: "Ảnh Cover (Dọc)", type: "media" },
+      { section: "2. Thời Gian", key: "weddingDate", label: "Ngày & Giờ Cưới", type: "datetime", default: "2025-02-15T09:00" },
+      { section: "3. Lời Mời", key: "letterText", label: "Nội dung thiệp", type: "textarea", default: "Tình yêu không phải là tìm thấy một người hoàn hảo..." },
+      { section: "3. Lời Mời", key: "groomFamily", label: "Đại diện nhà trai", type: "textarea", default: "Ông Nguyễn Văn A\nBà Trần Thị B" },
+      { section: "3. Lời Mời", key: "brideFamily", label: "Đại diện nhà gái", type: "textarea", default: "Ông Lê Văn C\nBà Phạm Thị D" },
+      { section: "4. Địa Điểm", key: "eventAddress", label: "Tên & Địa chỉ nhà hàng", type: "textarea", default: "Trung tâm tiệc cưới mẫu..." },
+      { section: "4. Địa Điểm", key: "mapUrl", label: "Link Google Maps", type: "text", default: "https://maps.app.goo.gl/xxx" },
+      { section: "4. Địa Điểm", key: "mapImage", label: "Ảnh bản đồ", type: "media" },
+      { section: "5. Thư Viện Ảnh", key: "groomImage", label: "Ảnh Chú Rể", type: "media" },
+      { section: "5. Thư Viện Ảnh", key: "brideImage", label: "Ảnh Cô Dâu", type: "media" },
+      { section: "5. Thư Viện Ảnh", key: "dividerImage", label: "Ảnh ngang (Divider)", type: "media" },
+      { section: "5. Thư Viện Ảnh", key: "footerImage", label: "Ảnh Footer", type: "media" },
+      { section: "6. Âm Nhạc", key: "musicUrl", label: "Nhạc nền", type: "audio" }
+    ],
+    sample_data: { screens: ["Thiệp Mời", "Lời Ngỏ", "Thư Viện Ảnh", "Xác Nhận"] },
+    template_categories: { slug: "wedding", name: "Wedding", description: null }
+  }))
 ];
 
 function isSupportedTemplate(template: Pick<TemplateCatalogItem, "component_key" | "name" | "slug">) {
@@ -307,8 +351,8 @@ export async function getPublishedTemplates() {
     if (mock) {
       return {
         ...dbTemp,
-        data_schema: dbTemp.data_schema || mock.data_schema,
-        sample_data: dbTemp.sample_data || mock.sample_data
+        data_schema: (mock.slug.startsWith('wedding-') || !(Array.isArray(dbTemp.data_schema) && dbTemp.data_schema.length > 0)) ? mock.data_schema : dbTemp.data_schema,
+        sample_data: (mock.slug.startsWith('wedding-') || !(typeof dbTemp.sample_data === 'object' && dbTemp.sample_data !== null && Object.keys(dbTemp.sample_data).length > 0)) ? mock.sample_data : dbTemp.sample_data
       };
     }
     return dbTemp;
@@ -345,8 +389,8 @@ export async function getTemplateBySlug(slug: string) {
   if (mock) {
     template = {
       ...template,
-      data_schema: template.data_schema || mock.data_schema,
-      sample_data: template.sample_data || mock.sample_data
+      data_schema: (mock.slug.startsWith('wedding-') || !(Array.isArray(template.data_schema) && template.data_schema.length > 0)) ? mock.data_schema : template.data_schema,
+      sample_data: (mock.slug.startsWith('wedding-') || !(typeof template.sample_data === 'object' && template.sample_data !== null && Object.keys(template.sample_data).length > 0)) ? mock.sample_data : template.sample_data
     };
   }
 

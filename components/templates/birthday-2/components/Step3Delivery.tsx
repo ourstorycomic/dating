@@ -28,7 +28,8 @@ const DOCK_APPS = [
   { icon: Music, color: "bg-rose-500", name: "Music" },
 ];
 
-export function Step3Delivery({ onNext, autoPlay = false, compact = false, photos = [] }: { onNext: () => void; autoPlay?: boolean; compact?: boolean; photos?: { url: string }[] }) {
+import type { Birthday2Config } from "../config";
+export function Step3Delivery({ onNext, autoPlay = false, compact = false, photos = [], config = {} }: { onNext: () => void; autoPlay?: boolean; compact?: boolean; photos?: { url: string }[]; config?: Birthday2Config }) {
   const [showPopup, setShowPopup] = useState(false);
   const [showSignPad, setShowSignPad] = useState(false);
   const [isSigned, setIsSigned] = useState(false);
@@ -184,11 +185,11 @@ export function Step3Delivery({ onNext, autoPlay = false, compact = false, photo
             </div>
             <div>
               <div className="flex items-center justify-between">
-                <h3 className="font-bold text-gray-800">SHOPEE EXPRESS</h3>
-                <span className="text-xs text-gray-500">now</span>
+                <h3 className="font-bold text-gray-800">{config?.SHOPEEEXPRESS || "SHOPEE EXPRESS"}</h3>
+                <span className="text-xs text-gray-500">{config?.now || "now"}</span>
               </div>
               <p className="text-sm text-gray-600 mt-1">
-                Bạn có một kiện hàng tối mật. Phí COD: 0đ. Yêu cầu ký nhận!
+                {config?.Bncmtkinhngtimt || "Bạn có một kiện hàng tối mật. Phí COD: 0đ. Yêu cầu ký nhận!"}
               </p>
             </div>
           </motion.div>
@@ -203,8 +204,8 @@ export function Step3Delivery({ onNext, autoPlay = false, compact = false, photo
             exit={{ scale: 0.9, opacity: 0 }}
             className="w-[85%] bg-white rounded-3xl p-6 shadow-2xl flex flex-col z-50"
           >
-            <h2 className="text-xl font-bold text-gray-800 text-center mb-2">Ký Nhận Điện Tử</h2>
-            <p className="text-sm text-gray-500 text-center mb-6">Vui lòng ký vào khung bên dưới</p>
+            <h2 className="text-xl font-bold text-gray-800 text-center mb-2">{config?.KNhninT || "Ký Nhận Điện Tử"}</h2>
+            <p className="text-sm text-gray-500 text-center mb-6">{config?.Vuilngkvokhungb || "Vui lòng ký vào khung bên dưới"}</p>
 
             <div className="w-full h-40 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 relative overflow-hidden mb-6">
               <canvas
@@ -222,7 +223,7 @@ export function Step3Delivery({ onNext, autoPlay = false, compact = false, photo
               />
               {!isSigned && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <span className="text-gray-300 font-medium text-2xl rotate-[-10deg]">Ký tên tại đây</span>
+                  <span className="text-gray-300 font-medium text-2xl rotate-[-10deg]">{config?.Ktntiy || "Ký tên tại đây"}</span>
                 </div>
               )}
             </div>
@@ -232,7 +233,7 @@ export function Step3Delivery({ onNext, autoPlay = false, compact = false, photo
               disabled={!isSigned}
               className={`relative overflow-hidden w-full py-4 rounded-xl font-bold text-white transition-all duration-300 ${isSigned ? 'bg-gradient-to-r from-blue-500 to-indigo-600 shadow-[0_10px_20px_rgba(79,70,229,0.4)] scale-105' : 'bg-gray-300 cursor-not-allowed'}`}
             >
-              <span className="relative z-10 text-lg">Mở Kiện Hàng ✨</span>
+              <span className="relative z-10 text-lg">{config?.MKinHng || "Mở Kiện Hàng ✨"}</span>
               {isSigned && <div className="absolute inset-0 bg-white/20 animate-pulse" />}
             </button>
           </motion.div>

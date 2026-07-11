@@ -5,7 +5,8 @@ import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { Ticket } from "lucide-react";
 
-export function Step7Climax({ autoPlay = false, onNext }: { autoPlay?: boolean; onNext?: () => void }) {
+import type { Birthday2Config } from "../config";
+export function Step7Climax({ autoPlay = false, onNext, config = {} }: { autoPlay?: boolean; onNext?: () => void; config?: Birthday2Config }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -66,11 +67,11 @@ export function Step7Climax({ autoPlay = false, onNext }: { autoPlay?: boolean; 
           <Ticket className="w-10 h-10 text-indigo-900" />
         </div>
 
-        <h2 className="mt-8 text-2xl font-black text-amber-900 text-center mb-2 tracking-wide uppercase">Voucher Đặc Quyền</h2>
+        <h2 className="mt-8 text-2xl font-black text-amber-900 text-center mb-2 tracking-wide uppercase">{config?.VouchercQuyn || "Voucher Đặc Quyền"}</h2>
         <div className="w-full h-px border-t-2 border-dashed border-amber-400/50 my-4" />
         
         <p className="text-center font-bold text-lg text-amber-800 leading-relaxed mb-6">
-          "Tặng cậu 1 vé ăn sập thành phố đêm nay do tớ bao trọn gói!"
+          {config?.Tngcu1vnspthnhp || '"Tặng cậu 1 vé ăn sập thành phố đêm nay do tớ bao trọn gói!"'}
         </p>
 
         <motion.button
@@ -88,7 +89,7 @@ export function Step7Climax({ autoPlay = false, onNext }: { autoPlay?: boolean; 
             }
           }}
         >
-          Lên đồ thôi! 🛵
+          {config?.Lnthi || "Lên đồ thôi! 🛵"}
         </motion.button>
       </motion.div>
     </motion.div>

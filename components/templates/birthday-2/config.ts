@@ -1,3 +1,5 @@
+export type Birthday2Config = Record<string, string | undefined>;
+
 export const BIRTHDAY_DATA = {
   name: "Cậu",
   birthYear: "2000",

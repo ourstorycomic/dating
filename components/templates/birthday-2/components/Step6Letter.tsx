@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export function Step6Letter({ letter, onNext, autoPlay = false, compact = false }: { letter: string; onNext: () => void; autoPlay?: boolean; compact?: boolean }) {
+import type { Birthday2Config } from "../config";
+export function Step6Letter({ letter, onNext, autoPlay = false, compact = false, config = {} }: { letter: string; onNext: () => void; autoPlay?: boolean; compact?: boolean; config?: Birthday2Config }) {
   const [displayedText, setDisplayedText] = useState("");
   const [isTypingFinished, setIsTypingFinished] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -70,7 +71,7 @@ export function Step6Letter({ letter, onNext, autoPlay = false, compact = false 
                 onClick={onNext}
                 className="px-8 py-4 rounded-full bg-indigo-600 text-white font-bold tracking-wide hover:bg-indigo-500 shadow-[0_0_20px_rgba(79,70,229,0.4)] transition-all"
               >
-                Mở quà thật 🎁
+                {config?.Mqutht || "Mở quà thật 🎁"}
               </button>
             </motion.div>
           )}

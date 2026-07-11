@@ -147,9 +147,9 @@ export function LoveSpaceTemplate({ compact, fullScreen, hideNavigation, isBuild
             {step === 1.5 && <Step1_5Radio key="step1-5" customData={customData} audioRef={audioRef} onNext={() => setStep(2)} autoPlay={autoPlay} />}
             {step === 2 && <Step2Vibe key="step2" customData={customData} onNext={() => setStep(3)} autoPlay={autoPlay} />}
             {step === 3 && <Step3Scratch key="step3" customData={customData} onNext={() => setStep(4)} autoPlay={autoPlay} />}
-            {step === 4 && <Step4Wheel key="step4" customData={customData} onNext={(res) => { setWheelResult(res); setStep(5); }} autoPlay={autoPlay} />}
+            {step === 4 && <Step4Wheel key={`step4-${(customData.wheelOptions || TPL_DATA.wheelOptions).join("|")}`} customData={customData} onNext={(res) => { setWheelResult(res); setStep(5); }} autoPlay={autoPlay} />}
             {step === 5 && <Step5DateTime key="step5" customData={customData} onNext={(d, t) => { setDateTime({date: d, time: t}); setStep(6); }} autoPlay={autoPlay} />}
-            {step === 6 && <Step6Finale key="step6" customData={customData} dateTime={dateTime} wheelResult={wheelResult} onComplete={() => onComplete?.({ answer: "YES", message: "Date Set!" })} autoPlay={autoPlay} />}
+            {step === 6 && <Step6Finale key="step6" compact={compact} isBuilderPreview={isBuilderPreview} customData={customData} dateTime={dateTime} wheelResult={wheelResult} onComplete={() => onComplete?.({ answer: "YES", message: "Date Set!" })} autoPlay={autoPlay} />}
           </AnimatePresence>
 
           <TemplateNavigator

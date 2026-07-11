@@ -21,7 +21,32 @@ export function MessengerButton() {
   }, []);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const startY = window.scrollY;
+    const duration = 1500; // 1.5 seconds for a luxurious slow glide
+    let startTime: number | null = null;
+
+    const easeInOutCubic = (t: number, b: number, c: number, d: number) => {
+      t /= d / 2;
+      if (t < 1) return (c / 2) * t * t * t + b;
+      t -= 2;
+      return (c / 2) * (t * t * t + 2) + b;
+    };
+
+    const animateScroll = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = timestamp - startTime;
+      const y = easeInOutCubic(progress, startY, -startY, duration);
+      
+      window.scrollTo(0, y);
+      
+      if (progress < duration) {
+        window.requestAnimationFrame(animateScroll);
+      } else {
+        window.scrollTo(0, 0);
+      }
+    };
+    
+    window.requestAnimationFrame(animateScroll);
   };
 
   const handleSend = (e: React.FormEvent) => {
