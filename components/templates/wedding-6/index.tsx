@@ -1,1 +1,0 @@
-export { WeddingSixExperience } from "./Experience";

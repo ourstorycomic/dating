@@ -68,41 +68,6 @@ const samples = [
     image: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000&auto=format&fit=crop",
     componentKey: "wedding-1",
   },
-  {
-    name: "Modern Romance",
-    tag: "Mới ra mắt",
-    description: "Template cưới mang phong cách nghệ thuật đương đại. Hiệu ứng cuộn Parallax mượt mà, khung ảnh bo góc và hệ màu vàng champagne tạo nên nét lãng mạn đầy tinh tế.",
-    image: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1000&auto=format&fit=crop",
-    componentKey: "wedding-2",
-  },
-  {
-    name: "Crimson Love",
-    tag: "Nổi bật",
-    description: "Phong cách châu Âu với phông nền trắng muốt và điểm nhấn đỏ crimson nổi bật. Typography sang trọng, hiệu ứng Stardust lấp lánh và Grid Gallery đậm chất nghệ thuật.",
-    image: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1000&auto=format&fit=crop",
-    componentKey: "wedding-3",
-  },
-  {
-    name: "Blue Envelope",
-    tag: "Độc đáo",
-    description: "Tone màu Kem và Xanh Navy thanh lịch. Hiệu ứng thiệp cưới điện tử (Wax Seal & Envelope) độc quyền cùng form RSVP tối giản, hiện đại mang hơi hướng Hàn Quốc.",
-    image: "https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=1000&auto=format&fit=crop",
-    componentKey: "wedding-4",
-  },
-  {
-    name: "Earth & Greenery",
-    tag: "Mới nhất",
-    description: "Màu Xanh Sage và Kem Gỗ mang lại cảm giác mộc mạc, gần gũi với thiên nhiên (Rustic/Botanical). Thiết kế ảnh Polaroid chồng lớp, kết hợp lịch tối màu cực kỳ khác biệt.",
-    image: "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?q=80&w=1000&auto=format&fit=crop",
-    componentKey: "wedding-5",
-  },
-  {
-    name: "Double Happiness",
-    tag: "Truyền thống",
-    description: "Tone Đỏ thắm và Vàng ánh kim cao cấp. Thiết kế kết hợp chữ Hỷ lớn (囍) xoay tròn nghệ thuật, mâm quả truyền thống mang lại sự ấm cúng và ý nghĩa phương Đông nhưng vẫn rất hiện đại.",
-    image: "https://images.unsplash.com/photo-1621252179027-94459d278660?q=80&w=1000&auto=format&fit=crop",
-    componentKey: "wedding-6",
-  },
 ];
 
 const packages = [
