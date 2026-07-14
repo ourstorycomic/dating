@@ -90,6 +90,14 @@ export function WeddingFiveExperience({
     }
   }, [autoPlay, compact, isBuilderPreview, musicUrl]);
 
+  // Automatically open the invitation in autoPlay mode (preview)
+  useEffect(() => {
+    if (autoPlay) {
+      const timer = setTimeout(() => setIsOpened(true), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [autoPlay, compact]);
+
   useEffect(() => {
     if (autoPlay && isOpened && containerRef.current) {
       let reqId: number;
@@ -181,7 +189,6 @@ export function WeddingFiveExperience({
       {/* Intro Envelope Screen */}
       <AnimatePresence>
         {!isOpened && (
-          <>
             <motion.div
               key="door-left"
               initial={{ x: 0 }}
@@ -191,7 +198,8 @@ export function WeddingFiveExperience({
             >
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] opacity-60 mix-blend-multiply" />
             </motion.div>
-            
+        )}
+        {!isOpened && (
             <motion.div
               key="door-right"
               initial={{ x: 0 }}
@@ -201,7 +209,8 @@ export function WeddingFiveExperience({
             >
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] opacity-60 mix-blend-multiply" />
             </motion.div>
-
+        )}
+        {!isOpened && (
             <motion.div
               key="content"
               initial={{ opacity: 1 }}
@@ -231,7 +240,6 @@ export function WeddingFiveExperience({
                 </motion.p>
               </div>
             </motion.div>
-          </>
         )}
       </AnimatePresence>
 
@@ -255,8 +263,11 @@ export function WeddingFiveExperience({
       {/* 1. TOP PHOTO & NAMES */}
       <section className="relative w-full pb-16 flex flex-col items-center justify-start bg-[#f6f4ed]">
         <motion.div style={{ y: yHero, opacity: opacityHero }} className="w-full relative">
-          <MediaDisplay src={heroImage} alt="Hero" className="w-full aspect-[4/3] @sm:aspect-[16/9] object-cover" />
-          <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-[#f6f4ed] to-transparent" />
+          <div className="relative w-full aspect-[3/2] @sm:aspect-[16/9]">
+             <MediaDisplay src={heroImage} alt="Hero" className="absolute inset-0 w-full h-full object-cover" />
+             <div className="absolute inset-0 bg-gradient-to-t from-[#f6f4ed] via-[#f6f4ed]/60 to-transparent pointer-events-none" />
+             <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-[#f6f4ed] via-[#f6f4ed]/90 to-transparent pointer-events-none" />
+          </div>
         </motion.div>
         
         <motion.div 

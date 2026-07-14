@@ -97,6 +97,14 @@ export function WeddingFourExperience({
     }
   }, [autoPlay, compact, isBuilderPreview, musicUrl]);
 
+  // Automatically open the invitation in autoPlay mode (preview)
+  useEffect(() => {
+    if (autoPlay) {
+      const timer = setTimeout(() => setIsOpened(true), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [autoPlay, compact]);
+
   useEffect(() => {
     if (autoPlay && isOpened && containerRef.current) {
       let reqId: number;
@@ -188,7 +196,6 @@ export function WeddingFourExperience({
       {/* Intro Envelope Screen */}
       <AnimatePresence>
         {!isOpened && (
-          <>
             <motion.div
               key="door-left"
               initial={{ x: 0 }}
@@ -207,7 +214,8 @@ export function WeddingFourExperience({
                 <span className="text-white text-3xl font-bold tracking-tighter" style={{ fontFamily: "'Playfair Display', serif" }}>W</span>
               </div>
             </motion.div>
-            
+        )}
+        {!isOpened && (
             <motion.div
               key="door-right"
               initial={{ x: 0 }}
@@ -226,7 +234,8 @@ export function WeddingFourExperience({
                 <span className="text-white text-3xl font-bold tracking-tighter" style={{ fontFamily: "'Playfair Display', serif" }}>W</span>
               </div>
             </motion.div>
-            
+        )}
+        {!isOpened && (
             <motion.div
               key="content"
               initial={{ opacity: 1 }}
@@ -240,19 +249,24 @@ export function WeddingFourExperience({
                 }
               }}
             >
-              <div className="relative z-10 flex flex-col items-center px-6 text-center">
-                <p className="text-[10px] uppercase tracking-[0.4em] text-[#d4ba8a] mb-8 font-bold">Thân Mời</p>
+              <div className="relative z-10 flex flex-col items-center px-2 text-center w-full max-w-sm">
+                <p className="text-[10px] uppercase tracking-[0.4em] text-[#d4ba8a] mb-12 font-bold bg-[#5480a2]/40 px-4 py-1 rounded-full drop-shadow-sm">Thân Mời</p>
                 
+                <div className="w-full flex items-center justify-between px-2 @sm:px-6">
+                  <h1 className="text-4xl @sm:text-5xl font-normal text-[#fdfbf7] drop-shadow-lg leading-tight text-center" style={{ fontFamily: "'Dancing Script', cursive" }}>
+                    {brideName.split(' ').map((word, i) => <span key={i} className="block">{word}</span>)}
+                  </h1>
+                  
+                  <span className="text-3xl text-[#d4ba8a] font-light italic drop-shadow-md mx-2" style={{ fontFamily: "'Dancing Script', cursive" }}>&amp;</span>
+                  
+                  <h1 className="text-4xl @sm:text-5xl font-normal text-[#fdfbf7] drop-shadow-lg leading-tight text-center" style={{ fontFamily: "'Dancing Script', cursive" }}>
+                    {groomName.split(' ').map((word, i) => <span key={i} className="block">{word}</span>)}
+                  </h1>
+                </div>
                 
-
-                <h1 className="text-5xl @sm:text-6xl font-normal text-[#fdfbf7] drop-shadow-lg mb-2" style={{ fontFamily: "'Dancing Script', cursive" }}>{brideName}</h1>
-                <span className="text-xl text-[#d4ba8a] font-light italic my-1 drop-shadow-md" style={{ fontFamily: "'Dancing Script', cursive" }}>&amp;</span>
-                <h1 className="text-5xl @sm:text-6xl font-normal text-[#fdfbf7] drop-shadow-lg mt-2" style={{ fontFamily: "'Dancing Script', cursive" }}>{groomName}</h1>
-                
-                <p className="mt-12 text-[10px] uppercase tracking-[0.2em] font-bold text-[#455a64] border-b border-[#d4ba8a] pb-1">Chạm để mở thiệp</p>
+                <p className="mt-16 text-[10px] uppercase tracking-[0.2em] font-bold text-[#d4ba8a] border-b border-[#d4ba8a] pb-1 bg-[#5480a2]/40 px-4 rounded-full drop-shadow-sm">Chạm để mở thiệp</p>
               </div>
             </motion.div>
-          </>
         )}
       </AnimatePresence>
 

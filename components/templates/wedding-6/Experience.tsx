@@ -90,6 +90,14 @@ export function WeddingSixExperience({
     }
   }, [autoPlay, compact, isBuilderPreview, musicUrl]);
 
+  // Automatically open the invitation in autoPlay mode (preview)
+  useEffect(() => {
+    if (autoPlay) {
+      const timer = setTimeout(() => setIsOpened(true), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [autoPlay, compact]);
+
   useEffect(() => {
     if (autoPlay && isOpened && containerRef.current) {
       let reqId: number;
@@ -181,7 +189,6 @@ export function WeddingSixExperience({
       {/* Intro Traditional Screen */}
       <AnimatePresence>
         {!isOpened && (
-          <>
             <motion.div
               key="door-left"
               initial={{ x: 0 }}
@@ -199,7 +206,8 @@ export function WeddingSixExperience({
                 <span className="text-[90px] font-bold text-[#8a0000] drop-shadow-md" style={{ fontFamily: "SimSun, serif" }}>囍</span>
               </div>
             </motion.div>
-            
+        )}
+        {!isOpened && (
             <motion.div
               key="door-right"
               initial={{ x: 0 }}
@@ -217,7 +225,8 @@ export function WeddingSixExperience({
                 <span className="text-[90px] font-bold text-[#8a0000] drop-shadow-md" style={{ fontFamily: "SimSun, serif" }}>囍</span>
               </div>
             </motion.div>
-
+        )}
+        {!isOpened && (
             <motion.div
               key="content"
               initial={{ opacity: 1 }}
@@ -232,11 +241,19 @@ export function WeddingSixExperience({
               }}
             >
               <div className="relative z-10 flex flex-col items-center px-6 text-center w-full max-w-sm mt-32">
-                <p className="text-[10px] uppercase tracking-[0.4em] text-[#d4af37] mb-8 font-bold drop-shadow-md bg-black/40 px-4 py-1 rounded-full">Thân Mời</p>
+                <p className="text-[10px] uppercase tracking-[0.4em] text-[#d4af37] mb-12 font-bold drop-shadow-md bg-black/40 px-4 py-1 rounded-full">Thân Mời</p>
                 
-                <h1 className="text-5xl @sm:text-6xl font-bold text-[#fdfbf7] drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] mb-2 tracking-wider" style={{ fontFamily: "'Dancing Script', cursive" }}>{brideName}</h1>
-                <span className="text-3xl text-[#d4af37] font-light italic my-2 drop-shadow-[0_2px_5px_rgba(0,0,0,0.8)]" style={{ fontFamily: "'Dancing Script', cursive" }}>&amp;</span>
-                <h1 className="text-5xl @sm:text-6xl font-bold text-[#fdfbf7] drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] mt-2 tracking-wider" style={{ fontFamily: "'Dancing Script', cursive" }}>{groomName}</h1>
+                <div className="w-full flex items-center justify-between px-2 @sm:px-6">
+                  <h1 className="text-4xl @sm:text-5xl font-bold text-[#fdfbf7] drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] leading-tight text-center" style={{ fontFamily: "'Dancing Script', cursive" }}>
+                    {brideName.split(' ').map((word, i) => <span key={i} className="block">{word}</span>)}
+                  </h1>
+                  
+                  <div className="w-[150px] shrink-0"></div>
+                  
+                  <h1 className="text-4xl @sm:text-5xl font-bold text-[#fdfbf7] drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] leading-tight text-center" style={{ fontFamily: "'Dancing Script', cursive" }}>
+                    {groomName.split(' ').map((word, i) => <span key={i} className="block">{word}</span>)}
+                  </h1>
+                </div>
                 
                 <motion.p 
                   animate={{ opacity: [0.5, 1, 0.5] }}
@@ -247,7 +264,6 @@ export function WeddingSixExperience({
                 </motion.p>
               </div>
             </motion.div>
-          </>
         )}
       </AnimatePresence>
 

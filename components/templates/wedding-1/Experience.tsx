@@ -97,6 +97,14 @@ export function WeddingOneExperience({
     }
   }, [autoPlay, compact, isBuilderPreview, musicUrl]);
 
+  // Automatically open the invitation in autoPlay mode (preview)
+  useEffect(() => {
+    if (autoPlay) {
+      const timer = setTimeout(() => setIsOpened(true), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [autoPlay, compact]);
+
   useEffect(() => {
     if (autoPlay && isOpened && containerRef.current) {
       let reqId: number;
@@ -185,7 +193,6 @@ export function WeddingOneExperience({
       {/* Intro Curtain Screen */}
       <AnimatePresence>
         {!isOpened && (
-          <>
             <motion.div
               key="door-left"
               initial={{ x: 0 }}
@@ -202,7 +209,8 @@ export function WeddingOneExperience({
                 </div>
               </div>
             </motion.div>
-            
+        )}
+        {!isOpened && (
             <motion.div
               key="door-right"
               initial={{ x: 0 }}
@@ -219,7 +227,8 @@ export function WeddingOneExperience({
                 </div>
               </div>
             </motion.div>
-
+        )}
+        {!isOpened && (
             <motion.div
               key="content"
               initial={{ opacity: 1 }}
@@ -249,7 +258,6 @@ export function WeddingOneExperience({
                 <p className="mt-6 text-[10px] uppercase tracking-[0.2em] font-bold text-[#a69680]">Chạm để mở lời mời</p>
               </div>
             </motion.div>
-          </>
         )}
       </AnimatePresence>
 

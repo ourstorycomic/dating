@@ -97,6 +97,14 @@ export function WeddingThreeExperience({
     }
   }, [autoPlay, compact, isBuilderPreview, musicUrl]);
 
+  // Automatically open the invitation in autoPlay mode (preview)
+  useEffect(() => {
+    if (autoPlay) {
+      const timer = setTimeout(() => setIsOpened(true), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [autoPlay, compact]);
+
   useEffect(() => {
     if (autoPlay && isOpened && containerRef.current) {
       let reqId: number;
@@ -188,7 +196,6 @@ export function WeddingThreeExperience({
       {/* Intro Curtain Screen */}
       <AnimatePresence>
         {!isOpened && (
-          <>
             <motion.div
               key="door-left"
               initial={{ x: 0 }}
@@ -204,7 +211,8 @@ export function WeddingThreeExperience({
                 </div>
               </div>
             </motion.div>
-            
+        )}
+        {!isOpened && (
             <motion.div
               key="door-right"
               initial={{ x: 0 }}
@@ -220,7 +228,8 @@ export function WeddingThreeExperience({
                 </div>
               </div>
             </motion.div>
-
+        )}
+        {!isOpened && (
             <motion.div
               key="content"
               initial={{ opacity: 1 }}
@@ -236,9 +245,15 @@ export function WeddingThreeExperience({
             >
               <div className="relative z-10 flex flex-col items-center px-6 text-center text-white">
                 <p className="text-[10px] uppercase tracking-[0.4em] text-white/70 mb-6 font-bold">Lễ Thành Hôn</p>
-                <h1 className="text-5xl @sm:text-6xl font-normal mb-2" style={{ fontFamily: "'Great Vibes', cursive" }}>{brideName}</h1>
-                <span className="text-2xl text-white/50 font-light italic my-1" style={{ fontFamily: "'Great Vibes', cursive" }}>&amp;</span>
-                <h1 className="text-5xl @sm:text-6xl font-normal mt-2" style={{ fontFamily: "'Great Vibes', cursive" }}>{groomName}</h1>
+                <div className="w-full flex items-center justify-between px-2 @sm:px-6 mt-4">
+                  <h1 className="text-4xl @sm:text-5xl font-normal text-[#d4af37] drop-shadow-md leading-tight text-center" style={{ fontFamily: "'Great Vibes', cursive" }}>
+                    {brideName.split(' ').map((word, i) => <span key={i} className="block">{word}</span>)}
+                  </h1>
+                  <div className="w-24"></div>
+                  <h1 className="text-4xl @sm:text-5xl font-normal text-[#d4af37] drop-shadow-md leading-tight text-center" style={{ fontFamily: "'Great Vibes', cursive" }}>
+                    {groomName.split(' ').map((word, i) => <span key={i} className="block">{word}</span>)}
+                  </h1>
+                </div>
                 
                 <motion.div 
                   animate={{ scale: [1, 1.15, 1], boxShadow: ["0 0 0 0 rgba(255,255,255,0.4)", "0 0 0 20px rgba(255,255,255,0)", "0 0 0 0 rgba(255,255,255,0)"] }} 
@@ -250,7 +265,6 @@ export function WeddingThreeExperience({
                 <p className="mt-4 text-[9px] uppercase tracking-[0.2em] font-bold text-white/80">Mở Lời Mời</p>
               </div>
             </motion.div>
-          </>
         )}
       </AnimatePresence>
 

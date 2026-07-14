@@ -97,6 +97,14 @@ export function WeddingTwoExperience({
     }
   }, [autoPlay, compact, isBuilderPreview, musicUrl]);
 
+  // Automatically open the invitation in autoPlay mode (preview)
+  useEffect(() => {
+    if (autoPlay) {
+      const timer = setTimeout(() => setIsOpened(true), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [autoPlay, compact]);
+
   useEffect(() => {
     if (autoPlay && isOpened && containerRef.current) {
       let reqId: number;
@@ -188,7 +196,6 @@ export function WeddingTwoExperience({
       {/* Intro Curtain Screen */}
       <AnimatePresence>
         {!isOpened && (
-          <>
             <motion.div
               key="door-left"
               initial={{ x: 0 }}
@@ -205,7 +212,8 @@ export function WeddingTwoExperience({
                  </div>
               </div>
             </motion.div>
-            
+        )}
+        {!isOpened && (
             <motion.div
               key="door-right"
               initial={{ x: 0 }}
@@ -222,7 +230,8 @@ export function WeddingTwoExperience({
                  </div>
               </div>
             </motion.div>
-
+        )}
+        {!isOpened && (
             <motion.div
               key="content"
               initial={{ opacity: 1 }}
@@ -237,10 +246,12 @@ export function WeddingTwoExperience({
               }}
             >
               <div className="relative z-10 flex flex-col items-center px-6 text-center">
-                <p className="text-[10px] uppercase tracking-[0.4em] text-[#c7b087] mb-6 font-bold">The Wedding Of</p>
-                <h1 className="text-5xl @sm:text-6xl font-normal text-[#3a3532] mb-2" style={{ fontFamily: "'Dancing Script', cursive" }}>{brideName}</h1>
-                <span className="text-2xl text-[#d8c3a5] font-light italic my-1" style={{ fontFamily: "'Dancing Script', cursive" }}>&amp;</span>
-                <h1 className="text-5xl @sm:text-6xl font-normal text-[#3a3532] mt-2" style={{ fontFamily: "'Dancing Script', cursive" }}>{groomName}</h1>
+                <p className="text-[10px] uppercase tracking-[0.4em] text-[#c7b087] mb-6 font-bold bg-[#fff0f5]/80 px-4 py-1 rounded-full drop-shadow-sm z-10">The Wedding Of</p>
+                <div className="flex flex-col items-center justify-between h-[280px] w-full z-10">
+                  <h1 className="text-5xl @sm:text-6xl font-normal text-[#5a4843] bg-white/40 px-6 py-1 rounded-full drop-shadow-sm" style={{ fontFamily: "'Dancing Script', cursive" }}>{brideName}</h1>
+                  <span className="text-2xl text-[#d8c3a5] font-light italic" style={{ fontFamily: "'Dancing Script', cursive" }}>&amp;</span>
+                  <h1 className="text-5xl @sm:text-6xl font-normal text-[#5a4843] bg-white/40 px-6 py-1 rounded-full drop-shadow-sm" style={{ fontFamily: "'Dancing Script', cursive" }}>{groomName}</h1>
+                </div>
                 
                 <motion.div 
                   animate={{ scale: [1, 1.15, 1], boxShadow: ["0 0 0 0 rgba(199,176,135,0.4)", "0 0 0 20px rgba(199,176,135,0)", "0 0 0 0 rgba(199,176,135,0)"] }} 
@@ -252,7 +263,6 @@ export function WeddingTwoExperience({
                 <p className="mt-4 text-[9px] uppercase tracking-[0.2em] font-bold text-[#c7b087]">Mở thiệp mời</p>
               </div>
             </motion.div>
-          </>
         )}
       </AnimatePresence>
 

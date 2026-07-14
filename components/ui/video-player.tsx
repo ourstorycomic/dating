@@ -626,23 +626,25 @@ export function VideoPlayer({
         </div>
       )}
       {pendingRequest && pendingRequest.type !== "seek" && (
-        <div className="absolute inset-0 z-30 flex pointer-events-none items-center justify-center">
-          <div className="pointer-events-auto flex items-center gap-3 rounded-xl border border-amber-300/40 bg-slate-900/90 px-4 py-3 shadow-2xl shadow-black/50 backdrop-blur-xl">
-            <div className="rounded-md bg-amber-300 p-2 text-slate-950">{pendingRequest.type === "play" ? <Play size={18} /> : <Pause size={18} />}</div>
-            <div className="text-white">
-              <p className="text-sm font-bold text-white">{pendingRequest.guestName}</p>
-              <p className="text-xs text-amber-100">yêu cầu {pendingRequest.type === "play" ? "phát" : "dừng"}</p>
+        <div className="absolute inset-0 z-30 flex pointer-events-none items-center justify-center p-2">
+          <div className="pointer-events-auto flex flex-wrap items-center justify-center gap-2 sm:gap-3 rounded-xl border border-amber-300/40 bg-slate-900/90 px-3 py-2 sm:px-4 sm:py-3 shadow-2xl shadow-black/50 backdrop-blur-xl w-[90%] sm:w-auto max-w-[320px]">
+            <div className="rounded-md bg-amber-300 p-1.5 sm:p-2 text-slate-950 shrink-0">{pendingRequest.type === "play" ? <Play size={16} /> : <Pause size={16} />}</div>
+            <div className="text-white min-w-0 flex-1">
+              <p className="text-xs sm:text-sm font-bold truncate !text-white" style={{ color: "#ffffff", textShadow: "none", WebkitTextFillColor: "#ffffff" }}>{pendingRequest.guestName}</p>
+              <p className="text-[10px] sm:text-xs text-amber-100 truncate">yêu cầu {pendingRequest.type === "play" ? "phát" : "dừng"}</p>
             </div>
-            <button onClick={() => onRespondRequest?.(true)} className="rounded-md bg-emerald-400 p-2 text-slate-950"><Check size={16} /></button>
-            <button onClick={() => onRespondRequest?.(false)} className="rounded-md bg-rose-400 p-2 text-white"><X size={16} /></button>
+            <div className="flex gap-1.5 sm:gap-2 shrink-0">
+              <button onClick={() => onRespondRequest?.(true)} className="rounded-md bg-emerald-400 p-1.5 sm:p-2 text-slate-950"><Check size={14} /></button>
+              <button onClick={() => onRespondRequest?.(false)} className="rounded-md bg-rose-400 p-1.5 sm:p-2 text-white"><X size={14} /></button>
+            </div>
           </div>
         </div>
       )}
       {locked && localRequest && localRequest.type !== "seek" && (
-        <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center">
-          <div className="pointer-events-auto flex items-center gap-3 rounded-xl border border-amber-300/40 bg-slate-900/90 px-4 py-3 text-amber-50 shadow-2xl backdrop-blur-xl">
-            <span className="font-semibold text-amber-50">Đã gửi yêu cầu: {localRequest.type === "play" ? "phát" : "dừng"}</span>
-            <button onClick={cancelLocalRequest} className="rounded-md bg-white/15 p-1.5 text-white hover:bg-rose-400">
+        <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center p-2">
+          <div className="pointer-events-auto flex flex-wrap items-center justify-center gap-2 sm:gap-3 rounded-xl border border-amber-300/40 bg-slate-900/90 px-3 py-2 sm:px-4 sm:py-3 text-amber-50 shadow-2xl backdrop-blur-xl w-[90%] sm:w-auto max-w-[320px]">
+            <span className="font-semibold text-amber-50 text-xs sm:text-sm text-center">Đã gửi yêu cầu: {localRequest.type === "play" ? "phát" : "dừng"}</span>
+            <button onClick={cancelLocalRequest} className="rounded-md bg-white/15 p-1.5 text-white hover:bg-rose-400 shrink-0">
               <X size={14} />
             </button>
           </div>
