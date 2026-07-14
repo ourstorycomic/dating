@@ -69,7 +69,6 @@ export function WeddingOneExperience({
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [isMounted, setIsMounted] = useState(false);
-  const [isOpened, setIsOpened] = useState(isBuilderPreview);
   const [showGiftModal, setShowGiftModal] = useState(false);
 
   useEffect(() => {
@@ -92,14 +91,7 @@ export function WeddingOneExperience({
   }, [autoPlay, compact, isBuilderPreview, musicUrl]);
 
   useEffect(() => {
-    if (autoPlay && !isBuilderPreview && !isOpened) {
-      const timer = setTimeout(() => setIsOpened(true), 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [autoPlay, isBuilderPreview, isOpened]);
-
-  useEffect(() => {
-    if (autoPlay && isOpened && containerRef.current) {
+    if (autoPlay && containerRef.current) {
       let reqId: number;
       const timeoutId = setTimeout(() => {
         let scrollAmount = 0;
@@ -116,14 +108,14 @@ export function WeddingOneExperience({
           reqId = requestAnimationFrame(step);
         };
         reqId = requestAnimationFrame(step);
-      }, 1500);
+      }, 500); // Start scrolling shortly after mount
       
       return () => {
         clearTimeout(timeoutId);
         if (reqId) cancelAnimationFrame(reqId);
       };
     }
-  }, [autoPlay, isOpened]);
+  }, [autoPlay]);
 
   const toggleAudio = () => {
     if (audioRef.current) {
@@ -178,54 +170,9 @@ export function WeddingOneExperience({
   return (
     <div
       ref={containerRef}
-      className={`@container relative w-full h-full bg-[#f9f8f6] text-[#4a4a4a] scroll-smooth ${autoPlay ? "overflow-hidden pointer-events-none select-none" : !isOpened ? "overflow-hidden select-none" : "overflow-x-hidden overflow-y-auto"} ${compact ? "rounded-[2.5rem]" : ""}`}
+      className={`@container relative w-full h-full bg-[#f9f8f6] text-[#4a4a4a] scroll-smooth ${autoPlay ? "overflow-hidden pointer-events-none select-none" : "overflow-x-hidden overflow-y-auto"} ${compact ? "rounded-[2.5rem]" : ""}`}
       style={{ fontFamily: "'Playfair Display', serif" }}
     >
-      <AnimatePresence>
-        {!isOpened && (
-            <motion.div
-              key="door-left"
-              initial={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-y-0 left-0 w-1/2 z-[100] bg-[#f9f8f6] border-r border-[#d6cfc5] shadow-[10px_0_20px_rgba(0,0,0,0.05)] pointer-events-none"
-            />
-        )}
-        {!isOpened && (
-            <motion.div
-              key="door-right"
-              initial={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-y-0 right-0 w-1/2 z-[100] bg-[#f9f8f6] border-l border-[#d6cfc5] shadow-[-10px_0_20px_rgba(0,0,0,0.05)] pointer-events-none"
-            />
-        )}
-        {!isOpened && (
-            <motion.div
-              key="content"
-              initial={{ opacity: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="absolute inset-0 z-[101] flex flex-col items-center justify-center cursor-pointer pointer-events-auto bg-transparent"
-              onClick={() => {
-                setIsOpened(true);
-                if (audioRef.current && !isPlaying) {
-                  audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
-                }
-              }}
-            >
-              <div className="relative z-10 flex flex-col items-center px-8 py-14 bg-white/80 backdrop-blur-md border border-[#d6cfc5]/50 shadow-xl rounded-sm w-[80%] max-w-[320px]">
-                <p className="text-[9px] uppercase tracking-[0.4em] text-[#8c7b6b] mb-6">You are invited</p>
-                <h1 className="text-4xl font-normal text-[#4a4a4a] mb-2" style={{ fontFamily: "'Dancing Script', cursive" }}>{groomName}</h1>
-                <span className="text-xl text-[#8c7b6b] font-light italic my-2">&amp;</span>
-                <h1 className="text-4xl font-normal text-[#4a4a4a] mt-2" style={{ fontFamily: "'Dancing Script', cursive" }}>{brideName}</h1>
-                
-                <div className="w-8 h-[1px] bg-[#d6cfc5] my-8"></div>
-                <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#8c7b6b] animate-pulse">Chạm để mở</p>
-              </div>
-            </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Background Music & Floating Controls */}
       {musicUrl && (
