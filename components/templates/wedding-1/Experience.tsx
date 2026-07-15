@@ -461,17 +461,12 @@ export function WeddingOneExperience({
               <h3 className="text-4xl text-[#8c7b6b] mb-6" style={{ fontFamily: "'Dancing Script', cursive" }}>Gửi Mừng Cưới</h3>
               
               <div className="w-full aspect-square border-4 border-[#9a1a24] p-2 mb-6 bg-white relative">
-                 {/* Decorative corners inside QR */}
                  <div className="absolute inset-1 border-[2px] border-dashed border-[#9a1a24]/30 pointer-events-none"></div>
-                 {/* Placeholder for QR Code, since no specific image was provided for QR */}
-                 <div className="w-full h-full bg-gray-100 flex flex-col items-center justify-center text-[#9a1a24]">
-                    <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor" className="mb-2"><path d="M3 3h8v8H3zm2 2v4h4V5zm8-2h8v8h-8zm2 2v4h4V5zM3 13h8v8H3zm2 2v4h4v-4zm13-2h3v2h-3zm-3 0h2v2h-2zm3 3h3v2h-3zm-2 2h2v2h-2zm-1 2h3v2h-3zm-3-3h2v2h-2zm-3-2h2v2h-2zm0-2h2v2h-2z" /></svg>
-                    <span className="text-[10px] font-bold uppercase tracking-widest">Quét mã QR</span>
-                 </div>
+                 <MediaDisplay src="/assets/wedding/wedding-1/QR.jpg" alt="QR Code" className="w-full h-full object-contain relative z-10" />
               </div>
               
               <div className="font-sans">
-                <p className="font-bold text-[#444] text-sm uppercase tracking-wider mb-1">MBBANK - NGUYEN TAN DAT</p>
+                <p className="font-bold text-[#444] text-sm uppercase tracking-wider mb-1">MBBANK - NGUYEN DINH DUNG</p>
                 <p className="text-xl font-bold text-[#8c7b6b] tracking-widest">8838683860</p>
               </div>
             </motion.div>
