@@ -11,7 +11,6 @@ interface WeddingThreeProps {
   groomName: string;
   brideName: string;
   weddingDate: string;
-  weddingTime: string;
   heroImage: string;
   gallery: string[];
   musicUrl: string;
@@ -29,7 +28,6 @@ export function WeddingThreeExperience({
   groomName,
   brideName,
   weddingDate,
-  weddingTime,
   heroImage,
   gallery,
   musicUrl,
