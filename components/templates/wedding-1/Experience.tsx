@@ -170,7 +170,7 @@ export function WeddingOneExperience({
   return (
     <div
       ref={containerRef}
-      className={`@container relative w-full h-full bg-[#f9f8f6] text-[#4a4a4a] scroll-smooth ${autoPlay ? "overflow-hidden pointer-events-none select-none" : "overflow-x-hidden overflow-y-auto"} ${compact ? "rounded-[2.5rem]" : ""}`}
+      className={`@container relative w-full h-full bg-[#f9f8f6] text-[#4a4a4a] scroll-smooth ${autoPlay ? "overflow-hidden pointer-events-none select-none" : "overflow-x-hidden overflow-y-auto no-scrollbar"} ${compact ? "rounded-[2.5rem]" : ""}`}
       style={{ fontFamily: "'Playfair Display', serif" }}
     >
 
@@ -460,14 +460,14 @@ export function WeddingOneExperience({
               </button>
               <h3 className="text-4xl text-[#8c7b6b] mb-6" style={{ fontFamily: "'Dancing Script', cursive" }}>Gửi Mừng Cưới</h3>
               
-              <div className="w-full aspect-square border-4 border-[#9a1a24] p-2 mb-6 bg-white relative">
+              <div className="w-full aspect-square border-4 border-[#9a1a24] p-2 mb-6 bg-white relative flex items-center justify-center">
                  <div className="absolute inset-1 border-[2px] border-dashed border-[#9a1a24]/30 pointer-events-none"></div>
-                 <MediaDisplay src="/assets/wedding/wedding-1/QR.jpg" alt="QR Code" className="w-full h-full object-contain relative z-10" />
+                 <img src="/assets/wedding/wedding-1/QR.jpg" alt="QR Code" className="w-[85%] h-[85%] object-contain relative z-10" />
               </div>
               
               <div className="font-sans">
                 <p className="font-bold text-[#444] text-sm uppercase tracking-wider mb-1">MBBANK - NGUYEN DINH DUNG</p>
-                <p className="text-xl font-bold text-[#8c7b6b] tracking-widest">8838683860</p>
+                <p className="text-xl font-bold text-[#8c7b6b] tracking-widest">0946351929</p>
               </div>
             </motion.div>
           </motion.div>

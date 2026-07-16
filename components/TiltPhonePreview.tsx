@@ -30,7 +30,7 @@ export function TiltPhonePreview() {
   };
 
   return (
-    <div style={{ perspective: 1200 }} className="w-full flex justify-center">
+    <div style={{ perspective: 1200 }} className="w-full h-full flex justify-center">
       <motion.div
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
@@ -39,7 +39,7 @@ export function TiltPhonePreview() {
           rotateY,
           transformStyle: "preserve-3d",
         }}
-        className="relative mx-auto flex aspect-[9/16] max-h-[500px] min-h-[420px] max-w-[280px] sm:max-h-[600px] sm:min-h-[500px] sm:max-w-[340px] lg:max-h-[720px] lg:min-h-[580px] lg:max-w-[400px] w-full flex-col overflow-hidden rounded-[2.2rem] border-[8px] border-[#3a233a] bg-[#fff5fb] shadow-[0_24px_60px_rgba(96,54,91,0.22)] cursor-pointer"
+        className="relative mx-auto flex w-full h-full flex-col overflow-hidden rounded-[2.5rem] border-[8px] border-[#3a233a] bg-[#fff5fb] shadow-[0_24px_60px_rgba(96,54,91,0.22)] cursor-pointer"
       >
         <div className="absolute inset-0 bg-[linear-gradient(180deg,#fff7fb_0%,#ffe8f3_46%,#e8f7ff_100%)] pointer-events-none" style={{ transform: "translateZ(-20px)" }} />
         

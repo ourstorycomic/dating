@@ -17,6 +17,11 @@ import { Sorry3Preview } from "./sorry-3/preview";
 
 import Birthday3Preview from "./birthday-3/preview";
 import { WeddingOnePreview } from "./wedding-1/preview";
+import { WeddingTwoPreview } from "./wedding-2/preview";
+import { WeddingThreePreview } from "./wedding-3/preview";
+import { WeddingFourPreview } from "./wedding-4/preview";
+import { WeddingFivePreview } from "./wedding-5/preview";
+import { WeddingSixPreview } from "./wedding-6/preview";
 
 type InteractiveTemplatePreviewProps = TemplatePreviewProps & {
   componentKey: string;
@@ -58,6 +63,15 @@ const previewRegistry = [
   { match: "sorry #3", Component: Sorry3Preview },
   { match: "wedding-1", Component: WeddingOnePreview },
   { match: "wedding #1", Component: WeddingOnePreview },
+  { match: "wedding-2", Component: WeddingTwoPreview },
+  { match: "wedding #2", Component: WeddingTwoPreview },
+  { match: "wedding-3", Component: WeddingThreePreview },
+  { match: "wedding #3", Component: WeddingThreePreview },
+  { match: "wedding-4", Component: WeddingFourPreview },
+  { match: "wedding #4", Component: WeddingFourPreview },
+  { match: "wedding-5", Component: WeddingFivePreview },
+  { match: "wedding-6", Component: WeddingSixPreview },
+  { match: "wedding #5", Component: WeddingFivePreview },
 ];
 
 // This bot automatically plays through ANY template by clicking buttons intelligently
@@ -280,7 +294,7 @@ export function InteractiveTemplatePreview({
           <div 
             ref={containerRef} 
             className="mx-auto flex aspect-[9/19] w-full max-w-[340px] shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative isolate z-0 ring-1 ring-inset ring-black/10"
-            style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)' }}
+            style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)', transform: 'translateZ(0)' }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onTouchStart={() => setIsHovered(true)}
@@ -308,7 +322,7 @@ export function InteractiveTemplatePreview({
           <div 
             ref={containerRef} 
             className="mx-auto flex aspect-[38/78] h-full max-h-[780px] w-auto max-w-[380px] shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative isolate z-0"
-            style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)' }}
+            style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)', transform: 'translateZ(0)' }}
           >
             <Component {...finalProps} roomId={roomId} autoPlay={false} />
           </div>

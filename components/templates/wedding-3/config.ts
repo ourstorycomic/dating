@@ -1,0 +1,20 @@
+export const WEDDING_3_DATA = {
+  groomName: "Minh Hoàng",
+  brideName: "Mai Hương",
+  weddingDate: "2025-12-14T11:30:00.000Z",
+  heroImage: "/assets/wedding/wedding-3/anhchung.jpg",
+  gallery: [
+    "/assets/wedding/wedding-3/anhchung2.jpg",
+    "/assets/wedding/wedding-3/anhchung3.jpg",
+    "/assets/wedding/wedding-3/anhchung4.jpg",
+    "/assets/wedding/wedding-3/anhchung5.jpg",
+    "/assets/wedding/wedding-3/anhchung6.jpg",
+    "/assets/wedding/wedding-3/anhchung7.jpg",
+    "/assets/wedding/wedding-3/anhchung8.jpg",
+  ],
+  musicUrl: "/assets/music/wedding-1.mp3",
+  eventAddress: "Trống Đồng Palace, 72 Trần Đăng Ninh, Cầu Giấy",
+  mapUrl: "https://maps.app.goo.gl/xxx",
+  groomFamily: "Ông Phạm Văn Dư & Bà Trần Thị Hiền",
+  brideFamily: "Ông Nguyễn Văn Bình & Bà Nguyễn Thị Thủy",
+};

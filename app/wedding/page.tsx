@@ -24,7 +24,7 @@ function SampleCard({ sample, index }: { sample: any; index: number }) {
     >
       <div className="relative h-[480px] overflow-hidden bg-[#FDFBF7]">
         {hovered && sample.componentKey ? (
-          <div className="absolute inset-0 z-10 bg-black/5 [&>div>div]:!rounded-b-none" style={{ pointerEvents: "auto" }}>
+          <div className="absolute inset-0 z-10 bg-black/5 [&>div>div]:!rounded-b-none pointer-events-none">
             <InteractiveTemplatePreview
               noFrame
               compact
@@ -67,6 +67,41 @@ const samples = [
     description: "Template cưới sang trọng, thanh lịch với thiết kế tinh giản, kết hợp màu sắc nhẹ nhàng cùng các tính năng tiện ích như RSVP, Countdown và Album ảnh.",
     image: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000&auto=format&fit=crop",
     componentKey: "wedding-1",
+  },
+  {
+    name: "Traditional Oriental",
+    tag: "Trending",
+    description: "Mẫu thiệp mang đậm âm hưởng Á Đông truyền thống với sắc đỏ rực rỡ, họa tiết chữ Hỷ và hiệu ứng mở cửa mượt mà.",
+    image: "/assets/wedding/wedding-2/anhchung2.jpg",
+    componentKey: "wedding-2",
+  },
+  {
+    name: "Floral Garden",
+    tag: "Lãng mạn",
+    description: "Tone đỏ thắm và vàng ánh kim cao cấp kết hợp họa tiết cổ điển, tạo nên một bản giao hưởng sang trọng nhưng đầy ấm áp cho ngày chung đôi.",
+    image: "/assets/wedding/wedding-3/anhchung.jpg",
+    componentKey: "wedding-3",
+  },
+  {
+    name: "Royal Envelope",
+    tag: "Mới ra mắt",
+    description: "Thiết kế dạng phong thư sang trọng với con dấu sáp vàng hoàng gia. Hiệu ứng mở thư độc đáo mang lại trải nghiệm đầy bất ngờ và đẳng cấp.",
+    image: "/assets/wedding-4/matsauthu.webp",
+    componentKey: "wedding-4",
+  },
+  {
+    name: "Lotus Serenity",
+    tag: "Truyền thống",
+    description: "Mang nét đẹp thanh tao của đóa hoa sen mộc mạc kết hợp cùng màu sắc nhã nhặn, tạo nên một phong cách thiệp cưới truyền thống nhưng không kém phần thanh lịch.",
+    image: "/assets/wedding/wedding-5/anhchung.jpg",
+    componentKey: "wedding-5",
+  },
+  {
+    name: "Pure Elegance",
+    tag: "Tối giản",
+    description: "Thiết kế tối giản và thanh lịch với điểm nhấn họa tiết hoa nhạt mộc mạc, hiệu ứng mở cánh cửa mượt mà tinh tế.",
+    image: "/assets/wedding/wedding-6/anhchung.jpg",
+    componentKey: "wedding-6",
   },
 ];
 

@@ -1,0 +1,21 @@
+export const WEDDING_5_DATA = {
+  groomName: "Đình Hoàng",
+  brideName: "Thu Hương",
+  weddingDate: "2025-12-14T11:30:00.000Z",
+  heroImage: "/assets/wedding/wedding-5/anhchung7.jpg",
+  gallery: [
+    "/assets/wedding/wedding-5/anhchung2.jpg",
+    "/assets/wedding/wedding-5/anhchung3.jpg",
+    "/assets/wedding/wedding-5/anhchung4.jpg",
+    "/assets/wedding/wedding-5/anhchung5.jpg",
+    "/assets/wedding/wedding-5/anhchung6.jpg",
+    "/assets/wedding/wedding-5/anhchung7.jpg",
+    "/assets/wedding/wedding-5/chure.jpg",
+    "/assets/wedding/wedding-5/codau.jpg",
+  ],
+  musicUrl: "/assets/music/wedding-1.mp3",
+  eventAddress: "Trống Đồng Palace, 72 Trần Đăng Ninh, Cầu Giấy, Hà Nội",
+  mapUrl: "https://maps.app.goo.gl/xxx",
+  groomFamily: "Ông Phạm Văn Long & Bà Lê Thị Mai",
+  brideFamily: "Ông Nguyễn Văn Hùng & Bà Trần Thị Hoa",
+};
