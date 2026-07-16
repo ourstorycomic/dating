@@ -19,6 +19,9 @@ interface WeddingThreeProps {
   groomFamily?: string;
   brideFamily?: string;
   onComplete?: (data: any) => void;
+  engagementDate?: string;
+  groomQR?: string;
+  brideQR?: string;
 }
 
 export function WeddingThreeExperience({
@@ -36,10 +39,14 @@ export function WeddingThreeExperience({
   groomFamily,
   brideFamily,
   onComplete,
+  engagementDate,
+  groomQR,
+  brideQR,
 }: WeddingThreeProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isOpened, setIsOpened] = useState(false);
   const [showQR, setShowQR] = useState(false);
+  const [giftTab, setGiftTab] = useState<'groom'|'bride'>('groom');
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -100,10 +107,15 @@ export function WeddingThreeExperience({
   };
 
   // Date Parsing
-  const safeDate = weddingDate || '2025-12-14T11:30:00.000Z';
+  const safeDate = weddingDate || '2025-12-14';
   let parsedDDate = new Date(safeDate);
   if (isNaN(parsedDDate.getTime())) {
-    parsedDDate = new Date('2025-12-14T11:30:00.000Z');
+    parsedDDate = new Date('2025-12-14');
+  }
+  const safeEDate = engagementDate || '2025-12-12';
+  let parsedEDate = new Date(safeEDate);
+  if (isNaN(parsedEDate.getTime())) {
+    parsedEDate = new Date('2025-12-12');
   }
   
   const dDay = String(parsedDDate.getDate()).padStart(2, '0');
@@ -215,20 +227,35 @@ export function WeddingThreeExperience({
               ))}
               
               {/* Days */}
-              {monthDays.map(day => (
-                <div key={day} className="relative flex justify-center items-center">
-                  <span className={`z-10 ${day === Number(dDay) ? 'text-[#7A1F1F] font-bold' : 'text-[#2D2A28]'}`}>{day}</span>
-                  {day === Number(dDay) && (
-                    <motion.img 
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ delay: 2.5, type: 'spring' }}
-                      src="/assets/wedding/wedding-3/ring.webp" 
-                      className="absolute w-6 h-6 object-contain z-0 -translate-y-1" 
-                    />
-                  )}
-                </div>
-              ))}
+              {monthDays.map(day => {
+                const isWedding = day === Number(dDay) && parsedDDate.getMonth() + 1 === dMonthNumber && parsedDDate.getFullYear() === Number(dYear);
+                const isEngagement = day === parsedEDate.getDate() && parsedEDate.getMonth() + 1 === dMonthNumber && parsedEDate.getFullYear() === Number(dYear);
+                return (
+                  <div key={day} className="relative flex justify-center items-center">
+                    <span className={`z-10 ${isWedding || isEngagement ? 'text-[#7A1F1F] font-bold' : 'text-[#2D2A28]'}`}>{day}</span>
+                    {isWedding && (
+                      <motion.img 
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: 2.5, type: 'spring' }}
+                        src="/assets/wedding/wedding-3/ring.webp" 
+                        className="absolute w-6 h-6 object-contain z-0 -translate-y-1" 
+                      />
+                    )}
+                    {isEngagement && (
+                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 2.5, type: "spring" }} className="absolute inset-0 border border-[#A67C52] rounded-full scale-110 opacity-60" />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <div className="flex justify-center gap-6 mt-4">
+              <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#A67C52]">
+                <div className="w-3 h-3 rounded-full border border-[#A67C52] opacity-50"></div> Ăn Hỏi
+              </div>
+              <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#7A1F1F]">
+                <img src="/assets/wedding/wedding-3/ring.webp" className="w-3 h-3 object-contain" /> Lễ Cưới
+              </div>
             </div>
             <div className="w-full h-px bg-[#C5A880]/30 mt-4"></div>
           </motion.div>
@@ -322,12 +349,15 @@ export function WeddingThreeExperience({
               className="bg-[#FFFDF9] p-8 rounded-3xl flex flex-col items-center max-w-sm w-full shadow-2xl border-2 border-[#C5A880]/30" 
               onClick={e => e.stopPropagation()}
             >
-              <h3 className="text-3xl text-[#7A1F1F] mb-2" style={{ fontFamily: 'var(--font-dancing)' }}>Mừng Cưới</h3>
-              <p className="text-[10px] text-[#A67C52] uppercase tracking-[0.2em] mb-6 font-bold text-center">Gửi gắm yêu thương</p>
+              <h3 className="text-3xl text-[#7A1F1F] mb-4" style={{ fontFamily: 'var(--font-dancing)' }}>Mừng Cưới</h3>
               
-              {/* Fake QR for demo, can be replaced by a prop if available */}
+              <div className="flex justify-center gap-4 mb-4">
+                <button onClick={() => setGiftTab('groom')} className={`pb-1 px-2 border-b-2 font-sans font-bold uppercase tracking-widest text-[10px] ${giftTab === 'groom' ? 'border-[#7A1F1F] text-[#7A1F1F]' : 'border-transparent text-[#A67C52]'}`}>Mừng Chú Rể</button>
+                <button onClick={() => setGiftTab('bride')} className={`pb-1 px-2 border-b-2 font-sans font-bold uppercase tracking-widest text-[10px] ${giftTab === 'bride' ? 'border-[#7A1F1F] text-[#7A1F1F]' : 'border-transparent text-[#A67C52]'}`}>Mừng Cô Dâu</button>
+              </div>
+              
               <div className="w-48 h-48 bg-white p-2 border-2 border-[#C5A880]/50 rounded-xl mb-6 shadow-inner flex items-center justify-center overflow-hidden">
-                <img src="/assets/wedding/wedding-1/QR.jpg" alt="QR Mừng Cưới" className="w-full h-full object-contain" />
+                <img src={giftTab === 'groom' ? (groomQR || "/assets/wedding/wedding-1/QR.jpg") : (brideQR || "/assets/wedding/wedding-1/QR.jpg")} alt="QR Mừng Cưới" className="w-full h-full object-contain" />
               </div>
               
               <button 

@@ -300,6 +300,7 @@ export const MOCK_TEMPLATES: any[] = [
       { section: "1. Chú Rể & Cô Dâu", key: "brideName", label: "Tên Cô Dâu", type: "text", default: temp.bride },
       { section: "1. Chú Rể & Cô Dâu", key: "heroImage", label: "Ảnh Cover (Dọc)", type: "media" },
       { section: "2. Thời Gian", key: "weddingDate", label: "Ngày & Giờ Cưới", type: "datetime", default: "2025-12-14T11:30" },
+      { section: "2. Thời Gian", key: "engagementDate", label: "Ngày & Giờ Ăn Hỏi", type: "datetime", default: "2025-12-12T09:00" },
       { section: "3. Lời Mời", key: "letterText", label: "Nội dung thiệp", type: "textarea", default: "Được sự đồng thuận của gia đình hai bên\\nChúng tôi trân trọng kính mời quý khách tới dự bữa tiệc chung vui cùng gia đình chúng tôi" },
       { section: "3. Lời Mời", key: "groomFather", label: "Họ tên bố chú rể", type: "text", default: temp.groomFam.split('\\n')[0].trim() },
       { section: "3. Lời Mời", key: "groomMother", label: "Họ tên mẹ chú rể", type: "text", default: temp.groomFam.split('\\n')[1]?.trim() || '' },
@@ -323,7 +324,9 @@ export const MOCK_TEMPLATES: any[] = [
         { section: "5. Thư Viện Ảnh", key: "gallery7", label: "Ảnh Gallery 7", type: "media" },
         { section: "5. Thư Viện Ảnh", key: "gallery8", label: "Ảnh Gallery 8", type: "media" }
       ]),
-      { section: "6. Âm Nhạc", key: "musicUrl", label: "Nhạc nền", type: "audio" }
+      { section: "6. Âm Nhạc", key: "musicUrl", label: "Nhạc nền", type: "audio" },
+      { section: "7. Mừng Cưới", key: "groomQR", label: "QR Chú rể", type: "media" },
+      { section: "7. Mừng Cưới", key: "brideQR", label: "QR Cô dâu", type: "media" }
     ],
     sample_data: { screens: ["Thiệp Mời", "Lời Ngỏ", "Thư Viện Ảnh", "Xác Nhận"] },
     template_categories: { slug: "wedding", name: "Wedding", description: null }

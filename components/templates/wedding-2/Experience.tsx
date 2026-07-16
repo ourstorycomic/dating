@@ -20,6 +20,9 @@ interface WeddingTwoProps {
   groomFamily?: string;
   brideFamily?: string;
   onComplete?: (data: any) => void;
+  engagementDate?: string;
+  groomQR?: string;
+  brideQR?: string;
 }
 
 export function WeddingTwoExperience({
@@ -38,10 +41,14 @@ export function WeddingTwoExperience({
   groomFamily,
   brideFamily,
   onComplete,
+  engagementDate,
+  groomQR,
+  brideQR,
 }: WeddingTwoProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isOpened, setIsOpened] = useState(false);
   const [showQR, setShowQR] = useState(false);
+  const [giftTab, setGiftTab] = useState<'groom'|'bride'>('groom');
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -107,6 +114,9 @@ export function WeddingTwoExperience({
   if (isNaN(parsedDDate.getTime())) {
     parsedDDate = new Date('2025-12-14');
   }
+  const safeEDate = engagementDate || '2025-12-12';
+  let parsedEDate = new Date(safeEDate);
+  if (isNaN(parsedEDate.getTime())) parsedEDate = new Date('2025-12-12');
   const dMonth = parsedDDate.getMonth() + 1;
   const dDate = parsedDDate.getDate();
   const dYear = parsedDDate.getFullYear();
@@ -227,14 +237,29 @@ export function WeddingTwoExperience({
                 <div key={day} className="font-bold text-[#A67C52]">{day}</div>
               ))}
               {blanks.map(b => <div key={`blank-${b}`} />)}
-              {monthDays.map(day => (
-                <div key={day} className="relative flex items-center justify-center py-2 text-[#5A5552] font-medium">
-                  {day}
-                  {day === dDate && (
-                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 2.5, type: "spring" }} className="absolute inset-0 border border-[#7A1F1F] rounded-full scale-125 opacity-80" />
-                  )}
-                </div>
-              ))}
+              {monthDays.map(day => {
+                const isWedding = day === dDate && parsedDDate.getMonth() + 1 === dMonth && parsedDDate.getFullYear() === dYear;
+                const isEngagement = day === parsedEDate.getDate() && parsedEDate.getMonth() + 1 === dMonth && parsedEDate.getFullYear() === dYear;
+                return (
+                  <div key={day} className="relative flex items-center justify-center py-2 text-[#5A5552] font-medium">
+                    {day}
+                    {isWedding && (
+                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 2.5, type: "spring" }} className="absolute inset-0 border border-[#7A1F1F] rounded-full scale-125 opacity-80" />
+                    )}
+                    {isEngagement && (
+                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 2.5, type: "spring" }} className="absolute inset-0 border border-[#A67C52] rounded-full scale-125 opacity-50" />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <div className="flex justify-center gap-6 mt-6">
+              <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#A67C52]">
+                <div className="w-3 h-3 rounded-full border border-[#A67C52] opacity-50"></div> Ăn Hỏi
+              </div>
+              <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#7A1F1F]">
+                <div className="w-3 h-3 rounded-full border border-[#7A1F1F] opacity-80"></div> Lễ Cưới
+              </div>
             </div>
           </motion.div>
 
@@ -313,12 +338,15 @@ export function WeddingTwoExperience({
               className="bg-[#FFFDF9] p-8 rounded-3xl flex flex-col items-center max-w-sm w-full shadow-2xl border-2 border-[#C5A880]/30" 
               onClick={e => e.stopPropagation()}
             >
-              <h3 className="text-3xl text-[#7A1F1F] mb-2" style={{ fontFamily: 'var(--font-dancing)' }}>Mừng Cưới</h3>
-              <p className="text-[10px] text-[#A67C52] uppercase tracking-[0.2em] mb-6 font-bold text-center">Gửi gắm yêu thương</p>
+              <h3 className="text-3xl text-[#7A1F1F] mb-4" style={{ fontFamily: 'var(--font-dancing)' }}>Mừng Cưới</h3>
               
-              {/* Fake QR for demo, can be replaced by a prop if available */}
+              <div className="flex justify-center gap-4 mb-4">
+                <button onClick={() => setGiftTab('groom')} className={`pb-1 px-2 border-b-2 font-sans font-bold uppercase tracking-widest text-[10px] ${giftTab === 'groom' ? 'border-[#7A1F1F] text-[#7A1F1F]' : 'border-transparent text-[#A67C52]'}`}>Mừng Chú Rể</button>
+                <button onClick={() => setGiftTab('bride')} className={`pb-1 px-2 border-b-2 font-sans font-bold uppercase tracking-widest text-[10px] ${giftTab === 'bride' ? 'border-[#7A1F1F] text-[#7A1F1F]' : 'border-transparent text-[#A67C52]'}`}>Mừng Cô Dâu</button>
+              </div>
+              
               <div className="w-48 h-48 bg-white p-2 border-2 border-[#C5A880]/50 rounded-xl mb-6 shadow-inner flex items-center justify-center overflow-hidden">
-                <img src="/assets/wedding/wedding-1/QR.jpg" alt="QR Mừng Cưới" className="w-full h-full object-contain" />
+                <img src={giftTab === 'groom' ? (groomQR || "/assets/wedding/wedding-1/QR.jpg") : (brideQR || "/assets/wedding/wedding-1/QR.jpg")} alt="QR Mừng Cưới" className="w-full h-full object-contain" />
               </div>
               
               <button 

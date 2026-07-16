@@ -54,8 +54,12 @@ export function WeddingOneExperience({
   musicUrl?: string;
   isBuilderPreview?: boolean;
   onComplete?: (data: any) => void;
+  engagementDate?: string;
+  groomQR?: string;
+  brideQR?: string;
 }) {
   const parsedDDate = new Date(weddingDate || '2025-12-14T11:30:00.000Z');
+  const parsedEDate = new Date(engagementDate || '2025-12-12T09:00:00.000Z');
   const dDay = parsedDDate.getDate().toString().padStart(2, '0');
   const dMonthNumber = parsedDDate.getMonth() + 1;
   const dMonth = 'Tháng ' + dMonthNumber;
@@ -70,6 +74,7 @@ export function WeddingOneExperience({
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [isMounted, setIsMounted] = useState(false);
   const [showGiftModal, setShowGiftModal] = useState(false);
+  const [giftTab, setGiftTab] = useState<'groom'|'bride'>('groom');
 
   useEffect(() => {
     setIsMounted(true);
@@ -312,17 +317,34 @@ export function WeddingOneExperience({
                 <div key={i} className="text-[10px] font-sans font-bold text-[#8c7b6b]">{day}</div>
               ))}
               {blanks.map(b => <div key={`b-${b}`} />)}
-              {monthDays.map(day => (
-                <div key={day} className="relative flex justify-center items-center text-xs font-sans">
-                  {day.toString() === dDay ? (
-                    <div className="w-6 h-6 rounded-full border border-[#8c7b6b] flex items-center justify-center text-[#8c7b6b] font-bold">
-                      {day}
-                    </div>
-                  ) : (
-                    <span className="text-gray-500">{day}</span>
-                  )}
-                </div>
-              ))}
+              {monthDays.map(day => {
+                const isWedding = day.toString() === dDay && parsedDDate.getMonth() + 1 === dMonthNumber;
+                const isEngagement = day === parsedEDate.getDate() && parsedEDate.getMonth() + 1 === dMonthNumber && parsedEDate.getFullYear() === parsedDDate.getFullYear();
+                
+                return (
+                  <div key={day} className="relative flex justify-center items-center text-xs font-sans">
+                    {isWedding ? (
+                      <div className="w-6 h-6 rounded-full border border-[#8c7b6b] bg-[#8c7b6b] flex items-center justify-center text-white font-bold">
+                        {day}
+                      </div>
+                    ) : isEngagement ? (
+                      <div className="w-6 h-6 rounded-full border border-[#d6cfc5] bg-[#d6cfc5] flex items-center justify-center text-[#4a4a4a] font-bold">
+                        {day}
+                      </div>
+                    ) : (
+                      <span className="text-gray-500">{day}</span>
+                    )}
+                  </div>
+                );
+              })}
+           </div>
+           <div className="flex justify-center gap-6 mt-6 pt-4 border-t border-[#d6cfc5]/50">
+             <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#8c7b6b]">
+               <div className="w-3 h-3 rounded-full bg-[#d6cfc5]"></div> Ăn Hỏi
+             </div>
+             <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#8c7b6b]">
+               <div className="w-3 h-3 rounded-full bg-[#8c7b6b]"></div> Lễ Cưới
+             </div>
            </div>
         </motion.div>
       </section>
@@ -458,16 +480,20 @@ export function WeddingOneExperience({
               <button onClick={() => setShowGiftModal(false)} className="absolute top-3 right-3 text-gray-400 hover:text-gray-800">
                 <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
               </button>
-              <h3 className="text-4xl text-[#8c7b6b] mb-6" style={{ fontFamily: "'Dancing Script', cursive" }}>Gửi Mừng Cưới</h3>
+              <h3 className="text-4xl text-[#8c7b6b] mb-4" style={{ fontFamily: "'Dancing Script', cursive" }}>Gửi Mừng Cưới</h3>
               
-              <div className="w-full aspect-square border-4 border-[#9a1a24] p-2 mb-6 bg-white relative flex items-center justify-center">
+              <div className="flex justify-center gap-4 mb-6">
+                <button onClick={() => setGiftTab('groom')} className={`pb-1 px-2 border-b-2 font-sans font-bold uppercase tracking-widest text-[10px] ${giftTab === 'groom' ? 'border-[#8c7b6b] text-[#8c7b6b]' : 'border-transparent text-gray-400'}`}>Mừng Chú Rể</button>
+                <button onClick={() => setGiftTab('bride')} className={`pb-1 px-2 border-b-2 font-sans font-bold uppercase tracking-widest text-[10px] ${giftTab === 'bride' ? 'border-[#8c7b6b] text-[#8c7b6b]' : 'border-transparent text-gray-400'}`}>Mừng Cô Dâu</button>
+              </div>
+
+              <div className="w-full aspect-square border-4 border-[#9a1a24] p-2 mb-4 bg-white relative flex items-center justify-center">
                  <div className="absolute inset-1 border-[2px] border-dashed border-[#9a1a24]/30 pointer-events-none"></div>
-                 <img src="/assets/wedding/wedding-1/QR.jpg" alt="QR Code" className="w-[85%] h-[85%] object-contain relative z-10" />
+                 <img src={giftTab === 'groom' ? (groomQR || "/assets/wedding/wedding-1/QR.jpg") : (brideQR || "/assets/wedding/wedding-1/QR.jpg")} alt="QR Code" className="w-[85%] h-[85%] object-contain relative z-10" />
               </div>
               
               <div className="font-sans">
-                <p className="font-bold text-[#444] text-sm uppercase tracking-wider mb-1">MBBANK - NGUYEN DINH DUNG</p>
-                <p className="text-xl font-bold text-[#8c7b6b] tracking-widest">0946351929</p>
+                <p className="font-bold text-[#444] text-[10px] uppercase tracking-widest">Quét mã QR để mừng cưới</p>
               </div>
             </motion.div>
           </motion.div>

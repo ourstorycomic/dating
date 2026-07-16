@@ -19,6 +19,9 @@ interface WeddingFiveProps {
   groomFamily?: string;
   brideFamily?: string;
   onComplete?: (data: any) => void;
+  engagementDate?: string;
+  groomQR?: string;
+  brideQR?: string;
 }
 
 export function WeddingFiveExperience({
@@ -36,11 +39,15 @@ export function WeddingFiveExperience({
   groomFamily,
   brideFamily,
   onComplete,
+  engagementDate,
+  groomQR,
+  brideQR,
 }: WeddingFiveProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showQR, setShowQR] = useState(false);
+  const [giftTab, setGiftTab] = useState<'groom'|'bride'>('groom');
 
   // Auto-scroll logic if needed
   useEffect(() => {
@@ -87,6 +94,15 @@ export function WeddingFiveExperience({
   const dDayOfWeek = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][parsedDDate.getDay()];
   const dHours = parsedDDate.getHours().toString().padStart(2, '0');
   const dMinutes = parsedDDate.getMinutes().toString().padStart(2, '0');
+
+  const parsedEDate = new Date(engagementDate || '2025-12-12T09:00:00.000Z');
+  const eMonthNumber = parsedEDate.getMonth() + 1;
+  const eMonth = eMonthNumber.toString().padStart(2, '0');
+  const eDate = parsedEDate.getDate().toString().padStart(2, '0');
+  const eYear = parsedEDate.getFullYear().toString();
+  const eDayOfWeek = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][parsedEDate.getDay()];
+  const eHours = parsedEDate.getHours().toString().padStart(2, '0');
+  const eMinutes = parsedEDate.getMinutes().toString().padStart(2, '0');
 
   // Animation variants
   const fadeUp = {
@@ -328,6 +344,17 @@ export function WeddingFiveExperience({
 
           {/* EVENT DETAILS */}
           <div className="w-full px-6 flex flex-col items-center mb-16 gap-10">
+            {/* Engagement */}
+            <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} className="w-full flex flex-col items-center text-center relative">
+              <img src="/assets/wedding/wedding-5/lacay.webp" className="absolute -top-6 -right-4 w-12 opacity-50 mix-blend-multiply scale-x-[-1]" />
+              <h3 className="text-xl font-bold text-[#b19556] tracking-widest mb-4">LỄ ĂN HỎI</h3>
+              <p className="text-[11px] uppercase tracking-widest text-[#4a5a40] font-bold mb-2">{eDayOfWeek}</p>
+              <div className="text-2xl font-serif text-[#2d2d2d] mb-2">{eDate} . {eMonth} . {eYear}</div>
+              <p className="text-[11px] text-[#4a5a40] font-bold uppercase tracking-widest mt-2">Vào lúc {eHours}:{eMinutes}</p>
+            </motion.div>
+            
+            <div className="w-16 h-[1px] bg-[#c5b182]"></div>
+            
             {/* Ceremony */}
             <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} className="w-full flex flex-col items-center text-center relative">
               <img src="/assets/wedding/wedding-5/lacay.webp" className="absolute -top-6 -left-4 w-12 opacity-50 mix-blend-multiply" />
@@ -453,11 +480,15 @@ export function WeddingFiveExperience({
               className="bg-[#f8faeb] p-8 flex flex-col items-center max-w-sm w-full border-[2px] border-[#c5b182] rounded-3xl shadow-xl" 
               onClick={e => e.stopPropagation()}
             >
-              <h3 className="text-4xl text-[#4a5a40] mb-2" style={{ fontFamily: 'var(--font-dancing)' }}>Mừng Cưới</h3>
-              <p className="text-[10px] text-[#b19556] uppercase tracking-[0.2em] mb-6 font-bold text-center">Gửi gắm yêu thương</p>
+              <h3 className="text-4xl text-[#4a5a40] mb-4" style={{ fontFamily: 'var(--font-dancing)' }}>Mừng Cưới</h3>
+              
+              <div className="flex justify-center gap-4 mb-4">
+                <button onClick={() => setGiftTab('groom')} className={`pb-1 px-2 border-b-2 font-sans font-bold uppercase tracking-widest text-[10px] ${giftTab === 'groom' ? 'border-[#4a5a40] text-[#4a5a40]' : 'border-transparent text-[#b19556]'}`}>Mừng Chú Rể</button>
+                <button onClick={() => setGiftTab('bride')} className={`pb-1 px-2 border-b-2 font-sans font-bold uppercase tracking-widest text-[10px] ${giftTab === 'bride' ? 'border-[#4a5a40] text-[#4a5a40]' : 'border-transparent text-[#b19556]'}`}>Mừng Cô Dâu</button>
+              </div>
               
               <div className="w-48 h-48 bg-white p-2 border border-[#c5b182]/50 mb-6 flex items-center justify-center overflow-hidden rounded-xl shadow-inner">
-                <img src="/assets/wedding/wedding-1/QR.jpg" alt="QR Mừng Cưới" className="w-full h-full object-contain" />
+                <img src={giftTab === 'groom' ? (groomQR || "/assets/wedding/wedding-1/QR.jpg") : (brideQR || "/assets/wedding/wedding-1/QR.jpg")} alt="QR Mừng Cưới" className="w-full h-full object-contain" />
               </div>
               
               <button 

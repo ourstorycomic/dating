@@ -156,18 +156,21 @@ function TextInput({
   label,
   onChange,
   value,
+  placeholder,
 }: {
   label: string;
   onChange: (value: string) => void;
   value: string;
+  placeholder?: string;
 }) {
   return (
     <label className="grid gap-2 text-sm">
       <span className="text-white/64">{label}</span>
       <input
-        className="rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3 outline-none focus:border-pink-300/50"
+        className="rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3 outline-none focus:border-pink-300/50 placeholder-white/20"
         onChange={(event) => onChange(event.target.value)}
         value={value ?? ""}
+        placeholder={placeholder}
       />
     </label>
   );
@@ -1838,11 +1841,11 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
             </div>
           ) : (
           <>
-            {isWedding1 ? (
+            {isWedding ? (
               <>
                 <Section title="Thông tin chung">
-                  <TextInput label="Tên Chú rể" value={dynamicData.groomName || "Minh Khang"} onChange={(v) => setDynamicData(d => ({ ...d, groomName: v }))} />
-                  <TextInput label="Tên Cô dâu" value={dynamicData.brideName || "Thu Hương"} onChange={(v) => setDynamicData(d => ({ ...d, brideName: v }))} />
+                  <TextInput label="Tên Chú rể" value={dynamicData.groomName} placeholder="Ví dụ: Minh Khang" onChange={(v) => setDynamicData(d => ({ ...d, groomName: v }))} />
+                  <TextInput label="Tên Cô dâu" value={dynamicData.brideName} placeholder="Ví dụ: Thu Hương" onChange={(v) => setDynamicData(d => ({ ...d, brideName: v }))} />
                   <DateInput 
                     label="Thời gian diễn ra lễ cưới" 
                     value={dynamicData.weddingDate || "2025-12-14T11:30"} 
@@ -1872,15 +1875,15 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                   <MediaInput label="Ảnh cuối trang (Footer)" accept="image/*" onChange={(url) => setDynamicData(d => ({ ...d, footerImage: url }))} />
                 </Section>
                 <Section title="Lời mời & Thông tin gia đình">
-                  <TextArea label="Lời mời chân thành" value={dynamicData.letterText || "Được sự đồng thuận của gia đình hai bên\nChúng tôi trân trọng kính mời quý khách tới dự bữa tiệc chung vui cùng gia đình chúng tôi"} onChange={(v) => setDynamicData(d => ({ ...d, letterText: v }))} />
-                  <TextInput label="Họ tên bố chú rể" value={dynamicData.groomFather ?? "Ông Trần Văn Nam"} onChange={(v) => setDynamicData(d => ({ ...d, groomFather: v }))} />
-                  <TextInput label="Họ tên mẹ chú rể" value={dynamicData.groomMother ?? "Bà Nguyễn Thị My"} onChange={(v) => setDynamicData(d => ({ ...d, groomMother: v }))} />
-                  <TextInput label="Họ tên bố cô dâu" value={dynamicData.brideFather ?? "Ông Nguyễn Văn Cường"} onChange={(v) => setDynamicData(d => ({ ...d, brideFather: v }))} />
-                  <TextInput label="Họ tên mẹ cô dâu" value={dynamicData.brideMother ?? "Bà Lê Thị Dung"} onChange={(v) => setDynamicData(d => ({ ...d, brideMother: v }))} />
+                  <TextArea label="Lời mời chân thành" value={dynamicData.letterText} placeholder="Được sự đồng thuận của gia đình hai bên&#10;Chúng tôi trân trọng kính mời quý khách tới dự bữa tiệc chung vui cùng gia đình chúng tôi" onChange={(v) => setDynamicData(d => ({ ...d, letterText: v }))} />
+                  <TextInput label="Họ tên bố chú rể" value={dynamicData.groomFather} placeholder="Ví dụ: Ông Trần Văn Nam" onChange={(v) => setDynamicData(d => ({ ...d, groomFather: v }))} />
+                  <TextInput label="Họ tên mẹ chú rể" value={dynamicData.groomMother} placeholder="Ví dụ: Bà Nguyễn Thị My" onChange={(v) => setDynamicData(d => ({ ...d, groomMother: v }))} />
+                  <TextInput label="Họ tên bố cô dâu" value={dynamicData.brideFather} placeholder="Ví dụ: Ông Nguyễn Văn Cường" onChange={(v) => setDynamicData(d => ({ ...d, brideFather: v }))} />
+                  <TextInput label="Họ tên mẹ cô dâu" value={dynamicData.brideMother} placeholder="Ví dụ: Bà Lê Thị Dung" onChange={(v) => setDynamicData(d => ({ ...d, brideMother: v }))} />
                 </Section>
                 <Section title="Bản đồ & Sự kiện">
-                  <TextArea label="Địa chỉ tổ chức" value={dynamicData.eventAddress || "Trung tâm tiệc cưới Asora Center, 123 Phố Mới, Quận 1, TP. HCM"} onChange={(v) => setDynamicData(d => ({ ...d, eventAddress: v }))} />
-                  <TextInput label="Link Google Maps" value={dynamicData.mapUrl || "https://maps.app.goo.gl/xxx"} onChange={(v) => setDynamicData(d => ({ ...d, mapUrl: v }))} />
+                  <TextArea label="Địa chỉ tổ chức" value={dynamicData.eventAddress} placeholder="Trung tâm tiệc cưới Asora Center, 123 Phố Mới, Quận 1, TP. HCM" onChange={(v) => setDynamicData(d => ({ ...d, eventAddress: v }))} />
+                  <TextInput label="Link Google Maps" value={dynamicData.mapUrl} placeholder="https://maps.app.goo.gl/xxx" onChange={(v) => setDynamicData(d => ({ ...d, mapUrl: v }))} />
                   <MediaInput label="Ảnh bản đồ (Screenshot)" accept="image/*" onChange={(url) => setDynamicData(d => ({ ...d, mapImage: url }))} />
                 </Section>
               </>

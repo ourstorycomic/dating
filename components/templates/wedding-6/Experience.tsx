@@ -20,6 +20,9 @@ interface WeddingSixProps {
   groomFamily?: string;
   brideFamily?: string;
   onComplete?: (data: any) => void;
+  engagementDate?: string;
+  groomQR?: string;
+  brideQR?: string;
 }
 
 export function WeddingSixExperience({
@@ -38,10 +41,14 @@ export function WeddingSixExperience({
   groomFamily,
   brideFamily,
   onComplete,
+  engagementDate,
+  groomQR,
+  brideQR,
 }: WeddingSixProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isOpened, setIsOpened] = useState(false);
   const [showQR, setShowQR] = useState(false);
+  const [giftTab, setGiftTab] = useState<'groom'|'bride'>('groom');
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -111,6 +118,7 @@ export function WeddingSixExperience({
   if (isNaN(parsedDDate.getTime())) {
     parsedDDate = new Date('2025-12-14T09:30:00');
   }
+  const parsedEDate = new Date(engagementDate || '2025-12-12T09:00:00.000Z');
   const dMonth = parsedDDate.getMonth() + 1;
   const dDate = parsedDDate.getDate();
   const dYear = parsedDDate.getFullYear();
@@ -226,16 +234,34 @@ export function WeddingSixExperience({
                 <div key={day} className={`font-bold ${i===0 ? 'text-[#e58a93]' : 'text-[#888]'}`}>{day}</div>
               ))}
               {blanks.map(b => <div key={`blank-${b}`} />)}
-              {monthDays.map(day => (
-                <div key={day} className={`relative flex items-center justify-center font-medium ${day === dDate ? 'text-[#e58a93] font-bold' : 'text-[#444]'}`}>
-                  <span className="relative z-10">{day}</span>
-                  {day === dDate && (
-                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 2.5, type: "spring" }} className="absolute inset-0 flex items-center justify-center">
-                      <Heart className="w-6 h-6 text-[#f5d0d4] fill-[#f5d0d4]/30" strokeWidth={1.5} />
-                    </motion.div>
-                  )}
-                </div>
-              ))}
+              {/* Days */}
+              {monthDays.map(day => {
+                const isWedding = day === dDate && parsedDDate.getMonth() + 1 === dMonth && parsedDDate.getFullYear() === dYear;
+                const isEngagement = day === parsedEDate.getDate() && parsedEDate.getMonth() + 1 === dMonth && parsedEDate.getFullYear() === dYear;
+                return (
+                  <div key={day} className={`relative flex items-center justify-center font-medium ${isWedding || isEngagement ? 'text-[#e58a93] font-bold' : 'text-[#444]'}`}>
+                    <span className="relative z-10">{day}</span>
+                    {isWedding && (
+                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 2.5, type: "spring" }} className="absolute inset-0 flex items-center justify-center">
+                        <Heart className="w-6 h-6 text-[#f5d0d4] fill-[#f5d0d4]/30" strokeWidth={1.5} />
+                      </motion.div>
+                    )}
+                    {isEngagement && (
+                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 2.5, type: "spring" }} className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-5 h-5 rounded-full border-[1.5px] border-[#a4656c] opacity-50" />
+                      </motion.div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <div className="flex justify-center gap-6 mt-6">
+              <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#a4656c]">
+                <div className="w-3 h-3 rounded-full border border-[#a4656c] opacity-50"></div> Ăn Hỏi
+              </div>
+              <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#e58a93]">
+                <Heart className="w-3 h-3 text-[#f5d0d4] fill-[#f5d0d4]" /> Lễ Cưới
+              </div>
             </div>
           </motion.div>
 
@@ -304,12 +330,20 @@ export function WeddingSixExperience({
                 <option>Rất tiếc, tôi không thể</option>
               </select>
               
-              <button 
-                onClick={() => !compact && onComplete?.({})}
-                className="w-full bg-[#2C2C2C] text-[#fff] text-[10px] font-bold uppercase tracking-widest py-3 hover:bg-[#1a1a1a] transition-colors shadow-sm mt-2"
-              >
-                Gửi Lời Nhắn
-              </button>
+              <div className="flex gap-2 w-full mt-2">
+                <button 
+                  onClick={() => !compact && onComplete?.({})}
+                  className="flex-1 bg-[#2C2C2C] text-[#fff] text-[10px] font-bold uppercase tracking-widest py-3 hover:bg-[#1a1a1a] transition-colors shadow-sm"
+                >
+                  Gửi Lời Nhắn
+                </button>
+                <button 
+                  onClick={() => setShowQR(true)}
+                  className="flex-[0.8] bg-transparent border border-[#2C2C2C] text-[#2C2C2C] text-[10px] font-bold uppercase tracking-widest py-3 hover:bg-[#fafafa] transition-colors shadow-sm"
+                >
+                  Mừng Cưới
+                </button>
+              </div>
             </div>
           </motion.div>
           
@@ -327,6 +361,45 @@ export function WeddingSixExperience({
         </motion.div>
 
       </div>
+
+      {/* QR Modal */}
+      <AnimatePresence>
+        {showQR && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black/80 flex flex-col items-center justify-center p-6 backdrop-blur-sm" 
+            onClick={() => setShowQR(false)}
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-[#FAFAFA] p-8 flex flex-col items-center max-w-sm w-full border border-[#eee] rounded-xl shadow-xl" 
+              onClick={e => e.stopPropagation()}
+            >
+              <h3 className="text-3xl text-[#2C2C2C] mb-4" style={{ fontFamily: 'var(--font-dancing)' }}>Mừng Cưới</h3>
+              
+              <div className="flex justify-center gap-4 mb-4">
+                <button onClick={() => setGiftTab('groom')} className={`pb-1 px-2 border-b-2 font-sans font-bold uppercase tracking-widest text-[10px] ${giftTab === 'groom' ? 'border-[#2C2C2C] text-[#2C2C2C]' : 'border-transparent text-[#999]'}`}>Mừng Chú Rể</button>
+                <button onClick={() => setGiftTab('bride')} className={`pb-1 px-2 border-b-2 font-sans font-bold uppercase tracking-widest text-[10px] ${giftTab === 'bride' ? 'border-[#2C2C2C] text-[#2C2C2C]' : 'border-transparent text-[#999]'}`}>Mừng Cô Dâu</button>
+              </div>
+              
+              <div className="w-48 h-48 bg-white p-2 border border-[#eee] mb-6 flex items-center justify-center overflow-hidden rounded-xl shadow-inner">
+                <img src={giftTab === 'groom' ? (groomQR || "/assets/wedding/wedding-1/QR.jpg") : (brideQR || "/assets/wedding/wedding-1/QR.jpg")} alt="QR Mừng Cưới" className="w-full h-full object-contain" />
+              </div>
+              
+              <button 
+                onClick={() => setShowQR(false)} 
+                className="w-full py-3 bg-[#2C2C2C] text-[#FFFFFF] font-bold text-[10px] uppercase tracking-widest rounded-xl hover:bg-[#1a1a1a] transition-colors"
+              >
+                Đóng
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Opening Doors Animation */}
       <AnimatePresence>

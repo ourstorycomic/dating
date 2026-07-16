@@ -19,6 +19,9 @@ interface WeddingFourProps {
   groomFamily?: string;
   brideFamily?: string;
   onComplete?: (data: any) => void;
+  engagementDate?: string;
+  groomQR?: string;
+  brideQR?: string;
 }
 
 export function WeddingFourExperience({
@@ -36,6 +39,9 @@ export function WeddingFourExperience({
   groomFamily,
   brideFamily,
   onComplete,
+  engagementDate,
+  groomQR,
+  brideQR,
 }: WeddingFourProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -44,6 +50,7 @@ export function WeddingFourExperience({
   const [isOpened, setIsOpened] = useState(autoPlay || false);
   const [isPlaying, setIsPlaying] = useState(autoPlay || false);
   const [showQR, setShowQR] = useState(false);
+  const [giftTab, setGiftTab] = useState<'groom'|'bride'>('groom');
   const [activeGalleryIndex, setActiveGalleryIndex] = useState(0);
   
   const [envelopeState, setEnvelopeState] = useState<"closed" | "opening" | "opened">("closed");
@@ -137,6 +144,7 @@ export function WeddingFourExperience({
 
   // Date Parsing
   const parsedDDate = new Date(weddingDate || '2025-12-14T11:30:00.000Z');
+  const parsedEDate = new Date(engagementDate || '2025-12-12T09:00:00.000Z');
   const dMonthNumber = parsedDDate.getMonth() + 1;
   const dMonth = 'Tháng ' + dMonthNumber;
   const dDate = parsedDDate.getDate().toString().padStart(2, '0');
@@ -352,20 +360,38 @@ export function WeddingFourExperience({
               ))}
               
               {/* Days */}
-              {monthDays.map(day => (
-                <div key={day} className="relative flex justify-center items-center h-8">
-                  <span className={`z-10 ${day === Number(dDate) ? "text-[#FFFFFF] font-bold" : "text-[#5A5552]"}`}>{day}</span>
-                  {day === Number(dDate) && (
-                    <motion.div 
-                      initial={{ scale: 0 }} 
-                      whileInView={{ scale: 1 }} 
-                      viewport={{ once: true }} 
-                      transition={{ type: "spring", delay: 0.5 }}
-                      className="absolute inset-0 m-auto w-6 h-6 bg-[#7A1F1F] rounded-full z-0"
-                    />
-                  )}
-                </div>
-              ))}
+              {monthDays.map(day => {
+                const isWedding = day === Number(dDate) && parsedDDate.getMonth() + 1 === dMonthNumber && parsedDDate.getFullYear() === Number(dYear);
+                const isEngagement = day === parsedEDate.getDate() && parsedEDate.getMonth() + 1 === dMonthNumber && parsedEDate.getFullYear() === Number(dYear);
+                return (
+                  <div key={day} className="relative flex justify-center items-center h-8">
+                    <span className={`z-10 ${isWedding || isEngagement ? "text-[#FFFFFF] font-bold" : "text-[#5A5552]"}`}>{day}</span>
+                    {isWedding && (
+                      <motion.div 
+                        initial={{ scale: 0 }} 
+                        whileInView={{ scale: 1 }} 
+                        viewport={{ once: true }} 
+                        transition={{ type: "spring", delay: 0.5 }}
+                        className="absolute inset-0 m-auto w-6 h-6 bg-[#7A1F1F] rounded-full z-0"
+                      />
+                    )}
+                    {isEngagement && (
+                      <motion.div 
+                        initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ type: "spring", delay: 0.5 }}
+                        className="absolute inset-0 m-auto w-6 h-6 bg-[#A67C52] rounded-full z-0 opacity-80"
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <div className="flex justify-center gap-6 mt-6">
+              <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#A67C52]">
+                <div className="w-3 h-3 rounded-full bg-[#A67C52] opacity-80"></div> Ăn Hỏi
+              </div>
+              <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#7A1F1F]">
+                <div className="w-3 h-3 rounded-full bg-[#7A1F1F]"></div> Lễ Cưới
+              </div>
             </div>
           </motion.div>
 
@@ -516,11 +542,15 @@ export function WeddingFourExperience({
               className="bg-[#FFFDF9] p-8 flex flex-col items-center max-w-sm w-full border border-[#D6C1A5]" 
               onClick={e => e.stopPropagation()}
             >
-              <h3 className="text-3xl text-[#7A1F1F] mb-2" style={{ fontFamily: 'var(--font-dancing)' }}>Mừng Cưới</h3>
-              <p className="text-[10px] text-[#A67C52] uppercase tracking-[0.2em] mb-6 font-bold text-center">Gửi gắm yêu thương</p>
+              <h3 className="text-3xl text-[#7A1F1F] mb-4" style={{ fontFamily: 'var(--font-dancing)' }}>Mừng Cưới</h3>
+              
+              <div className="flex justify-center gap-4 mb-4">
+                <button onClick={() => setGiftTab('groom')} className={`pb-1 px-2 border-b-2 font-sans font-bold uppercase tracking-widest text-[10px] ${giftTab === 'groom' ? 'border-[#7A1F1F] text-[#7A1F1F]' : 'border-transparent text-[#A67C52]'}`}>Mừng Chú Rể</button>
+                <button onClick={() => setGiftTab('bride')} className={`pb-1 px-2 border-b-2 font-sans font-bold uppercase tracking-widest text-[10px] ${giftTab === 'bride' ? 'border-[#7A1F1F] text-[#7A1F1F]' : 'border-transparent text-[#A67C52]'}`}>Mừng Cô Dâu</button>
+              </div>
               
               <div className="w-48 h-48 bg-white p-2 border border-[#D6C1A5]/50 mb-6 flex items-center justify-center overflow-hidden">
-                <img src="/assets/wedding/wedding-1/QR.jpg" alt="QR Mừng Cưới" className="w-full h-full object-contain" />
+                <img src={giftTab === 'groom' ? (groomQR || "/assets/wedding/wedding-1/QR.jpg") : (brideQR || "/assets/wedding/wedding-1/QR.jpg")} alt="QR Mừng Cưới" className="w-full h-full object-contain" />
               </div>
               
               <button 
