@@ -30,6 +30,9 @@ export function WeddingOneExperience({
   musicUrl = "",
   isBuilderPreview = false,
   onComplete,
+  engagementDate,
+  groomQR,
+  brideQR,
 }: {
   compact?: boolean;
   autoPlay?: boolean;
