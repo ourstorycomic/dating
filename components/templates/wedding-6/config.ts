@@ -25,7 +25,7 @@ export const config = {
     musicUrl: "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/wedding-invitation-video-maker-design-template-ce81045233c0bd73c6a461b2ed0edba0.mp4",
     eventAddress: "123 Đường Tình Yêu, Phường Hạnh Phúc, Quận Vui Vẻ, TP.HCM",
     mapUrl: "https://goo.gl/maps/example",
-    groomFamily: "Ông Phạm Văn Long - Bà Lê Thị Mai",
-    brideFamily: "Ông Nguyễn Văn Hùng - Bà Trần Thị Hoa",
+    groomFamily: "Ông Phạm Văn Long\nBà Lê Thị Mai",
+    brideFamily: "Ông Nguyễn Văn Hùng\nBà Trần Thị Hoa",
   }
 };

@@ -1844,8 +1844,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                 </Section>
                 <Section title="Lời mời & Thông tin gia đình">
                   <TextArea label="Lời mời chân thành" value={dynamicData.letterText || "Tình yêu không phải là tìm thấy một người hoàn hảo..."} onChange={(v) => setDynamicData(d => ({ ...d, letterText: v }))} />
-                  <TextArea label="Đại diện nhà trai" value={dynamicData.groomFamily || "Ông Nguyễn Văn A\nBà Trần Thị B"} onChange={(v) => setDynamicData(d => ({ ...d, groomFamily: v }))} />
-                  <TextArea label="Đại diện nhà gái" value={dynamicData.brideFamily || "Ông Lê Văn C\nBà Phạm Thị D"} onChange={(v) => setDynamicData(d => ({ ...d, brideFamily: v }))} />
+                  <TextArea label="Đại diện nhà trai" value={dynamicData.groomFamily || "Ông Phạm Văn Long\nBà Lê Thị Mai"} onChange={(v) => setDynamicData(d => ({ ...d, groomFamily: v }))} />
+                  <TextArea label="Đại diện nhà gái" value={dynamicData.brideFamily || "Ông Nguyễn Văn Hùng\nBà Trần Thị Hoa"} onChange={(v) => setDynamicData(d => ({ ...d, brideFamily: v }))} />
                 </Section>
                 <Section title="Bản đồ & Sự kiện">
                   <TextArea label="Địa chỉ tổ chức" value={dynamicData.eventAddress || "Trung tâm tiệc cưới mẫu..."} onChange={(v) => setDynamicData(d => ({ ...d, eventAddress: v }))} />
