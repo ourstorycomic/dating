@@ -301,8 +301,10 @@ export const MOCK_TEMPLATES: any[] = [
       { section: "1. Chú Rể & Cô Dâu", key: "heroImage", label: "Ảnh Cover (Dọc)", type: "media" },
       { section: "2. Thời Gian", key: "weddingDate", label: "Ngày & Giờ Cưới", type: "datetime", default: "2025-12-14T11:30" },
       { section: "3. Lời Mời", key: "letterText", label: "Nội dung thiệp", type: "textarea", default: "Được sự đồng thuận của gia đình hai bên\\nChúng tôi trân trọng kính mời quý khách tới dự bữa tiệc chung vui cùng gia đình chúng tôi" },
-      { section: "3. Lời Mời", key: "groomFamily", label: "Đại diện nhà trai", type: "textarea", default: temp.groomFam },
-      { section: "3. Lời Mời", key: "brideFamily", label: "Đại diện nhà gái", type: "textarea", default: temp.brideFam },
+      { section: "3. Lời Mời", key: "groomFather", label: "Họ tên bố chú rể", type: "text", default: temp.groomFam.split('\\n')[0].trim() },
+      { section: "3. Lời Mời", key: "groomMother", label: "Họ tên mẹ chú rể", type: "text", default: temp.groomFam.split('\\n')[1]?.trim() || '' },
+      { section: "3. Lời Mời", key: "brideFather", label: "Họ tên bố cô dâu", type: "text", default: temp.brideFam.split('\\n')[0].trim() },
+      { section: "3. Lời Mời", key: "brideMother", label: "Họ tên mẹ cô dâu", type: "text", default: temp.brideFam.split('\\n')[1]?.trim() || '' },
       { section: "4. Địa Điểm", key: "eventAddress", label: "Tên & Địa chỉ nhà hàng", type: "textarea", default: "Trống Đồng Palace, 72 Trần Đăng Ninh, Cầu Giấy" },
       { section: "4. Địa Điểm", key: "mapUrl", label: "Link Google Maps", type: "text", default: "https://maps.app.goo.gl/xxx" },
       ...(temp.slug === 'wedding-1' ? [

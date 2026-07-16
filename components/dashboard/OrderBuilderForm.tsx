@@ -1055,7 +1055,19 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     setSaveMessage("");
     setError("");
     
-    const mergedData = overrideData ? { ...customData, ...overrideData } : customData;
+    const mergedData: Record<string, any> = overrideData ? { ...customData, ...overrideData } : { ...customData };
+
+    if (selectedComponentKey.includes("wedding")) {
+      const isW1 = selectedComponentKey === "wedding-1" || selectedComponentKey === "wedding-6";
+      const separator = isW1 ? "\\n" : " & ";
+      
+      if (mergedData.groomFather !== undefined || mergedData.groomMother !== undefined) {
+        mergedData.groomFamily = [mergedData.groomFather, mergedData.groomMother].filter(Boolean).join(separator);
+      }
+      if (mergedData.brideFather !== undefined || mergedData.brideMother !== undefined) {
+        mergedData.brideFamily = [mergedData.brideFather, mergedData.brideMother].filter(Boolean).join(separator);
+      }
+    }
 
     const response = await fetch("/api/orders", {
       method: "PATCH",
@@ -1235,6 +1247,24 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     
     // Nếu có package được lưu trong customData thì load lên
     if (cd.servicePackage) setSelectedPackage(cd.servicePackage);
+
+    const loadedTemplateKey = `${fullTemplate?.component_key ?? cd.componentKey ?? ""} ${fullTemplate?.name ?? ""}`.toLowerCase();
+    
+    // Split family fields for backward compatibility if it's a wedding template
+    if (loadedTemplateKey.includes("wedding")) {
+      const isW1 = loadedTemplateKey.includes("wedding-1") || loadedTemplateKey.includes("wedding-6");
+      const sep = isW1 ? "\\n" : " & ";
+      if (cd.groomFamily && !cd.groomFather) {
+        const parts = String(cd.groomFamily).split(sep === "\\n" ? /\n|\\n/ : / & | - /);
+        cd.groomFather = parts[0]?.trim();
+        cd.groomMother = parts[1]?.trim();
+      }
+      if (cd.brideFamily && !cd.brideFather) {
+        const parts = String(cd.brideFamily).split(sep === "\\n" ? /\n|\\n/ : / & | - /);
+        cd.brideFather = parts[0]?.trim();
+        cd.brideMother = parts[1]?.trim();
+      }
+    }
     
     if (cd.question) setQuestion(cd.question);
     if (cd.questionTitle) setStage1Instruction(cd.questionTitle);
@@ -1268,7 +1298,6 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     if (cd.stage1Accent) setStage1Accent(cd.stage1Accent);
     if (cd.stage2Background) setStage2Background(cd.stage2Background);
 
-    const loadedTemplateKey = `${fullTemplate?.component_key ?? cd.componentKey ?? ""} ${fullTemplate?.name ?? ""}`.toLowerCase();
     if (loadedTemplateKey.includes("valentine-2") || loadedTemplateKey.includes("valentine #2")) {
       setValentine2Config((current) => ({
         ...current,
@@ -1844,8 +1873,10 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                 </Section>
                 <Section title="Lời mời & Thông tin gia đình">
                   <TextArea label="Lời mời chân thành" value={dynamicData.letterText || "Được sự đồng thuận của gia đình hai bên\nChúng tôi trân trọng kính mời quý khách tới dự bữa tiệc chung vui cùng gia đình chúng tôi"} onChange={(v) => setDynamicData(d => ({ ...d, letterText: v }))} />
-                  <TextArea label="Đại diện nhà trai" value={dynamicData.groomFamily || "Ông Trần Văn Nam\nBà Nguyễn Thị My"} onChange={(v) => setDynamicData(d => ({ ...d, groomFamily: v }))} />
-                  <TextArea label="Đại diện nhà gái" value={dynamicData.brideFamily || "Ông Nguyễn Văn Cường\nBà Lê Thị Dung"} onChange={(v) => setDynamicData(d => ({ ...d, brideFamily: v }))} />
+                  <TextInput label="Họ tên bố chú rể" value={dynamicData.groomFather ?? "Ông Trần Văn Nam"} onChange={(v) => setDynamicData(d => ({ ...d, groomFather: v }))} />
+                  <TextInput label="Họ tên mẹ chú rể" value={dynamicData.groomMother ?? "Bà Nguyễn Thị My"} onChange={(v) => setDynamicData(d => ({ ...d, groomMother: v }))} />
+                  <TextInput label="Họ tên bố cô dâu" value={dynamicData.brideFather ?? "Ông Nguyễn Văn Cường"} onChange={(v) => setDynamicData(d => ({ ...d, brideFather: v }))} />
+                  <TextInput label="Họ tên mẹ cô dâu" value={dynamicData.brideMother ?? "Bà Lê Thị Dung"} onChange={(v) => setDynamicData(d => ({ ...d, brideMother: v }))} />
                 </Section>
                 <Section title="Bản đồ & Sự kiện">
                   <TextArea label="Địa chỉ tổ chức" value={dynamicData.eventAddress || "Trung tâm tiệc cưới Asora Center, 123 Phố Mới, Quận 1, TP. HCM"} onChange={(v) => setDynamicData(d => ({ ...d, eventAddress: v }))} />
