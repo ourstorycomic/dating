@@ -276,11 +276,18 @@ export const MOCK_TEMPLATES: any[] = [
     sample_data: { screens: ["Gõ cửa", "Bật đèn", "Bóng bay", "Thổi nến", "Lật thiệp", "Ảnh kỷ niệm", "Xé quà", "Nhận quà"] },
     template_categories: { slug: "birthday", name: "Birthday", description: null }
   },
-  ...['wedding-1', 'wedding-2', 'wedding-3', 'wedding-4', 'wedding-5', 'wedding-6'].map(slug => ({
-    id: `${slug}-mock`,
-    slug: slug,
-    name: slug === 'wedding-1' ? 'Classic Romance' : slug === 'wedding-2' ? 'Elegant Beige' : slug === 'wedding-3' ? 'Floral Garden' : slug === 'wedding-4' ? 'Blue Envelope' : slug === 'wedding-5' ? 'Earth & Greenery' : 'Double Happiness',
-    component_key: slug,
+  ...[
+    { slug: 'wedding-1', name: 'Classic Romance', groom: 'Minh Khang', bride: 'Thu Hương', groomFam: 'Ông Trần Văn Nam\\nBà Nguyễn Thị My', brideFam: 'Ông Nguyễn Văn Cường\\nBà Lê Thị Dung' },
+    { slug: 'wedding-2', name: 'Elegant Beige', groom: 'Minh Hoàng', bride: 'Mai Hương', groomFam: 'Ông Phạm Văn Dư\\nBà Trần Thị Hiền', brideFam: 'Ông Nguyễn Văn Bình\\nBà Nguyễn Thị Thủy' },
+    { slug: 'wedding-3', name: 'Floral Garden', groom: 'Minh Hoàng', bride: 'Mai Hương', groomFam: 'Ông Phạm Văn Dư\\nBà Trần Thị Hiền', brideFam: 'Ông Nguyễn Văn Bình\\nBà Nguyễn Thị Thủy' },
+    { slug: 'wedding-4', name: 'Blue Envelope', groom: 'Minh Hoàng', bride: 'Mai Hương', groomFam: 'Ông Phạm Văn Dư\\nBà Trần Thị Hiền', brideFam: 'Ông Nguyễn Văn Bình\\nBà Nguyễn Thị Thủy' },
+    { slug: 'wedding-5', name: 'Earth & Greenery', groom: 'Minh Hoàng', bride: 'Mai Hương', groomFam: 'Ông Phạm Văn Dư\\nBà Trần Thị Hiền', brideFam: 'Ông Nguyễn Văn Bình\\nBà Nguyễn Thị Thủy' },
+    { slug: 'wedding-6', name: 'Double Happiness', groom: 'Minh Khang', bride: 'Thu Hương', groomFam: 'Ông Phạm Văn Long\\nBà Lê Thị Mai', brideFam: 'Ông Nguyễn Văn Hùng\\nBà Trần Thị Hoa' }
+  ].map(temp => ({
+    id: `${temp.slug}-mock`,
+    slug: temp.slug,
+    name: temp.name,
+    component_key: temp.slug,
     description: "Mẫu thiệp cưới",
     tagline: "Sang Trọng",
     base_price: 0,
@@ -289,20 +296,31 @@ export const MOCK_TEMPLATES: any[] = [
     status_label: "Mới",
     sort_order: 30,
     data_schema: [
-      { section: "1. Chú Rể & Cô Dâu", key: "groomName", label: "Tên Chú Rể", type: "text", default: "Minh Trí" },
-      { section: "1. Chú Rể & Cô Dâu", key: "brideName", label: "Tên Cô Dâu", type: "text", default: "Thanh Hằng" },
+      { section: "1. Chú Rể & Cô Dâu", key: "groomName", label: "Tên Chú Rể", type: "text", default: temp.groom },
+      { section: "1. Chú Rể & Cô Dâu", key: "brideName", label: "Tên Cô Dâu", type: "text", default: temp.bride },
       { section: "1. Chú Rể & Cô Dâu", key: "heroImage", label: "Ảnh Cover (Dọc)", type: "media" },
-      { section: "2. Thời Gian", key: "weddingDate", label: "Ngày & Giờ Cưới", type: "datetime", default: "2025-02-15T09:00" },
-      { section: "3. Lời Mời", key: "letterText", label: "Nội dung thiệp", type: "textarea", default: "Tình yêu không phải là tìm thấy một người hoàn hảo..." },
-      { section: "3. Lời Mời", key: "groomFamily", label: "Đại diện nhà trai", type: "textarea", default: "Ông Nguyễn Văn A\nBà Trần Thị B" },
-      { section: "3. Lời Mời", key: "brideFamily", label: "Đại diện nhà gái", type: "textarea", default: "Ông Lê Văn C\nBà Phạm Thị D" },
-      { section: "4. Địa Điểm", key: "eventAddress", label: "Tên & Địa chỉ nhà hàng", type: "textarea", default: "Trung tâm tiệc cưới mẫu..." },
+      { section: "2. Thời Gian", key: "weddingDate", label: "Ngày & Giờ Cưới", type: "datetime", default: "2025-12-14T11:30" },
+      { section: "3. Lời Mời", key: "letterText", label: "Nội dung thiệp", type: "textarea", default: "Được sự đồng thuận của gia đình hai bên\\nChúng tôi trân trọng kính mời quý khách tới dự bữa tiệc chung vui cùng gia đình chúng tôi" },
+      { section: "3. Lời Mời", key: "groomFamily", label: "Đại diện nhà trai", type: "textarea", default: temp.groomFam },
+      { section: "3. Lời Mời", key: "brideFamily", label: "Đại diện nhà gái", type: "textarea", default: temp.brideFam },
+      { section: "4. Địa Điểm", key: "eventAddress", label: "Tên & Địa chỉ nhà hàng", type: "textarea", default: "Trống Đồng Palace, 72 Trần Đăng Ninh, Cầu Giấy" },
       { section: "4. Địa Điểm", key: "mapUrl", label: "Link Google Maps", type: "text", default: "https://maps.app.goo.gl/xxx" },
-      { section: "4. Địa Điểm", key: "mapImage", label: "Ảnh bản đồ", type: "media" },
-      { section: "5. Thư Viện Ảnh", key: "groomImage", label: "Ảnh Chú Rể", type: "media" },
-      { section: "5. Thư Viện Ảnh", key: "brideImage", label: "Ảnh Cô Dâu", type: "media" },
-      { section: "5. Thư Viện Ảnh", key: "dividerImage", label: "Ảnh ngang (Divider)", type: "media" },
-      { section: "5. Thư Viện Ảnh", key: "footerImage", label: "Ảnh Footer", type: "media" },
+      ...(temp.slug === 'wedding-1' ? [
+        { section: "4. Địa Điểm", key: "mapImage", label: "Ảnh bản đồ", type: "media" },
+        { section: "5. Thư Viện Ảnh", key: "groomImage", label: "Ảnh Chú Rể", type: "media" },
+        { section: "5. Thư Viện Ảnh", key: "brideImage", label: "Ảnh Cô Dâu", type: "media" },
+        { section: "5. Thư Viện Ảnh", key: "dividerImage", label: "Ảnh ngang (Divider)", type: "media" },
+        { section: "5. Thư Viện Ảnh", key: "footerImage", label: "Ảnh Footer", type: "media" }
+      ] : [
+        { section: "5. Thư Viện Ảnh", key: "gallery1", label: "Ảnh Gallery 1", type: "media" },
+        { section: "5. Thư Viện Ảnh", key: "gallery2", label: "Ảnh Gallery 2", type: "media" },
+        { section: "5. Thư Viện Ảnh", key: "gallery3", label: "Ảnh Gallery 3", type: "media" },
+        { section: "5. Thư Viện Ảnh", key: "gallery4", label: "Ảnh Gallery 4", type: "media" },
+        { section: "5. Thư Viện Ảnh", key: "gallery5", label: "Ảnh Gallery 5", type: "media" },
+        { section: "5. Thư Viện Ảnh", key: "gallery6", label: "Ảnh Gallery 6", type: "media" },
+        { section: "5. Thư Viện Ảnh", key: "gallery7", label: "Ảnh Gallery 7", type: "media" },
+        { section: "5. Thư Viện Ảnh", key: "gallery8", label: "Ảnh Gallery 8", type: "media" }
+      ]),
       { section: "6. Âm Nhạc", key: "musicUrl", label: "Nhạc nền", type: "audio" }
     ],
     sample_data: { screens: ["Thiệp Mời", "Lời Ngỏ", "Thư Viện Ảnh", "Xác Nhận"] },

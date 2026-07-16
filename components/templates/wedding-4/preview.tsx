@@ -18,7 +18,29 @@ export function WeddingFourPreview(props: TemplatePreviewProps) {
       groomFamily={parsedConfig.groomFamily || WEDDING_4_DATA.groomFamily}
       brideFamily={parsedConfig.brideFamily || WEDDING_4_DATA.brideFamily}
       heroImage={parsedConfig.heroImage || WEDDING_4_DATA.heroImage}
-      gallery={parsedConfig.gallery || WEDDING_4_DATA.gallery}
+      gallery={
+        [
+          parsedConfig.gallery1,
+          parsedConfig.gallery2,
+          parsedConfig.gallery3,
+          parsedConfig.gallery4,
+          parsedConfig.gallery5,
+          parsedConfig.gallery6,
+          parsedConfig.gallery7,
+          parsedConfig.gallery8,
+        ].filter(Boolean).length > 0
+          ? [
+              parsedConfig.gallery1,
+              parsedConfig.gallery2,
+              parsedConfig.gallery3,
+              parsedConfig.gallery4,
+              parsedConfig.gallery5,
+              parsedConfig.gallery6,
+              parsedConfig.gallery7,
+              parsedConfig.gallery8,
+            ].filter(Boolean)
+          : parsedConfig.gallery || WEDDING_4_DATA.gallery
+      }
       musicUrl={props.musicUrl || parsedConfig.musicUrl || WEDDING_4_DATA.musicUrl}
       eventAddress={parsedConfig.eventAddress || WEDDING_4_DATA.eventAddress}
       mapUrl={parsedConfig.mapUrl || WEDDING_4_DATA.mapUrl}
