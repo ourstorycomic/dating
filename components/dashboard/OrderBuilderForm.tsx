@@ -202,18 +202,21 @@ function TextArea({
   label,
   onChange,
   value,
+  placeholder,
 }: {
   label: string;
   onChange: (value: string) => void;
   value: string;
+  placeholder?: string;
 }) {
   return (
     <label className="grid gap-2 text-sm md:col-span-2">
       <span className="text-white/64">{label}</span>
       <textarea
-        className="min-h-24 rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3 outline-none focus:border-pink-300/50"
+        className="min-h-24 rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3 outline-none focus:border-pink-300/50 placeholder-white/20"
         onChange={(event) => onChange(event.target.value)}
-        value={value}
+        value={value ?? ""}
+        placeholder={placeholder}
       />
     </label>
   );
