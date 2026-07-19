@@ -5,6 +5,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { MediaDisplay } from "@/components/ui/MediaDisplay";
+import { WeddingFooter } from "../WeddingFooter";
 
 export function WeddingOneExperience({
   compact = false,

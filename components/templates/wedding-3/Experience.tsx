@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause } from "lucide-react";
+import { WeddingFooter } from "../WeddingFooter";
 
 interface WeddingThreeProps {
   compact?: boolean;
@@ -47,6 +48,7 @@ export function WeddingThreeExperience({
 }: WeddingThreeProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isOpened, setIsOpened] = useState(false);
+  const [allowScroll, setAllowScroll] = useState(false);
   const [showQR, setShowQR] = useState(false);
   const [giftTab, setGiftTab] = useState<'groom'|'bride'>('groom');
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -154,13 +156,13 @@ export function WeddingThreeExperience({
   const monthDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
   return (
-    <div ref={containerRef} className={`relative w-full h-full bg-[#FFFFFF] text-[#2D2A28] scroll-smooth ${isOpened ? "overflow-y-auto overflow-x-hidden no-scrollbar" : "overflow-hidden"} ${compact ? "rounded-3xl" : ""}`}>
+    <div ref={containerRef} className={`relative w-full h-full bg-[#FFFFFF] text-[#2D2A28] scroll-smooth ${allowScroll ? "overflow-y-auto overflow-x-hidden no-scrollbar" : "overflow-hidden"} ${compact ? "rounded-3xl" : ""}`}>
       
       {/* Background Music */}
       {!compact && <audio ref={audioRef} src={musicUrl} loop />}
 
       {/* MAIN CONTENT (Only visible when opened) */}
-      <div className={`relative z-10 w-full flex flex-col items-center transition-opacity duration-1000 ${isOpened ? "opacity-100" : "opacity-0"}`}>
+      <div className={`relative z-10 w-full flex flex-col items-center transition-opacity duration-1000 ${allowScroll ? "opacity-100" : "opacity-0"}`}>
         
         <div className="w-full max-w-sm mx-auto flex flex-col items-center pt-16 px-6 md:px-12 pb-16">
           
@@ -294,7 +296,7 @@ export function WeddingThreeExperience({
                 {customData?.tiecAddress}
               </p>
               {customData?.tiecMapUrl && (
-                <a href={customData.tiecMapUrl} target="_blank" rel="noreferrer" className="bg-[#7A1F1F] text-[#FFFFFF] text-[10px] px-8 py-3 rounded-sm uppercase tracking-widest font-bold shadow-md hover:bg-opacity-80">
+                <a href={customData.tiecMapUrl} target="_blank" rel="noreferrer" className="bg-[#7A1F1F]  text-[10px] px-8 py-3 rounded-sm uppercase tracking-widest font-bold shadow-md hover:bg-opacity-80 text-white">
                   Xem Chỉ Đường
                 </a>
               )}
@@ -312,7 +314,7 @@ export function WeddingThreeExperience({
                 {customData?.tiecAddressGai}
               </p>
               {customData?.tiecMapUrlGai && (
-                <a href={customData.tiecMapUrlGai} target="_blank" rel="noreferrer" className="bg-[#7A1F1F] text-[#FFFFFF] text-[10px] px-8 py-3 rounded-sm uppercase tracking-widest font-bold shadow-md hover:bg-opacity-80">
+                <a href={customData.tiecMapUrlGai} target="_blank" rel="noreferrer" className="bg-[#7A1F1F]  text-[10px] px-8 py-3 rounded-sm uppercase tracking-widest font-bold shadow-md hover:bg-opacity-80 text-white">
                   Xem Chỉ Đường
                 </a>
               )}

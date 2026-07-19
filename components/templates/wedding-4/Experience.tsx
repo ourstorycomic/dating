@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause, ChevronLeft, ChevronRight } from "lucide-react";
+import { WeddingFooter } from "../WeddingFooter";
 
 interface WeddingFourProps {
   compact?: boolean;
@@ -50,6 +51,7 @@ export function WeddingFourExperience({
   const thumbnailContainerRef = useRef<HTMLDivElement>(null);
   
   const [isOpened, setIsOpened] = useState(autoPlay || false);
+  const [allowScroll, setAllowScroll] = useState(autoPlay || false);
   const [isPlaying, setIsPlaying] = useState(autoPlay || false);
   const [showQR, setShowQR] = useState(false);
   const [giftTab, setGiftTab] = useState<'groom'|'bride'>('groom');
@@ -187,7 +189,7 @@ export function WeddingFourExperience({
         style={{ backgroundImage: "url('/assets/wedding-4/bg.jpg')", backgroundSize: "cover", backgroundPosition: "center" }}
       />
 
-      <div ref={containerRef} className={`absolute inset-0 z-10 w-full h-full scroll-smooth ${isOpened ? "overflow-y-auto overflow-x-hidden no-scrollbar" : "overflow-hidden"}`}>
+      <div ref={containerRef} className={`absolute inset-0 z-10 w-full h-full scroll-smooth ${allowScroll ? "overflow-y-auto overflow-x-hidden no-scrollbar" : "overflow-hidden"}`}>
       
         {/* Background Music */}
         {!compact && <audio ref={audioRef} src={musicUrl} loop />}
@@ -304,7 +306,7 @@ export function WeddingFourExperience({
         </div>
 
         {/* REST OF CONTENT */}
-        <div className={`relative z-10 w-full flex flex-col items-center transition-all duration-1000 bg-transparent ${isOpened ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+        <div className={`relative z-10 w-full flex flex-col items-center transition-all duration-1000 bg-transparent ${allowScroll ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
           <div className="w-full max-w-md mx-auto flex flex-col items-center px-6 pb-20 pt-8">
 
           {/* Invitation Text */}

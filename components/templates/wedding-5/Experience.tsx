@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause, MapPin } from "lucide-react";
+import { WeddingFooter } from "../WeddingFooter";
 
 interface WeddingFiveProps {
   compact?: boolean;

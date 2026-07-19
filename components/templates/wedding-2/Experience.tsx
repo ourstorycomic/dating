@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause } from "lucide-react";
+import { WeddingFooter } from "../WeddingFooter";
 
 interface WeddingTwoProps {
   compact?: boolean;
@@ -49,6 +50,7 @@ export function WeddingTwoExperience({
 }: WeddingTwoProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isOpened, setIsOpened] = useState(false);
+  const [allowScroll, setAllowScroll] = useState(false);
   const [showQR, setShowQR] = useState(false);
   const [giftTab, setGiftTab] = useState<'groom'|'bride'>('groom');
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -152,7 +154,7 @@ export function WeddingTwoExperience({
   const monthDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
   return (
-    <div ref={containerRef} className={`relative w-full h-full bg-[#FFFDF9] text-[#7A1F1F] scroll-smooth ${isOpened ? "overflow-y-auto overflow-x-hidden no-scrollbar" : "overflow-hidden"} ${compact ? "rounded-3xl" : ""}`}>
+    <div ref={containerRef} className={`relative w-full h-full bg-[#FFFDF9] text-[#7A1F1F] scroll-smooth ${allowScroll ? "overflow-y-auto overflow-x-hidden no-scrollbar" : "overflow-hidden"} ${compact ? "rounded-3xl" : ""}`}>
       
       {/* Background Borders */}
       <div 
@@ -168,7 +170,7 @@ export function WeddingTwoExperience({
       {!compact && <audio ref={audioRef} src={musicUrl} loop />}
 
       {/* MAIN CONTENT (Only visible when opened) */}
-      <div className={`relative z-10 w-full flex flex-col items-center transition-opacity duration-1000 ${isOpened ? "opacity-100" : "opacity-0"}`}>
+      <div className={`relative z-10 w-full flex flex-col items-center transition-opacity duration-1000 ${allowScroll ? "opacity-100" : "opacity-0"}`}>
         
         <div className="w-full max-w-sm mx-auto flex flex-col items-center pt-16 px-6 md:px-12 pb-16">
           
@@ -226,7 +228,7 @@ export function WeddingTwoExperience({
           {/* Dashed Invite Box (Fallback for Gói 1) */}
           {!hasTiecMung && (
             <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="border border-dashed border-[#7A1F1F] rounded-lg p-6 flex flex-col items-center text-center w-full mb-16 bg-[#FFFDF9]">
-              <p className="text-xs font-bold text-[#0047AB] uppercase tracking-widest mb-4">Mời bạn dùng cỗ cùng tụi mình nhé</p>
+              <p className="text-xs font-bold text-[#7A1F1F] uppercase tracking-widest mb-4">Mời bạn dùng cỗ cùng tụi mình nhé</p>
               <p className="text-[10px] text-[#5A5552] leading-relaxed mb-6 uppercase max-w-[180px] font-bold">
                 {eventAddress}
               </p>
@@ -239,12 +241,12 @@ export function WeddingTwoExperience({
           {/* Event Details */}
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="flex flex-col items-center text-center mb-16 w-full">
             <div className="w-12 h-1 bg-[#0047AB] mb-6"></div>
-            <h3 className="text-sm font-bold text-[#0047AB] tracking-widest uppercase mb-4">LỄ THÀNH HÔN</h3>
+            <h3 className="text-sm font-bold text-[#7A1F1F] tracking-widest uppercase mb-4">LỄ THÀNH HÔN</h3>
             <div className="w-full h-[1px] bg-[#C5A880]/30 mb-6 relative"></div>
             <p className="text-xs text-[#5A5552] mb-2 uppercase font-bold">Tại Tư Gia</p>
             <p className="text-[10px] text-[#5A5552] leading-relaxed uppercase max-w-[180px] font-bold mb-4">{eventAddress}</p>
             {mapUrl && (
-              <a href={mapUrl} target="_blank" rel="noreferrer" className="inline-block border border-[#0047AB] text-[#0047AB] text-[9px] px-5 py-2 uppercase tracking-[0.2em] font-bold hover:bg-[#0047AB] hover:text-white transition-colors mb-4">
+              <a href={mapUrl} target="_blank" rel="noreferrer" className="inline-block border border-[#7A1F1F] text-[#7A1F1F] text-[9px] px-5 py-2 uppercase tracking-[0.2em] font-bold hover:bg-[#7A1F1F] hover:text-white transition-colors mb-4">
                 Xem Bản Đồ
               </a>
             )}
@@ -257,7 +259,7 @@ export function WeddingTwoExperience({
           
           {hasTiecMung && (
             <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="border border-dashed border-[#7A1F1F] rounded-lg p-6 flex flex-col items-center text-center w-full mb-16 bg-[#FFFDF9]">
-              <h3 className="text-sm font-bold text-[#0047AB] tracking-widest uppercase mb-4">TIỆC MỪNG LỄ THÀNH HÔN {hasTiecMungGai ? "(NHÀ TRAI)" : ""}</h3>
+              <h3 className="text-sm font-bold text-[#7A1F1F] tracking-widest uppercase mb-4">TIỆC MỪNG LỄ THÀNH HÔN {hasTiecMungGai ? "(NHÀ TRAI)" : ""}</h3>
               <p className="text-xs text-[#5A5552] mb-2 uppercase">Vào lúc <span className="font-bold">{tiecTrai.time}</span></p>
               <p className="text-3xl font-serif text-[#2D2A28] leading-none my-2">{tiecTrai.date}</p>
               <p className="text-[10px] text-[#5A5552] leading-relaxed mb-6 uppercase max-w-[180px] font-bold">
@@ -275,7 +277,7 @@ export function WeddingTwoExperience({
 
           {hasTiecMungGai && (
             <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="border border-dashed border-[#7A1F1F] rounded-lg p-6 flex flex-col items-center text-center w-full mb-16 bg-[#FFFDF9]">
-              <h3 className="text-sm font-bold text-[#0047AB] tracking-widest uppercase mb-4">TIỆC MỪNG LỄ THÀNH HÔN (NHÀ GÁI)</h3>
+              <h3 className="text-sm font-bold text-[#7A1F1F] tracking-widest uppercase mb-4">TIỆC MỪNG LỄ THÀNH HÔN (NHÀ GÁI)</h3>
               <p className="text-xs text-[#5A5552] mb-2 uppercase">Vào lúc <span className="font-bold">{tiecGai.time}</span></p>
               <p className="text-3xl font-serif text-[#2D2A28] leading-none my-2">{tiecGai.date}</p>
               <p className="text-[10px] text-[#5A5552] leading-relaxed mb-6 uppercase max-w-[180px] font-bold">

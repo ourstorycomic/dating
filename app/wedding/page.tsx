@@ -64,7 +64,7 @@ const samples = [
   {
     name: "Classic Elegance",
     tag: "Được yêu thích",
-    description: "Template cưới sang trọng, thanh lịch với thiết kế tinh giản, kết hợp màu sắc nhẹ nhàng cùng các tính năng tiện ích như RSVP, Countdown và Album ảnh.",
+    description: "Template cưới sang trọng, thanh lịch với thiết kế tinh giản, kết hợp màu sắc nhẹ nhàng cùng các tính năng tiện ích như form xác nhận tham dự, Countdown và Album ảnh.",
     image: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000&auto=format&fit=crop",
     componentKey: "wedding-1",
   },
@@ -110,21 +110,21 @@ const packages = [
     name: "Gói Cơ bản (1 thiệp)",
     price: "139.000đ",
     description: "Dành cho 1 thiệp (Nhà Trai HOẶC Nhà Gái)",
-    features: ["Làm thường (2-3 ngày): 139.000đ", "Làm gấp (<24h): 189.000đ", "Có nhạc nền", "Form đăng ký (RSVP)"],
+    features: ["Làm thường (2-3 ngày): 139.000đ", "Làm gấp (<24h): 189.000đ", "Có nhạc nền", "Form xác nhận tham dự"],
     featured: false,
   },
   {
     name: "Gói Trọn vẹn (Thiệp chung)",
     price: "209.000đ",
     description: "1 thiệp dùng chung cho cả Nhà Trai & Nhà Gái (gồm thông tin lễ, tiệc cả 2 nhà)",
-    features: ["Làm thường (2-3 ngày): 209.000đ", "Làm gấp (<24h): 279.000đ", "Chỉnh sửa nội dung cơ bản", "Đầy đủ nhạc & RSVP"],
+    features: ["Làm thường (2-3 ngày): 209.000đ", "Làm gấp (<24h): 279.000đ", "Chỉnh sửa nội dung cơ bản", "Đầy đủ nhạc & Form xác nhận"],
     featured: true,
   },
   {
     name: "Gói Song hành (Combo 2 thiệp)",
     price: "239.000đ",
     description: "Combo 2 thiệp riêng biệt (1 Nhà Trai + 1 Nhà Gái)",
-    features: ["Chung mẫu: 239k (Gấp: 319k)", "Khác mẫu: 269k (Gấp: 359k)", "Chỉnh sửa nội dung cơ bản", "Đầy đủ nhạc & RSVP"],
+    features: ["Chung mẫu: 239k (Gấp: 319k)", "Khác mẫu: 269k (Gấp: 359k)", "Chỉnh sửa nội dung cơ bản", "Đầy đủ nhạc & Form xác nhận"],
     featured: false,
   },
 ];
@@ -236,13 +236,12 @@ export default function WeddingLandingPage() {
           </div>
         </section>
 
-        {/* Features / Why Us */}
         <section id="why-us" className="mt-28">
            <h2 className="font-serif-elegant text-3xl text-[#2D2A28] sm:text-4xl text-center mb-16">Vì sao chọn Lovora?</h2>
            <div className="grid gap-8 lg:grid-cols-3">
             {[
               ["Đội ngũ thiết kế tận tâm", "Bạn không cần tự thao tác phức tạp. Chỉ cần gửi thông tin, hình ảnh và lời mời, nhân viên của Lovora sẽ trực tiếp chỉnh sửa và hoàn thiện thiệp cưới cho bạn từ A-Z một cách nhanh chóng, chỉn chu nhất."],
-              ["Xác nhận tham dự (RSVP)", "Theo dõi chính xác số lượng khách mời qua form tự động, tiện lợi và vô cùng chuyên nghiệp."],
+              ["Quản lý khách mời thảnh thơi", "Tạm biệt cảnh gọi điện xác nhận từng người. Form phản hồi tự động giúp dâu rể nắm bắt chính xác số lượng khách tham dự và lời chúc chỉ với vài cú chạm."],
               ["Đồng hành trọn vẹn ngày vui", "Website thiệp cưới sẽ được đội ngũ Lovora thiết lập và duy trì hoạt động mượt mà trong suốt thời gian diễn ra sự kiện cưới của hai bạn, đảm bảo khách mời luôn cập nhật thông tin dễ dàng."],
             ].map(([title, copy], i) => (
               <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} key={title} className="rounded-[2rem] bg-white p-8 shadow-[0_10px_40px_rgba(0,0,0,0.03)] border border-[#F4EFEA]">

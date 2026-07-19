@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause, MapPin, Heart } from "lucide-react";
+import { WeddingFooter } from "../WeddingFooter";
 
 interface WeddingSixProps {
   compact?: boolean;
@@ -49,6 +50,7 @@ export function WeddingSixExperience({
 }: WeddingSixProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isOpened, setIsOpened] = useState(false);
+  const [allowScroll, setAllowScroll] = useState(false);
   const [showQR, setShowQR] = useState(false);
   const [giftTab, setGiftTab] = useState<'groom'|'bride'>('groom');
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -160,13 +162,13 @@ export function WeddingSixExperience({
   };
 
   return (
-    <div ref={containerRef} className={`relative w-full h-full bg-[#FAFAFA] text-[#2C2C2C] scroll-smooth ${isOpened ? "overflow-y-auto overflow-x-hidden no-scrollbar" : "overflow-hidden"} ${compact ? "rounded-3xl" : ""}`}>
+    <div ref={containerRef} className={`relative w-full h-full bg-[#FAFAFA] text-[#2C2C2C] scroll-smooth ${allowScroll ? "overflow-y-auto overflow-x-hidden no-scrollbar" : "overflow-hidden"} ${compact ? "rounded-3xl" : ""}`}>
       
       {/* Background Music */}
       {!compact && musicUrl && <audio ref={audioRef} src={musicUrl} loop />}
 
       {/* MAIN CONTENT (Only visible when opened) */}
-      <div className={`relative z-10 w-full flex flex-col items-center transition-opacity duration-1000 ${isOpened ? "opacity-100" : "opacity-0"}`}>
+      <div className={`relative z-10 w-full flex flex-col items-center transition-opacity duration-1000 ${allowScroll ? "opacity-100" : "opacity-0"}`}>
         
         <div className="w-full max-w-sm mx-auto flex flex-col items-center pt-16 px-6 md:px-12 pb-16">
           

@@ -120,7 +120,7 @@ export default function PortalPage() {
                 </div>
 
                 <p className="text-[#8C7B6B] text-base lg:text-lg font-medium leading-relaxed mb-8 max-w-sm">
-                  Giải pháp thiệp cưới online cao cấp. Thiết kế thanh lịch, tinh tế, tích hợp RSVP xác nhận và bản đồ thông minh.
+                  Giải pháp thiệp cưới online cao cấp. Thiết kế thanh lịch, tinh tế, tích hợp form xác nhận tham dự và bản đồ dẫn đường thông minh.
                 </p>
 
                 {/* Unified Showcase Container */}
