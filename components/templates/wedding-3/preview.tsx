@@ -50,6 +50,7 @@ export function WeddingThreePreview(props: TemplatePreviewProps) {
           message: `RSVP: ${JSON.stringify(data)}`,
         });
       }}
+      customData={parsedConfig}
     />
   );
 }

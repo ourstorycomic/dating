@@ -51,6 +51,7 @@ export function WeddingTwoPreview(props: TemplatePreviewProps) {
           message: `RSVP: ${JSON.stringify(data)}`,
         });
       }}
+      customData={parsedConfig}
     />
   );
 }

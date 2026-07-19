@@ -83,6 +83,22 @@ const allowedTemplateMatches = [
   "wedding #6",
 ];
 
+const futureWeddingDate = new Date();
+futureWeddingDate.setDate(futureWeddingDate.getDate() + 30);
+futureWeddingDate.setHours(11, 30, 0, 0);
+
+const futureEngagementDate = new Date();
+futureEngagementDate.setDate(futureEngagementDate.getDate() + 28);
+futureEngagementDate.setHours(9, 0, 0, 0);
+
+const formatDateTimeLocal = (date: Date) => {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+};
+
+const mockWeddingDate = formatDateTimeLocal(futureWeddingDate);
+const mockEngagementDate = formatDateTimeLocal(futureEngagementDate);
+
 export const MOCK_TEMPLATES: any[] = [
   {
     id: "sorry-1-mock",
@@ -299,8 +315,8 @@ export const MOCK_TEMPLATES: any[] = [
       { section: "1. Chú Rể & Cô Dâu", key: "groomName", label: "Tên Chú Rể", type: "text", default: temp.groom },
       { section: "1. Chú Rể & Cô Dâu", key: "brideName", label: "Tên Cô Dâu", type: "text", default: temp.bride },
       { section: "1. Chú Rể & Cô Dâu", key: "heroImage", label: "Ảnh Cover (Dọc)", type: "media" },
-      { section: "2. Thời Gian", key: "weddingDate", label: "Ngày & Giờ Cưới", type: "datetime", default: "2025-12-14T11:30" },
-      { section: "2. Thời Gian", key: "engagementDate", label: "Ngày & Giờ Ăn Hỏi", type: "datetime", default: "2025-12-12T09:00" },
+      { section: "2. Thời Gian", key: "weddingDate", label: "Ngày & Giờ Cưới", type: "datetime", default: mockWeddingDate },
+      { section: "2. Thời Gian", key: "engagementDate", label: "Ngày & Giờ Ăn Hỏi", type: "datetime", default: mockEngagementDate },
       { section: "3. Lời Mời", key: "letterText", label: "Nội dung thiệp", type: "textarea", default: "Được sự đồng thuận của gia đình hai bên\\nChúng tôi trân trọng kính mời quý khách tới dự bữa tiệc chung vui cùng gia đình chúng tôi" },
       { section: "3. Lời Mời", key: "groomFather", label: "Họ tên bố chú rể", type: "text", default: temp.groomFam.split('\\n')[0].trim() },
       { section: "3. Lời Mời", key: "groomMother", label: "Họ tên mẹ chú rể", type: "text", default: temp.groomFam.split('\\n')[1]?.trim() || '' },
@@ -597,7 +613,7 @@ export async function getOrderByPublicId(publicId: string) {
   const { data, error } = await supabase
     .from("orders")
     .select(
-      "id, public_id, recipient_name, custom_data, amount, status, gift_opened_at, recipient_response, response_text, responded_at, created_at, expires_at, templates(component_key, visual_label, gradient), payments(payment_code, amount, status, qr_code_url)",
+      "id, public_id, recipient_name, custom_data, amount, status, gift_opened_at, recipient_response, response_text, responded_at, created_at, expires_at, templates(component_key, visual_label, gradient, name, thumbnail_url), payments(payment_code, amount, status, qr_code_url)",
     )
     .eq("public_id", publicId)
     .maybeSingle();
@@ -623,6 +639,8 @@ export async function getOrderByPublicId(publicId: string) {
       component_key: string;
       visual_label: string | null;
       gradient: string | null;
+      name?: string | null;
+      thumbnail_url?: string | null;
     } | null;
     payments:
       | {

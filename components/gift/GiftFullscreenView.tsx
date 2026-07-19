@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { InteractiveTemplatePreview } from "@/components/templates/InteractiveTemplatePreview";
+import { useSearchParams } from "next/navigation";
 import type { TemplatePreviewProps } from "@/components/templates/previews/types";
 
 type GiftOrder = {
@@ -10,6 +11,10 @@ type GiftOrder = {
     question?: string;
     recipientName?: string;
     senderName?: string;
+    groomData?: Record<string, any>;
+    brideData?: Record<string, any>;
+    groomTemplateId?: string;
+    brideTemplateId?: string;
   };
   public_id: string;
   recipient_name: string | null;
@@ -20,11 +25,24 @@ type GiftOrder = {
   } | null;
 };
 
-export function GiftFullscreenView({ order }: { order: GiftOrder }) {
+export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder; side?: "trai" | "gai" | null }) {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
 
-  const customData = order.custom_data;
+  const searchParams = useSearchParams();
+  const side = sideProp ?? searchParams.get("side");
+
+  let customData = order.custom_data;
+  let componentKey = customData.componentKey ?? order.templates?.component_key ?? "val-starry-constellation";
+
+  // Merge Gái data if requested
+  if (side === "gai" && (customData as any).gai) {
+    customData = { ...customData, ...(customData as any).gai };
+    if ((customData as any).gai.templateId) {
+      componentKey = (customData as any).gai.templateId;
+    }
+  }
+
   const senderName = customData.senderName ?? "Anh";
   const recipientName = customData.recipientName ?? order.recipient_name ?? "Em";
 
@@ -56,9 +74,9 @@ export function GiftFullscreenView({ order }: { order: GiftOrder }) {
   }
 
   return (
-    <div className="fixed inset-0 z-[100] bg-gradient-to-br from-[#fff6fa] via-[#ffe4ef] to-[#ffd4e5]">
+    <div className="absolute inset-0 z-[100] bg-gradient-to-br from-[#fff6fa] via-[#ffe4ef] to-[#ffd4e5] overflow-y-auto">
       <InteractiveTemplatePreview
-        componentKey={customData.componentKey ?? order.templates?.component_key ?? "val-starry-constellation"}
+        componentKey={componentKey}
         customData={customData}
         gradient={order.templates?.gradient}
         question={customData.question}

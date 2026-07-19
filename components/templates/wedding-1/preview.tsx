@@ -39,6 +39,7 @@ export function WeddingOnePreview(props: TemplatePreviewProps) {
           message: `RSVP: ${JSON.stringify(data)}`,
         });
       }}
+      customData={parsedConfig}
     />
   );
 

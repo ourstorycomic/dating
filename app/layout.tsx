@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Be_Vietnam_Pro, Dancing_Script, Caveat } from "next/font/google";
+import { Be_Vietnam_Pro, Dancing_Script, Caveat, Playfair_Display, Cormorant_Garamond, Montserrat } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/Toast";
 
@@ -24,6 +24,29 @@ const caveat = Caveat({
   display: "swap",
 });
 
+const playfair = Playfair_Display({
+  subsets: ["latin", "vietnamese"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-playfair",
+  display: "swap",
+});
+
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin", "vietnamese"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-cormorant",
+  display: "swap",
+});
+
+const montserrat = Montserrat({
+  subsets: ["latin", "vietnamese"],
+  weight: ["300", "400", "500", "600"],
+  variable: "--font-montserrat",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Lovora - Thay lời muốn nói",
   description: "Web quà tặng tình yêu được shop setup theo yêu cầu. Chọn mẫu, gửi ảnh, nhận web quà siêu dễ thương.",
@@ -32,6 +55,20 @@ export const metadata: Metadata = {
     title: "Lovora - Thay lời muốn nói",
     description: "Web quà tặng tình yêu được shop setup theo yêu cầu.",
     type: "website",
+    images: [
+      {
+        url: "/thumbnails/valentine1.png",
+        width: 1200,
+        height: 630,
+        alt: "Lovora - Web quà tặng tình yêu",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Lovora - Thay lời muốn nói",
+    description: "Web quà tặng tình yêu được shop setup theo yêu cầu.",
+    images: ["/thumbnails/valentine1.png"],
   },
 };
 
@@ -41,7 +78,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" data-scroll-behavior="smooth" className={`scroll-smooth ${beVietnam.variable} ${dancingScript.variable} ${caveat.variable}`}>
+    <html lang="vi" data-scroll-behavior="smooth" className={`scroll-smooth ${beVietnam.variable} ${dancingScript.variable} ${caveat.variable} ${playfair.variable} ${cormorant.variable} ${montserrat.variable}`}>
       <body>
         <div className="fixed inset-0 -z-10 overflow-hidden bg-romance-dark">
           <div className="absolute inset-0 dreamy-sky" />

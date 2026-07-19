@@ -11,7 +11,7 @@ export function WeddingOneExperience({
   autoPlay = false,
   groomName = "Trần Đăng Khoa",
   brideName = "Nguyễn Mai Hoa",
-  weddingDate = "2025-12-14T11:30:00.000Z",
+  weddingDate = "2026-12-14T11:30:00.000Z",
   weddingMonth = "Tháng 12",
   weddingDay = "14",
   weddingYear = "2025",
@@ -33,6 +33,7 @@ export function WeddingOneExperience({
   engagementDate,
   groomQR,
   brideQR,
+  customData,
 }: {
   compact?: boolean;
   autoPlay?: boolean;
@@ -60,9 +61,10 @@ export function WeddingOneExperience({
   engagementDate?: string;
   groomQR?: string;
   brideQR?: string;
+  customData?: any;
 }) {
-  const parsedDDate = new Date(weddingDate || '2025-12-14T11:30:00.000Z');
-  const parsedEDate = new Date(engagementDate || '2025-12-12T09:00:00.000Z');
+  const parsedDDate = new Date(customData?.weddingDate || weddingDate || '2026-12-14T11:30:00.000Z');
+  const parsedEDate = new Date(customData?.engagementDate || engagementDate || '2026-12-12T09:00:00.000Z');
   const dDay = parsedDDate.getDate().toString().padStart(2, '0');
   const dMonthNumber = parsedDDate.getMonth() + 1;
   const dMonth = 'Tháng ' + dMonthNumber;
@@ -136,6 +138,22 @@ export function WeddingOneExperience({
     }
   };
 
+  const hasTiecMung = !!customData?.tiecName;
+  const hasTiecMungGai = !!customData?.tiecNameGai;
+
+  const parseTiec = (dateString?: string) => {
+    if (!dateString) return { date: '', time: '' };
+    const dt = new Date(dateString);
+    if (isNaN(dt.getTime())) return { date: '', time: '' };
+    return {
+      date: dt.toLocaleDateString('vi-VN'),
+      time: dt.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
+    };
+  };
+
+  const tiecTrai = parseTiec(customData?.tiecDate);
+  const tiecGai = parseTiec(customData?.tiecDateGai);
+
   const handleRSVP = (e: React.FormEvent) => {
     e.preventDefault();
     setRsvpSubmitted(true);
@@ -148,7 +166,7 @@ export function WeddingOneExperience({
   const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
-    const targetDate = new Date(weddingDate).getTime();
+    const targetDate = new Date(customData?.weddingDate || weddingDate).getTime();
     const interval = setInterval(() => {
       const now = new Date().getTime();
       const distance = targetDate - now;
@@ -273,11 +291,62 @@ export function WeddingOneExperience({
                (Tức {dDayOfWeek})
              </p>
              <div className="w-12 h-[1px] bg-[#d6cfc5] mx-auto my-6"></div>
-             <p className="text-[11px] font-sans uppercase tracking-widest text-gray-500 font-semibold mb-2">Tại</p>
-             <p className="text-[11px] font-sans text-[#444] leading-relaxed uppercase tracking-wide px-4">
+             <p className="text-[11px] font-sans uppercase tracking-widest text-gray-500 font-semibold mb-2">Tại Tư Gia</p>
+             <p className="text-[11px] font-sans text-[#444] leading-relaxed uppercase tracking-wide px-4 mb-6">
                {eventAddress}
              </p>
+             {mapUrl && (
+               <a href={mapUrl} target="_blank" rel="noreferrer" className="inline-block bg-[#8c7b6b] text-[#FFFFFF] text-[9px] px-6 py-3 uppercase tracking-[0.2em] font-bold shadow-md opacity-90 hover:opacity-100 transition-opacity">
+                 Xem Bản Đồ
+               </a>
+             )}
           </div>
+          
+          {hasTiecMung && (
+             <div className="border border-dashed border-[#8c7b6b]/60 p-8 @sm:p-12 relative bg-[#f9f8f6] mt-8">
+                <p className="text-[10px] uppercase font-sans tracking-[0.2em] text-[#8c7b6b] mb-6 font-semibold">TIỆC MỪNG LỄ THÀNH HÔN {hasTiecMungGai ? "(NHÀ TRAI)" : ""}</p>
+                <h3 className="text-xl @sm:text-2xl text-[#333] font-medium tracking-wide mb-6">TIỆC MỪNG LỄ THÀNH HÔN</h3>
+                
+                <p className="text-[11px] font-sans uppercase tracking-widest text-gray-500 leading-loose mb-6">
+                  Vào lúc {tiecTrai.time}<br/>
+                  Ngày {tiecTrai.date}
+                </p>
+                <div className="w-12 h-[1px] bg-[#d6cfc5] mx-auto my-6"></div>
+                <p className="text-[11px] font-sans uppercase tracking-widest text-gray-500 font-semibold mb-2">Tại</p>
+                <p className="text-[11px] font-sans text-[#444] leading-relaxed uppercase tracking-wide px-4 mb-6">
+                  <strong>{customData?.tiecName}</strong><br/>
+                  {customData?.tiecAddress}
+                </p>
+                {customData?.tiecMapUrl && (
+                  <a href={customData.tiecMapUrl} target="_blank" rel="noreferrer" className="bg-[#8c7b6b] text-[#FFFFFF] text-[9px] px-6 py-3 uppercase tracking-[0.2em] font-bold shadow-md opacity-90 hover:opacity-100 transition-opacity">
+                    Xem Bản Đồ
+                  </a>
+                )}
+             </div>
+           )}
+
+           {hasTiecMungGai && (
+             <div className="border border-dashed border-[#8c7b6b]/60 p-8 @sm:p-12 relative bg-[#f9f8f6] mt-8">
+                <p className="text-[10px] uppercase font-sans tracking-[0.2em] text-[#8c7b6b] mb-6 font-semibold">TIỆC MỪNG LỄ THÀNH HÔN (NHÀ GÁI)</p>
+                <h3 className="text-xl @sm:text-2xl text-[#333] font-medium tracking-wide mb-6">TIỆC MỪNG LỄ THÀNH HÔN</h3>
+                
+                <p className="text-[11px] font-sans uppercase tracking-widest text-gray-500 leading-loose mb-6">
+                  Vào lúc {tiecGai.time}<br/>
+                  Ngày {tiecGai.date}
+                </p>
+                <div className="w-12 h-[1px] bg-[#d6cfc5] mx-auto my-6"></div>
+                <p className="text-[11px] font-sans uppercase tracking-widest text-gray-500 font-semibold mb-2">Tại</p>
+                <p className="text-[11px] font-sans text-[#444] leading-relaxed uppercase tracking-wide px-4 mb-6">
+                  <strong>{customData?.tiecNameGai}</strong><br/>
+                  {customData?.tiecAddressGai}
+                </p>
+                {customData?.tiecMapUrlGai && (
+                  <a href={customData.tiecMapUrlGai} target="_blank" rel="noreferrer" className="bg-[#8c7b6b] text-[#FFFFFF] text-[9px] px-6 py-3 uppercase tracking-[0.2em] font-bold shadow-md opacity-90 hover:opacity-100 transition-opacity">
+                    Xem Bản Đồ
+                  </a>
+                )}
+             </div>
+           )}
         </motion.div>
       </section>
 
@@ -286,24 +355,24 @@ export function WeddingOneExperience({
         <h2 className="text-[11px] uppercase tracking-[0.3em] text-[#8c7b6b] font-bold mb-12 font-sans">Sự kiện sắp tới</h2>
         
         {/* Countdown */}
-        <div className="flex gap-4 @sm:gap-8 justify-center font-sans mb-20 text-[#444]">
+        <div className="flex gap-2 sm:gap-6 justify-center font-sans mb-20 text-[#444]">
           <div className="flex flex-col items-center">
-            <span className="text-3xl @sm:text-4xl font-light">{days}</span>
+            <span className="text-2xl sm:text-4xl font-light">{days}</span>
             <span className="text-[8px] uppercase tracking-[0.2em] mt-2 opacity-60">Ngày</span>
           </div>
-          <span className="text-2xl font-light opacity-30">:</span>
+          <span className="text-xl sm:text-2xl font-light opacity-30 pt-1">:</span>
           <div className="flex flex-col items-center">
-            <span className="text-3xl @sm:text-4xl font-light">{hours}</span>
+            <span className="text-2xl sm:text-4xl font-light">{hours}</span>
             <span className="text-[8px] uppercase tracking-[0.2em] mt-2 opacity-60">Giờ</span>
           </div>
-          <span className="text-2xl font-light opacity-30">:</span>
+          <span className="text-xl sm:text-2xl font-light opacity-30 pt-1">:</span>
           <div className="flex flex-col items-center">
-            <span className="text-3xl @sm:text-4xl font-light">{minutes}</span>
+            <span className="text-2xl sm:text-4xl font-light">{minutes}</span>
             <span className="text-[8px] uppercase tracking-[0.2em] mt-2 opacity-60">Phút</span>
           </div>
-          <span className="text-2xl font-light opacity-30">:</span>
+          <span className="text-xl sm:text-2xl font-light opacity-30 pt-1">:</span>
           <div className="flex flex-col items-center">
-            <span className="text-3xl @sm:text-4xl font-light">{seconds}</span>
+            <span className="text-2xl sm:text-4xl font-light">{seconds}</span>
             <span className="text-[8px] uppercase tracking-[0.2em] mt-2 opacity-60">Giây</span>
           </div>
         </div>
@@ -322,16 +391,11 @@ export function WeddingOneExperience({
               {blanks.map(b => <div key={`b-${b}`} />)}
               {monthDays.map(day => {
                 const isWedding = day.toString() === dDay && parsedDDate.getMonth() + 1 === dMonthNumber;
-                const isEngagement = day === parsedEDate.getDate() && parsedEDate.getMonth() + 1 === dMonthNumber && parsedEDate.getFullYear() === parsedDDate.getFullYear();
                 
                 return (
                   <div key={day} className="relative flex justify-center items-center text-xs font-sans">
                     {isWedding ? (
                       <div className="w-6 h-6 rounded-full border border-[#8c7b6b] bg-[#8c7b6b] flex items-center justify-center text-white font-bold">
-                        {day}
-                      </div>
-                    ) : isEngagement ? (
-                      <div className="w-6 h-6 rounded-full border border-[#d6cfc5] bg-[#d6cfc5] flex items-center justify-center text-[#4a4a4a] font-bold">
                         {day}
                       </div>
                     ) : (
@@ -342,9 +406,6 @@ export function WeddingOneExperience({
               })}
            </div>
            <div className="flex justify-center gap-6 mt-6 pt-4 border-t border-[#d6cfc5]/50">
-             <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#8c7b6b]">
-               <div className="w-3 h-3 rounded-full bg-[#d6cfc5]"></div> Ăn Hỏi
-             </div>
              <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#8c7b6b]">
                <div className="w-3 h-3 rounded-full bg-[#8c7b6b]"></div> Lễ Cưới
              </div>

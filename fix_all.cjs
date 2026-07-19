@@ -1,101 +1,191 @@
-const { execSync } = require('child_process');
 const fs = require('fs');
+const path = require('path');
 
-// ============================================================
-// PATCH 1: Fix OrderBuilderForm.tsx
-// ============================================================
-let form = fs.readFileSync('d:\\dating\\components\\dashboard\\OrderBuilderForm.tsx', 'utf8');
+const templates = [
+  {
+    name: 'wedding-2',
+    color1: '#0047AB',
+    color2: '#7A1F1F',
+    regexToInjectAfter: /(\{\/\* Dashed Invite Box \*\/\}[\s\S]*?<\/motion\.div>)/,
+    calendarRegex: /\{isWedding && \(\s*<motion\.div[^>]+>\s*<\/?motion\.div>\s*\)\}\s*\{isEngagement && \(\s*<motion\.div[^>]+>\s*<\/?motion\.div>\s*\)\}/g,
+    calendarReplace: `{isWedding && (
+                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 2.5, type: "spring" }} className="absolute inset-0 flex items-center justify-center -z-10">
+                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-[#7A1F1F] opacity-20">
+                          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                      </motion.div>
+                    )}`
+  },
+  {
+    name: 'wedding-3',
+    color1: '#7A1F1F',
+    color2: '#7A1F1F',
+    regexToInjectAfter: /(\{\/\* Lễ Thành Hôn \*\/\}[\s\S]*?<\/motion\.div>)/,
+    calendarRegex: /\{isWedding && \(\s*<motion\.img[^>]+>\s*\)\}\s*\{isEngagement && \(\s*<motion\.div[^>]+>\s*<\/?motion\.div>\s*\)\}/g,
+    calendarReplace: `{isWedding && (
+                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 2.5, type: "spring" }} className="absolute inset-0 flex items-center justify-center -z-10">
+                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-[#7A1F1F] opacity-20">
+                          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                      </motion.div>
+                    )}`
+  },
+  {
+    name: 'wedding-4',
+    color1: '#2C3B2E',
+    color2: '#2C3B2E',
+    regexToInjectAfter: /(\{\/\* Lễ Thành Hôn \*\/\}[\s\S]*?<\/motion\.div>)/,
+    calendarRegex: /\{isWedding && \(\s*<motion\.div[^>]+>\s*<\/?motion\.div>\s*\)\}\s*\{isEngagement && \(\s*<motion\.div[^>]+>\s*<\/?motion\.div>\s*\)\}/g,
+    calendarReplace: `{isWedding && (
+                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 2.5, type: "spring" }} className="absolute inset-0 flex items-center justify-center -z-10">
+                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-[#A67C52] opacity-20">
+                          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                      </motion.div>
+                    )}`
+  },
+  {
+    name: 'wedding-5',
+    color1: '#3A4D39',
+    color2: '#3A4D39',
+    regexToInjectAfter: /(\{\/\* Lễ Thành Hôn \*\/\}[\s\S]*?<\/motion\.div>)/,
+    calendarRegex: /\{isWedding && \(\s*<motion\.div[^>]+>\s*<\/?motion\.div>\s*\)\}\s*\{isEngagement && \(\s*<motion\.div[^>]+>\s*<\/?motion\.div>\s*\)\}/g,
+    calendarReplace: `{isWedding && (
+                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 2.5, type: "spring" }} className="absolute inset-0 flex items-center justify-center -z-10">
+                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-[#3A4D39] opacity-20">
+                          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                      </motion.div>
+                    )}`
+  },
+  {
+    name: 'wedding-6',
+    color1: '#E67E22',
+    color2: '#E67E22',
+    regexToInjectAfter: /(\{\/\* Lễ Thành Hôn \*\/\}[\s\S]*?<\/motion\.div>)/,
+    calendarRegex: /\{isWedding && \(\s*<motion\.div[^>]+>\s*<\/?motion\.div>\s*\)\}\s*\{isEngagement && \(\s*<motion\.div[^>]+>\s*<\/?motion\.div>\s*\)\}/g,
+    calendarReplace: `{isWedding && (
+                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 2.5, type: "spring" }} className="absolute inset-0 flex items-center justify-center -z-10">
+                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-[#E67E22] opacity-20">
+                          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                      </motion.div>
+                    )}`
+  }
+];
 
-// 1a. Add page3SecretText + page3ButtonText to initial valentine2Config state
-form = form.replace(
-  `    page3Hint: "Kéo ruy băng nhé",`,
-  `    page3Hint: "Kéo ruy băng nhé",\n    page3SecretText: "Tớ có một món quà bí mật, nhưng cậu phải tự tay giành lấy nó nhé!",\n    page3ButtonText: "Đi lấy quà 🕹️",`
-);
+function generateJSX(t) {
+  let boxClasses = t.name === 'wedding-2' 
+    ? `border border-dashed border-[${t.color2}] rounded-lg p-6 flex flex-col items-center text-center w-full mb-16 bg-[#FFFDF9]` 
+    : `bg-white p-6 shadow-md w-full mb-8 relative border-t-4 border-[${t.color2}]`;
+    
+  let p1Classes = t.name === 'wedding-2'
+    ? `text-xs font-bold text-[${t.color1}] uppercase tracking-widest mb-4`
+    : `text-xs font-serif font-bold text-[${t.color1}] uppercase mb-4 tracking-[0.2em]`;
+    
+  let p2Classes = t.name === 'wedding-2'
+    ? `text-[10px] text-[#5A5552] leading-relaxed mb-2 uppercase max-w-[200px] font-bold`
+    : `text-[10px] text-[#2D2A28] uppercase font-bold tracking-widest mb-2`;
+    
+  let p3Classes = t.name === 'wedding-2'
+    ? `text-[10px] text-[#5A5552] leading-relaxed mb-6 uppercase max-w-[200px] font-bold`
+    : `text-[10px] text-[#2D2A28] leading-relaxed mb-4`;
+    
+  let btnClasses = t.name === 'wedding-2'
+    ? `bg-[${t.color2}] text-[#FFFFFF] text-[10px] px-8 py-3 rounded-full uppercase tracking-widest font-bold shadow-md hover:bg-opacity-80`
+    : `w-full bg-[${t.color2}] text-[#FFFFFF] py-3 rounded-full flex items-center justify-center gap-2 mb-2 shadow-md hover:bg-opacity-80 text-[10px] uppercase tracking-widest font-bold`;
 
-// 1b. Add to loadOrder merge
-form = form.replace(
-  `        page3Hint: cd.page3Hint ?? current.page3Hint,\n        confessionText: cd.confessionText ?? current.confessionText,`,
-  `        page3Hint: cd.page3Hint ?? current.page3Hint,\n        page3SecretText: cd.page3SecretText ?? current.page3SecretText,\n        page3ButtonText: cd.page3ButtonText ?? current.page3ButtonText,\n        confessionText: cd.confessionText ?? current.confessionText,`
-);
+  return `
+          {hasTiecMung && (
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="${boxClasses}">
+              <h3 className="${p1Classes}">TIỆC MỪNG {hasTiecMungGai ? "(NHÀ TRAI)" : ""}</h3>
+              <p className="${p2Classes}">
+                Vào lúc {tiecTrai.time} | {tiecTrai.date}
+              </p>
+              <h3 className="text-xs font-bold text-[#2D2A28] uppercase mt-2 mb-2">
+                {customData?.tiecName}
+              </h3>
+              <p className="${p3Classes}">
+                {customData?.tiecAddress}
+              </p>
+              {customData?.tiecMapUrl && (
+                <a href={customData.tiecMapUrl} target="_blank" rel="noreferrer" className="${btnClasses}">
+                  Xem Chỉ Đường
+                </a>
+              )}
+            </motion.div>
+          )}
 
-// 1c. Add form inputs for page3SecretText and page3ButtonText
-form = form.replace(
-  `                    <TextInput label="Gợi ý kéo ruy băng" value={valentine2Config.page3Hint} onChange={(v) => setValentine2Config({ ...valentine2Config, page3Hint: v })} />`,
-  `                    <TextInput label="Gợi ý kéo ruy băng" value={valentine2Config.page3Hint} onChange={(v) => setValentine2Config({ ...valentine2Config, page3Hint: v })} />\n                    <div className="mt-4" />\n                    <TextArea label="Nội dung bí mật trong túi" value={valentine2Config.page3SecretText} onChange={(v) => setValentine2Config({ ...valentine2Config, page3SecretText: v })} />\n                    <div className="mt-4" />\n                    <TextInput label="Nút lấy quà" value={valentine2Config.page3ButtonText} onChange={(v) => setValentine2Config({ ...valentine2Config, page3ButtonText: v })} />`
-);
+          {hasTiecMungGai && (
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="${boxClasses}">
+              <h3 className="${p1Classes}">TIỆC MỪNG (NHÀ GÁI)</h3>
+              <p className="${p2Classes}">
+                Vào lúc {tiecGai.time} | {tiecGai.date}
+              </p>
+              <h3 className="text-xs font-bold text-[#2D2A28] uppercase mt-2 mb-2">
+                {customData?.tiecNameGai}
+              </h3>
+              <p className="${p3Classes}">
+                {customData?.tiecAddressGai}
+              </p>
+              {customData?.tiecMapUrlGai && (
+                <a href={customData.tiecMapUrlGai} target="_blank" rel="noreferrer" className="${btnClasses}">
+                  Xem Chỉ Đường
+                </a>
+              )}
+            </motion.div>
+          )}
+`;
+}
 
-// Verify
-console.log('Form patch checks:');
-console.log('  page3SecretText state:', form.includes('page3SecretText: "Tớ'));
-console.log('  page3SecretText loadOrder:', form.includes('page3SecretText: cd.page3SecretText'));
-console.log('  page3SecretText input:', form.includes('Nội dung bí mật trong túi'));
+templates.forEach(t => {
+  let file = path.join(__dirname, 'components/templates', t.name, 'Experience.tsx');
+  if (!fs.existsSync(file)) return;
+  
+  let c = fs.readFileSync(file, 'utf8');
+  
+  if (!c.includes('customData?: any')) {
+    c = c.replace(/brideQR\?:\s*string;/, 'brideQR?: string;\n  customData?: any;');
+    c = c.replace(/brideQR,([\s\S]*?)}:/, 'brideQR,\n  customData,$1}:');
+  }
+  
+  if (!c.includes('const hasTiecMung =')) {
+    const parsingLogic = `
+  const hasTiecMung = !!customData?.tiecName;
+  const hasTiecMungGai = !!customData?.tiecNameGai;
 
-fs.writeFileSync('d:\\dating\\components\\dashboard\\OrderBuilderForm.tsx', form, 'utf8');
+  const parseTiec = (dateString?: string) => {
+    if (!dateString) return { date: '', time: '' };
+    const dt = new Date(dateString);
+    if (isNaN(dt.getTime())) return { date: '', time: '' };
+    return {
+      date: dt.toLocaleDateString('vi-VN'),
+      time: dt.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
+    };
+  };
 
-// ============================================================
-// PATCH 2: Restore + patch Scrapbook.tsx from clean git source
-// ============================================================
-const rawBuf = execSync('git cat-file -p d48aa71:components/templates/valentine-2/components/Scrapbook.tsx', {
-  cwd: 'd:\\dating',
-  maxBuffer: 5 * 1024 * 1024
+  const tiecTrai = parseTiec(customData?.tiecDate);
+  const tiecGai = parseTiec(customData?.tiecDateGai);
+`;
+    c = c.replace(/(const containerRef = useRef[\s\S]*?;\r?\n)/, '$1' + parsingLogic);
+  }
+  
+  if (!c.includes('TIỆC MỪNG')) {
+    let match = c.match(t.regexToInjectAfter);
+    if (match) {
+      c = c.replace(t.regexToInjectAfter, match[1] + generateJSX(t));
+    } else {
+      console.log('Failed to match inject regex in ' + t.name);
+    }
+  }
+
+  // Also replace calendar markers
+  c = c.replace(t.calendarRegex, t.calendarReplace);
+  
+  // Also clean up any lingering tiecDateTime logic in customData parsing if it was already there (for some reason)
+  c = c.replace(/tiecDateTimeGai/g, 'tiecDateGai');
+  c = c.replace(/tiecDateTime/g, 'tiecDate');
+
+  fs.writeFileSync(file, c, 'utf8');
+  console.log('Fixed ' + t.name);
 });
-
-let c = rawBuf.toString('utf8');
-
-// Verify clean source
-console.log('\nScrapbook source check: "món quà":', c.includes('m\u00f3n qu\u00e0'));
-
-// Polaroid layout fixes
-c = c.replace(
-  `className="relative w-full flex-shrink-0" style={{ height: '60%' }}`,
-  `className="relative w-full flex-shrink-0 overflow-hidden" style={{ height: '52%' }}`
-);
-c = c.replace(
-  `className="absolute bg-white p-2 pb-8 rounded shadow-lg drop-shadow-xl border border-gray-100"`,
-  `className="absolute bg-white p-2 pb-5 rounded shadow-lg drop-shadow-xl border border-gray-100"`
-);
-c = c.replace(
-  `top: i === 0 ? '8%' : '14%', `,
-  `top: i === 0 ? '4%' : i === 1 ? '8%' : '4%', `
-);
-c = c.replace(
-  `left: i === 0 ? '4%' : '22%',`,
-  `left: i === 0 ? '3%' : i === 1 ? '30%' : '57%',`
-);
-c = c.replace(
-  `rotate: i === 0 ? '-3deg' : '4deg',`,
-  `rotate: i === 0 ? '-8deg' : i === 1 ? '0deg' : '8deg',`
-);
-c = c.replace(
-  `width: '58%',`,
-  `width: '38%',`
-);
-c = c.replace(
-  `zIndex: i === 0 ? 1 : 2,`,
-  `zIndex: i + 1,`
-);
-c = c.replace(
-  `className="text-center font-[Caveat] text-lg text-slate-800 font-bold"`,
-  `className="text-center font-[Caveat] text-sm leading-tight text-slate-800 font-bold"`
-);
-
-// Make page 3 secret text configurable
-c = c.replace(
-  `T\u1edb c\u00f3 m\u1ed9t m\u00f3n qu\u00e0 b\u00ed m\u1eadt, nh\u01b0ng c\u1eadu ph\u1ea3i t\u1ef1 tay gi\u00e0nh l\u1ea5y n\u00f3 nh\u00e9!`,
-  `{data.page3SecretText || 'T\u1edb c\u00f3 m\u1ed9t m\u00f3n qu\u00e0 b\u00ed m\u1eadt, nh\u01b0ng c\u1eadu ph\u1ea3i t\u1ef1 tay gi\u00e0nh l\u1ea5y n\u00f3 nh\u00e9!'}`
-);
-c = c.replace(
-  `\u0110i l\u1ea5y qu\u00e0 \uD83D\uDD79\uFE0F`,
-  `{data.page3ButtonText || '\u0110i l\u1ea5y qu\u00e0 \uD83D\uDD79\uFE0F'}`
-);
-
-console.log('\nScrapbook patch checks:');
-console.log('  height 52:', c.includes("'52%'"));
-console.log('  fan layout 57:', c.includes("'57%'"));
-console.log('  -8deg:', c.includes("'-8deg'"));
-console.log('  width 38:', c.includes("'38%'"));
-console.log('  page3SecretText dynamic:', c.includes('page3SecretText'));
-console.log('  Vietnamese still ok:', c.includes('m\u00f3n qu\u00e0'));
-
-fs.writeFileSync('d:\\dating\\components\\templates\\valentine-2\\components\\Scrapbook.tsx', c, 'utf8');
-console.log('\nAll patches applied successfully!');

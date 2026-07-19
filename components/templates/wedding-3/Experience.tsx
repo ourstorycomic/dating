@@ -22,6 +22,7 @@ interface WeddingThreeProps {
   engagementDate?: string;
   groomQR?: string;
   brideQR?: string;
+  customData?: any;
 }
 
 export function WeddingThreeExperience({
@@ -42,6 +43,7 @@ export function WeddingThreeExperience({
   engagementDate,
   groomQR,
   brideQR,
+  customData,
 }: WeddingThreeProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isOpened, setIsOpened] = useState(false);
@@ -49,6 +51,22 @@ export function WeddingThreeExperience({
   const [giftTab, setGiftTab] = useState<'groom'|'bride'>('groom');
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const hasTiecMung = !!customData?.tiecName;
+  const hasTiecMungGai = !!customData?.tiecNameGai;
+
+  const parseTiec = (dateString?: string) => {
+    if (!dateString) return { date: '', time: '' };
+    const dt = new Date(dateString);
+    if (isNaN(dt.getTime())) return { date: '', time: '' };
+    return {
+      date: dt.toLocaleDateString('vi-VN'),
+      time: dt.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
+    };
+  };
+
+  const tiecTrai = parseTiec(customData?.tiecDate);
+  const tiecGai = parseTiec(customData?.tiecDateGai);
 
   useEffect(() => {
     if (autoPlay) {
@@ -107,15 +125,15 @@ export function WeddingThreeExperience({
   };
 
   // Date Parsing
-  const safeDate = weddingDate || '2025-12-14';
+  const safeDate = weddingDate || '2026-12-14';
   let parsedDDate = new Date(safeDate);
   if (isNaN(parsedDDate.getTime())) {
-    parsedDDate = new Date('2025-12-14');
+    parsedDDate = new Date('2026-12-14');
   }
-  const safeEDate = engagementDate || '2025-12-12';
+  const safeEDate = engagementDate || '2026-12-12';
   let parsedEDate = new Date(safeEDate);
   if (isNaN(parsedEDate.getTime())) {
-    parsedEDate = new Date('2025-12-12');
+    parsedEDate = new Date('2026-12-12');
   }
   
   const dDay = String(parsedDDate.getDate()).padStart(2, '0');
@@ -229,10 +247,9 @@ export function WeddingThreeExperience({
               {/* Days */}
               {monthDays.map(day => {
                 const isWedding = day === Number(dDay) && parsedDDate.getMonth() + 1 === dMonthNumber && parsedDDate.getFullYear() === Number(dYear);
-                const isEngagement = day === parsedEDate.getDate() && parsedEDate.getMonth() + 1 === dMonthNumber && parsedEDate.getFullYear() === Number(dYear);
                 return (
                   <div key={day} className="relative flex justify-center items-center">
-                    <span className={`z-10 ${isWedding || isEngagement ? 'text-[#7A1F1F] font-bold' : 'text-[#2D2A28]'}`}>{day}</span>
+                    <span className={`z-10 ${isWedding ? 'text-[#7A1F1F] font-bold' : 'text-[#2D2A28]'}`}>{day}</span>
                     {isWedding && (
                       <motion.img 
                         initial={{ scale: 0 }}
@@ -242,17 +259,11 @@ export function WeddingThreeExperience({
                         className="absolute w-6 h-6 object-contain z-0 -translate-y-1" 
                       />
                     )}
-                    {isEngagement && (
-                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 2.5, type: "spring" }} className="absolute inset-0 border border-[#A67C52] rounded-full scale-110 opacity-60" />
-                    )}
                   </div>
                 );
               })}
             </div>
             <div className="flex justify-center gap-6 mt-4">
-              <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#A67C52]">
-                <div className="w-3 h-3 rounded-full border border-[#A67C52] opacity-50"></div> Ăn Hỏi
-              </div>
               <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#7A1F1F]">
                 <img src="/assets/wedding/wedding-3/ring.webp" className="w-3 h-3 object-contain" /> Lễ Cưới
               </div>
@@ -260,22 +271,53 @@ export function WeddingThreeExperience({
             <div className="w-full h-px bg-[#C5A880]/30 mt-4"></div>
           </motion.div>
 
-          {/* Map Button */}
-          <motion.a initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} href={mapUrl} target="_blank" rel="noopener noreferrer" className="w-full max-w-[280px] bg-[#7A1F1F] text-[#FFFFFF] py-3 rounded-sm flex items-center justify-center gap-2 mb-6 hover:bg-[#5a1515] transition-colors shadow-md">
-            <span className="text-[10px] uppercase tracking-widest font-bold">Mở Bản Đồ Đường Đi</span>
-          </motion.a>
-
           {/* Address Box */}
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="text-center mb-8 px-4 w-full">
-            <h3 className="text-xs font-bold text-[#2D2A28] uppercase mb-2">Trung Tâm Tiệc Cưới</h3>
-            <p className="text-[10px] text-[#2D2A28] leading-relaxed">{eventAddress}</p>
+            <h3 className="text-xs font-bold text-[#2D2A28] uppercase mb-2">Địa Điểm</h3>
+            <p className="text-[10px] text-[#2D2A28] leading-relaxed font-bold uppercase">Tại Tư Gia</p>
+            <p className="text-[10px] text-[#2D2A28] leading-relaxed mb-4">{eventAddress}</p>
+            {mapUrl && (
+              <a href={mapUrl} target="_blank" rel="noreferrer" className="inline-block bg-[#7A1F1F] text-white text-[10px] uppercase font-bold tracking-widest px-5 py-2 rounded-sm shadow-md hover:bg-opacity-80">
+                Xem Bản Đồ
+              </a>
+            )}
           </motion.div>
+          
+          {hasTiecMung && (
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="border border-dashed border-[#7A1F1F] rounded-lg p-6 flex flex-col items-center text-center w-full mb-12 bg-white/50">
+              <h3 className="text-xs font-bold text-[#7A1F1F] uppercase tracking-widest mb-4">TIỆC MỪNG LỄ THÀNH HÔN {hasTiecMungGai ? "(NHÀ TRAI)" : ""}</h3>
+              <p className="text-[10px] text-[#2D2A28] leading-relaxed mb-2 uppercase max-w-[200px] font-bold">
+                Vào lúc {tiecTrai.time} | {tiecTrai.date}
+              </p>
+              <p className="text-[10px] text-[#2D2A28] leading-relaxed mb-6 uppercase max-w-[200px] font-bold">
+                <span className="block font-bold mb-1">{customData?.tiecName}</span>
+                {customData?.tiecAddress}
+              </p>
+              {customData?.tiecMapUrl && (
+                <a href={customData.tiecMapUrl} target="_blank" rel="noreferrer" className="bg-[#7A1F1F] text-[#FFFFFF] text-[10px] px-8 py-3 rounded-sm uppercase tracking-widest font-bold shadow-md hover:bg-opacity-80">
+                  Xem Chỉ Đường
+                </a>
+              )}
+            </motion.div>
+          )}
 
-          {/* Map Image Thumbnail */}
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="w-full relative aspect-video rounded-sm overflow-hidden border-2 border-[#7A1F1F] mb-12 shadow-md">
-            <img src="/assets/lovepics/map-preview.jpg" alt="Map" className="w-full h-full object-cover opacity-80" />
-            <a href={mapUrl} target="_blank" rel="noopener noreferrer" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#7A1F1F] text-white text-[10px] uppercase font-bold tracking-widest px-4 py-2 rounded-full shadow-lg border border-white/30 whitespace-nowrap">Chỉ Đường</a>
-          </motion.div>
+          {hasTiecMungGai && (
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="border border-dashed border-[#7A1F1F] rounded-lg p-6 flex flex-col items-center text-center w-full mb-12 bg-white/50">
+              <h3 className="text-xs font-bold text-[#7A1F1F] uppercase tracking-widest mb-4">TIỆC MỪNG LỄ THÀNH HÔN (NHÀ GÁI)</h3>
+              <p className="text-[10px] text-[#2D2A28] leading-relaxed mb-2 uppercase max-w-[200px] font-bold">
+                Vào lúc {tiecGai.time} | {tiecGai.date}
+              </p>
+              <p className="text-[10px] text-[#2D2A28] leading-relaxed mb-6 uppercase max-w-[200px] font-bold">
+                <span className="block font-bold mb-1">{customData?.tiecNameGai}</span>
+                {customData?.tiecAddressGai}
+              </p>
+              {customData?.tiecMapUrlGai && (
+                <a href={customData.tiecMapUrlGai} target="_blank" rel="noreferrer" className="bg-[#7A1F1F] text-[#FFFFFF] text-[10px] px-8 py-3 rounded-sm uppercase tracking-widest font-bold shadow-md hover:bg-opacity-80">
+                  Xem Chỉ Đường
+                </a>
+              )}
+            </motion.div>
+          )}
 
           {/* RSVP Form */}
           <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="w-full bg-[#7A1F1F] p-8 mb-12 flex flex-col items-center">

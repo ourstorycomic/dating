@@ -157,7 +157,7 @@ export default function TemplatePreviewPage({ params }: { params: Promise<{ id: 
             className={`transition-all duration-500 ease-out flex flex-col bg-white relative shadow-2xl overflow-hidden shrink-0 ${activeDevice === 'desktop'
               ? 'w-full max-w-[1200px] rounded-xl border border-[#E5E5E5] h-full max-h-[800px]'
               : 'w-full max-w-[375px] sm:max-w-[400px] rounded-[2.5rem] border-[8px] border-[#1A1A1A] h-full max-h-[850px]'
-              }`}
+              } [transform:translateZ(0)]`}
           >
             {activeDevice === 'desktop' ? (
               // Desktop Minimalist Browser Mockup

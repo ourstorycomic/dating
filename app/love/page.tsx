@@ -237,10 +237,12 @@ export default async function Home() {
               </div>
             </div>
 
-            <GlassCard glow className="float-slow mx-auto w-full max-w-[520px] p-2 sm:p-3 self-end relative z-20">
+            <GlassCard glow className="float-slow mx-auto w-full max-w-[360px] p-2 sm:p-3 self-center lg:self-end relative z-20">
               <div className="relative overflow-hidden rounded-[30px] border-[4px] border-[#ffe0ef] bg-[#fff9fc] p-3 sm:p-4 shadow-inner" style={{ perspective: 1200 }}>
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_24%_16%,rgba(255,142,199,0.34),transparent_28%),radial-gradient(circle_at_82%_34%,rgba(166,222,255,0.42),transparent_30%),radial-gradient(circle_at_50%_92%,rgba(255,221,132,0.38),transparent_32%)]" />
-                <TiltPhonePreview />
+                <div className="w-full aspect-[9/19]">
+                  <TiltPhonePreview />
+                </div>
               </div>
             </GlassCard>
           </section>

@@ -684,6 +684,18 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   });
 
   const [dynamicData, setDynamicData] = useState<Record<string, any>>({});
+  const [activeTab, setActiveTab] = useState<"trai" | "gai">("trai");
+  const isGoi3 = selectedPackage?.includes("goi3") || false;
+  const isGoi2 = selectedPackage?.includes("goi2") || false;
+  const isGoi1 = selectedPackage?.includes("goi1") || false;
+
+  const getVal = (key: string) => (isGoi3 && activeTab === "gai") ? (dynamicData.gai?.[key] ?? dynamicData[key] ?? "") : (dynamicData[key] ?? "");
+  const setVal = (key: string, val: any) => setDynamicData((d: any) => {
+    if (isGoi3 && activeTab === "gai") {
+      return { ...d, gai: { ...(d.gai || {}), [key]: val } };
+    }
+    return { ...d, [key]: val };
+  });
   const [result, setResult] = useState<{ amount: number; giftLink: string; orderId: string; paymentCode: string; paymentStatus: string; qrCodeUrl: string | null; status: string; trackLink: string; unlocked: boolean; templateKey?: string } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isConfirmingPayment, setIsConfirmingPayment] = useState(false);
@@ -938,6 +950,14 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
       backgroundColor: stage2Background,
       accentColor: stage1Accent,
     } : {}),
+    // Wedding: inject hasTiecMung flags derived from package type
+    ...(isWedding ? {
+      // hasTiecMung = true nếu có tiecName hoặc tiecDate (Nhà Trai)
+      hasTiecMung: !!(dynamicData.tiecName || dynamicData.tiecDate),
+      // hasTiecMungGai = true chỉ khi Gói 2 (cả 2 tiệc) VÀ có data Nhà Gái
+      hasTiecMungGai: isGoi2 ? !!(dynamicData.tiecNameGai || dynamicData.tiecDateGai) : false,
+    } : {}),
+    // dynamicData cuối cùng để override tất cả — bao gồm groomName, brideName, eventAddress, etc.
     ...dynamicData,
   };
 
@@ -1846,48 +1866,89 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
           <>
             {isWedding ? (
               <>
+                
+                {isGoi3 && (
+                  <div className="mb-6 flex gap-2">
+                    <button type="button" onClick={() => setActiveTab("trai")} className={`flex-1 rounded-xl py-3 text-sm font-bold transition-colors ${activeTab === "trai" ? "bg-pink-500 text-white" : "bg-white/5 text-white/60 hover:bg-white/10"}`}>Thiệp Nhà Trai</button>
+                    <button type="button" onClick={() => setActiveTab("gai")} className={`flex-1 rounded-xl py-3 text-sm font-bold transition-colors ${activeTab === "gai" ? "bg-pink-500 text-white" : "bg-white/5 text-white/60 hover:bg-white/10"}`}>Thiệp Nhà Gái</button>
+                  </div>
+                )}
+                
                 <Section title="Thông tin chung">
-                  <TextInput label="Tên Chú rể" value={dynamicData.groomName} placeholder="Ví dụ: Minh Khang" onChange={(v) => setDynamicData(d => ({ ...d, groomName: v }))} />
-                  <TextInput label="Tên Cô dâu" value={dynamicData.brideName} placeholder="Ví dụ: Thu Hương" onChange={(v) => setDynamicData(d => ({ ...d, brideName: v }))} />
-                  <DateInput 
-                    label="Thời gian diễn ra lễ cưới" 
-                    value={dynamicData.weddingDate || "2025-12-14T11:30"} 
-                    onChange={(v) => {
-                      if (!v) return setDynamicData(d => ({ ...d, weddingDate: v }));
-                      const date = new Date(v);
-                      if (isNaN(date.getTime())) return setDynamicData(d => ({ ...d, weddingDate: v }));
-                      
-                      const dayOfWeekNames = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
-                      
-                      setDynamicData(d => ({
-                        ...d, 
-                        weddingDate: v,
-                        weddingDay: date.getDate().toString(),
-                        weddingMonth: `Tháng ${date.getMonth() + 1}`,
-                        weddingYear: date.getFullYear().toString(),
-                        weddingDayOfWeek: dayOfWeekNames[date.getDay()]
-                      }));
-                    }} 
-                  />
+                  <TextInput label="Tên Chú rể" value={getVal("groomName")} placeholder="Ví dụ: Minh Khang" onChange={(v) => setVal("groomName", v)} />
+                  <TextInput label="Tên Cô dâu" value={getVal("brideName")} placeholder="Ví dụ: Thu Hương" onChange={(v) => setVal("brideName", v)} />
                 </Section>
                 <Section title="Hình ảnh nổi bật">
-                  <MediaInput label="Ảnh cover / Hero Image" accept="image/*" onChange={(url) => setDynamicData(d => ({ ...d, heroImage: url }))} />
-                  <MediaInput label="Ảnh Cô dâu" accept="image/*" onChange={(url) => setDynamicData(d => ({ ...d, brideImage: url }))} />
-                  <MediaInput label="Ảnh Chú rể" accept="image/*" onChange={(url) => setDynamicData(d => ({ ...d, groomImage: url }))} />
-                  <MediaInput label="Ảnh ngăn cách (Divider)" accept="image/*" onChange={(url) => setDynamicData(d => ({ ...d, dividerImage: url }))} />
-                  <MediaInput label="Ảnh cuối trang (Footer)" accept="image/*" onChange={(url) => setDynamicData(d => ({ ...d, footerImage: url }))} />
+                  <MediaInput label="Ảnh cover / Hero Image" accept="image/*" onChange={(url) => setVal("heroImage", url)} />
+                  <MediaInput label="Ảnh Cô dâu" accept="image/*" onChange={(url) => setVal("brideImage", url)} />
+                  <MediaInput label="Ảnh Chú rể" accept="image/*" onChange={(url) => setVal("groomImage", url)} />
+                  <MediaInput label="Ảnh ngăn cách (Divider)" accept="image/*" onChange={(url) => setVal("dividerImage", url)} />
+                  <MediaInput label="Ảnh cuối trang (Footer)" accept="image/*" onChange={(url) => setVal("footerImage", url)} />
                 </Section>
                 <Section title="Lời mời & Thông tin gia đình">
-                  <TextArea label="Lời mời chân thành" value={dynamicData.letterText} placeholder="Được sự đồng thuận của gia đình hai bên&#10;Chúng tôi trân trọng kính mời quý khách tới dự bữa tiệc chung vui cùng gia đình chúng tôi" onChange={(v) => setDynamicData(d => ({ ...d, letterText: v }))} />
-                  <TextInput label="Họ tên bố chú rể" value={dynamicData.groomFather} placeholder="Ví dụ: Ông Trần Văn Nam" onChange={(v) => setDynamicData(d => ({ ...d, groomFather: v }))} />
-                  <TextInput label="Họ tên mẹ chú rể" value={dynamicData.groomMother} placeholder="Ví dụ: Bà Nguyễn Thị My" onChange={(v) => setDynamicData(d => ({ ...d, groomMother: v }))} />
-                  <TextInput label="Họ tên bố cô dâu" value={dynamicData.brideFather} placeholder="Ví dụ: Ông Nguyễn Văn Cường" onChange={(v) => setDynamicData(d => ({ ...d, brideFather: v }))} />
-                  <TextInput label="Họ tên mẹ cô dâu" value={dynamicData.brideMother} placeholder="Ví dụ: Bà Lê Thị Dung" onChange={(v) => setDynamicData(d => ({ ...d, brideMother: v }))} />
+                  <TextArea label="Lời mời chân thành" value={getVal("letterText")} placeholder="Được sự đồng thuận của gia đình hai bên\nChúng tôi trân trọng kính mời quý khách tới dự bữa tiệc chung vui cùng gia đình chúng tôi" onChange={(v) => setVal("letterText", v)} />
+                  <TextInput label="Họ tên bố chú rể" value={getVal("groomFather")} placeholder="Ví dụ: Ông Trần Văn Nam" onChange={(v) => setVal("groomFather", v)} />
+                  <TextInput label="Họ tên mẹ chú rể" value={getVal("groomMother")} placeholder="Ví dụ: Bà Nguyễn Thị My" onChange={(v) => setVal("groomMother", v)} />
+                  <TextInput label="Họ tên bố cô dâu" value={getVal("brideFather")} placeholder="Ví dụ: Ông Nguyễn Văn Cường" onChange={(v) => setVal("brideFather", v)} />
+                  <TextInput label="Họ tên mẹ cô dâu" value={getVal("brideMother")} placeholder="Ví dụ: Bà Lê Thị Dung" onChange={(v) => setVal("brideMother", v)} />
                 </Section>
-                <Section title="Bản đồ & Sự kiện">
-                  <TextArea label="Địa chỉ tổ chức" value={dynamicData.eventAddress} placeholder="Trung tâm tiệc cưới Asora Center, 123 Phố Mới, Quận 1, TP. HCM" onChange={(v) => setDynamicData(d => ({ ...d, eventAddress: v }))} />
-                  <TextInput label="Link Google Maps" value={dynamicData.mapUrl} placeholder="https://maps.app.goo.gl/xxx" onChange={(v) => setDynamicData(d => ({ ...d, mapUrl: v }))} />
-                  <MediaInput label="Ảnh bản đồ (Screenshot)" accept="image/*" onChange={(url) => setDynamicData(d => ({ ...d, mapImage: url }))} />
+                
+                {/* LỄ THÀNH HÔN */}
+                <Section title="Lễ Thành Hôn (Tại Tư Gia)">
+                  <DateInput 
+                    label="Thời gian diễn ra lễ cưới" 
+                    value={getVal("weddingDate") || "2025-12-14T11:30"} 
+                    onChange={(v) => {
+                      if (!v) return setVal("weddingDate", v);
+                      const date = new Date(v);
+                      if (isNaN(date.getTime())) return setVal("weddingDate", v);
+                      const dayOfWeekNames = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+                      
+                      setDynamicData(d => {
+                        const newD = { ...d };
+                        let target = newD;
+                        if (isGoi3 && activeTab === "gai") {
+                          if (!newD.gai) newD.gai = {};
+                          target = newD.gai;
+                        }
+                        
+                        target.weddingDate = v;
+                        target.weddingDay = date.getDate().toString();
+                        target.weddingMonth = `Tháng ${date.getMonth() + 1}`;
+                        target.weddingYear = date.getFullYear().toString();
+                        target.weddingDayOfWeek = dayOfWeekNames[date.getDay()];
+                        
+                        return newD;
+                      });
+                    }} 
+                  />
+                  <TextArea label="Địa chỉ Tư gia" value={getVal("eventAddress")} placeholder="Số 10, Đường Vườn Lài, Tân Phú, TP. HCM" onChange={(v) => setVal("eventAddress", v)} />
+                  <TextInput label="Link Google Maps (Tư gia)" value={getVal("mapUrl")} placeholder="https://maps.app.goo.gl/xxx" onChange={(v) => setVal("mapUrl", v)} />
+                  <MediaInput label="Ảnh bản đồ (Screenshot)" accept="image/*" onChange={(url) => setVal("mapImage", url)} />
+                </Section>
+
+                {/* TIỆC MỪNG NHÀ TRAI */}
+                <Section title="Tiệc Mừng Lễ Thành Hôn — Nhà Trai">
+                  <DateInput label="Thời gian diễn ra Tiệc" value={getVal("tiecDate")} onChange={(v) => setVal("tiecDate", v)} />
+                  <TextInput label="Tên Địa Điểm Tiệc" value={getVal("tiecName")} placeholder="Ví dụ: Nhà Hàng Hoàng Yến" onChange={(v) => setVal("tiecName", v)} />
+                  <TextArea label="Địa chỉ chi tiết" value={getVal("tiecAddress")} placeholder="123 ABC, P.XYZ, Quận M" onChange={(v) => setVal("tiecAddress", v)} />
+                  <TextInput label="Link Google Maps" value={getVal("tiecMapUrl")} placeholder="https://maps.app.goo.gl/xxx" onChange={(v) => setVal("tiecMapUrl", v)} />
+                </Section>
+
+                {/* TIỆC MỪNG NHÀ GÁI (Chỉ gói 2) */}
+                {isGoi2 && (
+                  <Section title="Tiệc Mừng Lễ Thành Hôn — Nhà Gái">
+                    <DateInput label="Thời gian diễn ra Tiệc" value={getVal("tiecDateGai")} onChange={(v) => setVal("tiecDateGai", v)} />
+                    <TextInput label="Tên Địa Điểm Tiệc" value={getVal("tiecNameGai")} placeholder="Ví dụ: Nhà Hàng The Adora" onChange={(v) => setVal("tiecNameGai", v)} />
+                    <TextArea label="Địa chỉ chi tiết" value={getVal("tiecAddressGai")} placeholder="456 DEF, P.XYZ, Quận M" onChange={(v) => setVal("tiecAddressGai", v)} />
+                    <TextInput label="Link Google Maps" value={getVal("tiecMapUrlGai")} placeholder="https://maps.app.goo.gl/xxx" onChange={(v) => setVal("tiecMapUrlGai", v)} />
+                  </Section>
+                )}
+
+                {/* QR MỪNG CƯỚI */}
+                <Section title="QR Mừng Cưới (Tùy chọn)">
+                  <MediaInput label="Ảnh QR Chú rể" accept="image/*" onChange={(url) => setVal("groomQR", url)} />
+                  <MediaInput label="Ảnh QR Cô dâu" accept="image/*" onChange={(url) => setVal("brideQR", url)} />
                 </Section>
               </>
             ) : isBirthdayMagic ? (
@@ -2508,29 +2569,31 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               </>
             )}
             
-            <div className="sticky bottom-4 z-50 mt-8 grid grid-cols-2 gap-4">
-              <button
-                className="group relative w-full overflow-hidden rounded-[2rem] border-[2px] border-white/20 bg-gradient-to-r from-[#ff477e] via-[#ff7eb8] to-[#ff477e] bg-[length:200%_auto] py-4 text-base font-black !text-white shadow-[0_10px_25px_rgba(255,71,126,0.4)] backdrop-blur-md transition-all animate-gradient-x hover:scale-[1.02] hover:shadow-[0_15px_35px_rgba(255,71,126,0.6)] active:scale-95 disabled:opacity-50"
-                disabled={isSavingEdits}
-                onClick={() => saveOrderEdits()}
-                type="button"
-              >
-                <div className="absolute inset-0 bg-white/20 opacity-0 transition-opacity group-hover:opacity-100" />
-                <span className="relative z-10 drop-shadow-md tracking-wide">
-                  {isSavingEdits ? "Đang lưu..." : "Lưu chỉnh sửa"}
-                </span>
-              </button>
-              <button
-                className="group relative w-full overflow-hidden rounded-[2rem] border-[2px] border-white/20 bg-gradient-to-r from-[#ff9100] via-[#ffb347] to-[#ff9100] bg-[length:200%_auto] py-4 text-base font-black !text-white shadow-[0_10px_25px_rgba(255,145,0,0.4)] backdrop-blur-md transition-all animate-gradient-x hover:scale-[1.02] hover:shadow-[0_15px_35px_rgba(255,145,0,0.6)] active:scale-95 disabled:opacity-50"
-                disabled={isSavingEdits}
-                onClick={handleLock}
-                type="button"
-              >
-                <div className="absolute inset-0 bg-white/20 opacity-0 transition-opacity group-hover:opacity-100" />
-                <span className="relative z-10 drop-shadow-md tracking-wide">
-                  Khóa đơn
-                </span>
-              </button>
+            <div className="sticky bottom-0 z-50 mt-8 pb-2 bg-transparent">
+              <div className="flex gap-3 py-4 justify-center">
+                <button
+                  className="group relative overflow-hidden rounded-[2rem] border-[2px] border-white/20 bg-gradient-to-r from-[#ff477e] via-[#ff7eb8] to-[#ff477e] bg-[length:200%_auto] px-8 py-3 text-base font-black !text-white shadow-[0_10px_25px_rgba(255,71,126,0.4)] backdrop-blur-md transition-all animate-gradient-x hover:scale-[1.02] hover:shadow-[0_15px_35px_rgba(255,71,126,0.6)] active:scale-95 disabled:opacity-50"
+                  disabled={isSavingEdits}
+                  onClick={() => saveOrderEdits()}
+                  type="button"
+                >
+                  <div className="absolute inset-0 bg-white/20 opacity-0 transition-opacity group-hover:opacity-100" />
+                  <span className="relative z-10 drop-shadow-md tracking-wide">
+                    {isSavingEdits ? "Đang lưu..." : "💾 Lưu chỉnh sửa"}
+                  </span>
+                </button>
+                <button
+                  className="group relative overflow-hidden rounded-[2rem] border-[2px] border-white/20 bg-gradient-to-r from-[#ff9100] via-[#ffb347] to-[#ff9100] bg-[length:200%_auto] px-8 py-3 text-base font-black !text-white shadow-[0_10px_25px_rgba(255,145,0,0.4)] backdrop-blur-md transition-all animate-gradient-x hover:scale-[1.02] hover:shadow-[0_15px_35px_rgba(255,145,0,0.6)] active:scale-95 disabled:opacity-50"
+                  disabled={isSavingEdits}
+                  onClick={handleLock}
+                  type="button"
+                >
+                  <div className="absolute inset-0 bg-white/20 opacity-0 transition-opacity group-hover:opacity-100" />
+                  <span className="relative z-10 drop-shadow-md tracking-wide">
+                    🔒 Khóa đơn
+                  </span>
+                </button>
+              </div>
             </div>
           </>
           )
@@ -2627,16 +2690,41 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               </div>
               ) : null}
               {result.unlocked ? (
-                <>
+                 <>
                     <div className="mt-2 grid gap-2">
                     <span className="block text-xs font-semibold text-pink-300">Link gửi cho người ấy</span>
-                    <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
-                      <input className="w-full rounded-xl border border-pink-300/30 bg-pink-900/30 px-4 py-3 text-pink-100 outline-none" readOnly value={result.giftLink} />
-                      <button className="rounded-xl border border-white/10 bg-white/[0.08] px-4 py-3 text-sm font-semibold" onClick={async () => {
-                        await copyText(result.giftLink);
-                        showCopyMessage("Đã copy gift link.");
-                      }} type="button">Copy</button>
-                    </div>
+                    {isGoi3 ? (
+                      <div className="grid gap-2">
+                        <div className="grid gap-1">
+                          <span className="text-[11px] text-pink-300/70 font-medium">🤵 Thiệp Nhà Trai</span>
+                          <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
+                            <input className="w-full rounded-xl border border-pink-300/30 bg-pink-900/30 px-4 py-3 text-pink-100 outline-none text-sm" readOnly value={`${result.giftLink}-trai`} />
+                            <button className="rounded-xl border border-white/10 bg-white/[0.08] px-4 py-3 text-sm font-semibold" onClick={async () => {
+                              await copyText(`${result.giftLink}-trai`);
+                              showCopyMessage("Đã copy link Nhà Trai.");
+                            }} type="button">Copy</button>
+                          </div>
+                        </div>
+                        <div className="grid gap-1">
+                          <span className="text-[11px] text-pink-300/70 font-medium">👰 Thiệp Nhà Gái</span>
+                          <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
+                            <input className="w-full rounded-xl border border-pink-300/30 bg-pink-900/30 px-4 py-3 text-pink-100 outline-none text-sm" readOnly value={`${result.giftLink}-gai`} />
+                            <button className="rounded-xl border border-white/10 bg-white/[0.08] px-4 py-3 text-sm font-semibold" onClick={async () => {
+                              await copyText(`${result.giftLink}-gai`);
+                              showCopyMessage("Đã copy link Nhà Gái.");
+                            }} type="button">Copy</button>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
+                        <input className="w-full rounded-xl border border-pink-300/30 bg-pink-900/30 px-4 py-3 text-pink-100 outline-none" readOnly value={result.giftLink} />
+                        <button className="rounded-xl border border-white/10 bg-white/[0.08] px-4 py-3 text-sm font-semibold" onClick={async () => {
+                          await copyText(result.giftLink);
+                          showCopyMessage("Đã copy gift link.");
+                        }} type="button">Copy</button>
+                      </div>
+                    )}
                   </div>
                   <div className="mt-1 grid gap-2">
                     <span className="block text-xs font-semibold text-pink-300">Link để xem kết quả</span>

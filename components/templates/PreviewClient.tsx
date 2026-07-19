@@ -79,9 +79,9 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
     >
       {/* Top Header */}
       <header className={`h-[70px] px-6 bg-white/90 backdrop-blur-md border-b ${isWedding ? "border-[#e0d5c1]" : "border-pink-100"} flex items-center justify-between z-50 shadow-sm shrink-0 ${isRotated ? "h-16" : ""}`}>
-        <Link href="/" className={`${isWedding ? "bg-[#f0eadd] hover:bg-[#e0d5c1] text-[#8a7b66]" : "bg-pink-100 hover:bg-pink-200 text-pink-600"} px-5 py-2.5 rounded-full transition font-bold text-sm shadow-sm flex items-center gap-2`}>
+        <Link href={isWedding ? "/wedding" : "/love"} className={`${isWedding ? "bg-[#f0eadd] hover:bg-[#e0d5c1] text-[#8a7b66]" : "bg-pink-100 hover:bg-pink-200 text-pink-600"} px-5 py-2.5 rounded-full transition font-bold text-sm shadow-sm flex items-center gap-2`}>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-          <span className="hidden sm:inline">Trang chủ</span>
+          <span className="hidden sm:inline">Quay lại</span>
         </Link>
         <h1 className={`text-xl font-black ${isWedding ? "text-[#bfa993]" : "text-pink-500"} uppercase tracking-widest hidden sm:block`}>
           {template.name}
@@ -273,7 +273,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                    {mode === "mobile" ? (
                      <div 
                        className={`w-full h-full rounded-[3.5rem] ${isWedding ? "shadow-[0_30px_80px_-20px_rgba(216,195,165,0.6)] ring-[#f0eadd]" : "shadow-[0_30px_80px_-20px_rgba(255,192,203,0.8)] ring-pink-100"} border-[16px] border-white bg-white overflow-hidden ring-4 flex flex-col relative z-20`}
-                       style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)', isolation: 'isolate' }}
+                       style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)', isolation: 'isolate', transform: 'translateZ(0)' }}
                      >
                        <InteractiveTemplatePreview
                           key="preview-mobile"
@@ -294,7 +294,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                    ) : (
                      <div 
                        className={`w-full h-full rounded-[2rem] ${isWedding ? "shadow-[0_30px_80px_-20px_rgba(216,195,165,0.6)] ring-[#f0eadd]" : "shadow-[0_30px_80px_-20px_rgba(255,192,203,0.8)] ring-pink-100"} border-[12px] border-white bg-white overflow-hidden ring-4 flex flex-col relative z-20`}
-                       style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)', isolation: 'isolate' }}
+                       style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)', isolation: 'isolate', transform: 'translateZ(0)' }}
                      >
                        <InteractiveTemplatePreview
                           key="preview-desktop"

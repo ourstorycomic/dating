@@ -241,6 +241,15 @@ export function InteractiveTemplatePreview({
     generalAudioUrl: (props.forceRandomMusic ? randomMusicUrl : props.generalAudioUrl || props.customData?.generalAudioUrl) || randomMusicUrl,
     customData: {
       ...props.customData,
+      // Khối 1 (Lễ Thành Hôn): giờ 09:00, địa chỉ tư gia
+      weddingDate: (props.customData as any)?.weddingDate || (props as any).weddingDate || "2026-12-14T09:00",
+      eventAddress: (props.customData as any)?.eventAddress || (props as any).eventAddress || "Số 10, Đường Vườn Lài, Tân Phú, TP. HCM",
+      mapUrl: (props.customData as any)?.mapUrl || (props as any).mapUrl || "https://maps.app.goo.gl/example",
+      // Khối 2 (Tiệc Mừng): giờ 18:00, địa chỉ nhà hàng
+      tiecName: (props.customData as any)?.tiecName || "Adora Center",
+      tiecAddress: (props.customData as any)?.tiecAddress || "418-420 Cộng Hòa, Tân Bình, TP. HCM",
+      tiecDate: (props.customData as any)?.tiecDate || "2026-12-14T18:00",
+      tiecMapUrl: (props.customData as any)?.tiecMapUrl || (props as any).mapUrl || "https://maps.app.goo.gl/example",
       musicUrl: (props.forceRandomMusic ? randomMusicUrl : props.customData?.musicUrl) || randomMusicUrl,
       generalAudioUrl: (props.forceRandomMusic ? randomMusicUrl : props.customData?.generalAudioUrl) || randomMusicUrl,
       audioSrc: (props.forceRandomMusic ? randomMusicUrl : props.customData?.audioSrc) || randomMusicUrl,
