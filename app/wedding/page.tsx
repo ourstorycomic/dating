@@ -18,7 +18,7 @@ function SampleCard({ sample, index }: { sample: any; index: number }) {
       whileInView={{ opacity: 1, y: 0 }} 
       viewport={{ once: true, amount: 0.2 }} 
       transition={{ duration: 0.5, delay: index * 0.1 }} 
-      className="group overflow-hidden rounded-[2.5rem] bg-white shadow-[0_15px_40px_rgba(0,0,0,0.04)] border border-[#F4EFEA] transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] hover:-translate-y-1"
+      className="group overflow-hidden rounded-[2.5rem] bg-white shadow-[0_15px_40px_rgba(0,0,0,0.04)] border border-[#F4EFEA] transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] hover:-translate-y-1 flex flex-col"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -44,16 +44,18 @@ function SampleCard({ sample, index }: { sample: any; index: number }) {
           </>
         )}
       </div>
-      <div className="p-8">
+      <div className="p-8 flex flex-col flex-1">
         <h3 className="font-serif-elegant text-2xl font-semibold text-[#2D2A28]">{sample.name}</h3>
         <p className="mt-3 text-sm leading-relaxed text-[#7A726D]">{sample.description}</p>
-        <div className="mt-8 flex gap-3 border-t border-[#F4EFEA] pt-6">
-          <Link href={`/wedding/preview/${sample.componentKey}`} className="flex-1 text-center py-2.5 rounded-full border border-[#E8D9C8] text-[#4A4542] text-sm font-semibold transition hover:bg-[#FDFBF7] hover:text-[#2D2A28]">
-            Xem chi tiết
-          </Link>
-          <a href={facebookLink(sample.name)} target="_blank" rel="noopener noreferrer" className="flex-1 text-center py-2.5 rounded-full bg-[#C5A880] text-[#2D2A28] text-sm font-bold shadow-sm transition hover:bg-[#B3966D]">
-            Nhắn tin tư vấn
-          </a>
+        <div className="mt-auto pt-8">
+          <div className="flex gap-3 border-t border-[#F4EFEA] pt-6">
+            <Link href={`/wedding/preview/${sample.componentKey}`} className="flex-1 text-center py-2.5 rounded-full border border-[#E8D9C8] text-[#4A4542] text-sm font-semibold transition hover:bg-[#FDFBF7] hover:text-[#2D2A28]">
+              Xem chi tiết
+            </Link>
+            <a href={facebookLink(sample.name)} target="_blank" rel="noopener noreferrer" className="flex-1 text-center py-2.5 rounded-full bg-[#C5A880] text-[#2D2A28] text-sm font-bold shadow-sm transition hover:bg-[#B3966D]">
+              Nhắn tin tư vấn
+            </a>
+          </div>
         </div>
       </div>
     </motion.article>
