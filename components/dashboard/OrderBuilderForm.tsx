@@ -789,7 +789,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     }
   }, [selectedPackage, isWedding, templates, valentineOne]);
   const isEditing = !!result;
-  const canEditTemplate = isEditing && result.unlocked;
+  const canEditTemplate = isEditing;
 
   useEffect(() => {
     // Tự động điền dữ liệu mẫu (mock data) nếu là mẫu Wedding và chưa có dữ liệu (chỉ áp dụng cho tạo đơn mới)
@@ -808,10 +808,6 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
         brideFather: "Ông Nguyễn Văn Cường",
         brideMother: "Bà Lê Thị Dung",
         weddingDate: "2026-12-14T11:30",
-        weddingMonth: "Tháng 12",
-        weddingDay: "14",
-        weddingYear: "2026",
-        weddingDayOfWeek: "Thứ Hai",
         eventAddress: "Tư gia nhà trai: Số 10, Đường Vườn Lài, Tân Phú, TP. HCM",
         mapUrl: "https://maps.app.goo.gl/xxx",
         mapImage: "/assets/lovepics/map-preview.jpg",
@@ -1012,8 +1008,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     } : {}),
     // dynamicData cuối cùng để override tất cả — bao gồm groomName, brideName, eventAddress, etc.
     ...dynamicData,
-    groomFamily: dynamicData.groomFamily || [dynamicData.groomFather, dynamicData.groomMother].filter(Boolean).join(selectedComponentKey === "wedding-1" || selectedComponentKey === "wedding-6" ? "\n" : " & "),
-    brideFamily: dynamicData.brideFamily || [dynamicData.brideFather, dynamicData.brideMother].filter(Boolean).join(selectedComponentKey === "wedding-1" || selectedComponentKey === "wedding-6" ? "\n" : " & "),
+    groomFamily: dynamicData.groomFamily || [dynamicData.groomFather, dynamicData.groomMother].filter(Boolean).join("\\n"),
+    brideFamily: dynamicData.brideFamily || [dynamicData.brideFather, dynamicData.brideMother].filter(Boolean).join("\\n"),
     ...(function() {
       const wdStr = dynamicData.weddingDate || "2026-12-14T11:30";
       let d = new Date(wdStr);
@@ -1151,8 +1147,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     const mergedData: Record<string, any> = overrideData ? { ...customData, ...overrideData } : { ...customData };
 
     if (selectedComponentKey.includes("wedding")) {
-      const isW1 = selectedComponentKey === "wedding-1" || selectedComponentKey === "wedding-6";
-      const separator = isW1 ? "\\n" : " & ";
+      const separator = "\\n";
       
       if (mergedData.groomFather !== undefined || mergedData.groomMother !== undefined) {
         mergedData.groomFamily = [mergedData.groomFather, mergedData.groomMother].filter(Boolean).join(separator);
@@ -1459,8 +1454,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     }
   }
 
-  const orderIsLocked = !!result && !result.unlocked;
-  const showSetupWorkspace = !result || result.unlocked;
+  const orderIsLocked = false; // !!result && !result.unlocked;
+  const showSetupWorkspace = true; // !result || result.unlocked;
 
   return (
     <div className={showSetupWorkspace ? "grid items-start gap-6 xl:grid-cols-[1fr_460px]" : "grid items-start gap-6"}>
@@ -2563,7 +2558,9 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
 
             {Array.isArray(selectedTemplate?.data_schema) && selectedTemplate.data_schema.length !== 0 && (
               <>
-                {Array.from(new Set(selectedTemplate.data_schema.map((f: any) => f.section || "Tùy chỉnh nội dung"))).map((sectionName: any, secIdx) => (
+                {Array.from(new Set(selectedTemplate.data_schema.map((f: any) => f.section || "Tùy chỉnh nội dung")))
+                  .filter((sectionName: any) => sectionName !== "6. Âm Nhạc")
+                  .map((sectionName: any, secIdx) => (
                   <Section key={secIdx} title={sectionName}>
                     {selectedTemplate.data_schema
                       .filter((f: any) => (f.section || "Tùy chỉnh nội dung") === sectionName)
@@ -2708,7 +2705,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                 </div>
               </div>
               ) : null}
-              {result.unlocked ? (
+              {true ? (
                  <>
                     <div className="mt-2 grid gap-2">
                     <span className="block text-xs font-semibold text-pink-300">Link gửi cho người ấy</span>

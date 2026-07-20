@@ -66,12 +66,17 @@ export async function POST(
   const supabase = createServerSupabaseClient();
   const { data: order, error: loadError } = await supabase
     .from("orders")
-    .select("id, response_text")
+    .select("id, response_text, status")
     .eq("public_id", orderId)
     .maybeSingle();
 
   if (loadError || !order) {
     return NextResponse.json({ error: "Không tìm thấy đơn." }, { status: 404 });
+  }
+
+  // Security check: Only allow responses if the order is ACTIVE or already RESPONDED
+  if (order.status !== "ACTIVE" && order.status !== "RESPONDED") {
+    return NextResponse.json({ error: "Đơn hàng chưa được thanh toán nên không thể gửi phản hồi." }, { status: 403 });
   }
 
   let newResponseText;

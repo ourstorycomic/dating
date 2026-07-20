@@ -13,12 +13,35 @@ function normalizePayment(payment: Payment | Payment[] | null | undefined) {
 export function PaymentLockedView({
   orderId,
   payment,
+  inline = false,
 }: {
   orderId: string;
   payment: Payment | Payment[] | null | undefined;
+  inline?: boolean;
 }) {
   const currentPayment = normalizePayment(payment);
   const amount = Number(currentPayment?.amount ?? 0);
+
+  if (inline) {
+    return (
+      <div className="w-full text-center">
+        <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+          <p className="text-sm font-semibold text-rose-500">Mã đơn: {orderId}</p>
+          <div className="mt-3 flex justify-center bg-white p-3 rounded-xl border border-gray-100">
+            {currentPayment?.qr_code_url ? (
+              <img src={currentPayment.qr_code_url} alt="QR Code" className="w-48 h-48 object-contain" />
+            ) : (
+              <div className="w-48 h-48 bg-gray-100 animate-pulse rounded-lg" />
+            )}
+          </div>
+          <p className="mt-3 font-semibold text-gray-700">
+            Số tiền: <span className="text-pink-600">{amount.toLocaleString("vi-VN")}đ</span>
+          </p>
+          <p className="mt-1 text-xs text-gray-500">Nội dung: {currentPayment?.payment_code}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <main className="grid min-h-screen place-items-center bg-[#05020a] px-4 py-8 text-white">

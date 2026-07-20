@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useRef, useState, useCallback } from "react";
+import React, { useRef, useState, useCallback, useEffect } from "react";
+import { createPortal } from "react-dom";
 import ReactCrop, { Crop, PixelCrop, centerCrop, makeAspectCrop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 
@@ -24,7 +25,12 @@ function centerAspectCrop(mediaWidth: number, mediaHeight: number, aspect: numbe
 export function ImageCropperModal({ isOpen, onClose, imageSrc, onCropComplete, aspect }: ImageCropperModalProps) {
   const [crop, setCrop] = useState<Crop>();
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
+  const [mounted, setMounted] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const onImageLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
     if (aspect) {
@@ -70,9 +76,9 @@ export function ImageCropperModal({ isOpen, onClose, imageSrc, onCropComplete, a
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col">
         <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
@@ -125,6 +131,7 @@ export function ImageCropperModal({ isOpen, onClose, imageSrc, onCropComplete, a
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

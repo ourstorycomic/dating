@@ -392,7 +392,7 @@ export function WeddingOneExperience({
               ))}
               {blanks.map(b => <div key={`b-${b}`} />)}
               {monthDays.map(day => {
-                const isWedding = day.toString() === dDay && parsedDDate.getMonth() + 1 === dMonthNumber;
+                const isWedding = day === parsedDDate.getDate() && parsedDDate.getMonth() + 1 === dMonthNumber;
                 let isTiec = false;
                 if (hasTiecMung && customData?.tiecDate) {
                   const td = new Date(customData.tiecDate);

@@ -186,7 +186,7 @@ export async function POST(request: Request) {
     }
   }
 
-  if (receivedAmount !== expectedAmount) {
+  if (receivedAmount < expectedAmount) {
     await supabase
       .from("payments")
       .update({
