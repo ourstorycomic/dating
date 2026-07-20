@@ -25,8 +25,8 @@ export function WeddingFooter() {
           </svg>
         </a>
         <div className="text-[#444] font-medium mx-1 text-sm">|</div>
-        <a href="https://lovora.vn/wedding" target="_blank" rel="noopener noreferrer" className="text-[13px] font-semibold text-[#004a8b] hover:text-[#e85d75] transition-colors">
-          Lovora
+        <a href="https://www.lovora.click/wedding" target="_blank" rel="noopener noreferrer" className="text-[13px] font-semibold text-[#004a8b] hover:text-[#e85d75] transition-colors">
+          Lovora Wedding
         </a>
       </div>
     </div>
