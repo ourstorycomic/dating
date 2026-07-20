@@ -644,9 +644,8 @@ export function WeddingFourExperience({
         </button>
       )}
 
-      </div>
-
       <WeddingFooter />
+      </div>
     </div>
   );
 }

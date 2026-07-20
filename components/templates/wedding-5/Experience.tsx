@@ -509,6 +509,7 @@ export function WeddingFiveExperience({
             <img src="/assets/wedding/wedding-5/hoasenfooter.webp" className="absolute bottom-0 left-0 w-full object-cover mix-blend-multiply opacity-90 pointer-events-none" />
           </div>
 
+          <WeddingFooter />
         </div>
       </div>
 
@@ -561,8 +562,6 @@ export function WeddingFiveExperience({
         </button>
       )}
 
-
-      <WeddingFooter />
     </div>
   );
 }
