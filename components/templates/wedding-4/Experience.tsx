@@ -54,6 +54,8 @@ export function WeddingFourExperience({
   const [allowScroll, setAllowScroll] = useState(autoPlay || false);
   const [isPlaying, setIsPlaying] = useState(autoPlay || false);
   const [showQR, setShowQR] = useState(false);
+  const [rsvpName, setRsvpName] = useState("");
+  const [rsvpPhone, setRsvpPhone] = useState("");
   const [rsvpCount, setRsvpCount] = useState("Có");
   const [customCount, setCustomCount] = useState("");
   const [giftTab, setGiftTab] = useState<'groom'|'bride'>('groom');
@@ -546,8 +548,8 @@ export function WeddingFourExperience({
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="w-full bg-[#FFFDF9] border border-[#D6C1A5]/50 p-6 shadow-sm relative flex flex-col items-center mb-16">
             <h3 className="text-[12px] font-serif font-bold text-[#7A1F1F] mb-6 uppercase tracking-[0.2em]">Xác Nhận Tham Dự</h3>
             <div className="w-full flex flex-col gap-4">
-              <input type="text" placeholder="Tên của bạn..." className="w-full bg-transparent border-b border-[#D6C1A5] text-[#2D2A28] text-xs px-2 py-3 outline-none" />
-              <input type="text" placeholder="Số điện thoại..." className="w-full bg-transparent border-b border-[#D6C1A5] text-[#2D2A28] text-xs px-2 py-3 outline-none" />
+              <input type="text" value={rsvpName} onChange={e => setRsvpName(e.target.value)} placeholder="Tên của bạn..." className="w-full bg-transparent border-b border-[#D6C1A5] text-[#2D2A28] text-xs px-2 py-3 outline-none" />
+              <input type="text" value={rsvpPhone} onChange={e => setRsvpPhone(e.target.value)} placeholder="Số điện thoại..." className="w-full bg-transparent border-b border-[#D6C1A5] text-[#2D2A28] text-xs px-2 py-3 outline-none" />
               <select value={rsvpCount} onChange={e => setRsvpCount(e.target.value)} className="w-full bg-transparent border-b border-[#D6C1A5] text-[#2D2A28] text-xs px-2 py-3 outline-none appearance-none">
                 <option value="Có">Có tham dự</option>
                 <option value="Không">Không tham dự</option>
@@ -559,7 +561,7 @@ export function WeddingFourExperience({
               <textarea placeholder="Gửi lời chúc..." rows={2} className="w-full bg-transparent border-b border-[#D6C1A5] text-[#2D2A28] text-xs px-2 py-3 outline-none resize-none"></textarea>
               <div className="flex gap-2 mt-4">
                 <button 
-                  onClick={() => !compact && onComplete?.({})}
+                  onClick={() => !compact && onComplete?.({ name: rsvpName, phone: rsvpPhone, count: rsvpCount === "Khác" ? customCount : rsvpCount })}
                   className="flex-1 bg-[#7A1F1F] text-[#FFFFFF] text-[10px] font-bold uppercase tracking-widest py-3 hover:bg-[#5a1515] transition-colors"
                 >
                   Gửi Phản Hồi

@@ -688,6 +688,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const isGoi3 = selectedPackage?.includes("goi3") || false;
   const isGoi2 = selectedPackage?.includes("goi2") || false;
   const isGoi1 = selectedPackage?.includes("goi1") || false;
+  const isGoi3KhacMau = selectedPackage?.includes("goi3-khac") || false;
+  const activeTemplateId = (isGoi3KhacMau && activeTab === "gai") ? (dynamicData?.gai?.templateId || selectedTemplateId) : selectedTemplateId;
 
   const getVal = (key: string) => (isGoi3 && activeTab === "gai") ? (dynamicData.gai?.[key] ?? "") : (dynamicData[key] ?? "");
   const setVal = (key: string, val: any) => setDynamicData((d: any) => {
@@ -724,12 +726,12 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     () => {
       // If we have a loaded template and its ID matches what's selected, use it
       // (covers cases where the template is a MOCK and not in the DB templates array)
-      if (loadedTemplate && String(loadedTemplate.id) === String(selectedTemplateId)) {
+      if (loadedTemplate && String(loadedTemplate.id) === String(activeTemplateId)) {
         return loadedTemplate as any;
       }
-      return templates.find((template) => String(template.id) === String(selectedTemplateId)) ?? valentineOne;
+      return templates.find((template) => String(template.id) === String(activeTemplateId)) ?? valentineOne;
     },
-    [selectedTemplateId, templates, valentineOne, loadedTemplate],
+    [activeTemplateId, templates, valentineOne, loadedTemplate],
   );
 
   const dating3ConfigMemo = useMemo(() => {
@@ -788,6 +790,57 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   }, [selectedPackage, isWedding, templates, valentineOne]);
   const isEditing = !!result;
   const canEditTemplate = isEditing && result.unlocked;
+
+  useEffect(() => {
+    // Tự động điền dữ liệu mẫu (mock data) nếu là mẫu Wedding và chưa có dữ liệu (chỉ áp dụng cho tạo đơn mới)
+    if (isWedding && !initialOrder && Object.keys(dynamicData).length === 0) {
+      const mockData = {
+        groomName: "Minh Hoàng",
+        brideName: "Mai Hương",
+        heroImage: "/assets/wedding/wedding-1/anhchung1.jpg",
+        groomImage: "/assets/wedding/wedding-1/chure.jpg",
+        brideImage: "/assets/wedding/wedding-1/codau.jpg",
+        dividerImage: "/assets/wedding/wedding-1/anhchung2.jpg",
+        footerImage: "/assets/wedding/wedding-1/anhchung8.jpg",
+        letterText: "Được sự đồng thuận của gia đình hai bên\nChúng tôi trân trọng kính mời quý khách tới dự bữa tiệc chung vui cùng gia đình chúng tôi",
+        groomFather: "Ông Trần Văn Nam",
+        groomMother: "Bà Nguyễn Thị My",
+        brideFather: "Ông Nguyễn Văn Cường",
+        brideMother: "Bà Lê Thị Dung",
+        weddingDate: "2026-12-14T11:30",
+        weddingMonth: "Tháng 12",
+        weddingDay: "14",
+        weddingYear: "2026",
+        weddingDayOfWeek: "Thứ Hai",
+        eventAddress: "Tư gia nhà trai: Số 10, Đường Vườn Lài, Tân Phú, TP. HCM",
+        mapUrl: "https://maps.app.goo.gl/xxx",
+        mapImage: "/assets/lovepics/map-preview.jpg",
+        tiecDate: "2026-12-14T17:30",
+        tiecName: "Nhà Hàng Tiệc Cưới The Adora",
+        tiecAddress: "123 Đường Tên Lửa, Q.Bình Tân, TP.HCM",
+        tiecMapUrl: "https://maps.app.goo.gl/xxx",
+        // for "goi2" tiec nha gai
+        tiecDateGai: "2026-12-13T17:30",
+        tiecNameGai: "Nhà Hàng Tiệc Cưới Đông Phương",
+        tiecAddressGai: "456 Hoàng Văn Thụ, Q.Tân Bình, TP.HCM",
+        tiecMapUrlGai: "https://maps.app.goo.gl/yyy",
+        // for qr codes
+        qrBankName: "MB BANK",
+        qrBankAccount: "123456789",
+        qrBankOwner: "MINH HOANG",
+        qrBankNameGai: "VCB",
+        qrBankAccountGai: "987654321",
+        qrBankOwnerGai: "MAI HUONG",
+        musicUrl: "/assets/songs/general/Da LAB - Từ Ngày Em Đến (Official Music Video)_128k.mp3"
+      };
+      
+      setDynamicData({
+        ...mockData,
+        gai: { ...mockData }
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isWedding, initialOrder]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -1032,7 +1085,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
         buyerName,
         customData,
         recipientName,
-        templateId: selectedTemplate?.id,
+        templateId: selectedTemplateId,
         isFreeOrder: canCreateFree,
       }),
     });
@@ -1103,7 +1156,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
         orderId: result.orderId,
         recipientName,
         buyerName,
-        templateId: selectedTemplate?.id,
+        templateId: selectedTemplateId,
       }),
     });
     const data = await response.json().catch(() => ({}));
@@ -1491,13 +1544,20 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                         {categoryName}
                       </li>
                       {templatesInCategory.map((template) => {
-                        const isSelected = template.id === selectedTemplateId;
+                        const isSelected = template.id === activeTemplateId;
                         return (
                       <li
                         key={template.id}
                         className={`cursor-pointer rounded-lg px-4 py-3 transition hover:bg-gray-100 ${isSelected ? "bg-pink-50 text-pink-600" : ""}`}
                         onClick={() => {
-                          setSelectedTemplateId(template.id);
+                          if (isGoi3KhacMau && activeTab === "gai") {
+                            setDynamicData((d: any) => ({ ...d, gai: { ...(d.gai || {}), templateId: template.id, componentKey: template.component_key } }));
+                          } else {
+                            if (isGoi3KhacMau && !dynamicData?.gai?.templateId) {
+                              setDynamicData((d: any) => ({ ...d, gai: { ...(d.gai || {}), templateId: selectedTemplateId } }));
+                            }
+                            setSelectedTemplateId(template.id);
+                          }
                           setTemplateSearch(template.name);
                           setIsDropdownOpen(false);
                           // Clear loaded template so the dropdown selection takes effect

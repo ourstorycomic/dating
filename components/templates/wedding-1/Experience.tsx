@@ -159,7 +159,7 @@ export function WeddingOneExperience({
   const handleRSVP = (e: React.FormEvent) => {
     e.preventDefault();
     setRsvpSubmitted(true);
-    onComplete?.({ name: rsvpName, phone: rsvpPhone, count: rsvpCount });
+    onComplete?.({ name: rsvpName, phone: rsvpPhone, count: rsvpCount === "Khác" ? customCount : rsvpCount });
   };
 
   const [days, setDays] = useState(0);

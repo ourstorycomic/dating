@@ -52,6 +52,10 @@ export function WeddingTwoExperience({
   const [isOpened, setIsOpened] = useState(false);
   const [allowScroll, setAllowScroll] = useState(false);
   const [showQR, setShowQR] = useState(false);
+  const [rsvpName, setRsvpName] = useState("");
+  const [rsvpPhone, setRsvpPhone] = useState("");
+  const [rsvpCount, setRsvpCount] = useState("Có");
+  const [customCount, setCustomCount] = useState("");
   const [giftTab, setGiftTab] = useState<'groom'|'bride'>('groom');
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -349,16 +353,19 @@ export function WeddingTwoExperience({
               {groomName} <span className="text-sm font-sans mx-2">&amp;</span> {brideName}
             </h2>
             <div className="w-full bg-[#7A1F1F] rounded-xl p-6 shadow-xl flex flex-col gap-3">
-              <input type="text" placeholder="Nhập Tên Bạn..." className="w-full bg-white text-[#2D2A28] text-xs px-4 py-3 rounded-md outline-none" />
-              <input type="text" placeholder="Số Điện Thoại..." className="w-full bg-white text-[#2D2A28] text-xs px-4 py-3 rounded-md outline-none" />
-              <select className="w-full bg-white text-[#2D2A28] text-xs px-4 py-3 rounded-md outline-none appearance-none">
-                <option>Xác Nhận Tham Dự...</option>
-                <option>Có</option>
-                <option>Không</option>
+              <input type="text" value={rsvpName} onChange={e => setRsvpName(e.target.value)} placeholder="Nhập Tên Bạn..." className="w-full bg-white text-[#2D2A28] text-xs px-4 py-3 rounded-md outline-none" />
+              <input type="text" value={rsvpPhone} onChange={e => setRsvpPhone(e.target.value)} placeholder="Số Điện Thoại..." className="w-full bg-white text-[#2D2A28] text-xs px-4 py-3 rounded-md outline-none" />
+              <select value={rsvpCount} onChange={e => setRsvpCount(e.target.value)} className="w-full bg-white text-[#2D2A28] text-xs px-4 py-3 rounded-md outline-none appearance-none appearance-none">
+                <option value="Có">Có tham dự</option>
+                <option value="Không">Không tham dự</option>
+                <option value="Khác">Có, dắt theo người thân</option>
               </select>
+              {rsvpCount === "Khác" && (
+                <input type="number" min="1" value={customCount} onChange={e => setCustomCount(e.target.value)} placeholder="Nhập tổng số người..." className="w-full bg-white text-[#2D2A28] text-xs px-4 py-3 rounded-md outline-none appearance-none mt-2" required />
+              )}
               <textarea placeholder="Gửi Chút Lời Chúc Tới..." rows={2} className="w-full bg-white text-[#2D2A28] text-xs px-4 py-3 rounded-md outline-none resize-none"></textarea>
               <button 
-                onClick={() => !compact && onComplete?.({})}
+                onClick={() => !compact && onComplete?.({ name: rsvpName, phone: rsvpPhone, count: rsvpCount === "Khác" ? customCount : rsvpCount })}
                 className="w-full bg-[#FFFFFF] text-[#7A1F1F] text-[10px] font-bold uppercase tracking-widest py-3 rounded-md mt-2 shadow-md hover:bg-stone-100"
               >
                 Gửi Xác Nhận

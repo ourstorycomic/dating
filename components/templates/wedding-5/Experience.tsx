@@ -50,6 +50,8 @@ export function WeddingFiveExperience({
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showQR, setShowQR] = useState(false);
+  const [rsvpName, setRsvpName] = useState("");
+  const [rsvpPhone, setRsvpPhone] = useState("");
   const [rsvpCount, setRsvpCount] = useState("Có");
   const [customCount, setCustomCount] = useState("");
   const [giftTab, setGiftTab] = useState<'groom'|'bride'>('groom');
@@ -456,8 +458,8 @@ export function WeddingFiveExperience({
               </div>
               
               <div className="w-full flex flex-col gap-4 relative z-10">
-                <input type="text" placeholder="Tên của bạn *" className="w-full bg-transparent border-b border-[#c5b182] text-[#2d2d2d] text-xs px-2 py-2 outline-none focus:border-[#4a5a40] transition-colors placeholder:text-[#999]" />
-                <input type="text" placeholder="Số điện thoại *" className="w-full bg-transparent border-b border-[#c5b182] text-[#2d2d2d] text-xs px-2 py-2 outline-none focus:border-[#4a5a40] transition-colors placeholder:text-[#999]" />
+                <input type="text" value={rsvpName} onChange={e => setRsvpName(e.target.value)} placeholder="Tên của bạn *" className="w-full bg-transparent border-b border-[#c5b182] text-[#2d2d2d] text-xs px-2 py-2 outline-none focus:border-[#4a5a40] transition-colors placeholder:text-[#999]" />
+                <input type="text" value={rsvpPhone} onChange={e => setRsvpPhone(e.target.value)} placeholder="Số điện thoại *" className="w-full bg-transparent border-b border-[#c5b182] text-[#2d2d2d] text-xs px-2 py-2 outline-none focus:border-[#4a5a40] transition-colors placeholder:text-[#999]" />
                 <select value={rsvpCount} onChange={e => setRsvpCount(e.target.value)} className="w-full bg-transparent border-b border-[#c5b182] text-[#2d2d2d] text-xs px-2 py-2 outline-none focus:border-[#4a5a40] transition-colors appearance-none">
                   <option value="Có">Có tham dự</option>
                   <option value="Không">Không tham dự</option>
@@ -469,7 +471,7 @@ export function WeddingFiveExperience({
                 
                 <div className="flex flex-col gap-3 mt-4">
                   <button 
-                    onClick={() => !compact && onComplete?.({})}
+                    onClick={() => !compact && onComplete?.({ name: rsvpName, phone: rsvpPhone, count: rsvpCount === "Khác" ? customCount : rsvpCount })}
                     className="w-full border border-[#4a5a40] text-[#4a5a40] bg-transparent text-[10px] font-bold uppercase tracking-widest py-3 rounded-full hover:bg-[#4a5a40] hover:text-[#FFFFFF] transition-colors"
                   >
                     Gửi Phản Hồi

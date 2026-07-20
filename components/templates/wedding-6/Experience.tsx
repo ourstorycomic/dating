@@ -52,6 +52,8 @@ export function WeddingSixExperience({
   const [isOpened, setIsOpened] = useState(false);
   const [allowScroll, setAllowScroll] = useState(false);
   const [showQR, setShowQR] = useState(false);
+  const [rsvpName, setRsvpName] = useState("");
+  const [rsvpPhone, setRsvpPhone] = useState("");
   const [rsvpCount, setRsvpCount] = useState("Có");
   const [customCount, setCustomCount] = useState("");
   const [giftTab, setGiftTab] = useState<'groom'|'bride'>('groom');
@@ -386,7 +388,7 @@ export function WeddingSixExperience({
                 <p className="text-[9px] uppercase tracking-[0.2em] text-[#999] font-bold">Phản hồi trước ngày {String(dDate).padStart(2, '0')}/{String(dMonth).padStart(2, '0')}</p>
               </div>
               
-              <input type="text" placeholder="Tên của bạn" className="w-full bg-[#fafafa] text-[#333] text-xs px-4 py-3 border border-[#eaeaea] outline-none focus:border-[#e8c0c4] transition-colors" />
+              <input type="text" value={rsvpName} onChange={e => setRsvpName(e.target.value)} placeholder="Tên của bạn" className="w-full bg-[#fafafa] text-[#333] text-xs px-4 py-3 border border-[#eaeaea] outline-none focus:border-[#e8c0c4] transition-colors" />
               <select value={rsvpCount} onChange={e => setRsvpCount(e.target.value)} className="w-full bg-[#fafafa] text-[#333] text-xs px-4 py-3 border border-[#eaeaea] outline-none focus:border-[#e8c0c4] transition-colors appearance-none">
                 <option value="Có">Có tham dự</option>
                 <option value="Không">Không tham dự</option>
@@ -398,7 +400,7 @@ export function WeddingSixExperience({
               
               <div className="flex gap-2 w-full mt-2">
                 <button 
-                  onClick={() => !compact && onComplete?.({})}
+                  onClick={() => !compact && onComplete?.({ name: rsvpName, phone: rsvpPhone, count: rsvpCount === "Khác" ? customCount : rsvpCount })}
                   className="flex-1 bg-[#2C2C2C] text-[#fff] text-[10px] font-bold uppercase tracking-widest py-3 hover:bg-[#1a1a1a] transition-colors shadow-sm"
                 >
                   Gửi Lời Nhắn
