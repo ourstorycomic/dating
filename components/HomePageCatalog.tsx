@@ -198,7 +198,7 @@ export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
 
         {/* Nút Xem bảng giá siêu nổi bật */}
         <div className="ml-auto shrink-0 flex items-center pr-1">
-          <PricingModal />
+          <PricingModal hideWedding={true} />
         </div>
       </div>
 

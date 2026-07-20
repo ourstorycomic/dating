@@ -4,10 +4,10 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
-export function PricingModal({ customTrigger }: { customTrigger?: React.ReactNode }) {
+export function PricingModal({ customTrigger, hideWedding, hideNormal, defaultTab }: { customTrigger?: React.ReactNode, hideWedding?: boolean, hideNormal?: boolean, defaultTab?: 'normal' | 'wedding' }) {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [tab, setTab] = useState<'normal' | 'wedding'>('wedding');
+  const [tab, setTab] = useState<'normal' | 'wedding'>(defaultTab || (hideWedding ? 'normal' : 'wedding'));
 
   useEffect(() => {
     setMounted(true);
@@ -70,20 +70,22 @@ export function PricingModal({ customTrigger }: { customTrigger?: React.ReactNod
                 </div>
 
                 {/* Tabs */}
-                <div className="relative z-10 flex justify-center gap-2 mb-4 shrink-0">
-                  <button 
-                    onClick={() => setTab('wedding')} 
-                    className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${tab === 'wedding' ? 'bg-gradient-to-r from-pink-400 to-pink-500 text-white shadow-md' : 'bg-white text-pink-400 border border-pink-200 hover:bg-pink-50'}`}
-                  >
-                    Thiệp Cưới
-                  </button>
-                  <button 
-                    onClick={() => setTab('normal')} 
-                    className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${tab === 'normal' ? 'bg-gradient-to-r from-pink-400 to-pink-500 text-white shadow-md' : 'bg-white text-pink-400 border border-pink-200 hover:bg-pink-50'}`}
-                  >
-                    Thiệp Kỷ Niệm
-                  </button>
-                </div>
+                {(!hideWedding && !hideNormal) && (
+                  <div className="relative z-10 flex justify-center gap-2 mb-4 shrink-0">
+                    <button 
+                      onClick={() => setTab('wedding')} 
+                      className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${tab === 'wedding' ? 'bg-gradient-to-r from-pink-400 to-pink-500 text-white shadow-md' : 'bg-white text-pink-400 border border-pink-200 hover:bg-pink-50'}`}
+                    >
+                      Thiệp Cưới
+                    </button>
+                    <button 
+                      onClick={() => setTab('normal')} 
+                      className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${tab === 'normal' ? 'bg-gradient-to-r from-pink-400 to-pink-500 text-white shadow-md' : 'bg-white text-pink-400 border border-pink-200 hover:bg-pink-50'}`}
+                    >
+                      Thiệp Kỷ Niệm
+                    </button>
+                  </div>
+                )}
 
                 <div className="relative z-10 overflow-y-auto rounded-3xl bg-white/80 shadow-inner backdrop-blur-sm border border-pink-100 flex-1 no-scrollbar">
                   {tab === 'normal' ? (

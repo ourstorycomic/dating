@@ -120,6 +120,7 @@ export default async function Home() {
           </Link>
           <nav className="ml-auto hidden items-center gap-5 text-sm font-bold text-[#7b536b] md:flex">
             <PricingModal
+              hideWedding={true}
               customTrigger={
                 <span className="transition hover:text-[#ff6b9d] hover:-translate-y-1 inline-block">
                   Bảng giá
