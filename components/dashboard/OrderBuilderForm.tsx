@@ -1013,7 +1013,19 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     // dynamicData cuối cùng để override tất cả — bao gồm groomName, brideName, eventAddress, etc.
     ...dynamicData,
     groomFamily: dynamicData.groomFamily || [dynamicData.groomFather, dynamicData.groomMother].filter(Boolean).join(selectedComponentKey === "wedding-1" || selectedComponentKey === "wedding-6" ? "\n" : " & "),
-    brideFamily: dynamicData.brideFamily || [dynamicData.brideFather, dynamicData.brideMother].filter(Boolean).join(selectedComponentKey === "wedding-1" || selectedComponentKey === "wedding-6" ? "\n" : " & ")
+    brideFamily: dynamicData.brideFamily || [dynamicData.brideFather, dynamicData.brideMother].filter(Boolean).join(selectedComponentKey === "wedding-1" || selectedComponentKey === "wedding-6" ? "\n" : " & "),
+    ...(function() {
+      const wdStr = dynamicData.weddingDate || "2026-12-14T11:30";
+      let d = new Date(wdStr);
+      if (isNaN(d.getTime())) d = new Date("2026-12-14T11:30");
+      const dayNames = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+      return {
+        weddingDay: dynamicData.weddingDay || d.getDate().toString(),
+        weddingMonth: dynamicData.weddingMonth || `Tháng ${d.getMonth() + 1}`,
+        weddingYear: dynamicData.weddingYear || d.getFullYear().toString(),
+        weddingDayOfWeek: dynamicData.weddingDayOfWeek || dayNames[d.getDay()]
+      };
+    })()
   };
 
   useEffect(() => {
@@ -1147,6 +1159,17 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
       }
       if (mergedData.brideFather !== undefined || mergedData.brideMother !== undefined) {
         mergedData.brideFamily = [mergedData.brideFather, mergedData.brideMother].filter(Boolean).join(separator);
+      }
+      
+      if (mergedData.weddingDate) {
+        let d = new Date(mergedData.weddingDate);
+        if (!isNaN(d.getTime())) {
+          const dayNames = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+          mergedData.weddingDay = d.getDate().toString();
+          mergedData.weddingMonth = `Tháng ${d.getMonth() + 1}`;
+          mergedData.weddingYear = d.getFullYear().toString();
+          mergedData.weddingDayOfWeek = dayNames[d.getDay()];
+        }
       }
     }
 
@@ -1946,83 +1969,6 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                     )}
                   </div>
                 )}
-                
-                <Section title="Thông tin chung">
-                  <TextInput label="Tên Chú rể" value={getVal("groomName")} placeholder="Ví dụ: Minh Khang" onChange={(v) => setVal("groomName", v)} />
-                  <TextInput label="Tên Cô dâu" value={getVal("brideName")} placeholder="Ví dụ: Thu Hương" onChange={(v) => setVal("brideName", v)} />
-                </Section>
-                <Section title="Hình ảnh nổi bật">
-                  <MediaInput label="Ảnh cover / Hero Image" accept="image/*" onChange={(url) => setVal("heroImage", url)} />
-                  <MediaInput label="Ảnh Cô dâu" accept="image/*" onChange={(url) => setVal("brideImage", url)} />
-                  <MediaInput label="Ảnh Chú rể" accept="image/*" onChange={(url) => setVal("groomImage", url)} />
-                  <MediaInput label="Ảnh ngăn cách (Divider)" accept="image/*" onChange={(url) => setVal("dividerImage", url)} />
-                  <MediaInput label="Ảnh cuối trang (Footer)" accept="image/*" onChange={(url) => setVal("footerImage", url)} />
-                </Section>
-                <Section title="Lời mời & Thông tin gia đình">
-                  <TextArea label="Lời mời chân thành" value={getVal("letterText")} placeholder="Được sự đồng thuận của gia đình hai bên\nChúng tôi trân trọng kính mời quý khách tới dự bữa tiệc chung vui cùng gia đình chúng tôi" onChange={(v) => setVal("letterText", v)} />
-                  <TextInput label="Họ tên bố chú rể" value={getVal("groomFather")} placeholder="Ví dụ: Ông Trần Văn Nam" onChange={(v) => setVal("groomFather", v)} />
-                  <TextInput label="Họ tên mẹ chú rể" value={getVal("groomMother")} placeholder="Ví dụ: Bà Nguyễn Thị My" onChange={(v) => setVal("groomMother", v)} />
-                  <TextInput label="Họ tên bố cô dâu" value={getVal("brideFather")} placeholder="Ví dụ: Ông Nguyễn Văn Cường" onChange={(v) => setVal("brideFather", v)} />
-                  <TextInput label="Họ tên mẹ cô dâu" value={getVal("brideMother")} placeholder="Ví dụ: Bà Lê Thị Dung" onChange={(v) => setVal("brideMother", v)} />
-                </Section>
-                
-                {/* LỄ THÀNH HÔN */}
-                <Section title="Lễ Thành Hôn (Tại Tư Gia)">
-                  <DateInput 
-                    label="Thời gian diễn ra lễ cưới" 
-                    value={getVal("weddingDate") || "2025-12-14T11:30"} 
-                    onChange={(v) => {
-                      if (!v) return setVal("weddingDate", v);
-                      const date = new Date(v);
-                      if (isNaN(date.getTime())) return setVal("weddingDate", v);
-                      const dayOfWeekNames = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
-                      
-                      setDynamicData(d => {
-                        const newD = { ...d };
-                        let target = newD;
-                        if (isGoi3 && activeTab === "gai") {
-                          if (!newD.gai) newD.gai = {};
-                          target = newD.gai;
-                        }
-                        
-                        target.weddingDate = v;
-                        target.weddingDay = date.getDate().toString();
-                        target.weddingMonth = `Tháng ${date.getMonth() + 1}`;
-                        target.weddingYear = date.getFullYear().toString();
-                        target.weddingDayOfWeek = dayOfWeekNames[date.getDay()];
-                        
-                        return newD;
-                      });
-                    }} 
-                  />
-                  <TextArea label="Địa chỉ Tư gia" value={getVal("eventAddress")} placeholder="Số 10, Đường Vườn Lài, Tân Phú, TP. HCM" onChange={(v) => setVal("eventAddress", v)} />
-                  <TextInput label="Link Google Maps (Tư gia)" value={getVal("mapUrl")} placeholder="https://maps.app.goo.gl/xxx" onChange={(v) => setVal("mapUrl", v)} />
-                  <MediaInput label="Ảnh bản đồ (Screenshot)" accept="image/*" onChange={(url) => setVal("mapImage", url)} />
-                </Section>
-
-                {/* TIỆC MỪNG NHÀ TRAI */}
-                <Section title="Tiệc Mừng Lễ Thành Hôn — Nhà Trai">
-                  <DateInput label="Thời gian diễn ra Tiệc" value={getVal("tiecDate")} onChange={(v) => setVal("tiecDate", v)} />
-                  <TextInput label="Tên Địa Điểm Tiệc" value={getVal("tiecName")} placeholder="Ví dụ: Nhà Hàng Hoàng Yến" onChange={(v) => setVal("tiecName", v)} />
-                  <TextArea label="Địa chỉ chi tiết" value={getVal("tiecAddress")} placeholder="123 ABC, P.XYZ, Quận M" onChange={(v) => setVal("tiecAddress", v)} />
-                  <TextInput label="Link Google Maps" value={getVal("tiecMapUrl")} placeholder="https://maps.app.goo.gl/xxx" onChange={(v) => setVal("tiecMapUrl", v)} />
-                </Section>
-
-                {/* TIỆC MỪNG NHÀ GÁI (Chỉ gói 2) */}
-                {isGoi2 && (
-                  <Section title="Tiệc Mừng Lễ Thành Hôn — Nhà Gái">
-                    <DateInput label="Thời gian diễn ra Tiệc" value={getVal("tiecDateGai")} onChange={(v) => setVal("tiecDateGai", v)} />
-                    <TextInput label="Tên Địa Điểm Tiệc" value={getVal("tiecNameGai")} placeholder="Ví dụ: Nhà Hàng The Adora" onChange={(v) => setVal("tiecNameGai", v)} />
-                    <TextArea label="Địa chỉ chi tiết" value={getVal("tiecAddressGai")} placeholder="456 DEF, P.XYZ, Quận M" onChange={(v) => setVal("tiecAddressGai", v)} />
-                    <TextInput label="Link Google Maps" value={getVal("tiecMapUrlGai")} placeholder="https://maps.app.goo.gl/xxx" onChange={(v) => setVal("tiecMapUrlGai", v)} />
-                  </Section>
-                )}
-
-                {/* QR MỪNG CƯỚI */}
-                <Section title="QR Mừng Cưới (Tùy chọn)">
-                  <MediaInput label="Ảnh QR Chú rể" accept="image/*" onChange={(url) => setVal("groomQR", url)} />
-                  <MediaInput label="Ảnh QR Cô dâu" accept="image/*" onChange={(url) => setVal("brideQR", url)} />
-                </Section>
               </>
             ) : isBirthdayMagic ? (
               <>
