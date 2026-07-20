@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Monitor, Smartphone, Share2, Check, ExternalLink, ArrowRight } from 'lucide-react';
 import { InteractiveTemplatePreview } from '@/components/templates/InteractiveTemplatePreview';
 import { createClient } from '@/lib/supabase/client';
+import { MessengerButton } from '@/components/MessengerButton';
 
 const FACEBOOK_URL = "https://www.facebook.com/messages/t/462153540321288";
 
@@ -242,6 +243,7 @@ export default function TemplatePreviewPage({ params }: { params: Promise<{ id: 
           )}
         </div>
       </main>
+      <MessengerButton />
     </div>
   );
 }

@@ -99,7 +99,7 @@ export function PricingModal({ customTrigger, hideWedding, hideNormal, defaultTa
                           </th>
                           <th className="px-3 py-2 sm:px-4 sm:py-3 text-[12px] sm:text-sm font-extrabold text-[#7b536b] w-1/4 uppercase tracking-wide">
                             <div className="flex items-center gap-1">Làm Gấp</div>
-                            <span className="block text-[9px] sm:text-[10px] font-semibold normal-case text-[#a37c93] mt-0.5">(&lt;24h)</span>
+                            <span className="block text-[9px] sm:text-[10px] font-semibold normal-case text-[#a37c93] mt-0.5">(1-2 ngày)</span>
                           </th>
                         </tr>
                       </thead>
@@ -144,7 +144,7 @@ export function PricingModal({ customTrigger, hideWedding, hideNormal, defaultTa
                           </th>
                           <th className="px-3 py-2 sm:px-4 sm:py-3 text-[12px] sm:text-sm font-extrabold text-[#7b536b] w-1/4 uppercase tracking-wide">
                             <div className="flex items-center gap-1">Làm Gấp</div>
-                            <span className="block text-[9px] sm:text-[10px] font-semibold normal-case text-[#a37c93] mt-0.5">(&lt;24h)</span>
+                            <span className="block text-[9px] sm:text-[10px] font-semibold normal-case text-[#a37c93] mt-0.5">(1-2 ngày)</span>
                           </th>
                         </tr>
                       </thead>

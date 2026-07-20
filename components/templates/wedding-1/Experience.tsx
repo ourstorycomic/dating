@@ -231,7 +231,7 @@ export function WeddingOneExperience({
           className="text-center w-full px-6 flex flex-col items-center -mt-32 relative z-10"
         >
           <h1 className="text-5xl @sm:text-6xl font-medium text-[#333] drop-shadow-md mb-2" style={{ fontFamily: "'Dancing Script', cursive" }}>
-            {groomName} &amp; {brideName}
+            <span className="flex flex-col items-center gap-1 sm:gap-2"><span>{groomName}</span> <span className="text-sm font-sans mx-2 opacity-80">&amp;</span> <span>{brideName}</span></span>
           </h1>
           <div className="w-12 h-[1px] bg-[#8c7b6b] my-4 opacity-50"></div>
           <p className="text-[10px] uppercase tracking-[0.4em] font-semibold text-[#666] mb-2 font-sans">Save The Date</p>

@@ -252,7 +252,7 @@ export function HomePageCatalog({ grouped }: { grouped: HomeTemplateGroup[] }) {
                         </p>
                       </div>
 
-                      <div className="mt-5 grid grid-cols-2 gap-3">
+                      <div className="mt-auto pt-5 grid grid-cols-2 gap-3">
                         <Link
                           className="rounded-full border border-[#f4bdd8] bg-white/78 px-4 py-3 text-center text-sm font-extrabold text-[#b83276] transition hover:bg-white"
                           href={`/templates/${template.slug}/preview`}

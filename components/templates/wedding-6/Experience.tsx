@@ -182,7 +182,7 @@ export function WeddingSixExperience({
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} className="flex flex-col items-center w-full mb-10 text-center">
             <h2 className="text-[40px] sm:text-5xl text-[#2C2C2C] mb-4" style={{ fontFamily: 'var(--font-dancing)' }}>Save the Date</h2>
             <div className="text-2xl sm:text-3xl text-[#555] whitespace-nowrap" style={{ fontFamily: 'var(--font-dancing)' }}>
-              {groomName} <span className="text-[#e8c0c4] mx-2 text-xl">&amp;</span> {brideName}
+              <span className="flex flex-col items-center gap-1 sm:gap-2"><span>{groomName}</span> <span className="text-[#e8c0c4] mx-2 text-xl">&amp;</span> <span>{brideName}</span></span>
             </div>
           </motion.div>
 
@@ -306,7 +306,7 @@ export function WeddingSixExperience({
             )}
             
             {hasTiecMung && (
-              <div className="w-full flex flex-col items-center mt-12 pt-10 border-t border-[#e8c0c4]/40">
+              <div className="w-full flex flex-col items-center mt-12 pt-10 border-t border-[#e8c0c4]/40 px-6">
                 <h3 className="text-3xl text-[#2C2C2C] mb-2 uppercase" style={{ fontFamily: 'var(--font-dancing)' }}>TIỆC MỪNG LỄ THÀNH HÔN {hasTiecMungGai ? "(NHÀ TRAI)" : ""}</h3>
                 <p className="text-[10px] font-bold text-[#a4656c] uppercase tracking-widest mb-3 mt-4">Thời gian</p>
                 <p className="text-3xl font-serif text-[#2C2C2C] mb-1">{tiecTrai.time}</p>
@@ -330,7 +330,7 @@ export function WeddingSixExperience({
             )}
             
             {hasTiecMungGai && (
-              <div className="w-full flex flex-col items-center mt-12 pt-10 border-t border-[#e8c0c4]/40">
+              <div className="w-full flex flex-col items-center mt-12 pt-10 border-t border-[#e8c0c4]/40 px-6">
                 <h3 className="text-3xl text-[#2C2C2C] mb-2 uppercase" style={{ fontFamily: 'var(--font-dancing)' }}>TIỆC MỪNG LỄ THÀNH HÔN (NHÀ GÁI)</h3>
                 <p className="text-[10px] font-bold text-[#a4656c] uppercase tracking-widest mb-3 mt-4">Thời gian</p>
                 <p className="text-3xl font-serif text-[#2C2C2C] mb-1">{tiecGai.time}</p>
@@ -381,7 +381,7 @@ export function WeddingSixExperience({
           </motion.div>
 
           {/* RSVP Form */}
-          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} className="w-full flex flex-col items-center mb-20">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} className="w-full flex flex-col items-center mb-20 px-6">
             <div className="w-full bg-[#fdfdfd] p-8 shadow-sm border border-[#eee] flex flex-col gap-5 relative">
               <div className="flex flex-col items-center text-center mb-2">
                 <h3 className="text-3xl text-[#2C2C2C] mb-1" style={{ fontFamily: 'var(--font-dancing)' }}>Tham Dự</h3>
@@ -424,7 +424,7 @@ export function WeddingSixExperience({
           <div className="relative z-10 flex flex-col items-center">
             <h2 className="text-5xl text-[#1a1a1a] mb-4" style={{ fontFamily: 'var(--font-dancing)' }}>Thank You</h2>
             <div className="w-12 h-[1px] bg-[#1a1a1a] mb-4"></div>
-            <p className="text-[10px] text-[#1a1a1a] uppercase tracking-widest font-bold">{groomName} &amp; {brideName}</p>
+            <p className="text-[10px] text-[#1a1a1a] uppercase tracking-widest font-bold"><span className="flex flex-col items-center gap-1 sm:gap-2"><span>{groomName}</span> <span className="text-sm font-sans mx-2 opacity-80">&amp;</span> <span>{brideName}</span></span></p>
           </div>
         </motion.div>
 
@@ -518,6 +518,12 @@ export function WeddingSixExperience({
         </button>
       )}
 
+
+      {/* Footer */}
+      <div className="w-full py-8 bg-[#1a1a1a] flex flex-col items-center justify-center text-center px-4 relative z-50">
+        <p className="text-[#d6cfc5] text-[10px] uppercase tracking-widest font-sans font-semibold mb-2">Designed by</p>
+        <a href="https://www.lovora.click/wedding" target="_blank" rel="noopener noreferrer" className="text-white text-lg font-bold tracking-wider hover:text-[#C5A880] transition-colors" style={{ fontFamily: 'var(--font-dancing)' }}>Lovora Wedding</a>
+      </div>
     </div>
   );
 }

@@ -1012,6 +1012,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     } : {}),
     // dynamicData cuối cùng để override tất cả — bao gồm groomName, brideName, eventAddress, etc.
     ...dynamicData,
+    groomFamily: dynamicData.groomFamily || [dynamicData.groomFather, dynamicData.groomMother].filter(Boolean).join(selectedComponentKey === "wedding-1" || selectedComponentKey === "wedding-6" ? "\n" : " & "),
+    brideFamily: dynamicData.brideFamily || [dynamicData.brideFather, dynamicData.brideMother].filter(Boolean).join(selectedComponentKey === "wedding-1" || selectedComponentKey === "wedding-6" ? "\n" : " & ")
   };
 
   useEffect(() => {

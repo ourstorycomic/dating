@@ -176,7 +176,7 @@ export function WeddingThreeExperience({
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="flex flex-col items-center w-full">
             <p className="text-[10px] tracking-[0.3em] text-[#7A9DBA] uppercase mb-4 font-serif font-bold">Happy Marriage</p>
             <h1 className="text-[26px] sm:text-3xl md:text-4xl text-[#2D2A28] mb-6 font-bold text-center px-2 leading-tight whitespace-nowrap" style={{ fontFamily: 'var(--font-dancing)' }}>
-              {groomName} & {brideName}
+              <span className="flex flex-col items-center gap-1 sm:gap-2"><span>{groomName}</span> <span className="text-sm font-sans mx-2 opacity-80">&amp;</span> <span>{brideName}</span></span>
             </h1>
           </motion.div>
           
@@ -218,7 +218,7 @@ export function WeddingThreeExperience({
 
           {/* Second Names */}
           <motion.h2 initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="text-[26px] sm:text-[28px] md:text-3xl text-[#2D2A28] mb-12 text-center px-2 leading-tight whitespace-nowrap" style={{ fontFamily: 'var(--font-dancing)' }}>
-            {groomName} <span className="font-sans text-sm mx-1">&amp;</span> {brideName}
+            <span className="flex flex-col items-center gap-1 sm:gap-2"><span>{groomName}</span> <span className="font-sans text-sm mx-1">&amp;</span> <span>{brideName}</span></span>
           </motion.h2>
 
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="w-full mb-12">
@@ -477,6 +477,12 @@ export function WeddingThreeExperience({
         </button>
       )}
 
+
+      {/* Footer */}
+      <div className="w-full py-8 bg-[#1a1a1a] flex flex-col items-center justify-center text-center px-4 relative z-50">
+        <p className="text-[#d6cfc5] text-[10px] uppercase tracking-widest font-sans font-semibold mb-2">Designed by</p>
+        <a href="https://www.lovora.click/wedding" target="_blank" rel="noopener noreferrer" className="text-white text-lg font-bold tracking-wider hover:text-[#C5A880] transition-colors" style={{ fontFamily: 'var(--font-dancing)' }}>Lovora Wedding</a>
+      </div>
     </div>
   );
 }

@@ -296,10 +296,9 @@ export default function WeddingLandingPage() {
           <div className="mt-20 max-w-4xl mx-auto rounded-[2.5rem] bg-white border border-[#F4EFEA] shadow-[0_10px_40px_rgba(0,0,0,0.02)] p-10 text-sm text-[#7A726D]">
             <h3 className="font-serif-elegant text-xl text-[#2D2A28] mb-6 font-semibold">Dịch vụ đi kèm & Lưu ý</h3>
             <ul className="grid gap-5 md:grid-cols-2">
-              <li className="flex gap-3"><span className="text-[#C5A880]">✦</span> Dịch vụ điền tên từng khách: Cộng thêm 89.000đ</li>
               <li className="flex gap-3"><span className="text-[#C5A880]">✦</span> Làm thiệp bổ sung từ thẻ thứ 3 trở đi (VD: thiệp báo hỷ): 85.000đ / Thiệp</li>
               <li className="flex gap-3"><span className="text-[#C5A880]">✦</span> Tùy chỉnh nội dung chuyên sâu (VD: thay ảnh, timeline, dresscode): 45.000đ / Yêu cầu</li>
-              <li className="flex gap-3"><span className="text-[#C5A880]">✦</span> Đổi mẫu sau khi hoàn thiện: Sẽ áp dụng tính theo giá Làm gấp (Lưu ý: Chỉ hỗ trợ cho đơn hàng đang ở gói Làm thường).</li>
+              <li className="flex gap-3"><span className="text-[#C5A880]">✦</span> Đổi mẫu sau khi hoàn thiện: Sẽ áp dụng tính theo giá Làm gấp.</li>
               <li className="flex gap-3 md:col-span-2"><span className="text-[#C5A880]">✦</span> Chính sách chỉnh sửa: Hỗ trợ miễn phí 3 lần đầu. Từ lần thứ 4 trở đi, tính phí 10% giá trị đơn hàng / Lần (Không tính phí nếu lỗi sai thông tin từ phía chúng tôi).</li>
             </ul>
           </div>

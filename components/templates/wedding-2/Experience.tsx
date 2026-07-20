@@ -184,7 +184,7 @@ export function WeddingTwoExperience({
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="flex flex-col items-center w-full">
             <p className="text-[10px] tracking-widest text-[#B58B5C] uppercase mb-4 font-sans font-semibold">Thiệp Mời</p>
             <h1 className="text-[26px] sm:text-3xl md:text-4xl text-[#7A1F1F] mb-6 font-bold text-center px-2 leading-tight whitespace-nowrap" style={{ fontFamily: 'var(--font-dancing)' }}>
-              {groomName} & {brideName}
+              <span className="flex flex-col items-center gap-1 sm:gap-2"><span>{groomName}</span> <span className="text-sm font-sans mx-2 opacity-80">&amp;</span> <span>{brideName}</span></span>
             </h1>
             <img src="/assets/wedding/wedding-2/logotrungthu.webp" alt="Double Happiness" className="w-16 h-16 object-contain mb-6 opacity-90 mix-blend-multiply" />
           </motion.div>
@@ -212,7 +212,7 @@ export function WeddingTwoExperience({
 
           {/* Second Names */}
           <motion.h2 initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="text-[26px] sm:text-[28px] md:text-3xl text-[#7A1F1F] mb-12 text-center px-2 leading-tight whitespace-nowrap" style={{ fontFamily: 'var(--font-dancing)' }}>
-            {groomName} & {brideName}
+            <span className="flex flex-col items-center gap-1 sm:gap-2"><span>{groomName}</span> <span className="text-sm font-sans mx-2 opacity-80">&amp;</span> <span>{brideName}</span></span>
           </motion.h2>
 
           {/* Red Photo Block */}
@@ -300,7 +300,7 @@ export function WeddingTwoExperience({
           )}
 
           {/* Calendar Section */}
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="w-full flex flex-col items-center mb-16">
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="w-full flex flex-col items-center mb-16 px-6">
             <h3 className="text-sm font-serif font-bold text-[#5A5552] mb-6 uppercase tracking-[0.2em]">Tháng {dMonth} - {dYear}</h3>
             <div className="grid grid-cols-7 gap-2 w-full max-w-[280px] text-center text-xs border border-[#C5A880]/30 p-4 rounded-lg bg-white shadow-sm">
               {['T2','T3','T4','T5','T6','T7','CN'].map(day => (
@@ -348,9 +348,9 @@ export function WeddingTwoExperience({
           </motion.div>
 
           {/* RSVP Form */}
-          <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="w-full flex flex-col items-center mb-16">
+          <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="w-full flex flex-col items-center mb-16 px-6">
             <h2 className="text-[22px] sm:text-2xl text-[#7A1F1F] mb-6 text-center leading-tight px-2 whitespace-nowrap" style={{ fontFamily: 'var(--font-dancing)' }}>
-              {groomName} <span className="text-sm font-sans mx-2">&amp;</span> {brideName}
+              <span className="flex flex-col items-center gap-1 sm:gap-2"><span>{groomName}</span> <span className="text-sm font-sans mx-2">&amp;</span> <span>{brideName}</span></span>
             </h2>
             <div className="w-full bg-[#7A1F1F] rounded-xl p-6 shadow-xl flex flex-col gap-3">
               <input type="text" value={rsvpName} onChange={e => setRsvpName(e.target.value)} placeholder="Nhập Tên Bạn..." className="w-full bg-white text-[#2D2A28] text-xs px-4 py-3 rounded-md outline-none" />
@@ -377,7 +377,7 @@ export function WeddingTwoExperience({
           </motion.div>
 
           {/* Gallery Grid */}
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="w-full flex flex-col items-center mb-16">
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="w-full flex flex-col items-center mb-16 px-6">
             <h3 className="text-xs font-serif font-bold text-[#A67C52] mb-2 uppercase tracking-[0.3em]">Album Cưới</h3>
             <div className="w-16 h-px bg-[#C5A880] mb-8"></div>
             
@@ -485,6 +485,12 @@ export function WeddingTwoExperience({
         </button>
       )}
 
+
+      {/* Footer */}
+      <div className="w-full py-8 bg-[#1a1a1a] flex flex-col items-center justify-center text-center px-4 relative z-50">
+        <p className="text-[#d6cfc5] text-[10px] uppercase tracking-widest font-sans font-semibold mb-2">Designed by</p>
+        <a href="https://www.lovora.click/wedding" target="_blank" rel="noopener noreferrer" className="text-white text-lg font-bold tracking-wider hover:text-[#C5A880] transition-colors" style={{ fontFamily: 'var(--font-dancing)' }}>Lovora Wedding</a>
+      </div>
     </div>
   );
 }
