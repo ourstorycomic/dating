@@ -74,6 +74,7 @@ export function WeddingThreeExperience({
     if (autoPlay) {
       const openTimer = setTimeout(() => {
         setIsOpened(true);
+        setTimeout(() => setAllowScroll(true), 1500);
       }, 500);
       return () => clearTimeout(openTimer);
     }
@@ -97,7 +98,7 @@ export function WeddingThreeExperience({
           reqId = requestAnimationFrame(step);
         };
         reqId = requestAnimationFrame(step);
-      }, 3500); // Wait for door animation
+      }, 1500); // Wait for door animation
       
       return () => {
         clearTimeout(timeoutId);
@@ -108,6 +109,7 @@ export function WeddingThreeExperience({
 
   const handleOpen = () => {
     setIsOpened(true);
+    setTimeout(() => setAllowScroll(true), 1500);
     if (audioRef.current && !compact) {
       audioRef.current.play().catch(() => {});
       setIsPlaying(true);
@@ -194,15 +196,16 @@ export function WeddingThreeExperience({
                 <p className="text-xs font-serif font-bold text-[#2D2A28] mb-2 uppercase">Thiệp Mời Cưới</p>
                 <div className="flex flex-col gap-1 mb-4">
                   <p className="text-[9px] uppercase tracking-widest text-[#7A1F1F]">Nhà Trai</p>
-                  <p className="text-[10px] text-[#2D2A28] font-bold whitespace-pre-line">{groomFamily || "Ông Bà Trưởng Tộc"}</p>
+                  <p className="text-sm text-[#2D2A28] font-bold whitespace-pre-line">{groomFamily || "Ông Bà Trưởng Tộc"}</p>
                 </div>
                 <div className="flex flex-col gap-1">
                   <p className="text-[9px] uppercase tracking-widest text-[#7A1F1F]">Nhà Gái</p>
-                  <p className="text-[10px] text-[#2D2A28] font-bold whitespace-pre-line">{brideFamily || "Ông Bà Trưởng Tộc"}</p>
+                  <p className="text-sm text-[#2D2A28] font-bold whitespace-pre-line">{brideFamily || "Ông Bà Trưởng Tộc"}</p>
                 </div>
               </div>
-              <div className="w-16 h-40 bg-[#7A1F1F] rounded-t-md rounded-b-md flex items-end justify-center pb-4 shadow-lg shrink-0">
-                <img src="/assets/wedding/wedding-3/textthiep.webp" alt="Thiệp Mời" className="w-8 h-8 object-contain" />
+              <div className="w-16 h-40 bg-[#7A1F1F] rounded-t-md rounded-b-md flex flex-col items-center justify-between py-4 shadow-lg shrink-0 relative overflow-hidden">
+                <img src="/assets/wedding/wedding-3/ring.webp" alt="Ring" className="w-10 h-10 object-contain z-10" />
+                <img src="/assets/wedding/wedding-3/textthiep.webp" alt="Thiệp Mời" className="w-10 h-10 object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.8)] z-10" />
               </div>
             </div>
 
@@ -249,17 +252,26 @@ export function WeddingThreeExperience({
               {/* Days */}
               {monthDays.map(day => {
                 const isWedding = day === Number(dDay) && parsedDDate.getMonth() + 1 === dMonthNumber && parsedDDate.getFullYear() === Number(dYear);
+                let tiecDay = 0, tiecMonth = 0, tiecYear = 0;
+                const tiecToUse = (!hasTiecMungGai) ? tiecTrai : tiecGai;
+                if (tiecToUse && tiecToUse.date) {
+                  const [td, tm, ty] = tiecToUse.date.split("/");
+                  tiecDay = parseInt(td); tiecMonth = parseInt(tm); tiecYear = parseInt(ty);
+                }
+                const isTiec = tiecDay === day && tiecMonth === dMonthNumber && tiecYear === Number(dYear);
                 return (
-                  <div key={day} className="relative flex justify-center items-center">
-                    <span className={`z-10 ${isWedding ? 'text-[#7A1F1F] font-bold' : 'text-[#2D2A28]'}`}>{day}</span>
+                  <div key={day} className="relative flex justify-center items-center w-7 h-7 mx-auto">
                     {isWedding && (
-                      <motion.img 
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ delay: 2.5, type: 'spring' }}
-                        src="/assets/wedding/wedding-3/ring.webp" 
-                        className="absolute w-6 h-6 object-contain z-0 -translate-y-1" 
-                      />
+                      <motion.svg initial={{ scale: 0 }} whileInView={{ scale: 1.15 }} viewport={{ once: true }} transition={{ delay: 0.5, type: "spring" }} className="absolute inset-0 w-[120%] h-[120%] -left-[10%] -top-[10%] text-[#7A1F1F]" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                      </motion.svg>
+                    )}
+                    {isTiec && !isWedding && (
+                      <motion.div initial={{ scale: 0 }} whileInView={{ scale: 0.9 }} viewport={{ once: true }} transition={{ delay: 0.6, type: "spring" }} className="absolute inset-0 border-[1.5px] border-dashed border-[#7A1F1F] rounded-full bg-[#7A1F1F]/5" />
+                    )}
+                    <span className={`relative z-10 ${isWedding ? "text-white font-bold text-[11px]" : isTiec ? "text-[#7A1F1F] font-bold" : "text-[#2D2A28]"}`}>{day}</span>
+                    {isTiec && isWedding && (
+                      <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.6, type: "spring" }} className="absolute inset-0 w-[140%] h-[140%] -left-[20%] -top-[20%] rounded-full border-[1.5px] border-dashed border-[#7A1F1F] z-0 opacity-70"></motion.div>
                     )}
                   </div>
                 );
@@ -267,15 +279,20 @@ export function WeddingThreeExperience({
             </div>
             <div className="flex justify-center gap-6 mt-4">
               <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#7A1F1F]">
-                <img src="/assets/wedding/wedding-3/ring.webp" className="w-3 h-3 object-contain" /> Lễ Cưới
+                <svg className="w-4 h-4 text-[#7A1F1F]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg> Lễ Cưới
               </div>
+              {(hasTiecMung || hasTiecMungGai) && (
+                <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#7A1F1F]">
+                  <div className="w-3.5 h-3.5 rounded-full border-[1.5px] border-dashed border-[#7A1F1F] bg-[#7A1F1F]/5"></div> Tiệc Mừng
+                </div>
+              )}
             </div>
             <div className="w-full h-px bg-[#C5A880]/30 mt-4"></div>
           </motion.div>
 
           {/* Address Box */}
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="text-center mb-8 px-4 w-full">
-            <h3 className="text-xs font-bold text-[#2D2A28] uppercase mb-2">Địa Điểm</h3>
+            <h3 className="text-xs font-bold text-[#2D2A28] uppercase mb-2">Địa điểm tổ chức Lễ thành hôn</h3>
             <p className="text-[10px] text-[#2D2A28] leading-relaxed font-bold uppercase">Tại Tư Gia</p>
             <p className="text-[10px] text-[#2D2A28] leading-relaxed mb-4">{eventAddress}</p>
             {mapUrl && (
@@ -423,7 +440,7 @@ export function WeddingThreeExperience({
              <motion.div 
                initial={{ x: 0 }}
                exit={{ x: "-200%" }}
-               transition={{ duration: 3.5, ease: [0.4, 0, 0.2, 1] }}
+               transition={{ duration: 1.5, ease: [0.4, 0, 0.2, 1] }}
                className="w-1/2 h-full relative z-30"
              >
                <img src="/assets/wedding/wedding-3/sidebentrai.webp" alt="Door Left" className="absolute top-0 left-0 h-full w-[200%] max-w-none object-cover object-left pointer-events-none" />
@@ -432,7 +449,7 @@ export function WeddingThreeExperience({
              <motion.div 
                initial={{ x: 0 }}
                exit={{ x: "200%" }}
-               transition={{ duration: 3.5, ease: [0.4, 0, 0.2, 1] }}
+               transition={{ duration: 1.5, ease: [0.4, 0, 0.2, 1] }}
                className="w-1/2 h-full relative z-20"
              >
                <img src="/assets/wedding/wedding-3/sidebenphai.webp" alt="Door Right" className="absolute top-0 right-0 h-full w-[200%] max-w-none object-cover object-right pointer-events-none" />

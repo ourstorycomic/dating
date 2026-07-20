@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { getTemplateBySlug } from "@/lib/supabase/server";
 
+
 export async function generateMetadata({
   params,
 }: {
@@ -15,7 +16,9 @@ export async function generateMetadata({
 
   const title = `Mẫu thiệp cưới ${template.name} | Lovora`;
   const description = template.description || "Xem trước mẫu thiệp cưới siêu đẹp và sang trọng trên Lovora.";
-  const images = [template.thumbnail_url || "/thumbnails/valentine1.png"];
+  const thumbnail = template.thumbnail_url || "/thumbnails/valentine1.png";
+  const imageUrl = thumbnail.startsWith('http') ? thumbnail : `https://lovora.vn${thumbnail}`;
+  const images = [{ url: imageUrl, width: 1200, height: 630, alt: title }];
 
   return {
     title,

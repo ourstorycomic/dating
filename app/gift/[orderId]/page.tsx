@@ -30,7 +30,10 @@ export async function generateMetadata({
   const recipient = order.recipient_name || "bạn";
   const title = `Một món quà đặc biệt dành cho ${recipient} 🎁 | Lovora`;
   const description = "Bạn có một món quà bất ngờ đã được chuẩn bị sẵn. Hãy mở ra xem nhé!";
-  const images = [order.templates?.thumbnail_url || "/thumbnails/valentine1.png"];
+  const thumbnail = order.templates?.thumbnail_url || "/thumbnails/valentine1.png";
+  // Use absolute URL for Zalo/social crawlers
+  const imageUrl = thumbnail.startsWith('http') ? thumbnail : `https://lovora.vn${thumbnail}`;
+  const images = [{ url: imageUrl, width: 1200, height: 630, alt: title }];
 
   return {
     title,

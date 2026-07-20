@@ -54,6 +54,8 @@ export function WeddingFourExperience({
   const [allowScroll, setAllowScroll] = useState(autoPlay || false);
   const [isPlaying, setIsPlaying] = useState(autoPlay || false);
   const [showQR, setShowQR] = useState(false);
+  const [rsvpCount, setRsvpCount] = useState("Có");
+  const [customCount, setCustomCount] = useState("");
   const [giftTab, setGiftTab] = useState<'groom'|'bride'>('groom');
   const [activeGalleryIndex, setActiveGalleryIndex] = useState(0);
   
@@ -91,6 +93,7 @@ export function WeddingFourExperience({
     if (autoPlay) {
       setEnvelopeState("opened");
       setIsOpened(true);
+      setAllowScroll(true);
     }
   }, [autoPlay]);
 
@@ -133,6 +136,7 @@ export function WeddingFourExperience({
       setTimeout(() => {
         setEnvelopeState("opened");
         setIsOpened(true);
+        setAllowScroll(true);
       }, 1000);
     }, 1500); // Wait 1.5s before automatically opening
 
@@ -319,13 +323,13 @@ export function WeddingFourExperience({
               <div className="text-center w-[46%]">
                 <p className="text-[10px] text-[#A67C52] uppercase tracking-widest font-bold mb-2">Nhà Trai</p>
                 <p className="text-base font-serif text-[#2D2A28] font-bold mb-1">{groomName}</p>
-                <p className="text-[10px] sm:text-[11px] text-[#5A5552] uppercase leading-relaxed font-medium">{groomFamily}</p>
+                <p className="text-sm text-[#5A5552] uppercase leading-relaxed font-medium">{groomFamily}</p>
               </div>
               <div className="text-xl text-[#7A1F1F] px-1 mt-6" style={{ fontFamily: 'var(--font-dancing)' }}>&amp;</div>
               <div className="text-center w-[46%]">
                 <p className="text-[10px] text-[#A67C52] uppercase tracking-widest font-bold mb-2">Nhà Gái</p>
                 <p className="text-base font-serif text-[#2D2A28] font-bold mb-1">{brideName}</p>
-                <p className="text-[10px] sm:text-[11px] text-[#5A5552] uppercase leading-relaxed font-medium">{brideFamily}</p>
+                <p className="text-sm text-[#5A5552] uppercase leading-relaxed font-medium">{brideFamily}</p>
               </div>
             </div>
             
@@ -344,7 +348,7 @@ export function WeddingFourExperience({
               
               <div className="w-12 h-[1px] bg-[#D6C1A5] mx-auto my-6"></div>
               
-              <h3 className="text-[12px] font-serif font-bold text-[#7A1F1F] mb-3 uppercase tracking-[0.2em]">Địa Điểm Tổ Chức</h3>
+              <h3 className="text-[12px] font-serif font-bold text-[#7A1F1F] mb-3 uppercase tracking-[0.2em]">Địa điểm tổ chức Lễ thành hôn Tổ Chức</h3>
               <p className="text-[11px] text-[#5A5552] uppercase font-bold tracking-wider leading-relaxed px-2 mb-1">Tại Tư Gia</p>
               <p className="text-[11px] text-[#5A5552] uppercase tracking-wider leading-relaxed px-2 font-medium mb-4">{eventAddress}</p>
               {mapUrl && (
@@ -418,17 +422,26 @@ export function WeddingFourExperience({
               {/* Days */}
               {monthDays.map(day => {
                 const isWedding = day === Number(dDate) && parsedDDate.getMonth() + 1 === dMonthNumber && parsedDDate.getFullYear() === Number(dYear);
+                let tiecDay = 0, tiecMonth = 0, tiecYear = 0;
+                const tiecToUse = (!hasTiecMungGai) ? tiecTrai : tiecGai;
+                if (tiecToUse && tiecToUse.date) {
+                  const [td, tm, ty] = tiecToUse.date.split("/");
+                  tiecDay = parseInt(td); tiecMonth = parseInt(tm); tiecYear = parseInt(ty);
+                }
+                const isTiec = tiecDay === day && tiecMonth === dMonthNumber && tiecYear === Number(dYear);
                 return (
-                  <div key={day} className="relative flex justify-center items-center h-8">
-                    <span className={`z-10 ${isWedding ? "text-[#FFFFFF] font-bold" : "text-[#5A5552]"}`}>{day}</span>
+                  <div key={day} className="relative flex justify-center items-center w-7 h-7 mx-auto">
                     {isWedding && (
-                      <motion.div 
-                        initial={{ scale: 0 }} 
-                        whileInView={{ scale: 1 }} 
-                        viewport={{ once: true }} 
-                        transition={{ type: "spring", delay: 0.5 }}
-                        className="absolute inset-0 m-auto w-6 h-6 bg-[#7A1F1F] rounded-full z-0"
-                      />
+                      <motion.svg initial={{ scale: 0 }} whileInView={{ scale: 1.15 }} viewport={{ once: true }} transition={{ delay: 0.5, type: "spring" }} className="absolute inset-0 w-[120%] h-[120%] -left-[10%] -top-[10%] text-[#7A1F1F]" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                      </motion.svg>
+                    )}
+                    {isTiec && !isWedding && (
+                      <motion.div initial={{ scale: 0 }} whileInView={{ scale: 0.9 }} viewport={{ once: true }} transition={{ delay: 0.6, type: "spring" }} className="absolute inset-0 border-[1.5px] border-dashed border-[#7A1F1F] rounded-full bg-[#7A1F1F]/5" />
+                    )}
+                    <span className={`relative z-10 ${isWedding ? "text-[#FFFFFF] font-bold text-[11px]" : isTiec ? "text-[#7A1F1F] font-bold" : "text-[#5A5552]"}`}>{day}</span>
+                    {isTiec && isWedding && (
+                      <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.6, type: "spring" }} className="absolute inset-0 w-[140%] h-[140%] -left-[20%] -top-[20%] rounded-full border-[1.5px] border-dashed border-[#7A1F1F] z-0 opacity-70"></motion.div>
                     )}
                   </div>
                 );
@@ -436,8 +449,13 @@ export function WeddingFourExperience({
             </div>
             <div className="flex justify-center gap-6 mt-6">
               <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#7A1F1F]">
-                <div className="w-3 h-3 rounded-full bg-[#7A1F1F]"></div> Lễ Cưới
+                <svg className="w-4 h-4 text-[#7A1F1F]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg> Lễ Cưới
               </div>
+              {(hasTiecMung || hasTiecMungGai) && (
+                <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#7A1F1F]">
+                  <div className="w-3.5 h-3.5 rounded-full border-[1.5px] border-dashed border-[#7A1F1F] bg-[#7A1F1F]/5"></div> Tiệc Mừng
+                </div>
+              )}
             </div>
           </motion.div>
 
@@ -530,10 +548,14 @@ export function WeddingFourExperience({
             <div className="w-full flex flex-col gap-4">
               <input type="text" placeholder="Tên của bạn..." className="w-full bg-transparent border-b border-[#D6C1A5] text-[#2D2A28] text-xs px-2 py-3 outline-none" />
               <input type="text" placeholder="Số điện thoại..." className="w-full bg-transparent border-b border-[#D6C1A5] text-[#2D2A28] text-xs px-2 py-3 outline-none" />
-              <select className="w-full bg-transparent border-b border-[#D6C1A5] text-[#2D2A28] text-xs px-2 py-3 outline-none appearance-none">
-                <option>Sẽ tham dự</option>
-                <option>Không thể tham dự</option>
+              <select value={rsvpCount} onChange={e => setRsvpCount(e.target.value)} className="w-full bg-transparent border-b border-[#D6C1A5] text-[#2D2A28] text-xs px-2 py-3 outline-none appearance-none">
+                <option value="Có">Có tham dự</option>
+                <option value="Không">Không tham dự</option>
+                <option value="Khác">Có, dắt theo người thân</option>
               </select>
+              {rsvpCount === "Khác" && (
+                <input type="number" min="1" value={customCount} onChange={e => setCustomCount(e.target.value)} placeholder="Nhập tổng số người..." className="w-full bg-transparent border-b border-[#D6C1A5] text-[#2D2A28] text-xs px-2 py-3 outline-none mt-4" required />
+              )}
               <textarea placeholder="Gửi lời chúc..." rows={2} className="w-full bg-transparent border-b border-[#D6C1A5] text-[#2D2A28] text-xs px-2 py-3 outline-none resize-none"></textarea>
               <div className="flex gap-2 mt-4">
                 <button 

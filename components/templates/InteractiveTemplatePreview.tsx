@@ -244,12 +244,12 @@ export function InteractiveTemplatePreview({
       // Khối 1 (Lễ Thành Hôn): giờ 09:00, địa chỉ tư gia
       weddingDate: (props.customData as any)?.weddingDate || (props as any).weddingDate || "2026-12-14T09:00",
       eventAddress: (props.customData as any)?.eventAddress || (props as any).eventAddress || "Số 10, Đường Vườn Lài, Tân Phú, TP. HCM",
-      mapUrl: (props.customData as any)?.mapUrl || (props as any).mapUrl || "https://maps.app.goo.gl/example",
+      mapUrl: (props.customData as any)?.mapUrl || (props as any).mapUrl || "https://google.com/maps/dir/20.9595535,105.8492869/L7+WEST+LAKE+HANOI+by+LOTTE+HOTELS,+Ngõ+683+Đ.+Lạc+Long+Quân,+phường,+Tây+Hồ,+Hà+Nội+100000,+Việt+Nam/@20.9747175,105.7480382,12z/data=!4m9!4m8!1m1!4e1!1m5!1m1!1s0x3135abac42575e31:0xf79cf24e644422b!2m2!1d105.8123866!2d21.0747905?entry=ttu&g_ep=EgoyMDI2MDcxNS4wIKXMDSoASAFQAw%3D%3D",
       // Khối 2 (Tiệc Mừng): giờ 18:00, địa chỉ nhà hàng
       tiecName: (props.customData as any)?.tiecName || "Adora Center",
       tiecAddress: (props.customData as any)?.tiecAddress || "418-420 Cộng Hòa, Tân Bình, TP. HCM",
       tiecDate: (props.customData as any)?.tiecDate || "2026-12-14T18:00",
-      tiecMapUrl: (props.customData as any)?.tiecMapUrl || (props as any).mapUrl || "https://maps.app.goo.gl/example",
+      tiecMapUrl: (props.customData as any)?.tiecMapUrl || (props as any).mapUrl || "https://google.com/maps/dir/20.9595535,105.8492869/L7+WEST+LAKE+HANOI+by+LOTTE+HOTELS,+Ngõ+683+Đ.+Lạc+Long+Quân,+phường,+Tây+Hồ,+Hà+Nội+100000,+Việt+Nam/@20.9747175,105.7480382,12z/data=!4m9!4m8!1m1!4e1!1m5!1m1!1s0x3135abac42575e31:0xf79cf24e644422b!2m2!1d105.8123866!2d21.0747905?entry=ttu&g_ep=EgoyMDI2MDcxNS4wIKXMDSoASAFQAw%3D%3D",
       musicUrl: (props.forceRandomMusic ? randomMusicUrl : props.customData?.musicUrl) || randomMusicUrl,
       generalAudioUrl: (props.forceRandomMusic ? randomMusicUrl : props.customData?.generalAudioUrl) || randomMusicUrl,
       audioSrc: (props.forceRandomMusic ? randomMusicUrl : props.customData?.audioSrc) || randomMusicUrl,

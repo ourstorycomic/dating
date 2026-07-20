@@ -52,6 +52,8 @@ export function WeddingSixExperience({
   const [isOpened, setIsOpened] = useState(false);
   const [allowScroll, setAllowScroll] = useState(false);
   const [showQR, setShowQR] = useState(false);
+  const [rsvpCount, setRsvpCount] = useState("Có");
+  const [customCount, setCustomCount] = useState("");
   const [giftTab, setGiftTab] = useState<'groom'|'bride'>('groom');
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -76,6 +78,7 @@ export function WeddingSixExperience({
     // Luôn luôn tự động mở cánh cửa sau 1.5 giây để khách kịp ngắm thiết kế cửa
     const openTimer = setTimeout(() => {
       setIsOpened(true);
+      setTimeout(() => setAllowScroll(true), 1500);
       // Cố gắng bật nhạc tự động (có thể bị trình duyệt chặn nếu chưa có tương tác)
       if (audioRef.current && !compact) {
         audioRef.current.play().catch(() => {});
@@ -114,6 +117,7 @@ export function WeddingSixExperience({
 
   const handleOpen = () => {
     setIsOpened(true);
+    setTimeout(() => setAllowScroll(true), 1500);
     if (audioRef.current && !compact) {
       audioRef.current.play().catch(() => {});
       setIsPlaying(true);
@@ -215,7 +219,7 @@ export function WeddingSixExperience({
                  <h3 className="text-2xl text-[#2C2C2C] mb-2" style={{ fontFamily: 'var(--font-dancing)' }}>{groomName}</h3>
                  <p className="text-[9px] uppercase tracking-[0.2em] text-[#a4656c] font-bold mb-4">Chú Rể</p>
                  <p className="text-[8px] uppercase tracking-widest text-[#999] mb-1 border-b border-[#eee] pb-1 w-2/3">Nhà Trai</p>
-                 <p className="text-[10px] font-medium text-[#555] uppercase leading-relaxed mt-2">{groomFamily || "Ông Phạm Văn Long\nBà Lê Thị Mai"}</p>
+                 <p className="text-sm font-medium text-[#555] uppercase leading-relaxed mt-2">{groomFamily || "Ông Phạm Văn Long\nBà Lê Thị Mai"}</p>
                </div>
              </motion.div>
              
@@ -228,7 +232,7 @@ export function WeddingSixExperience({
                  <h3 className="text-2xl text-[#2C2C2C] mb-2" style={{ fontFamily: 'var(--font-dancing)' }}>{brideName}</h3>
                  <p className="text-[9px] uppercase tracking-[0.2em] text-[#a4656c] font-bold mb-4">Cô Dâu</p>
                  <p className="text-[8px] uppercase tracking-widest text-[#999] mb-1 border-b border-[#eee] pb-1 w-2/3">Nhà Gái</p>
-                 <p className="text-[10px] font-medium text-[#555] uppercase leading-relaxed mt-2">{brideFamily || "Ông Nguyễn Văn Hùng\nBà Trần Thị Hoa"}</p>
+                 <p className="text-sm font-medium text-[#555] uppercase leading-relaxed mt-2">{brideFamily || "Ông Nguyễn Văn Hùng\nBà Trần Thị Hoa"}</p>
                </div>
              </motion.div>
           </div>
@@ -383,11 +387,14 @@ export function WeddingSixExperience({
               </div>
               
               <input type="text" placeholder="Tên của bạn" className="w-full bg-[#fafafa] text-[#333] text-xs px-4 py-3 border border-[#eaeaea] outline-none focus:border-[#e8c0c4] transition-colors" />
-              <select className="w-full bg-[#fafafa] text-[#333] text-xs px-4 py-3 border border-[#eaeaea] outline-none focus:border-[#e8c0c4] transition-colors appearance-none">
-                <option>Bạn sẽ tham dự chứ?</option>
-                <option>Có, tôi sẽ đến</option>
-                <option>Rất tiếc, tôi không thể</option>
+              <select value={rsvpCount} onChange={e => setRsvpCount(e.target.value)} className="w-full bg-[#fafafa] text-[#333] text-xs px-4 py-3 border border-[#eaeaea] outline-none focus:border-[#e8c0c4] transition-colors appearance-none">
+                <option value="Có">Có tham dự</option>
+                <option value="Không">Không tham dự</option>
+                <option value="Khác">Có, dắt theo người thân</option>
               </select>
+              {rsvpCount === "Khác" && (
+                <input type="number" min="1" value={customCount} onChange={e => setCustomCount(e.target.value)} placeholder="Nhập tổng số người..." className="w-full bg-[#fafafa] text-[#333] text-xs px-4 py-3 border border-[#eaeaea] outline-none focus:border-[#e8c0c4] transition-colors mt-4" required />
+              )}
               
               <div className="flex gap-2 w-full mt-2">
                 <button 

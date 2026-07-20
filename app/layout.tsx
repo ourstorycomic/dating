@@ -48,27 +48,27 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Lovora - Thay lời muốn nói",
-  description: "Web quà tặng tình yêu được shop setup theo yêu cầu. Chọn mẫu, gửi ảnh, nhận web quà siêu dễ thương.",
-  keywords: ["web quà tặng", "web tặng người yêu", "valentine web", "lovora"],
+  title: "Lovora - Thiệp Cưới & Quà Tặng Tình Yêu Online",
+  description: "Lovora — Nẽn tảng tạo thiệp cưới và web quà tặng online cao cấp. Chọn mẫu, tùy chỉnh nội dung, gửi đường link đến người thân yêu chỉ với vài bước đơn giản.",
+  keywords: ["thiệp cưới online", "web quà tặng", "web tặng người yêu", "valentine web", "lovora"],
   openGraph: {
-    title: "Lovora - Thay lời muốn nói",
-    description: "Web quà tặng tình yêu được shop setup theo yêu cầu.",
+    title: "Lovora - Thiệp Cưới & Quà Tặng Tình Yêu Online",
+    description: "Nẽn tảng tạo thiệp cưới và web quà tặng online cao cấp, tích hợp nhạc nền, ảnh đẹp và nội dung cá nhân hóa.",
     type: "website",
     images: [
       {
-        url: "/thumbnails/valentine1.png",
+        url: "https://lovora.vn/og-logo.png",
         width: 1200,
         height: 630,
-        alt: "Lovora - Web quà tặng tình yêu",
+        alt: "Lovora - Thiệp Cưới & Quà Tặng Tình Yêu Online",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Lovora - Thay lời muốn nói",
-    description: "Web quà tặng tình yêu được shop setup theo yêu cầu.",
-    images: ["/thumbnails/valentine1.png"],
+    title: "Lovora - Thiệp Cưới & Quà Tặng Tình Yêu Online",
+    description: "Nẽn tảng tạo thiệp cưới và web quà tặng online cao cấp.",
+    images: ["https://lovora.vn/og-logo.png"],
   },
 };
 

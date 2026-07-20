@@ -5,7 +5,7 @@ export function WeddingFooter() {
     <div className="w-full py-3 mt-4 flex flex-col items-center justify-center border-t border-[#444] bg-white/90 backdrop-blur-sm z-50 relative pointer-events-auto">
       <div className="flex items-center gap-2">
         <a
-          href="https://m.me/lovoraofficial"
+          href="https://web.facebook.com/lovoraofficial/"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-center w-7 h-7 rounded bg-[#1877F2] text-white hover:scale-110 transition-transform shadow-sm"
@@ -15,7 +15,7 @@ export function WeddingFooter() {
           </svg>
         </a>
         <a
-          href="https://instagram.com/lovoraofficial"
+          href="https://www.instagram.com/lovora.ilx/"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-center w-7 h-7 rounded bg-gradient-to-tr from-[#f09433] via-[#e6683c] to-[#bc1888] text-white hover:scale-110 transition-transform shadow-sm"
@@ -25,8 +25,8 @@ export function WeddingFooter() {
           </svg>
         </a>
         <div className="text-[#444] font-medium mx-1 text-sm">|</div>
-        <a href="https://lovora.vn" target="_blank" rel="noopener noreferrer" className="text-[13px] font-semibold text-[#004a8b] hover:text-[#e85d75] transition-colors">
-          THIỆP CƯỚI ONLINE LOVORA
+        <a href="https://lovora.vn/wedding" target="_blank" rel="noopener noreferrer" className="text-[13px] font-semibold text-[#004a8b] hover:text-[#e85d75] transition-colors">
+          Lovora
         </a>
       </div>
     </div>

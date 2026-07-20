@@ -89,6 +89,7 @@ export function WeddingOneExperience({
   const [rsvpName, setRsvpName] = useState("");
   const [rsvpPhone, setRsvpPhone] = useState("");
   const [rsvpCount, setRsvpCount] = useState("1");
+  const [customCount, setCustomCount] = useState("");
   const [rsvpSubmitted, setRsvpSubmitted] = useState(false);
 
   useEffect(() => {
@@ -382,7 +383,7 @@ export function WeddingOneExperience({
         <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} viewport={{ once: true }} className="w-full max-w-[300px]">
            <div className="flex items-end gap-2 mb-6 border-b border-[#d6cfc5] pb-2">
               <span className="text-2xl text-[#8c7b6b] font-medium" style={{ fontFamily: "'Dancing Script', cursive" }}>{dMonth}</span>
-              <span className="text-2xl font-bold text-[#444]">{dYear}</span>
+              <span className="text-2xl text-[#8c7b6b] font-medium" style={{ fontFamily: "'Dancing Script', cursive" }}>{dYear}</span>
            </div>
            
            <div className="grid grid-cols-7 text-center gap-y-4">
@@ -392,15 +393,31 @@ export function WeddingOneExperience({
               {blanks.map(b => <div key={`b-${b}`} />)}
               {monthDays.map(day => {
                 const isWedding = day.toString() === dDay && parsedDDate.getMonth() + 1 === dMonthNumber;
+                let isTiec = false;
+                if (hasTiecMung && customData?.tiecDate) {
+                  const td = new Date(customData.tiecDate);
+                  if (!isNaN(td.getTime()) && day.toString() === td.getDate().toString() && td.getMonth() + 1 === dMonthNumber && td.getFullYear() === parsedDDate.getFullYear()) isTiec = true;
+                }
+                if (hasTiecMungGai && customData?.tiecDateGai) {
+                  const td = new Date(customData.tiecDateGai);
+                  if (!isNaN(td.getTime()) && day.toString() === td.getDate().toString() && td.getMonth() + 1 === dMonthNumber && td.getFullYear() === parsedDDate.getFullYear()) isTiec = true;
+                }
                 
                 return (
-                  <div key={day} className="relative flex justify-center items-center text-xs font-sans">
-                    {isWedding ? (
-                      <div className="w-6 h-6 rounded-full border border-[#8c7b6b] bg-[#8c7b6b] flex items-center justify-center text-white font-bold">
-                        {day}
-                      </div>
-                    ) : (
-                      <span className="text-gray-500">{day}</span>
+                  <div key={day} className="relative flex justify-center items-center text-xs font-sans w-7 h-7 mx-auto">
+                    {isWedding && (
+                      <svg className="absolute inset-0 w-[120%] h-[120%] -left-[10%] -top-[10%] text-[#8c7b6b]" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                      </svg>
+                    )}
+                    {isTiec && !isWedding && (
+                      <div className="absolute inset-0 w-full h-full rounded-full border-[1.5px] border-dashed border-[#8c7b6b] bg-[#8c7b6b]/5 scale-90"></div>
+                    )}
+                    <span className={`relative z-10 ${isWedding ? "text-white font-bold text-[11px]" : isTiec ? "font-bold text-[#8c7b6b]" : "text-gray-500"}`}>
+                      {day}
+                    </span>
+                    {isTiec && isWedding && (
+                      <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.6, type: "spring" }} className="absolute inset-0 w-[140%] h-[140%] -left-[20%] -top-[20%] rounded-full border-[1.5px] border-dashed border-[#8c7b6b] z-0 opacity-70"></motion.div>
                     )}
                   </div>
                 );
@@ -408,15 +425,22 @@ export function WeddingOneExperience({
            </div>
            <div className="flex justify-center gap-6 mt-6 pt-4 border-t border-[#d6cfc5]/50">
              <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#8c7b6b]">
-               <div className="w-3 h-3 rounded-full bg-[#8c7b6b]"></div> Lễ Cưới
+               <svg className="w-3.5 h-3.5 text-[#8c7b6b]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg> 
+               Lễ Cưới
              </div>
+             {(hasTiecMung || hasTiecMungGai) && (
+               <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#8c7b6b]">
+                 <div className="w-3.5 h-3.5 rounded-full border-[1.5px] border-dashed border-[#8c7b6b] bg-[#8c7b6b]/5"></div> 
+                 Tiệc Mừng
+               </div>
+             )}
            </div>
         </motion.div>
       </section>
 
       {/* 5. MAP */}
       <section className="py-20 px-6 bg-white flex flex-col items-center border-y border-[#d6cfc5]/30">
-        <h2 className="text-[11px] uppercase tracking-[0.3em] text-[#8c7b6b] font-bold mb-10 font-sans">Địa điểm tổ chức</h2>
+        <h2 className="text-[11px] uppercase tracking-[0.3em] text-[#8c7b6b] font-bold mb-10 font-sans">Địa điểm tổ chức Lễ thành hôn</h2>
         <div className="w-full max-w-2xl p-3 bg-[#f9f8f6] border border-[#d6cfc5]/50">
            <a href={mapUrl} target="_blank" rel="noopener noreferrer" className="block relative group overflow-hidden bg-gray-100 aspect-video">
               <MediaDisplay src={mapImage} alt="Map" className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" />
@@ -504,6 +528,9 @@ export function WeddingOneExperience({
                       </button>
                     ))}
                   </div>
+                  {rsvpCount === "Khác" && (
+                    <input type="number" min="1" value={customCount} onChange={e => setCustomCount(e.target.value)} placeholder="Nhập số lượng..." className="w-full mt-3 px-4 py-3 bg-[#f9f8f6] border border-[#d6cfc5] text-sm focus:border-[#8c7b6b] focus:outline-none placeholder:text-xs placeholder:uppercase placeholder:tracking-widest placeholder:text-gray-400" required />
+                  )}
                 </div>
                 <button type="submit" className="w-full py-4 mt-6 bg-[#8c7b6b] text-white text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-[#736355] transition-colors">
                   Gửi Xác Nhận
@@ -564,7 +591,7 @@ export function WeddingOneExperience({
           </motion.div>
         )}
       </AnimatePresence>
-
+      <WeddingFooter />
     </div>
   );
 }

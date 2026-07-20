@@ -50,6 +50,8 @@ export function WeddingFiveExperience({
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showQR, setShowQR] = useState(false);
+  const [rsvpCount, setRsvpCount] = useState("Có");
+  const [customCount, setCustomCount] = useState("");
   const [giftTab, setGiftTab] = useState<'groom'|'bride'>('groom');
 
   const hasTiecMung = !!customData?.tiecName;
@@ -290,11 +292,11 @@ export function WeddingFiveExperience({
               <div className="w-full flex justify-between items-start mb-6">
                 <div className="text-center w-[45%]">
                   <p className="text-[9px] uppercase tracking-widest font-bold text-[#b19556] mb-2">Nhà Trai</p>
-                  <p className="text-[10px] text-[#4a5a40] uppercase leading-relaxed font-semibold">{groomFamily}</p>
+                  <p className="text-sm text-[#4a5a40] uppercase leading-relaxed font-semibold">{groomFamily}</p>
                 </div>
                 <div className="text-center w-[45%]">
                   <p className="text-[9px] uppercase tracking-widest font-bold text-[#b19556] mb-2">Nhà Gái</p>
-                  <p className="text-[10px] text-[#4a5a40] uppercase leading-relaxed font-semibold">{brideFamily}</p>
+                  <p className="text-sm text-[#4a5a40] uppercase leading-relaxed font-semibold">{brideFamily}</p>
                 </div>
               </div>
               
@@ -456,11 +458,14 @@ export function WeddingFiveExperience({
               <div className="w-full flex flex-col gap-4 relative z-10">
                 <input type="text" placeholder="Tên của bạn *" className="w-full bg-transparent border-b border-[#c5b182] text-[#2d2d2d] text-xs px-2 py-2 outline-none focus:border-[#4a5a40] transition-colors placeholder:text-[#999]" />
                 <input type="text" placeholder="Số điện thoại *" className="w-full bg-transparent border-b border-[#c5b182] text-[#2d2d2d] text-xs px-2 py-2 outline-none focus:border-[#4a5a40] transition-colors placeholder:text-[#999]" />
-                <select className="w-full bg-transparent border-b border-[#c5b182] text-[#2d2d2d] text-xs px-2 py-2 outline-none focus:border-[#4a5a40] transition-colors appearance-none">
-                  <option value="">Bạn sẽ tham dự chứ?</option>
-                  <option value="yes">Chắc chắn rồi!</option>
-                  <option value="no">Rất tiếc không thể đến</option>
+                <select value={rsvpCount} onChange={e => setRsvpCount(e.target.value)} className="w-full bg-transparent border-b border-[#c5b182] text-[#2d2d2d] text-xs px-2 py-2 outline-none focus:border-[#4a5a40] transition-colors appearance-none">
+                  <option value="Có">Có tham dự</option>
+                  <option value="Không">Không tham dự</option>
+                  <option value="Khác">Có, dắt theo người thân</option>
                 </select>
+                {rsvpCount === "Khác" && (
+                  <input type="number" min="1" value={customCount} onChange={e => setCustomCount(e.target.value)} placeholder="Nhập tổng số người..." className="w-full bg-transparent border-b border-[#c5b182] text-[#2d2d2d] text-xs px-2 py-2 outline-none focus:border-[#4a5a40] transition-colors mt-4" required />
+                )}
                 
                 <div className="flex flex-col gap-3 mt-4">
                   <button 

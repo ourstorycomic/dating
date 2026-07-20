@@ -689,7 +689,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const isGoi2 = selectedPackage?.includes("goi2") || false;
   const isGoi1 = selectedPackage?.includes("goi1") || false;
 
-  const getVal = (key: string) => (isGoi3 && activeTab === "gai") ? (dynamicData.gai?.[key] ?? dynamicData[key] ?? "") : (dynamicData[key] ?? "");
+  const getVal = (key: string) => (isGoi3 && activeTab === "gai") ? (dynamicData.gai?.[key] ?? "") : (dynamicData[key] ?? "");
   const setVal = (key: string, val: any) => setDynamicData((d: any) => {
     if (isGoi3 && activeTab === "gai") {
       return { ...d, gai: { ...(d.gai || {}), [key]: val } };
@@ -1868,9 +1868,20 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               <>
                 
                 {isGoi3 && (
-                  <div className="mb-6 flex gap-2">
-                    <button type="button" onClick={() => setActiveTab("trai")} className={`flex-1 rounded-xl py-3 text-sm font-bold transition-colors ${activeTab === "trai" ? "bg-pink-500 text-white" : "bg-white/5 text-white/60 hover:bg-white/10"}`}>Thiệp Nhà Trai</button>
-                    <button type="button" onClick={() => setActiveTab("gai")} className={`flex-1 rounded-xl py-3 text-sm font-bold transition-colors ${activeTab === "gai" ? "bg-pink-500 text-white" : "bg-white/5 text-white/60 hover:bg-white/10"}`}>Thiệp Nhà Gái</button>
+                  <div className="mb-6 flex flex-col gap-2">
+                    <div className="flex gap-2">
+                      <button type="button" onClick={() => setActiveTab("trai")} className={`flex-1 rounded-xl py-3 text-sm font-bold transition-colors ${activeTab === "trai" ? "bg-pink-500 text-white" : "bg-white/5 text-white/60 hover:bg-white/10"}`}>Thiệp Nhà Trai</button>
+                      <button type="button" onClick={() => setActiveTab("gai")} className={`flex-1 rounded-xl py-3 text-sm font-bold transition-colors ${activeTab === "gai" ? "bg-pink-500 text-white" : "bg-white/5 text-white/60 hover:bg-white/10"}`}>Thiệp Nhà Gái</button>
+                    </div>
+                    {activeTab === "gai" && (
+                      <button type="button" onClick={() => {
+                        const copyData = { ...dynamicData };
+                        delete copyData.gai;
+                        setDynamicData(d => ({ ...d, gai: { ...copyData } }));
+                      }} className="w-full text-xs py-2 bg-pink-500/10 text-pink-300 rounded-lg font-medium hover:bg-pink-500/20 transition-colors">
+                        ✨ Sao chép toàn bộ thông tin từ Nhà Trai qua đây
+                      </button>
+                    )}
                   </div>
                 )}
                 
@@ -2783,7 +2794,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
         <div id="builder-preview" className="flex-1 w-full min-h-[58svh] xl:min-h-0 flex items-center justify-center relative">
             <InteractiveTemplatePreview
               componentKey={selectedComponentKey}
-              customData={customData}
+              customData={isGoi3 && activeTab === "gai" ? { ...customData, ...(dynamicData.gai || {}) } : customData}
               question={question}
               recipientName={recipientName || "Em"}
               senderName={senderName || "Anh"}
