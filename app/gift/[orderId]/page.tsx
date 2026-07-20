@@ -66,11 +66,20 @@ export default async function GiftPage({
 
   if (!order) notFound();
 
+  const cd = (order.custom_data || {}) as any;
+  let componentKey = cd.componentKey ?? (order.templates as any)?.component_key ?? "";
+  
+  // Resolve side overrides if gai
+  if (side === "gai" && cd.gai) {
+    if (cd.gai.templateId) componentKey = cd.gai.templateId;
+  }
+  
+  const isWedding = componentKey.startsWith("wedding");
+
   const isLocked = order.status !== "ACTIVE" && order.status !== "RESPONDED";
 
   if (isLocked && order.custom_data) {
     // Server-side data obfuscation to prevent bypassing via DevTools
-    const cd = order.custom_data as any;
     const hide = "Nội dung này đã bị ẩn. Hãy thanh toán để mở khóa toàn bộ món quà/thiệp nhé!";
     
     if (cd.memories && Array.isArray(cd.memories)) {
@@ -92,8 +101,8 @@ export default async function GiftPage({
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#f5e6ee] flex items-start justify-center relative">
-      <div className="relative w-full max-w-[430px] min-h-screen shadow-2xl overflow-hidden bg-gradient-to-br from-[#fff6fa] via-[#ffe4ef] to-[#ffd4e5] text-rose-950">
+    <div className={`min-h-[100dvh] w-full bg-[#f5e6ee] flex items-start justify-center relative ${!isWedding ? "overflow-hidden" : ""}`}>
+      <div className={`relative w-full min-h-[100dvh] shadow-2xl bg-gradient-to-br from-[#fff6fa] via-[#ffe4ef] to-[#ffd4e5] text-rose-950 ${isWedding ? "max-w-[430px]" : "h-[100dvh] overflow-hidden"}`}>
         <GiftFullscreenView order={order} side={side} />
         
         {isLocked && (
