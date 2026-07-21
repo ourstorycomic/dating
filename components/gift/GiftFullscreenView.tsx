@@ -73,6 +73,8 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
       const total = e.detail?.total || 1;
       if (current >= Math.floor(total / 2)) {
         setShowPayment(true);
+      } else {
+        setShowPayment(false);
       }
     };
 
@@ -117,16 +119,20 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
       <div 
         className="absolute inset-0 z-0 overflow-y-auto overflow-x-hidden"
         onScrollCapture={(e) => {
-          if (!isLocked || showPayment) return;
+          if (!isLocked) return;
           const target = e.target as HTMLElement;
-          if (!target || !target.scrollTop) return; // ignore if no scroll
+          if (!target || typeof target.scrollTop !== 'number') return;
           
           const scrollY = target.scrollTop;
           const scrollHeight = target.scrollHeight;
           const clientHeight = target.clientHeight;
           // Triggers if scrolled past 40% of the scrollable area
-          if (scrollHeight > clientHeight && scrollY >= (scrollHeight - clientHeight) * 0.4) {
-            setShowPayment(true);
+          if (scrollHeight > clientHeight) {
+            if (scrollY >= (scrollHeight - clientHeight) * 0.4) {
+              setShowPayment(true);
+            } else {
+              setShowPayment(false);
+            }
           }
         }}
         onClickCapture={(e) => {
