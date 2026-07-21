@@ -129,6 +129,12 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
             setShowPayment(true);
           }
         }}
+        onClickCapture={(e) => {
+          if (showPayment) {
+            e.stopPropagation();
+            e.preventDefault();
+          }
+        }}
       >
         <InteractiveTemplatePreview
           componentKey={componentKey}
@@ -179,9 +185,6 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
               {/* Faded Gradient Blur Overlay */}
               <div className="absolute inset-0 z-10 pointer-events-none [mask-image:linear-gradient(to_bottom,transparent_30%,black_65%)] backdrop-blur-[24px] bg-gradient-to-t from-white/95 via-white/50 to-transparent" />
               
-              {/* Invisible Click Blocker for the entire screen to prevent bypass */}
-              <div className="absolute inset-0 z-10 pointer-events-auto" />
-
               {/* Payment Box Container */}
               <div className="absolute bottom-6 left-0 right-0 z-20 pointer-events-auto flex flex-col items-center px-4">
                 <div className="bg-white/95 p-5 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-pink-100/60 w-full max-w-sm flex flex-col items-center text-center backdrop-blur-xl relative overflow-hidden transform hover:scale-[1.01] transition-transform">
