@@ -62,8 +62,10 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
     }
 
     const handler = (e: any) => {
-      // Show payment if they reach step 3 (0-indexed, so current >= 2)
-      if (e.detail?.current >= 2) {
+      // Show payment if they reach halfway through the template
+      const current = e.detail?.current || 0;
+      const total = e.detail?.total || 1;
+      if (current >= Math.floor(total / 2)) {
         setShowPayment(true);
       }
     };
