@@ -50,8 +50,8 @@ export function WeddingFourExperience({
   const audioRef = useRef<HTMLAudioElement>(null);
   const thumbnailContainerRef = useRef<HTMLDivElement>(null);
   
-  const [isOpened, setIsOpened] = useState(true);
-  const [allowScroll, setAllowScroll] = useState(true);
+  const [isOpened, setIsOpened] = useState(autoPlay || false);
+  const [allowScroll, setAllowScroll] = useState(autoPlay || false);
   const [isPlaying, setIsPlaying] = useState(autoPlay || false);
   const [showQR, setShowQR] = useState(false);
   const [rsvpName, setRsvpName] = useState("");
@@ -61,7 +61,7 @@ export function WeddingFourExperience({
   const [giftTab, setGiftTab] = useState<'groom'|'bride'>('groom');
   const [activeGalleryIndex, setActiveGalleryIndex] = useState(0);
   
-  const [envelopeState, setEnvelopeState] = useState<"closed" | "opening" | "opened">("opened");
+  const [envelopeState, setEnvelopeState] = useState<"closed" | "opening" | "opened">("closed");
   const [heroHeight, setHeroHeight] = useState<string>("100vh");
 
   const hasTiecMung = !!customData?.tiecName;
@@ -126,13 +126,21 @@ export function WeddingFourExperience({
     }
   }, [autoPlay, isOpened]);
 
-  // Auto-play music attempt
+  // Auto-open logic
   useEffect(() => {
     const timer1 = setTimeout(() => {
+      setEnvelopeState("opening");
+      
       if (audioRef.current && musicUrl) {
         audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
       }
-    }, 1500); // Wait 1.5s before attempting audio
+
+      setTimeout(() => {
+        setEnvelopeState("opened");
+        setIsOpened(true);
+        setAllowScroll(true);
+      }, 1000);
+    }, 1500); // Wait 1.5s before automatically opening
 
     return () => {
       clearTimeout(timer1);

@@ -47,8 +47,8 @@ export function WeddingThreeExperience({
   customData,
 }: WeddingThreeProps) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isOpened, setIsOpened] = useState(true);
-  const [allowScroll, setAllowScroll] = useState(true);
+  const [isOpened, setIsOpened] = useState(false);
+  const [allowScroll, setAllowScroll] = useState(false);
   const [showQR, setShowQR] = useState(false);
   const [rsvpName, setRsvpName] = useState("");
   const [rsvpPhone, setRsvpPhone] = useState("");
