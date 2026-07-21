@@ -65,22 +65,10 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
       }
     };
 
-    const scrollHandler = () => {
-      const scrollY = window.scrollY;
-      const scrollHeight = document.documentElement.scrollHeight;
-      const clientHeight = document.documentElement.clientHeight;
-      // Triggers if scrolled past 40% of the scrollable area
-      if (scrollHeight > clientHeight && scrollY >= (scrollHeight - clientHeight) * 0.4) {
-        setShowPayment(true);
-      }
-    };
-
     window.addEventListener('template-step-change', stepHandler);
-    window.addEventListener('scroll', scrollHandler, { passive: true });
     
     return () => {
       window.removeEventListener('template-step-change', stepHandler);
-      window.removeEventListener('scroll', scrollHandler);
     };
   }, [isLocked, isWedding, componentKey]);
 
@@ -112,24 +100,41 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
   }
 
   return (
-    <div className="absolute inset-0 z-[100] bg-gradient-to-br from-[#fff6fa] via-[#ffe4ef] to-[#ffd4e5] overflow-y-auto">
-      <InteractiveTemplatePreview
-        componentKey={componentKey}
-        customData={customData}
-        gradient={order.templates?.gradient}
-        question={customData.question}
-        recipientName={recipientName}
-        senderName={senderName}
-        visualLabel={order.templates?.visual_label}
-        hideNavigation
-        fullScreen
-        isHost
-        initialStep={2}
-        hostDisplayName={recipientName}
-        guestDisplayName={senderName}
-        onResponse={handleResponse}
-        roomId={order.public_id}
-      />
+    <div className="absolute inset-0 z-[100] bg-gradient-to-br from-[#fff6fa] via-[#ffe4ef] to-[#ffd4e5] overflow-hidden">
+      {/* Scrollable Container for the template */}
+      <div 
+        className="absolute inset-0 z-0 overflow-y-auto overflow-x-hidden"
+        onScroll={(e) => {
+          if (!isLocked || showPayment) return;
+          const target = e.currentTarget;
+          const scrollY = target.scrollTop;
+          const scrollHeight = target.scrollHeight;
+          const clientHeight = target.clientHeight;
+          // Triggers if scrolled past 40% of the scrollable area
+          if (scrollHeight > clientHeight && scrollY >= (scrollHeight - clientHeight) * 0.4) {
+            setShowPayment(true);
+          }
+        }}
+      >
+        <InteractiveTemplatePreview
+          componentKey={componentKey}
+          customData={customData}
+          gradient={order.templates?.gradient}
+          question={customData.question}
+          recipientName={recipientName}
+          senderName={senderName}
+          visualLabel={order.templates?.visual_label}
+          hideNavigation
+          fullScreen
+          isHost
+          initialStep={2}
+          hostDisplayName={recipientName}
+          guestDisplayName={senderName}
+          onResponse={handleResponse}
+          roomId={order.public_id}
+        />
+      </div>
+
       {error ? (
         <div className="absolute left-1/2 top-4 z-[200] -translate-x-1/2 rounded-full bg-red-500 px-4 py-2 font-bold text-white shadow-lg">
           {error}
@@ -141,6 +146,7 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
         </div>
       ) : null}
 
+      {/* FIXED Overlay on top of the scrolling container */}
       {isLocked && (
         <div className="absolute inset-0 z-[999] pointer-events-none overflow-hidden">
           {/* Watermark Pattern Layer (Visible always if locked) */}
