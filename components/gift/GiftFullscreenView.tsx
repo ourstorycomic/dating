@@ -189,7 +189,15 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
           {showPayment && (
             <div className="absolute inset-0 flex flex-col pointer-events-none">
               {/* Faded Gradient Blur Overlay */}
-              <div className="absolute inset-0 z-10 pointer-events-none [mask-image:linear-gradient(to_bottom,transparent_30%,black_65%)] backdrop-blur-[24px] bg-gradient-to-t from-white/95 via-white/50 to-transparent" />
+              <div 
+                className="absolute inset-0 z-10 pointer-events-none"
+                style={{
+                  WebkitMaskImage: 'linear-gradient(to bottom, transparent 30%, black 65%)',
+                  maskImage: 'linear-gradient(to bottom, transparent 30%, black 65%)'
+                }}
+              >
+                <div className="absolute inset-0 backdrop-blur-xl bg-gradient-to-t from-white/95 via-white/50 to-transparent" />
+              </div>
               
               {/* Payment Box Container */}
               <div className="absolute bottom-6 left-0 right-0 z-20 pointer-events-auto flex flex-col items-center px-4">
