@@ -135,7 +135,7 @@ const GachaStyles = `
 
 import { GACHA_DATA } from "./config";
 
-export function GachaTemplate({ compact, fullScreen, hideNavigation, isBuilderPreview, onComplete, autoPlay, data: customData }: any) {
+export function GachaTemplate({ compact, fullScreen, hideNavigation, isBuilderPreview, onComplete, autoPlay, data: customData, onStepChange }: any) {
   const data = { ...GACHA_DATA, ...customData };
   const [step, setStep] = useState(1);
   const [mounted, setMounted] = useState(false);

@@ -64,10 +64,14 @@ function BackgroundSparkles() {
 
 import { Step8Success } from "../dating-3/components/Step8Success";
 
-export default function Birthday3Template({ autoPlay = false, compact = false, hideNavigation = false, isBuilderPreview = false, config = {}, generalAudioUrl }: { autoPlay?: boolean; compact?: boolean; hideNavigation?: boolean; isBuilderPreview?: boolean; config?: any; generalAudioUrl?: string }) {
+export default function Birthday3Template({ autoPlay = false, compact = false, hideNavigation = false, isBuilderPreview = false, config = {}, generalAudioUrl, onStepChange }: { autoPlay?: boolean; compact?: boolean; hideNavigation?: boolean; isBuilderPreview?: boolean; config?: any; generalAudioUrl?: string; onStepChange?: any; }) {
   const [step, setStep] = useState(1);
   const [dateTime, setDateTime] = useState({d: "", t: ""});
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    onStepChange?.(step - 1, 10);
+  }, [step, onStepChange]);
 
   useEffect(() => {
     if (autoPlay && audioRef.current) {

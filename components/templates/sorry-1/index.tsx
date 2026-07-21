@@ -534,7 +534,7 @@ function Step6Treaty({ onNext, autoPlay, config }: { onNext: () => void; autoPla
 }
 
 // --- MAIN TEMPLATE COMPONENT ---
-export default function Sorry1Template({ compact = false, autoPlay = false, hideNavigation = false, isBuilderPreview = false, config, generalAudioUrl }: { compact?: boolean; autoPlay?: boolean; hideNavigation?: boolean; isBuilderPreview?: boolean; config?: any; generalAudioUrl?: string }) {
+export default function Sorry1Template({ compact = false, autoPlay = false, hideNavigation = false, isBuilderPreview = false, config, generalAudioUrl, onStepChange }: { compact?: boolean; autoPlay?: boolean; hideNavigation?: boolean; isBuilderPreview?: boolean; config?: any; generalAudioUrl?: string ; onStepChange?: any}) {
   const [step, setStep] = useState(1);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
