@@ -83,7 +83,7 @@ const JourneyStyles = `
   }
 `;
 
-export function LoveSpaceTemplate({ compact, fullScreen, hideNavigation, isBuilderPreview, onComplete, autoPlay, customData = {} }: any) {
+export function LoveSpaceTemplate({ compact, fullScreen, hideNavigation, isBuilderPreview, onComplete, autoPlay, customData = {}, onStepChange }: any) {
   const [step, setStep] = useState(1);
   const [wheelResult, setWheelResult] = useState("");
   const [dateTime, setDateTime] = useState({ date: "", time: "" });
@@ -93,6 +93,11 @@ export function LoveSpaceTemplate({ compact, fullScreen, hideNavigation, isBuild
       setStep(customData.previewStep);
     }
   }, [customData.previewStep]);
+
+  useEffect(() => {
+    onStepChange?.(step - 1, 6);
+  }, [step, onStepChange]);
+
   const [mounted, setMounted] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null as any);
 

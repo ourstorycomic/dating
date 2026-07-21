@@ -133,15 +133,14 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
       {isLocked && (
         <div className="absolute inset-0 z-[999] pointer-events-none overflow-hidden">
           {/* Watermark Pattern Layer (Visible always if locked) */}
-          <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-            <div className="absolute w-[200%] h-[200%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-45 flex flex-wrap gap-x-10 gap-y-16 justify-center items-center content-center select-none opacity-25">
-              {Array.from({length: 150}).map((_, i) => (
-                <span key={i} className="text-2xl md:text-3xl font-black text-white uppercase tracking-[0.2em] whitespace-nowrap drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                  LOVORA
-                </span>
-              ))}
-            </div>
-          </div>
+          <div 
+            className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-25"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200' width='300' height='200'%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='32' font-weight='900' font-family='sans-serif' letter-spacing='6' style='filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.8));' transform='rotate(-35, 150, 100)'%3ELOVORA%3C/text%3E%3C/svg%3E")`,
+              backgroundRepeat: 'repeat',
+              backgroundPosition: 'center',
+            }}
+          />
           
           {/* Payment Box and Blur (Only when showPayment is true) */}
           {showPayment && (

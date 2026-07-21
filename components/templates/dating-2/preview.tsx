@@ -16,6 +16,7 @@ export function DatingTwoPreview(props: TemplatePreviewProps) {
       fullScreen={props.fullScreen}
       hideNavigation={props.hideNavigation}
       autoPlay={props.autoPlay}
+      onStepChange={props.onStepChange}
       customData={parsedConfig}
       onComplete={() => {
         props.onResponse?.({
