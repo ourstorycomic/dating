@@ -206,10 +206,10 @@ export function WeddingTwoExperience({
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="flex flex-col items-center gap-1 mb-12 text-center px-4">
             <img src="/assets/wedding/wedding-2/logotrungthu2.webp" alt="Decor" className="w-12 h-12 opacity-80 mb-4 mix-blend-multiply" />
             <p className="text-[10px] text-[#B58B5C] uppercase tracking-widest mb-1 font-bold">Nhà Trai</p>
-            <p className="text-2xl sm:text-3xl whitespace-pre-line leading-relaxed font-normal  text-[#7A1F1F] mb-4" style={{ fontFamily: 'var(--font-dancing)' }}>{(groomFamily || "Ông Phạm Văn Long\nBà Lê Thị Mai").replace(/ & /g, '\n')}</p>
+            <p className="text-2xl sm:text-3xl whitespace-pre-line leading-relaxed font-normal  text-[#7A1F1F] mb-4" style={{ fontFamily: 'var(--font-dancing)' }}>{(groomFamily || "Ông Phạm Văn Long\nBà Lê Thị Mai").replace(/ & /g, '\n').replace(/\\n/g, '\n')}</p>
             <div className="w-8 h-[2px] bg-[#B58B5C] mb-4"></div>
             <p className="text-[10px] text-[#B58B5C] uppercase tracking-widest mb-1 font-bold">Nhà Gái</p>
-            <p className="text-2xl sm:text-3xl whitespace-pre-line leading-relaxed font-normal  text-[#7A1F1F] " style={{ fontFamily: 'var(--font-dancing)' }}>{(brideFamily || "Ông Nguyễn Văn Hùng\nBà Trần Thị Hoa").replace(/ & /g, '\n')}</p>
+            <p className="text-2xl sm:text-3xl whitespace-pre-line leading-relaxed font-normal  text-[#7A1F1F] " style={{ fontFamily: 'var(--font-dancing)' }}>{(brideFamily || "Ông Nguyễn Văn Hùng\nBà Trần Thị Hoa").replace(/ & /g, '\n').replace(/\\n/g, '\n')}</p>
           </motion.div>
 
           {/* Second Names */}

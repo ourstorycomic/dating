@@ -56,12 +56,7 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
   useEffect(() => {
     if (!isLocked) return;
 
-    if (isWedding || componentKey.startsWith("valentine") || componentKey.startsWith("sorry")) {
-      setShowPayment(true);
-      return;
-    }
-
-    const handler = (e: any) => {
+    const stepHandler = (e: any) => {
       // Show payment if they reach halfway through the template
       const current = e.detail?.current || 0;
       const total = e.detail?.total || 1;
@@ -69,8 +64,24 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
         setShowPayment(true);
       }
     };
-    window.addEventListener('template-step-change', handler);
-    return () => window.removeEventListener('template-step-change', handler);
+
+    const scrollHandler = () => {
+      const scrollY = window.scrollY;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = document.documentElement.clientHeight;
+      // Triggers if scrolled past 40% of the scrollable area
+      if (scrollHeight > clientHeight && scrollY >= (scrollHeight - clientHeight) * 0.4) {
+        setShowPayment(true);
+      }
+    };
+
+    window.addEventListener('template-step-change', stepHandler);
+    window.addEventListener('scroll', scrollHandler, { passive: true });
+    
+    return () => {
+      window.removeEventListener('template-step-change', stepHandler);
+      window.removeEventListener('scroll', scrollHandler);
+    };
   }, [isLocked, isWedding, componentKey]);
 
   async function handleResponse(response: { answer: string; message?: string; audioDataUrl?: string; date?: string }) {
@@ -148,8 +159,8 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
               {/* Faded Gradient Blur Overlay */}
               <div className="absolute inset-0 z-10 pointer-events-none [mask-image:linear-gradient(to_bottom,transparent_30%,black_65%)] backdrop-blur-[24px] bg-gradient-to-t from-white/95 via-white/50 to-transparent" />
               
-              {/* Invisible Click Blocker for the blurred area */}
-              <div className="absolute bottom-0 left-0 right-0 h-[60vh] z-10 pointer-events-auto" />
+              {/* Invisible Click Blocker for the entire screen to prevent bypass */}
+              <div className="absolute inset-0 z-10 pointer-events-auto" />
 
               {/* Payment Box Container */}
               <div className="absolute bottom-6 left-0 right-0 z-20 pointer-events-auto flex flex-col items-center px-4">

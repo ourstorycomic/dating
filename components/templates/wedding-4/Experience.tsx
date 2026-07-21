@@ -325,13 +325,13 @@ export function WeddingFourExperience({
               <div className="text-center w-[46%]">
                 <p className="text-[10px] text-[#A67C52] uppercase tracking-widest font-bold mb-2">Nhà Trai</p>
                 <p className="text-base font-serif text-[#2D2A28] font-bold mb-1">{groomName}</p>
-                <p className="text-xl sm:text-2xl text-[#2D2A28] whitespace-pre-line leading-relaxed" style={{ fontFamily: 'var(--font-dancing)' }}>{groomFamily?.replace(/ & /g, '\n')}</p>
+                <p className="text-xl sm:text-2xl text-[#2D2A28] whitespace-pre-line leading-relaxed" style={{ fontFamily: 'var(--font-dancing)' }}>{groomFamily?.replace(/ & /g, '\n').replace(/\\n/g, '\n')}</p>
               </div>
               <div className="text-xl text-[#7A1F1F] px-1 mt-6" style={{ fontFamily: 'var(--font-dancing)' }}>&amp;</div>
               <div className="text-center w-[46%]">
                 <p className="text-[10px] text-[#A67C52] uppercase tracking-widest font-bold mb-2">Nhà Gái</p>
                 <p className="text-base font-serif text-[#2D2A28] font-bold mb-1">{brideName}</p>
-                <p className="text-xl sm:text-2xl text-[#2D2A28] whitespace-pre-line leading-relaxed" style={{ fontFamily: 'var(--font-dancing)' }}>{brideFamily?.replace(/ & /g, '\n')}</p>
+                <p className="text-xl sm:text-2xl text-[#2D2A28] whitespace-pre-line leading-relaxed" style={{ fontFamily: 'var(--font-dancing)' }}>{brideFamily?.replace(/ & /g, '\n').replace(/\\n/g, '\n')}</p>
               </div>
             </div>
             

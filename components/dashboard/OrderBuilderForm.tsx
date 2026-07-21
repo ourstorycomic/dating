@@ -1007,8 +1007,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
       // hasTiecMungGai = true chỉ khi Gói 2 (cả 2 tiệc) VÀ có data Nhà Gái
       hasTiecMungGai: isGoi2 ? !!(dynamicData.tiecNameGai || dynamicData.tiecDateGai) : false,
     } : {}),
-    groomFamily: dynamicData.groomFamily || [dynamicData.groomFather, dynamicData.groomMother].filter(Boolean).join("\\n"),
-    brideFamily: dynamicData.brideFamily || [dynamicData.brideFather, dynamicData.brideMother].filter(Boolean).join("\\n"),
+    groomFamily: dynamicData.groomFamily || [dynamicData.groomFather, dynamicData.groomMother].filter(Boolean).join("\n"),
+    brideFamily: dynamicData.brideFamily || [dynamicData.brideFather, dynamicData.brideMother].filter(Boolean).join("\n"),
     ...(function() {
       const wdStr = dynamicData.weddingDate || "2026-12-14T11:30";
       let d = new Date(wdStr);
@@ -1146,7 +1146,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     const mergedData: Record<string, any> = overrideData ? { ...customData, ...overrideData } : { ...customData };
 
     if (selectedComponentKey.includes("wedding")) {
-      const separator = "\\n";
+      const separator = "\n";
       
       if (mergedData.groomFather !== undefined || mergedData.groomMother !== undefined) {
         mergedData.groomFamily = [mergedData.groomFather, mergedData.groomMother].filter(Boolean).join(separator);
