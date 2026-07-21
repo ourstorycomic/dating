@@ -1,4 +1,5 @@
 import { GlassCard } from "@/components/ui/GlassCard";
+import { LoginForm } from "./LoginForm";
 
 const errorMessages: Record<string, string> = {
   missing: "Nhập email và mật khẩu.",
@@ -25,30 +26,7 @@ export default async function LoginPage({
           </div>
         ) : null}
 
-        <form action="/api/auth/login" className="mt-5 grid gap-4" method="post">
-          <input name="next" type="hidden" value={next} />
-          <label className="grid gap-2 text-sm font-semibold">
-            <span className="text-[#7b536b]">Email</span>
-            <input
-              className="rounded-xl border-[2px] border-pink-100 bg-white px-4 py-3 outline-none transition-all focus:border-pink-400 focus:ring-4 focus:ring-pink-100"
-              name="email"
-              placeholder="admin@lovora.vn"
-              type="email"
-            />
-          </label>
-          <label className="grid gap-2 text-sm font-semibold mt-2">
-            <span className="text-[#7b536b]">Mật khẩu</span>
-            <input
-              className="rounded-xl border-[2px] border-pink-100 bg-white px-4 py-3 outline-none transition-all focus:border-pink-400 focus:ring-4 focus:ring-pink-100"
-              name="password"
-              placeholder="••••••••"
-              type="password"
-            />
-          </label>
-          <button className="mt-4 rounded-xl bg-gradient-to-r from-pink-400 to-pink-500 px-6 py-3.5 text-base font-black text-white shadow-lg shadow-pink-500/30 transition-all hover:scale-[1.02] hover:shadow-pink-500/40 active:scale-95">
-            Đăng nhập vào hệ thống
-          </button>
-        </form>
+        <LoginForm next={next} />
       </GlassCard>
     </div>
   );
