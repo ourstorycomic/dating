@@ -188,15 +188,11 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
           {/* Payment Box and Blur (Only when showPayment is true) */}
           {showPayment && (
             <div className="absolute inset-0 flex flex-col pointer-events-none">
-              {/* Faded Gradient Blur Overlay */}
-              <div 
-                className="absolute inset-0 z-10 pointer-events-none"
-                style={{
-                  WebkitMaskImage: 'linear-gradient(to bottom, transparent 30%, black 65%)',
-                  maskImage: 'linear-gradient(to bottom, transparent 30%, black 65%)'
-                }}
-              >
-                <div className="absolute inset-0 backdrop-blur-xl bg-gradient-to-t from-white/95 via-white/50 to-transparent" />
+              {/* Faded Gradient Blur Overlay (Stepped to avoid mask-image backdrop-root bug in Chromium) */}
+              <div className="absolute bottom-0 left-0 right-0 h-[70%] z-10 pointer-events-none flex flex-col">
+                <div className="h-[15%] backdrop-blur-sm bg-gradient-to-t from-white/20 to-transparent" />
+                <div className="h-[15%] backdrop-blur-md bg-gradient-to-t from-white/40 to-white/20" />
+                <div className="h-[70%] backdrop-blur-xl bg-gradient-to-t from-white/95 via-white/80 to-white/40" />
               </div>
               
               {/* Payment Box Container */}
