@@ -19,7 +19,9 @@ export async function generateMetadata({
 
   const title = `Mẫu ${template.name} | Lovora`;
   const description = template.description || "Xem trước mẫu giao diện quà tặng tuyệt đẹp trên Lovora.";
-  const images = [template.thumbnail_url || "/thumbnails/valentine1.png"];
+  const thumbnail = template.thumbnail_url || "/thumbnails/valentine1.png";
+  const imageUrl = thumbnail.startsWith('http') ? thumbnail : `https://lovora.click${thumbnail}`;
+  const images = [{ url: imageUrl, width: 1200, height: 630, alt: title }];
 
   return {
     title,

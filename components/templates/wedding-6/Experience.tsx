@@ -9,6 +9,7 @@ interface WeddingSixProps {
   compact?: boolean;
   isBuilderPreview?: boolean;
   autoPlay?: boolean;
+  fullScreen?: boolean;
   groomName: string;
   brideName: string;
   weddingDate: string;
@@ -31,6 +32,7 @@ export function WeddingSixExperience({
   compact,
   isBuilderPreview,
   autoPlay,
+  fullScreen,
   groomName,
   brideName,
   weddingDate,
@@ -77,18 +79,18 @@ export function WeddingSixExperience({
   const tiecGai = parseTiec(customData?.tiecDateGai);
 
   useEffect(() => {
-    // Luôn luôn tự động mở cánh cửa sau 1.5 giây để khách kịp ngắm thiết kế cửa
-    const openTimer = setTimeout(() => {
-      setIsOpened(true);
-      setTimeout(() => setAllowScroll(true), 1500);
-      // Cố gắng bật nhạc tự động (có thể bị trình duyệt chặn nếu chưa có tương tác)
-      if (audioRef.current && !compact) {
-        audioRef.current.play().catch(() => {});
-        setIsPlaying(true);
-      }
-    }, 1500);
-    return () => clearTimeout(openTimer);
-  }, [compact]);
+    if (autoPlay || fullScreen) {
+      const openTimer = setTimeout(() => {
+        setIsOpened(true);
+        setTimeout(() => setAllowScroll(true), 1500);
+        if (audioRef.current && !compact) {
+          audioRef.current.play().catch(() => {});
+          setIsPlaying(true);
+        }
+      }, 1500);
+      return () => clearTimeout(openTimer);
+    }
+  }, [compact, autoPlay, fullScreen]);
 
   useEffect(() => {
     if (autoPlay && isOpened && containerRef.current) {

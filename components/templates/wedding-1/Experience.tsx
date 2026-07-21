@@ -96,11 +96,11 @@ export function WeddingOneExperience({
     if (audioRef.current && musicUrl) {
       if (autoPlay) {
         audioRef.current.play().catch(() => setIsPlaying(false));
-      } else if (!compact && !isBuilderPreview) {
+      } else if (!compact && !isBuilderPreview && (props as any).fullScreen) {
         audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
       }
     }
-  }, [autoPlay, compact, isBuilderPreview, musicUrl]);
+  }, [autoPlay, compact, isBuilderPreview, musicUrl, (props as any).fullScreen]);
 
   useEffect(() => {
     if (autoPlay && containerRef.current) {

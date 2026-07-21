@@ -9,6 +9,7 @@ interface WeddingTwoProps {
   compact?: boolean;
   isBuilderPreview?: boolean;
   autoPlay?: boolean;
+  fullScreen?: boolean;
   groomName: string;
   brideName: string;
   weddingDate: string;
@@ -31,6 +32,7 @@ export function WeddingTwoExperience({
   compact,
   isBuilderPreview,
   autoPlay,
+  fullScreen,
   groomName,
   brideName,
   weddingDate,
@@ -77,12 +79,14 @@ export function WeddingTwoExperience({
   const tiecGai = parseTiec(customData?.tiecDateGai);
 
   useEffect(() => {
-    const openTimer = setTimeout(() => {
-      setIsOpened(true);
-      setTimeout(() => setAllowScroll(true), 1500);
-    }, 1500); // 1.5s delay like wedding-6
-    return () => clearTimeout(openTimer);
-  }, []);
+    if (autoPlay || fullScreen) {
+      const openTimer = setTimeout(() => {
+        setIsOpened(true);
+        setTimeout(() => setAllowScroll(true), 1500);
+      }, 1500); // 1.5s delay like wedding-6
+      return () => clearTimeout(openTimer);
+    }
+  }, [autoPlay, fullScreen]);
 
   useEffect(() => {
     if (autoPlay && isOpened && containerRef.current) {

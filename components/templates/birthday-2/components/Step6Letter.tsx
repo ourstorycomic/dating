@@ -19,8 +19,8 @@ export function Step6Letter({ letter, onNext, autoPlay = false, compact = false,
     let i = 0;
     const typingInterval = setInterval(() => {
       if (i < letter.length) {
-        setDisplayedText((prev) => prev + letter.charAt(i));
         i++;
+        setDisplayedText(letter.slice(0, i));
       } else {
         clearInterval(typingInterval);
         setTimeout(() => setIsTypingFinished(true), 800);
