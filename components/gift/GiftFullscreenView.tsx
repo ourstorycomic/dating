@@ -142,23 +142,40 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
           }
         }}
       >
-        <InteractiveTemplatePreview
-          componentKey={componentKey}
-          customData={customData}
-          gradient={order.templates?.gradient}
-          question={customData.question}
-          recipientName={recipientName}
-          senderName={senderName}
-          visualLabel={order.templates?.visual_label}
-          hideNavigation
-          fullScreen
-          isHost
-          initialStep={2}
-          hostDisplayName={recipientName}
-          guestDisplayName={senderName}
-          onResponse={handleResponse}
-          roomId={order.public_id}
-        />
+        <div className="relative min-h-full">
+          <InteractiveTemplatePreview
+            componentKey={componentKey}
+            customData={customData}
+            gradient={order.templates?.gradient}
+            question={customData.question}
+            recipientName={recipientName}
+            senderName={senderName}
+            visualLabel={order.templates?.visual_label}
+            hideNavigation
+            fullScreen
+            isHost
+            initialStep={2}
+            hostDisplayName={recipientName}
+            guestDisplayName={senderName}
+            onResponse={handleResponse}
+            roomId={order.public_id}
+          />
+
+          {/* Content-attached Blur Overlay */}
+          {isLocked && showPayment && (
+            <div 
+              className="absolute left-0 right-0 z-10 pointer-events-none flex flex-col"
+              style={{
+                top: isWedding ? '45%' : '50%',
+                bottom: isWedding ? '80px' : '0'
+              }}
+            >
+              <div className="h-16 md:h-32 backdrop-blur-sm bg-gradient-to-t from-white/20 to-transparent" />
+              <div className="h-16 md:h-32 backdrop-blur-md bg-gradient-to-t from-white/40 to-white/20" />
+              <div className="flex-1 backdrop-blur-xl bg-gradient-to-t from-white/95 via-white/80 to-white/40" />
+            </div>
+          )}
+        </div>
       </div>
 
       {error ? (
@@ -185,16 +202,9 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
             }}
           />
           
-          {/* Payment Box and Blur (Only when showPayment is true) */}
+          {/* Payment Box (Only when showPayment is true) */}
           {showPayment && (
             <div className="absolute inset-0 flex flex-col pointer-events-none">
-              {/* Faded Gradient Blur Overlay (Stepped to avoid mask-image backdrop-root bug in Chromium) */}
-              <div className="absolute bottom-0 left-0 right-0 h-[70%] z-10 pointer-events-none flex flex-col">
-                <div className="h-[15%] backdrop-blur-sm bg-gradient-to-t from-white/20 to-transparent" />
-                <div className="h-[15%] backdrop-blur-md bg-gradient-to-t from-white/40 to-white/20" />
-                <div className="h-[70%] backdrop-blur-xl bg-gradient-to-t from-white/95 via-white/80 to-white/40" />
-              </div>
-              
               {/* Payment Box Container */}
               <div className="absolute bottom-6 left-0 right-0 z-20 pointer-events-auto flex flex-col items-center px-4">
                 <div className="bg-white/95 p-5 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-pink-100/60 w-full max-w-sm flex flex-col items-center text-center backdrop-blur-xl relative overflow-hidden transform hover:scale-[1.01] transition-transform">
