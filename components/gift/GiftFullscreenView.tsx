@@ -164,16 +164,14 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
           {/* Content-attached Blur Overlay */}
           {isLocked && showPayment && (
             <div 
-              className="absolute left-0 right-0 z-10 pointer-events-none flex flex-col"
+              className="absolute left-0 right-0 z-10 pointer-events-none backdrop-blur-xl bg-gradient-to-t from-white/95 via-white/80 to-transparent"
               style={{
                 top: isWedding ? '45%' : '50%',
-                bottom: isWedding ? '80px' : '0'
+                bottom: isWedding ? '80px' : '0',
+                WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 20%)',
+                maskImage: 'linear-gradient(to bottom, transparent 0%, black 20%)'
               }}
-            >
-              <div className="h-16 md:h-32 backdrop-blur-sm bg-gradient-to-t from-white/20 to-transparent" />
-              <div className="h-16 md:h-32 backdrop-blur-md bg-gradient-to-t from-white/40 to-white/20" />
-              <div className="flex-1 backdrop-blur-xl bg-gradient-to-t from-white/95 via-white/80 to-white/40" />
-            </div>
+            />
           )}
         </div>
       </div>
