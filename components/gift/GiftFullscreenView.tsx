@@ -56,6 +56,17 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
   useEffect(() => {
     if (!isLocked) return;
 
+    // Poll for payment status
+    const pollInterval = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/orders/${order.public_id}/payment`);
+        const data = await res.json();
+        if (data.unlocked) {
+          window.location.reload();
+        }
+      } catch (err) {}
+    }, 5000);
+
     const stepHandler = (e: any) => {
       // Show payment if they reach halfway through the template
       const current = e.detail?.current || 0;
@@ -68,9 +79,10 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
     window.addEventListener('template-step-change', stepHandler);
     
     return () => {
+      clearInterval(pollInterval);
       window.removeEventListener('template-step-change', stepHandler);
     };
-  }, [isLocked, isWedding, componentKey]);
+  }, [isLocked, isWedding, componentKey, order.public_id]);
 
   async function handleResponse(response: { answer: string; message?: string; audioDataUrl?: string; date?: string }) {
     try {
