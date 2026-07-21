@@ -239,6 +239,11 @@ export function InteractiveTemplatePreview({
     ...props,
     musicUrl: (props.forceRandomMusic ? randomMusicUrl : props.musicUrl || props.customData?.musicUrl) || randomMusicUrl,
     generalAudioUrl: (props.forceRandomMusic ? randomMusicUrl : props.generalAudioUrl || props.customData?.generalAudioUrl) || randomMusicUrl,
+    onStepChange: (current: number, total: number) => {
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('template-step-change', { detail: { current, total } }));
+      }
+    },
     customData: {
       ...props.customData,
       // Khối 1 (Lễ Thành Hôn): giờ 09:00, địa chỉ tư gia
