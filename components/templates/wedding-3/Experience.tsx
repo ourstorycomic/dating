@@ -200,11 +200,11 @@ export function WeddingThreeExperience({
                 <p className="text-xs font-serif font-bold text-[#2D2A28] mb-2 uppercase">Thiệp Mời Cưới</p>
                 <div className="flex flex-col gap-1 mb-4">
                   <p className="text-[9px] uppercase tracking-widest text-[#7A1F1F]">Nhà Trai</p>
-                  <p className="text-2xl sm:text-3xl whitespace-pre-line leading-relaxed font-normal  text-[#2D2A28] whitespace-pre-line" style={{ fontFamily: 'var(--font-dancing)' }}>{groomFamily || "Ông Phạm Văn Long\nBà Lê Thị Mai"}</p>
+                  <p className="text-2xl sm:text-3xl whitespace-pre-line leading-relaxed font-normal  text-[#2D2A28] whitespace-pre-line" style={{ fontFamily: 'var(--font-dancing)' }}>{(groomFamily || "Ông Phạm Văn Long\nBà Lê Thị Mai").replace(/ & /g, '\n')}</p>
                 </div>
                 <div className="flex flex-col gap-1">
                   <p className="text-[9px] uppercase tracking-widest text-[#7A1F1F]">Nhà Gái</p>
-                  <p className="text-2xl sm:text-3xl whitespace-pre-line leading-relaxed font-normal  text-[#2D2A28] whitespace-pre-line" style={{ fontFamily: 'var(--font-dancing)' }}>{brideFamily || "Ông Nguyễn Văn Hùng\nBà Trần Thị Hoa"}</p>
+                  <p className="text-2xl sm:text-3xl whitespace-pre-line leading-relaxed font-normal  text-[#2D2A28] whitespace-pre-line" style={{ fontFamily: 'var(--font-dancing)' }}>{(brideFamily || "Ông Nguyễn Văn Hùng\nBà Trần Thị Hoa").replace(/ & /g, '\n')}</p>
                 </div>
               </div>
               <div className="w-16 h-40 bg-[#7A1F1F] rounded-t-md rounded-b-md flex flex-col items-center justify-between py-4 shadow-lg shrink-0 relative overflow-hidden">

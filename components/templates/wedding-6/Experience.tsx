@@ -221,7 +221,7 @@ export function WeddingSixExperience({
                  <h3 className="text-2xl text-[#2C2C2C] mb-2" style={{ fontFamily: 'var(--font-dancing)' }}>{groomName}</h3>
                  <p className="text-[9px] uppercase tracking-[0.2em] text-[#a4656c] font-bold mb-4">Chú Rể</p>
                  <p className="text-[8px] uppercase tracking-widest text-[#999] mb-1 border-b border-[#eee] pb-1 w-2/3">Nhà Trai</p>
-                 <p className="text-2xl sm:text-3xl whitespace-pre-line leading-relaxed font-normal  font-medium text-[#555] leading-relaxed mt-2" style={{ fontFamily: 'var(--font-dancing)' }}>{groomFamily || "Ông Phạm Văn Long\nBà Lê Thị Mai"}</p>
+                 <p className="text-2xl sm:text-3xl whitespace-pre-line leading-relaxed font-normal  font-medium text-[#555] leading-relaxed mt-2" style={{ fontFamily: 'var(--font-dancing)' }}>{(groomFamily || "Ông Phạm Văn Long\nBà Lê Thị Mai").replace(/ & /g, '\n')}</p>
                </div>
              </motion.div>
              
@@ -234,7 +234,7 @@ export function WeddingSixExperience({
                  <h3 className="text-2xl text-[#2C2C2C] mb-2" style={{ fontFamily: 'var(--font-dancing)' }}>{brideName}</h3>
                  <p className="text-[9px] uppercase tracking-[0.2em] text-[#a4656c] font-bold mb-4">Cô Dâu</p>
                  <p className="text-[8px] uppercase tracking-widest text-[#999] mb-1 border-b border-[#eee] pb-1 w-2/3">Nhà Gái</p>
-                 <p className="text-2xl sm:text-3xl whitespace-pre-line leading-relaxed font-normal  font-medium text-[#555] leading-relaxed mt-2" style={{ fontFamily: 'var(--font-dancing)' }}>{brideFamily || "Ông Nguyễn Văn Hùng\nBà Trần Thị Hoa"}</p>
+                 <p className="text-2xl sm:text-3xl whitespace-pre-line leading-relaxed font-normal  font-medium text-[#555] leading-relaxed mt-2" style={{ fontFamily: 'var(--font-dancing)' }}>{(brideFamily || "Ông Nguyễn Văn Hùng\nBà Trần Thị Hoa").replace(/ & /g, '\n')}</p>
                </div>
              </motion.div>
           </div>

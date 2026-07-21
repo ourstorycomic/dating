@@ -294,11 +294,11 @@ export function WeddingFiveExperience({
               <div className="w-full flex justify-between items-start mb-6">
                 <div className="text-center w-[45%]">
                   <p className="text-[9px] uppercase tracking-widest font-bold text-[#b19556] mb-2">Nhà Trai</p>
-                  <p className="text-xl sm:text-2xl text-[#4a5a40] whitespace-pre-line leading-relaxed" style={{ fontFamily: 'var(--font-dancing)' }}>{groomFamily}</p>
+                  <p className="text-xl sm:text-2xl text-[#4a5a40] whitespace-pre-line leading-relaxed" style={{ fontFamily: 'var(--font-dancing)' }}>{groomFamily?.replace(/ & /g, '\n')}</p>
                 </div>
                 <div className="text-center w-[45%]">
                   <p className="text-[9px] uppercase tracking-widest font-bold text-[#b19556] mb-2">Nhà Gái</p>
-                  <p className="text-xl sm:text-2xl text-[#4a5a40] whitespace-pre-line leading-relaxed" style={{ fontFamily: 'var(--font-dancing)' }}>{brideFamily}</p>
+                  <p className="text-xl sm:text-2xl text-[#4a5a40] whitespace-pre-line leading-relaxed" style={{ fontFamily: 'var(--font-dancing)' }}>{brideFamily?.replace(/ & /g, '\n')}</p>
                 </div>
               </div>
               

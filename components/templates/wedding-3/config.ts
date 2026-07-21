@@ -19,6 +19,6 @@ export const WEDDING_3_DATA = {
   tiecAddress: "123 Đường Tên Lửa, Q.Bình Tân, TP.HCM",
   tiecMapUrl: "https://maps.app.goo.gl/",
   mapUrl: "https://maps.app.goo.gl/xxx",
-  groomFamily: "Ông Phạm Văn Dư & Bà Trần Thị Hiền",
-  brideFamily: "Ông Nguyễn Văn Bình & Bà Nguyễn Thị Thủy",
+  groomFamily: "Ông Phạm Văn Dư\nBà Trần Thị Hiền",
+  brideFamily: "Ông Nguyễn Văn Bình\nBà Nguyễn Thị Thủy",
 };
