@@ -104,7 +104,7 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
       {/* Scrollable Container for the template */}
       <div 
         className="absolute inset-0 z-0 overflow-y-auto overflow-x-hidden"
-        onScroll={(e) => {
+        onScrollCapture={(e) => {
           if (!isLocked || showPayment) return;
           const target = e.currentTarget;
           const scrollY = target.scrollTop;

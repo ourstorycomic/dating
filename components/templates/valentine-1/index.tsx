@@ -167,6 +167,7 @@ export function ConstellationVaultExperience({
   onResponse?: (response: { answer: string; date?: string; audioDataUrl?: string }) => void;
   forceStage?: number;
   autoPlay?: boolean;
+  onStepChange?: (step: number, total: number) => void;
 }) {
   const [stage, setStage] = useState(1);
   const [mounted, setMounted] = useState(false);
@@ -174,6 +175,10 @@ export function ConstellationVaultExperience({
   const generalAudioRef = useRef<HTMLAudioElement>(null);
   const stage3AudioRef = useRef<HTMLAudioElement>(null);
   const [recordedAudio, setRecordedAudio] = useState<string | undefined>();
+
+  useEffect(() => {
+    onStepChange?.(stage - 1, 5);
+  }, [stage, onStepChange]);
 
   useEffect(() => {
     if (forceStage && forceStage >= 1 && forceStage <= 5) {

@@ -13,6 +13,7 @@ export function StarryConstellationPreview({
   customData,
   autoPlay = false,
   isBuilderPreview = false,
+  onStepChange,
 }: TemplatePreviewProps) {
   const messages = customData?.memories?.length
     ? customData.memories.map((memory) => memory.message || memory.title)
@@ -20,6 +21,7 @@ export function StarryConstellationPreview({
 
   return (
     <ConstellationVaultExperience
+      onStepChange={onStepChange}
       autoPlay={autoPlay}
       forceStage={typeof customData?.forceStage === 'number' ? customData.forceStage : (customData?.forceStage ? parseInt(customData.forceStage as string) : undefined)}
       anniversaryCode={customData?.anniversaryCode ?? "1402"}
