@@ -685,10 +685,10 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
 
   const [dynamicData, setDynamicData] = useState<Record<string, any>>({});
   const [activeTab, setActiveTab] = useState<"trai" | "gai">("trai");
-  const isGoi3 = isWedding && (selectedPackage?.includes("goi3") || false);
-  const isGoi2 = isWedding && (selectedPackage?.includes("goi2") || false);
-  const isGoi1 = isWedding && (selectedPackage?.includes("goi1") || false);
-  const isGoi3KhacMau = isWedding && (selectedPackage?.includes("goi3-khac") || false);
+  const isGoi3 = selectedPackage?.includes("wedding-goi3") || false;
+  const isGoi2 = selectedPackage?.includes("wedding-goi2") || false;
+  const isGoi1 = selectedPackage?.includes("wedding-goi1") || false;
+  const isGoi3KhacMau = selectedPackage?.includes("wedding-goi3-khac") || false;
   const activeTemplateId = (isGoi3KhacMau && activeTab === "gai") ? (dynamicData?.gai?.templateId || selectedTemplateId) : selectedTemplateId;
 
   const getVal = (key: string) => (isGoi3 && activeTab === "gai") ? (dynamicData.gai?.[key] ?? "") : (dynamicData[key] ?? "");
