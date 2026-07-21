@@ -77,14 +77,12 @@ export function WeddingTwoExperience({
   const tiecGai = parseTiec(customData?.tiecDateGai);
 
   useEffect(() => {
-    if (autoPlay) {
-      const openTimer = setTimeout(() => {
-        setIsOpened(true);
-        setTimeout(() => setAllowScroll(true), 1500);
-      }, 500);
-      return () => clearTimeout(openTimer);
-    }
-  }, [autoPlay]);
+    const openTimer = setTimeout(() => {
+      setIsOpened(true);
+      setTimeout(() => setAllowScroll(true), 1500);
+    }, 1500); // 1.5s delay like wedding-6
+    return () => clearTimeout(openTimer);
+  }, []);
 
   useEffect(() => {
     if (autoPlay && isOpened && containerRef.current) {
