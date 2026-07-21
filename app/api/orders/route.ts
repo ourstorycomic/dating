@@ -185,10 +185,6 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "Không tìm thấy đơn." }, { status: 404 });
   }
 
-  if (order.status === "PENDING_PAYMENT" && session.role !== "ADMIN") {
-    return NextResponse.json({ error: "Đơn chưa thanh toán, chưa được chỉnh template." }, { status: 403 });
-  }
-
   if (session.role === "EMPLOYEE" && order.created_by_id !== session.userId) {
     return NextResponse.json({ error: "Bạn không có quyền sửa đơn này." }, { status: 403 });
   }

@@ -29,12 +29,12 @@ const GENERAL_SONGS = [
 ];
 
 const SERVICE_PACKAGES = [
-  { id: "goi1-thuong", label: "GÓI 1: THEO MẪU (Làm thường - 59.000đ)", price: 59000 },
-  { id: "goi1-gap", label: "GÓI 1: THEO MẪU (Làm gấp - Từ 88.000đ)", price: 88000 },
-  { id: "goi2-thuong", label: "GÓI 2: CHỈNH CẢM XÚC (Làm thường - 99.000đ)", price: 99000 },
-  { id: "goi2-gap", label: "GÓI 2: CHỈNH CẢM XÚC (Làm gấp - Từ 128.000đ)", price: 128000 },
-  { id: "goi3-thuong", label: "GÓI 3: ĐẶC BIỆT (Làm thường - 149.000đ)", price: 149000 },
-  { id: "goi3-gap", label: "GÓI 3: ĐẶC BIỆT (Làm gấp - Từ 178.000đ)", price: 178000 },
+  { id: "goi1-thuong", label: "GÓI 1: THEO MẪU (Làm thường - 99.000đ)", price: 99000 },
+  { id: "goi1-gap", label: "GÓI 1: THEO MẪU (Làm gấp - Từ 119.000đ)", price: 119000 },
+  { id: "goi2-thuong", label: "GÓI 2: CHỈNH CẢM XÚC (Làm thường - 119.000đ)", price: 119000 },
+  { id: "goi2-gap", label: "GÓI 2: CHỈNH CẢM XÚC (Làm gấp - Từ 139.000đ)", price: 139000 },
+  { id: "goi3-thuong", label: "GÓI 3: ĐẶC BIỆT (Làm thường - 179.000đ)", price: 179000 },
+  { id: "goi3-gap", label: "GÓI 3: ĐẶC BIỆT (Làm gấp - Từ 199.000đ)", price: 199000 },
 ];
 
 const WEDDING_SERVICE_PACKAGES = [
