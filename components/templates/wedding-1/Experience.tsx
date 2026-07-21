@@ -35,9 +35,11 @@ export function WeddingOneExperience({
   groomQR,
   brideQR,
   customData,
+  fullScreen,
 }: {
   compact?: boolean;
   autoPlay?: boolean;
+  fullScreen?: boolean;
   groomName?: string;
   brideName?: string;
   weddingDate?: string;
@@ -96,11 +98,11 @@ export function WeddingOneExperience({
     if (audioRef.current && musicUrl) {
       if (autoPlay) {
         audioRef.current.play().catch(() => setIsPlaying(false));
-      } else if (!compact && !isBuilderPreview && (props as any).fullScreen) {
+      } else if (!compact && !isBuilderPreview && fullScreen) {
         audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
       }
     }
-  }, [autoPlay, compact, isBuilderPreview, musicUrl, (props as any).fullScreen]);
+  }, [autoPlay, compact, isBuilderPreview, musicUrl, fullScreen]);
 
   useEffect(() => {
     if (autoPlay && containerRef.current) {
