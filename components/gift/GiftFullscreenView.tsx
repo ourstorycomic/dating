@@ -118,7 +118,9 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
         className="absolute inset-0 z-0 overflow-y-auto overflow-x-hidden"
         onScrollCapture={(e) => {
           if (!isLocked || showPayment) return;
-          const target = e.currentTarget;
+          const target = e.target as HTMLElement;
+          if (!target || !target.scrollTop) return; // ignore if no scroll
+          
           const scrollY = target.scrollTop;
           const scrollHeight = target.scrollHeight;
           const clientHeight = target.clientHeight;
