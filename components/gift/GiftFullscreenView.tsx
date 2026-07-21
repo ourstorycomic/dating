@@ -137,7 +137,7 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
             <div className="absolute w-[200%] h-[200%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-45 flex flex-wrap gap-x-10 gap-y-16 justify-center items-center content-center select-none opacity-25">
               {Array.from({length: 150}).map((_, i) => (
                 <span key={i} className="text-2xl md:text-3xl font-black text-white uppercase tracking-[0.2em] whitespace-nowrap drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                  Bản Xem Trước
+                  LOVORA
                 </span>
               ))}
             </div>
