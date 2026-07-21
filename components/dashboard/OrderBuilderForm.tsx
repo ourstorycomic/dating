@@ -876,6 +876,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   }, [result]);
 
   const customData = {
+    ...dynamicData,
       expiresAtDate,
     anniversaryCode,
     componentKey: selectedComponentKey,
@@ -1006,8 +1007,6 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
       // hasTiecMungGai = true chỉ khi Gói 2 (cả 2 tiệc) VÀ có data Nhà Gái
       hasTiecMungGai: isGoi2 ? !!(dynamicData.tiecNameGai || dynamicData.tiecDateGai) : false,
     } : {}),
-    // dynamicData cuối cùng để override tất cả — bao gồm groomName, brideName, eventAddress, etc.
-    ...dynamicData,
     groomFamily: dynamicData.groomFamily || [dynamicData.groomFather, dynamicData.groomMother].filter(Boolean).join("\\n"),
     brideFamily: dynamicData.brideFamily || [dynamicData.brideFather, dynamicData.brideMother].filter(Boolean).join("\\n"),
     ...(function() {
@@ -1442,6 +1441,69 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     else if (cd.final3DSignature) setBirthdayFinal3DSignature(cd.final3DSignature);
     
     if (cd.finalMessage) setBirthdayFinalMessage(cd.finalMessage);
+    if (cd.stage1Instruction) setStage1Instruction(cd.stage1Instruction);
+    if (cd.stage1Background) setStage1Background(cd.stage1Background);
+    if (cd.stage1Accent) setStage1Accent(cd.stage1Accent);
+    if (cd.stage1ImageUrl) setStage1ImageUrl(cd.stage1ImageUrl);
+    if (cd.stage1MediaType) setStage1MediaType(cd.stage1MediaType);
+    if (cd.stage1RevealTitle) setStage1RevealTitle(cd.stage1RevealTitle);
+    if (cd.stage1RevealBody) setStage1RevealBody(cd.stage1RevealBody);
+    if (cd.stage1RevealButton) setStage1RevealButton(cd.stage1RevealButton);
+    if (cd.stage2Title) setStage2Title(cd.stage2Title);
+    if (cd.stage2Subtitle) setStage2Subtitle(cd.stage2Subtitle);
+    if (cd.stage2ImageCaption) setStage2ImageCaption(cd.stage2ImageCaption);
+    if (cd.stage2Quote) setStage2Quote(cd.stage2Quote);
+    if (cd.stage2NextButton) setStage2NextButton(cd.stage2NextButton);
+    if (cd.stage2Background) setStage2Background(cd.stage2Background);
+    if (cd.stage2Accent) setStage2Accent(cd.stage2Accent);
+    if (cd.stage2ImageUrl) setStage2ImageUrl(cd.stage2ImageUrl);
+    if (cd.stage2MediaType) setStage2MediaType(cd.stage2MediaType);
+    if (cd.stage3Title) setStage3Title(cd.stage3Title);
+    if (cd.stage3Subtitle) setStage3Subtitle(cd.stage3Subtitle);
+    if (cd.stage3MusicLabel) setStage3MusicLabel(cd.stage3MusicLabel);
+    if (cd.stage3MediaUrl) setStage3MediaUrl(cd.stage3MediaUrl);
+    if (cd.stage3MediaType) setStage3MediaType(cd.stage3MediaType);
+    if (cd.stage3AudioUrl) setStage3AudioUrl(cd.stage3AudioUrl);
+    if (cd.stage3NextButton) setStage3NextButton(cd.stage3NextButton);
+    if (cd.stage3Message1) setStage3Message1(cd.stage3Message1);
+    if (cd.stage3Message2) setStage3Message2(cd.stage3Message2);
+    if (cd.stage3Message3) setStage3Message3(cd.stage3Message3);
+    if (cd.stage3Message4) setStage3Message4(cd.stage3Message4);
+    if (cd.stage3Background) setStage3Background(cd.stage3Background);
+    if (cd.stage3Accent) setStage3Accent(cd.stage3Accent);
+    if (cd.stage4Title) setStage4Title(cd.stage4Title);
+    if (cd.stage5Title) setStage5Title(cd.stage5Title);
+    if (cd.stage4Prompt) setStage4Prompt(cd.stage4Prompt);
+    if (cd.stage4MicInstruction) setStage4MicInstruction(cd.stage4MicInstruction);
+    if (cd.stage4FallbackButton) setStage4FallbackButton(cd.stage4FallbackButton);
+    if (cd.stage4RevealTitle) setStage4RevealTitle(cd.stage4RevealTitle);
+    if (cd.stage4RevealBody) setStage4RevealBody(cd.stage4RevealBody);
+    if (cd.stage4RevealButton) setStage4RevealButton(cd.stage4RevealButton);
+    if (cd.stage4Background) setStage4Background(cd.stage4Background);
+    if (cd.stage4Accent) setStage4Accent(cd.stage4Accent);
+    if (cd.stage4ImageUrl) setStage4ImageUrl(cd.stage4ImageUrl);
+    if (cd.stage4MediaType) setStage4MediaType(cd.stage4MediaType);
+    if (cd.finalTitle) setFinalTitle(cd.finalTitle);
+    if (cd.finalSubtitle) setFinalSubtitle(cd.finalSubtitle);
+    if (cd.finalCta) setFinalCta(cd.finalCta);
+    if (cd.finalBackground) setFinalBackground(cd.finalBackground);
+    if (cd.finalAccent) setFinalAccent(cd.finalAccent);
+    if (cd.giftTitle) setGiftTitle(cd.giftTitle);
+    if (cd.giftBody) setGiftBody(cd.giftBody);
+    if (cd.proposedDate) setProposedDate(cd.proposedDate);
+    if (cd.giftDeclineButton) setGiftDeclineButton(cd.giftDeclineButton);
+    if (cd.giftAcceptButton) setGiftAcceptButton(cd.giftAcceptButton);
+    if (cd.giftAcceptedTitle) setGiftAcceptedTitle(cd.giftAcceptedTitle);
+    if (cd.giftAcceptedBody) setGiftAcceptedBody(cd.giftAcceptedBody);
+    if (cd.giftDeclinedTitle) setGiftDeclinedTitle(cd.giftDeclinedTitle);
+    if (cd.giftDeclinedBody) setGiftDeclinedBody(cd.giftDeclinedBody);
+    if (cd.giftBackButton) setGiftBackButton(cd.giftBackButton);
+    if (cd.giftRescheduleButton) setGiftRescheduleButton(cd.giftRescheduleButton);
+    if (cd.contractTitle) setContractTitle(cd.contractTitle);
+    if (cd.contractBody) setContractBody(cd.contractBody);
+    if (cd.contractRejectButton) setContractRejectButton(cd.contractRejectButton);
+    if (cd.contractHoldInstruction) setContractHoldInstruction(cd.contractHoldInstruction);
+    
     setDynamicData(cd);
     
     setIsLocked(cd.isLocked ?? false);

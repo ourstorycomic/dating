@@ -613,7 +613,7 @@ export async function getOrderByPublicId(publicId: string) {
   const { data, error } = await supabase
     .from("orders")
     .select(
-      "id, public_id, recipient_name, custom_data, amount, status, gift_opened_at, recipient_response, response_text, responded_at, created_at, expires_at, templates(component_key, visual_label, gradient, name, thumbnail_url), payments(payment_code, amount, status, qr_code_url)",
+      "id, public_id, buyer_name, recipient_name, custom_data, amount, status, gift_opened_at, recipient_response, response_text, responded_at, created_at, expires_at, templates(component_key, visual_label, gradient, name, thumbnail_url), payments(payment_code, amount, status, qr_code_url)",
     )
     .eq("public_id", publicId)
     .maybeSingle();
@@ -626,6 +626,7 @@ export async function getOrderByPublicId(publicId: string) {
   return data as unknown as {
     id: string;
     public_id: string;
+    buyer_name: string | null;
     recipient_name: string | null;
     custom_data: Record<string, unknown>;
     amount: number;
