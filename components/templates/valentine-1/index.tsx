@@ -95,6 +95,7 @@ export function ConstellationVaultExperience({
   forceStage,
   autoPlay = false,
   isBuilderPreview = false,
+  onStepChange,
 }: {
   isBuilderPreview?: boolean;
   anniversaryCode?: string;
