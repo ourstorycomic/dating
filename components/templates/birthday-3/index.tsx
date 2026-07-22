@@ -87,7 +87,7 @@ export default function Birthday3Template({ autoPlay = false, compact = false, h
 
   return (
     <div className={`relative w-full overflow-hidden text-gray-800 font-sans mx-auto h-full ${compact ? 'bg-transparent' : 'bg-pink-50'}`} style={{ backgroundImage: "url('/assets/bg/bg6.jpg')", backgroundSize: 'cover', backgroundBlendMode: 'overlay' }}>
-      {generalAudioUrl && <audio ref={audioRef} src={generalAudioUrl} autoPlay loop muted={compact && !autoPlay} />}
+      {generalAudioUrl && <audio ref={audioRef} src={generalAudioUrl} autoPlay loop muted={compact && !autoPlay && !isBuilderPreview} />}
       <AnimatePresence mode="wait">
         {step === 1 && <Step1Knock key="step1" onNext={nextStep} autoPlay={autoPlay} compact={compact} config={config} />}
         {step === 2 && <Step2Surprise key="step2" onNext={nextStep} autoPlay={autoPlay} compact={compact} config={config} />}
@@ -183,7 +183,7 @@ function Step1Knock({ onNext, autoPlay, compact, config }: { onNext: () => void;
   const handleKnock = () => {
     if (knocks < 3 && !autoPlay) {
       setKnocks(prev => prev + 1);
-      if (knockSoundRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard'))) {
+      if (knockSoundRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard'))) {
         knockSoundRef.current.currentTime = 0;
         knockSoundRef.current.play().catch(() => {});
       }
@@ -212,7 +212,7 @@ function Step1Knock({ onNext, autoPlay, compact, config }: { onNext: () => void;
 
   return (
     <>
-    <audio ref={knockSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />
+    <audio ref={knockSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard')} />
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -305,7 +305,7 @@ function Step2Surprise({ onNext, autoPlay, compact, config }: { onNext: () => vo
 
   const triggerSurprise = () => {
     setIsOn(true);
-    if (hornSoundRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard'))) {
+    if (hornSoundRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard'))) {
       hornSoundRef.current.currentTime = 0;
       hornSoundRef.current.play().catch(() => {});
     }
@@ -324,7 +324,7 @@ function Step2Surprise({ onNext, autoPlay, compact, config }: { onNext: () => vo
     if (info.offset.y > 50 && !autoPlay && !isOn) {
       // Play switch click sound
       const audio = new Audio("/assets/vfx/touch.mp3");
-      if (!(compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard'))) {
+      if (!(compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard'))) {
         audio.play().catch(() => {});
       }
       
@@ -351,7 +351,7 @@ function Step2Surprise({ onNext, autoPlay, compact, config }: { onNext: () => vo
 
   return (
     <>
-    <audio ref={hornSoundRef} src="/assets/vfx/partyblower.mp3" preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />
+    <audio ref={hornSoundRef} src="/assets/vfx/partyblower.mp3" preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard')} />
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, backgroundColor: isOn ? "#fff7ed" : "#0f172a" }}

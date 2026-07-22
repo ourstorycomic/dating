@@ -206,7 +206,7 @@ export function WeddingOneExperience({
 
       {/* Background Music & Floating Controls */}
       {musicUrl && (
-        <audio ref={audioRef} src={musicUrl} loop preload="auto" autoPlay={autoPlay} muted={compact && !autoPlay} />
+        <audio ref={audioRef} src={musicUrl} loop preload="auto" autoPlay={autoPlay} muted={compact && !autoPlay && !isBuilderPreview} />
       )}
       {!autoPlay && (
         <button 

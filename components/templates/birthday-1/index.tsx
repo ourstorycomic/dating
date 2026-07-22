@@ -438,10 +438,10 @@ function BirthdayScene({
         )}
       </AnimatePresence>
 
-      <audio src={musicUrl || DEFAULT_BIRTHDAY_MUSIC} loop preload="auto" ref={audioRef} muted={compact && !autoPlay} />
-      <audio preload="auto" ref={touchAudioRef} src={TOUCH_SOUND} muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />
-      <audio preload="auto" ref={meowAudioRef} src="/assets/vfx/meow-1.mp3" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />
-      <audio preload="auto" ref={patAudioRef} src="/assets/vfx/lopi.mp3" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />
+      <audio src={musicUrl || DEFAULT_BIRTHDAY_MUSIC} loop preload="auto" ref={audioRef} muted={compact && !autoPlay && !isBuilderPreview} />
+      <audio preload="auto" ref={touchAudioRef} src={TOUCH_SOUND} muted={compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard')} />
+      <audio preload="auto" ref={meowAudioRef} src="/assets/vfx/meow-1.mp3" muted={compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard')} />
+      <audio preload="auto" ref={patAudioRef} src="/assets/vfx/lopi.mp3" muted={compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard')} />
 
       <div className="absolute inset-0 z-10">
         <Canvas

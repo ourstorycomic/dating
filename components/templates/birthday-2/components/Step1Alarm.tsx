@@ -30,20 +30,25 @@ export function Step1Alarm({ onNext, autoPlay = false, compact = false, config =
   }, []);
 
   useEffect(() => {
-    if (autoPlay && audioRef.current) {
+    if (audioRef.current) {
       audioRef.current.play().catch(() => {});
     }
-  }, [autoPlay]);
+  }, []);
+
+  const [swiped, setSwiped] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
     if (autoPlay) {
       const t = setTimeout(async () => {
         if (!isMounted) return;
+        setSwiped(true);
         if (audioRef.current) audioRef.current.pause();
-        await handleControls.start({ x: 200, transition: { duration: 0.6 } });
-        if (!isMounted) return;
-        await pageControls.start({ opacity: 0, scale: 1.1 });
+        try {
+          await handleControls.start({ x: 200, transition: { duration: 0.6 } });
+          if (!isMounted) return;
+          await pageControls.start({ opacity: 0, scale: 1.1 });
+        } catch (e) {}
         if (!isMounted) return;
         onNext();
       }, 3000);
@@ -56,13 +61,23 @@ export function Step1Alarm({ onNext, autoPlay = false, compact = false, config =
   }, [autoPlay, handleControls, pageControls, onNext]);
 
   const handleDragEnd = (e: any, info: any) => {
+    if (swiped) return;
     if (info.offset.x > 150) {
+      setSwiped(true);
       if (audioRef.current) audioRef.current.pause();
-      pageControls.start({ opacity: 0, scale: 1.1 }).then(() => {
+      try {
+        pageControls.start({ opacity: 0, scale: 1.1 }).then(() => {
+          onNext();
+        }).catch(() => {
+          onNext();
+        });
+      } catch (err) {
         onNext();
-      });
+      }
     } else {
-      handleControls.start({ x: 0 });
+      try {
+        handleControls.start({ x: 0 });
+      } catch (err) {}
     }
   };
 
@@ -77,7 +92,7 @@ export function Step1Alarm({ onNext, autoPlay = false, compact = false, config =
       <div className="absolute inset-0 bg-pink-900/20 backdrop-blur-[2px] z-0" />
       <motion.div className="absolute inset-0 bg-white z-0 pointer-events-none" style={{ opacity: bgOpacity }} />
       
-      <audio ref={audioRef} src="https://assets.mixkit.co/sfx/preview/mixkit-classic-alarm-995.mp3" loop muted={compact && !autoPlay} />
+      <audio ref={audioRef} src="https://assets.mixkit.co/sfx/preview/mixkit-classic-alarm-995.mp3" loop muted={compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard')} />
 
       {/* Clock Text */}
       <motion.div 
@@ -105,7 +120,7 @@ export function Step1Alarm({ onNext, autoPlay = false, compact = false, config =
           <p className="text-pink-200 font-bold text-lg drop-shadow-md">{config?.Dythilnconi || "Dậy thôi lợn con ơi! 🐷"}</p>
         </motion.div>
 
-        <div className="relative w-full h-16 bg-pink-500/30 backdrop-blur-md rounded-full border border-pink-200/50 flex items-center overflow-hidden shadow-[0_8px_32px_rgba(236,72,153,0.3)]">
+        <div className="relative w-full max-w-[280px] mx-auto h-16 bg-pink-500/30 backdrop-blur-md rounded-full border border-pink-200/50 flex items-center overflow-hidden shadow-[0_8px_32px_rgba(236,72,153,0.3)]">
           <motion.div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ opacity }}>
             <span className="text-pink-50 font-bold tracking-widest pl-12 text-[15px] whitespace-nowrap drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
               {config?.Vutttbothc || "Vuốt để tắt báo thức"}

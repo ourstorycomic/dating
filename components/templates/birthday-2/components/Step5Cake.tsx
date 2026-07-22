@@ -39,15 +39,19 @@ export function Step5Cake({ onNext, autoPlay = false, compact = false, config = 
     if (blown) return;
     setHolding(true);
     if (navigator.vibrate) navigator.vibrate(50);
+    if (intervalRef.current) clearInterval(intervalRef.current);
+
     intervalRef.current = setInterval(() => {
       setProgress(p => {
-        if (p >= 100) {
-          clearInterval(intervalRef.current!);
-          handleBlow();
+        if (p >= 100) return 100;
+        const next = p + 2;
+        if (next >= 100) {
+          if (intervalRef.current) clearInterval(intervalRef.current);
+          setTimeout(handleBlow, 0);
           return 100;
         }
-        if (p % 25 === 0 && navigator.vibrate) navigator.vibrate(30);
-        return p + 2;
+        if (next % 25 === 0 && navigator.vibrate) navigator.vibrate(30);
+        return next;
       });
     }, 40); // 2 seconds total (100 / 2 * 40 = 2000ms)
   };
@@ -55,21 +59,27 @@ export function Step5Cake({ onNext, autoPlay = false, compact = false, config = 
   const stopHold = () => {
     if (blown) return;
     setHolding(false);
-    if (intervalRef.current) clearInterval(intervalRef.current);
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
     setProgress(0);
   };
 
   const handleBlow = () => {
-    setBlown(true);
-    setHolding(false);
-    if (blowSoundRef.current) {
-      blowSoundRef.current.currentTime = 0;
-      blowSoundRef.current.play().catch(() => {});
-    }
-    if (navigator.vibrate) navigator.vibrate([100, 50, 200]);
-    setTimeout(() => {
-      onNext();
-    }, 2000); // Wait 2s to show smoke before moving to letter
+    setBlown(prev => {
+      if (prev) return prev;
+      setHolding(false);
+      if (blowSoundRef.current) {
+        blowSoundRef.current.currentTime = 0;
+        blowSoundRef.current.play().catch(() => {});
+      }
+      if (navigator.vibrate) navigator.vibrate([100, 50, 200]);
+      setTimeout(() => {
+        onNext();
+      }, 2000); // Wait 2s to show smoke before moving to letter
+      return true;
+    });
   };
 
   useEffect(() => {
@@ -89,7 +99,7 @@ export function Step5Cake({ onNext, autoPlay = false, compact = false, config = 
 
   return (
     <>
-    <audio ref={blowSoundRef} src="/assets/vfx/partyblower.mp3" preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />
+    <audio ref={blowSoundRef} src="/assets/vfx/partyblower.mp3" preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard')} />
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}

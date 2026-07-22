@@ -95,7 +95,7 @@ export function Step123Machine({ onEggDropped, autoPlay, compact, data }: { onEg
       await coinControls.start({
         scale: 0, opacity: 0, transition: { duration: 0.4, ease: [0.175, 0.885, 0.32, 1.275] }
       });
-      if (coinDropSoundRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard'))) {
+      if (coinDropSoundRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard'))) {
         coinDropSoundRef.current.currentTime = 0;
         coinDropSoundRef.current.play().catch(() => {});
       }
@@ -113,7 +113,7 @@ export function Step123Machine({ onEggDropped, autoPlay, compact, data }: { onEg
     if (step !== 2) return;
     setStep(3);
     setTimeout(() => {
-        if (eggDropSoundRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard'))) {
+        if (eggDropSoundRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard'))) {
           eggDropSoundRef.current.currentTime = 0;
           eggDropSoundRef.current.play().catch(() => {});
         }
@@ -123,8 +123,8 @@ export function Step123Machine({ onEggDropped, autoPlay, compact, data }: { onEg
 
   return (
     <>
-    <audio ref={coinDropSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />
-    <audio ref={eggDropSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />
+    <audio ref={coinDropSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard')} />
+    <audio ref={eggDropSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard')} />
     <div className="absolute inset-0 flex flex-col items-center z-10 p-4">
       <div className={`absolute top-10 left-0 w-full text-center z-20 px-6 transition-opacity duration-500 ${step >= 3 ? 'opacity-0' : 'opacity-100'}`}>
         <h2 className={`text-white text-2xl font-extrabold drop-shadow-md anim-spring-up ${step >= 2 ? 'text-pink-200' : ''}`}>

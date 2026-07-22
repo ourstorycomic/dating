@@ -290,6 +290,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                          senderName="Bạn"
                          visualLabel={template.visual_label}
                          hideNavigation={true}
+                         disableAutoPlay={true}
                        />
                      </div>
                    ) : (
@@ -311,6 +312,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                          senderName="Bạn"
                          visualLabel={template.visual_label}
                          hideNavigation={true}
+                         disableAutoPlay={true}
                        />
                      </div>
                    )}

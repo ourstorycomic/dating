@@ -138,9 +138,9 @@ export function LoveSpaceTemplate({ compact, fullScreen, hideNavigation, isBuild
         <div id="preview-container" className={containerClass} style={bgStyle}>
           
           {customData.audioSrc ? (
-            <audio ref={audioRef} src={customData.audioSrc} autoPlay={autoPlay} loop muted={compact && !autoPlay} />
+            <audio ref={audioRef} src={customData.audioSrc} autoPlay={autoPlay} loop muted={compact && !autoPlay && !isBuilderPreview} />
           ) : (
-            <audio ref={audioRef} src={TPL_DATA.audioSrc} autoPlay={autoPlay} loop muted={compact && !autoPlay} />
+            <audio ref={audioRef} src={TPL_DATA.audioSrc} autoPlay={autoPlay} loop muted={compact && !autoPlay && !isBuilderPreview} />
           )}
 
           {!compact && <BackgroundDecorations />}

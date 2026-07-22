@@ -18,7 +18,11 @@ export async function getSession() {
   if (!raw) return null;
 
   try {
-    const session = JSON.parse(raw) as AppSession;
+    let sessionStr = raw;
+    if (!raw.startsWith("{")) {
+      sessionStr = Buffer.from(raw, "base64").toString("utf-8");
+    }
+    const session = JSON.parse(sessionStr) as AppSession;
     if (!session.userId || !session.email || !session.role) return null;
     return session;
   } catch {

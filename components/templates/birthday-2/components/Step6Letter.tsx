@@ -45,7 +45,7 @@ export function Step6Letter({ letter, onNext, autoPlay = false, compact = false,
       transition={{ duration: 1.5 }}
       className="absolute inset-0 flex flex-col items-center justify-center bg-[#050505] p-6 z-50"
     >
-      <audio ref={audioRef} autoPlay loop src="https://assets.mixkit.co/sfx/preview/mixkit-soft-piano-melody-2972.mp3" muted={compact && !autoPlay} />
+      <audio ref={audioRef} autoPlay loop src="https://assets.mixkit.co/sfx/preview/mixkit-soft-piano-melody-2972.mp3" muted={compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard')} />
 
       <motion.div
         initial={{ y: -50, opacity: 0 }}

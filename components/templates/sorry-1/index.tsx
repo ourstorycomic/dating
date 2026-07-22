@@ -625,7 +625,7 @@ export default function Sorry1Template({ compact = false, autoPlay = false, hide
   };
 
   const handleNext = () => {
-    if (btnAudioRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard'))) {
+    if (btnAudioRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard'))) {
       btnAudioRef.current.currentTime = 0;
       btnAudioRef.current.play().catch(() => {});
     }
@@ -648,7 +648,7 @@ export default function Sorry1Template({ compact = false, autoPlay = false, hide
     >
       <audio ref={btnAudioRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !isBuilderPreview && !autoPlay} />
       <div className={`absolute inset-0 bg-gradient-to-b ${currentBg} backdrop-blur-[2px]`} />
-      {generalAudioUrl && <audio ref={audioRef} src={generalAudioUrl} autoPlay loop muted={compact && !autoPlay} />}
+      {generalAudioUrl && <audio ref={audioRef} src={generalAudioUrl} autoPlay loop muted={compact && !autoPlay && !isBuilderPreview} />}
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-50" />
       <FloatingParticles />
       <AnimatePresence mode="wait">

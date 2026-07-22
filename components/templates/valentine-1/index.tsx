@@ -231,11 +231,11 @@ export function ConstellationVaultExperience({
   }, [stage, mounted, stage3AudioUrl, micActive]);
 
   return (
-    <div className={`template-preview-surface ${fullScreen ? "relative w-full min-h-screen h-full" : compact ? "absolute inset-0" : "relative min-h-[640px] h-full sm:h-[800px] sm:max-h-[85vh] sm:rounded-2xl border border-white/10"} w-full overflow-hidden text-white font-sans selection:bg-pink-500/30 transition-colors duration-1000`} style={{ background: stage === 5 ? finalBackground : [stage1Background, stage2Background, stage3Background, stage4Background][stage - 1] ?? "#0a0514" }}>
+    <div className={`template-preview-surface ${fullScreen ? "relative w-full min-h-screen h-full" : (compact || isBuilderPreview) ? "absolute inset-0" : "relative min-h-[640px] h-full sm:h-[800px] sm:max-h-[85vh] sm:rounded-2xl border border-white/10"} w-full overflow-hidden text-white font-sans selection:bg-pink-500/30 transition-colors duration-1000`} style={{ background: stage === 5 ? finalBackground : [stage1Background, stage2Background, stage3Background, stage4Background][stage - 1] ?? "#0a0514" }}>
       {mounted && (
         <>
-          {generalAudioUrl && <audio ref={generalAudioRef} src={generalAudioUrl} loop className="hidden" muted={compact && !autoPlay} />}
-          {stage3AudioUrl && <audio ref={stage3AudioRef} src={stage3AudioUrl} className="hidden" muted={compact && !autoPlay} />}
+          {generalAudioUrl && <audio ref={generalAudioRef} src={generalAudioUrl} loop className="hidden" muted={compact && !autoPlay && !isBuilderPreview} />}
+          {stage3AudioUrl && <audio ref={stage3AudioRef} src={stage3AudioUrl} className="hidden" muted={compact && !autoPlay && !isBuilderPreview} />}
           {/* Nền vũ trụ chung (Dạng chấm trắng mượt mà) */}
           {stage > 1 && stage < 5 && !compact && (
             <div className="absolute inset-0 pointer-events-none" style={{ background: [stage1Background, stage2Background, stage3Background, stage4Background][stage - 1] ?? "#05020a" }}>

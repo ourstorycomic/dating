@@ -36,12 +36,20 @@ export default function Birthday2Diary({ autoPlay = false, compact = false, isBu
 
   const handleNext = () => setStep((s) => s + 1);
 
+  const handleInteraction = () => {
+    if (audioRef.current && audioRef.current.paused && !autoPlay) {
+      audioRef.current.play().catch(() => {});
+    }
+  };
+
   return (
     <div 
+      onClick={handleInteraction}
+      onTouchStart={handleInteraction}
       className={`relative w-full overflow-hidden text-slate-800 font-sans mx-auto h-full bg-pink-50`}
       style={{ backgroundImage: "url('/assets/bg/bg2.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
-      {generalAudioUrl && <audio ref={audioRef} src={generalAudioUrl} loop muted={compact && !autoPlay} />}
+      {generalAudioUrl && <audio ref={audioRef} src={generalAudioUrl} loop muted={compact && !autoPlay && !isBuilderPreview} />}
       <div className="absolute inset-0 bg-pink-100/60 backdrop-blur-sm" />
       <AnimatePresence mode="wait">
         {step === 1 && <Step1Alarm key="step1" onNext={handleNext} autoPlay={autoPlay} compact={compact} config={config} />}

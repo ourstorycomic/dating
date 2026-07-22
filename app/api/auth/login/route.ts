@@ -67,14 +67,16 @@ export async function POST(req: Request) {
   const response = NextResponse.redirect(new URL(nextPath, req.url), 303);
   response.cookies.set(
     "yeuweb_session",
-    JSON.stringify({
-      authUserId: authData.user.id,
-      userId: profile.id,
-      email: profile.email,
-      name: profile.name,
-      role: profile.role,
-      avatarUrl: profile.avatar_url,
-    }),
+    Buffer.from(
+      JSON.stringify({
+        authUserId: authData.user.id,
+        userId: profile.id,
+        email: profile.email,
+        name: profile.name,
+        role: profile.role,
+        avatarUrl: profile.avatar_url,
+      })
+    ).toString("base64"),
     {
       httpOnly: true,
       sameSite: "lax",

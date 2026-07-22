@@ -29,6 +29,7 @@ type InteractiveTemplatePreviewProps = TemplatePreviewProps & {
   noFrame?: boolean;
   forceRandomMusic?: boolean;
   isActive?: boolean;
+  disableAutoPlay?: boolean;
 };
 
 const previewRegistry = [
@@ -190,6 +191,8 @@ function BotAutoPlayer({ children, enabled }: { children: React.ReactNode; enabl
   return <div ref={containerRef} className="w-full h-full relative" onClick={handleContainerClick}>{children}</div>;
 }
 
+let globalSongIndex = Math.floor(Math.random() * 100);
+
 export function InteractiveTemplatePreview({
   componentKey,
   roomId,
@@ -199,6 +202,7 @@ export function InteractiveTemplatePreview({
   const isInView = useInView(containerRef, { amount: 0.5 });
   const [isHovered, setIsHovered] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -223,17 +227,22 @@ export function InteractiveTemplatePreview({
     "/assets/songs/general/tlinh - Thích Quá Rùi Nà (ft. Trung Trần) _ OFFICIAL LYRICS VIDEO_128k.mp3",
   ];
 
-  const [randomMusicUrl, setRandomMusicUrl] = useState("");
+  const [randomMusicUrl, setRandomMusicUrl] = useState(() => {
+    const passedMusic = props.musicUrl || props.generalAudioUrl || props.customData?.musicUrl || props.customData?.generalAudioUrl || props.customData?.audioSrc;
+    if (passedMusic && !props.forceRandomMusic) return "";
+    return GENERAL_SONGS[(globalSongIndex++) % GENERAL_SONGS.length];
+  });
 
   useEffect(() => {
     if (!props.forceRandomMusic) {
       const passedMusic = props.musicUrl || props.generalAudioUrl || props.customData?.musicUrl || props.customData?.generalAudioUrl || props.customData?.audioSrc;
-      if (passedMusic) return; // If provided, don't randomize
+      if (passedMusic) {
+        setRandomMusicUrl("");
+        return;
+      }
     }
-
-    const randomSong = GENERAL_SONGS[Math.floor(Math.random() * GENERAL_SONGS.length)];
-    setRandomMusicUrl(randomSong);
-  }, [componentKey, props.musicUrl, props.generalAudioUrl, props.customData?.musicUrl, props.customData?.generalAudioUrl, props.customData?.audioSrc, props.forceRandomMusic]);
+    setRandomMusicUrl(prev => prev || GENERAL_SONGS[(globalSongIndex++) % GENERAL_SONGS.length]);
+  }, [props.musicUrl, props.generalAudioUrl, props.customData?.musicUrl, props.customData?.generalAudioUrl, props.customData?.audioSrc, props.forceRandomMusic]);
 
   const finalProps = {
     ...props,
@@ -272,7 +281,7 @@ export function InteractiveTemplatePreview({
     }
   }, [isInView]);
 
-  const isPreviewActive = props.isBuilderPreview || (props.isActive ?? ((isMobile && delayedInView) || (!isMobile && isHovered)));
+  const isPreviewActive = props.disableAutoPlay ? false : (props.isBuilderPreview || (props.isActive ?? ((isMobile && delayedInView) || (!isMobile && isHovered))));
 
   // Fast-forward audio to chorus (30s) for more engaging auto-preview
   useEffect(() => {
@@ -300,7 +309,7 @@ export function InteractiveTemplatePreview({
       if (props.noFrame) {
         return (
           <div ref={containerRef} className="absolute inset-0" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-            <Component {...finalProps} roomId={roomId} autoPlay={isPreviewActive} compact={true} />
+            <Component {...finalProps} roomId={roomId} autoPlay={isPreviewActive} compact={props.isBuilderPreview ? false : true} />
           </div>
         );
       } else if (!props.isBuilderPreview) {
@@ -315,7 +324,7 @@ export function InteractiveTemplatePreview({
             onTouchEnd={() => setIsHovered(false)}
           >
             {/* Overlay to catch hover/touch events but block user clicks. BotAutoPlayer still works! */}
-            <div className="absolute inset-0 z-50" />
+            <div className="absolute inset-0 z-50 pointer-events-none" />
             
             <div className="absolute inset-0 pointer-events-none">
               {/* When autoPlay is active, the component handles navigation itself (e.g. quiz picks correct answer).

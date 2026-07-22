@@ -33,7 +33,7 @@ export function Step4Capsule({ onOpened, autoPlay, compact, data }: { onOpened: 
 
   return (
     <>
-    <audio ref={popSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />
+    <audio ref={popSoundRef} src="/assets/vfx/touch.mp3" preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard')} />
     <div className="absolute inset-0 bg-black/70 backdrop-blur-md z-40 flex flex-col items-center justify-center">
       <h3 className={`text-2xl font-bold !text-white mb-12 drop-shadow-lg text-center px-4 anim-spring-up transition-opacity duration-300 ${opened ? 'opacity-0' : 'opacity-100'}`} style={{ color: '#ffffff' }}>
         {data?.step4Title}

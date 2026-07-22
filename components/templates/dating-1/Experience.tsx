@@ -104,21 +104,21 @@ export function WillYouDateMeExperience({
   const yayAudioRef = useRef<HTMLAudioElement>(null);
 
   const playClick = () => {
-    if (clickAudioRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard'))) {
+    if (clickAudioRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard'))) {
       clickAudioRef.current.currentTime = 0;
       clickAudioRef.current.play().catch(() => {});
     }
   };
 
   const playSwoosh = () => {
-    if (swooshAudioRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard'))) {
+    if (swooshAudioRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard'))) {
       swooshAudioRef.current.currentTime = 0;
       swooshAudioRef.current.play().catch(() => {});
     }
   };
 
   const playYay = () => {
-    if (yayAudioRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard'))) {
+    if (yayAudioRef.current && !(compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard'))) {
       yayAudioRef.current.currentTime = 0;
       yayAudioRef.current.play().catch(() => {});
     }
@@ -281,11 +281,11 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
 
       {/* Background Elements */}
       {generalAudioUrl && (
-        <audio ref={audioRef} src={generalAudioUrl} loop preload="auto" autoPlay={autoPlay} muted={compact && !autoPlay} />
+        <audio ref={audioRef} src={generalAudioUrl} loop preload="auto" autoPlay={autoPlay} muted={compact && !autoPlay && !isBuilderPreview} />
       )}
-      {clickSfxUrl && <audio ref={clickAudioRef} src={clickSfxUrl} preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />}
-      {swooshSfxUrl && <audio ref={swooshAudioRef} src={swooshSfxUrl} preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />}
-      {yaySfxUrl && <audio ref={yayAudioRef} src={yaySfxUrl} preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && !window.location.pathname.includes('dashboard')} />}
+      {clickSfxUrl && <audio ref={clickAudioRef} src={clickSfxUrl} preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard')} />}
+      {swooshSfxUrl && <audio ref={swooshAudioRef} src={swooshSfxUrl} preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard')} />}
+      {yaySfxUrl && <audio ref={yayAudioRef} src={yaySfxUrl} preload="auto" muted={compact && !autoPlay && typeof window !== 'undefined' && window.location.pathname.includes('dashboard')} />}
       <>
         <FloatingClouds />
         <GlowingDust />
