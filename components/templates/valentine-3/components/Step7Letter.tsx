@@ -50,8 +50,6 @@ export function Step7Letter({ title, content, onComplete, autoPlay = false }: { 
 
     setTimeout(() => {
       setStatus("open");
-      const audio2 = new Audio("/assets/vfx/you-found-bojuka_2.mp3");
-      audio2.play().catch(()=>{});
     }, 1800);
   };
 

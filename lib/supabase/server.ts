@@ -439,8 +439,11 @@ export async function getTemplateBySlug(slug: string) {
 export async function getDashboardCounts() {
   const supabase = createServerSupabaseClient();
 
-  const [orders, templates, users, logs] = await Promise.all([
+  const [orders, paidOrders, respondedOrders, unpaidOrders, templates, users, logs] = await Promise.all([
     supabase.from("orders").select("id", { count: "exact", head: true }).gt("amount", 0),
+    supabase.from("orders").select("id", { count: "exact", head: true }).gt("amount", 0).in("status", ["ACTIVE", "RESPONDED"]),
+    supabase.from("orders").select("id", { count: "exact", head: true }).gt("amount", 0).eq("status", "RESPONDED"),
+    supabase.from("orders").select("id", { count: "exact", head: true }).gt("amount", 0).in("status", ["CREATED", "PENDING_PAYMENT"]),
     supabase.from("templates").select("id", { count: "exact", head: true }),
     supabase.from("users").select("id", { count: "exact", head: true }),
     supabase.from("order_logs").select("id", { count: "exact", head: true }),
@@ -448,6 +451,9 @@ export async function getDashboardCounts() {
 
   return {
     orders: orders.count ?? 0,
+    paidOrders: paidOrders.count ?? 0,
+    respondedOrders: respondedOrders.count ?? 0,
+    unpaidOrders: unpaidOrders.count ?? 0,
     templates: templates.count ?? 0,
     users: users.count ?? 0,
     logs: logs.count ?? 0,

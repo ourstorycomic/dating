@@ -475,10 +475,10 @@ export function CameraRig({
       camera.lookAt(1.6, -1.75, 1.4); 
       return; 
     } else if (phase === "vintage-gallery" || phase === "end") {
-      const finalX = memoriesCount * 3.5 + 0.25;  // This matches startX=-1.5 + 1.5 offset + memories span
+      const finalX = memoriesCount * 3.5;  // This perfectly matches envelope x position
       const t = Math.min(1, vintageElapsed / 15.0); const xPos = -1.5 + t * (finalX + 1.5); 
-      camera.position.set(xPos, vintageElapsed > 25.0 ? 0.9 + Math.min(1, (vintageElapsed - 25.0) / 4.0) * 5.0 : 0.9, 7.0);
-      camera.lookAt(xPos, vintageElapsed > 25.0 ? 0.9 + Math.min(1, (vintageElapsed - 25.0) / 4.0) * 5.0 : 0.9, 0); return;
+      camera.position.set(xPos, 0.9, 7.0);
+      camera.lookAt(xPos, 0.9, 0); return;
     }
     
     targetLookAt.set(lookX.current, lookY.current, 0);
@@ -2444,7 +2444,9 @@ function HangingItem({ x, startX, ropeLength, index, children, isLetter = false 
 
       <group position={[0, -0.2, 0]}>
         <Html transform distanceFactor={2.8}>
-          {children}
+          <div style={{ transform: 'translate3d(-50%, 0, 0)' }}>
+            {children}
+          </div>
         </Html>
       </group>
     </group>
@@ -2499,7 +2501,6 @@ export function HangingGallery({
             width: 220px;
             border: 1px solid #dcd2b6;
             transform-origin: top center;
-            transform: translateX(-50%);
             user-select: none;
           }
           .polaroid-img {
@@ -2529,7 +2530,6 @@ export function HangingGallery({
             text-align: center;
             position: relative;
             transform-origin: top center;
-            transform: translateX(-50%);
             box-sizing: border-box;
           }
           .envelope-card::before {

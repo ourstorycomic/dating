@@ -7,7 +7,10 @@ export default async function DashboardPage(props: { searchParams?: Promise<{ qu
   const [counts, recentOrders] = await Promise.all([getDashboardCounts(), getRecentOrders(searchParams)]);
 
   const stats = [
-    { label: "Đơn", value: counts.orders },
+    { label: "Tổng đơn", value: counts.orders },
+    { label: "Đã thanh toán", value: counts.paidOrders },
+    { label: "Chưa thanh toán", value: counts.unpaidOrders },
+    { label: "Đã phản hồi", value: counts.respondedOrders },
     { label: "Nhân sự", value: counts.users },
     { label: "Nhật ký", value: counts.logs },
     { label: "Template", value: counts.templates },

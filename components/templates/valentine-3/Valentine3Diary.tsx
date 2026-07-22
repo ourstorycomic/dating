@@ -62,7 +62,7 @@ export function Valentine3Diary({
   if (compact) {
     containerClass += `absolute inset-0 border-[6px] border-pink-200 rounded-[2.5rem] shadow-[0_20px_50px_rgba(255,105,180,0.3)] mx-auto max-w-[400px]`;
   } else if (fullScreen) {
-    containerClass += `relative min-h-full`;
+    containerClass += `relative min-h-[100dvh] w-full`;
   } else {
     containerClass += `relative w-full h-full min-h-[600px] shadow-[0_20px_50px_rgba(255,105,180,0.3)] mx-auto sm:border-[10px] border-pink-200 sm:rounded-[2.5rem]`;
   }

@@ -273,7 +273,7 @@ export function Valentine2WatchParty({
   if (compact) {
     containerClass += `absolute inset-0 border-[6px] border-[#f4c5d6] rounded-[2.5rem] shadow-2xl ${bgClass}`;
   } else if (fullScreen) {
-    containerClass += `relative min-h-screen ${bgClass}`;
+    containerClass += `relative min-h-[100dvh] w-full ${bgClass}`;
   } else {
     containerClass += isCinemaMode
       ? `relative max-w-[1200px] w-full h-full min-h-[600px] rounded-3xl shadow-[0_0_50px_rgba(244,63,94,0.3)] border-2 border-[#f4c5d6]/50 ${bgClass}`

@@ -2,13 +2,12 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
-import { CommissionRulesForm } from "@/components/dashboard/CommissionRulesForm";
 import { EmployeeStatsPanel } from "@/components/dashboard/EmployeeStatsPanel";
+import { EmployeeLeaderboardPanel } from "@/components/dashboard/EmployeeLeaderboardPanel";
 import { CommissionListPanel } from "@/components/dashboard/CommissionListPanel";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { getSession } from "@/lib/auth/session";
 import {
-  getCommissionRules,
   getCommissionSummary,
   getDashboardCounts,
   getEmployeeDailyStats,
@@ -23,11 +22,10 @@ export default async function AnalyticsPage() {
   const session = await getSession();
   if (!session || !["ADMIN", "STAFF"].includes(session.role)) redirect("/dashboard");
 
-  const [counts, dailyStats, monthlyStats, commissionRules, commissions] = await Promise.all([
+  const [counts, dailyStats, monthlyStats, commissions] = await Promise.all([
     getDashboardCounts(),
     getEmployeeDailyStats({ days: 14 }),
     getEmployeeMonthlyStats({ months: 12 }),
-    getCommissionRules(),
     getCommissionSummary(),
   ]);
 
@@ -57,22 +55,9 @@ export default async function AnalyticsPage() {
         ))}
       </section>
 
-      <EmployeeStatsPanel dailyStats={dailyStats} monthlyStats={monthlyStats} />
+      <EmployeeLeaderboardPanel monthlyStats={monthlyStats} />
 
-      {session.role === "ADMIN" ? (
-        <GlassCard hover={false}>
-          <h2 className="text-2xl font-semibold">Chia hoa hồng</h2>
-          <div className="mt-5">
-            <CommissionRulesForm
-              rules={commissionRules.map((rule) => ({
-                is_active: Boolean(rule.is_active),
-                percentage: Number(rule.percentage),
-                recipient_type: rule.recipient_type as "AFFILIATE" | "EMPLOYEE" | "STAFF",
-              }))}
-            />
-          </div>
-        </GlassCard>
-      ) : null}
+      <EmployeeStatsPanel dailyStats={dailyStats} monthlyStats={monthlyStats} />
 
       <CommissionListPanel commissions={commissions as any} />
     </div>

@@ -231,7 +231,7 @@ export function ConstellationVaultExperience({
   }, [stage, mounted, stage3AudioUrl, micActive]);
 
   return (
-    <div className={`template-preview-surface ${fullScreen ? "relative w-full min-h-screen h-full" : (compact || isBuilderPreview) ? "absolute inset-0" : "relative min-h-[640px] h-full sm:h-[800px] sm:max-h-[85vh] sm:rounded-2xl border border-white/10"} w-full overflow-hidden text-white font-sans selection:bg-pink-500/30 transition-colors duration-1000`} style={{ background: stage === 5 ? finalBackground : [stage1Background, stage2Background, stage3Background, stage4Background][stage - 1] ?? "#0a0514" }}>
+    <div className={`template-preview-surface ${fullScreen ? "relative w-full min-h-[100dvh]" : (compact || isBuilderPreview) ? "absolute inset-0" : "relative min-h-[640px] h-full sm:h-[800px] sm:max-h-[85vh] sm:rounded-2xl border border-white/10"} w-full overflow-hidden text-white font-sans selection:bg-pink-500/30 transition-colors duration-1000`} style={{ background: stage === 5 ? finalBackground : [stage1Background, stage2Background, stage3Background, stage4Background][stage - 1] ?? "#0a0514" }}>
       {mounted && (
         <>
           {generalAudioUrl && <audio ref={generalAudioRef} src={generalAudioUrl} loop className="hidden" muted={compact && !autoPlay && !isBuilderPreview} />}

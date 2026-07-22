@@ -14,8 +14,6 @@ export function Step6Letter({ onNext, autoPlay, data }: { onNext: () => void, au
     let timer2 = setTimeout(() => setPhase(2), 1200); // Slide letter up
     let timer3 = setTimeout(() => {
         setPhase(3);
-        const audio = new Audio("/assets/vfx/you-found-bojuka_2.mp3");
-        if (!(data?.compact && !autoPlay)) audio.play().catch(()=>{});
     }, 2000); // Pop letter up & center
     let timer4 = setTimeout(startTypewriter, 3000);   // Start typing
     return () => { clearTimeout(timer1); clearTimeout(timer2); clearTimeout(timer3); clearTimeout(timer4); }
@@ -63,7 +61,7 @@ export function Step6Letter({ onNext, autoPlay, data }: { onNext: () => void, au
       <div className="stardust w-1 h-1 left-20 bottom-1/4" style={{ animationDelay: '2s' }}></div>
       <div className="stardust w-2 h-2 right-20 top-2/3" style={{ animationDelay: '1.5s' }}></div>
       
-      <div className="relative w-[320px] h-[200px] mt-10 md:m-auto flex-shrink-0 scale-[0.85] sm:scale-100 origin-center self-center flex items-center justify-center">
+      <div className="relative w-[320px] h-[200px] flex-shrink-0 scale-[0.85] sm:scale-100 origin-center self-center flex items-center justify-center">
           {/* Envelope Back */}
           <div className="absolute inset-0 bg-pink-300 rounded-xl shadow-lg border border-pink-400 z-0"></div>
           

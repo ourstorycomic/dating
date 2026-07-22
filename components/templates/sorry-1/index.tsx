@@ -218,15 +218,18 @@ function Step3Wheel({ onNext, autoPlay, config, isMuted }: { onNext: () => void;
     const spins = Math.floor(Math.random() * 10) + 15; // 15-25 full spins
     const targetIndex = Math.floor(Math.random() * options.length);
     const degreePerOpt = 360 / options.length;
-    const finalRot = spins * 360 + targetIndex * degreePerOpt + (degreePerOpt / 2);
+    // Calculate a random offset between -20 and 20 degrees so it doesn't always land exactly on the text center
+    const randomOffset = Math.floor(Math.random() * 41) - 20;
+    // To bring targetIndex (which is at targetIndex * degreePerOpt) to the top (0 degrees),
+    // we rotate clockwise by (360 - targetIndex * degreePerOpt).
+    const rotateToBringToTop = 360 - (targetIndex * degreePerOpt);
+    const finalRot = spins * 360 + rotateToBringToTop + randomOffset;
     
     setRotation(finalRot);
     
     spinTimeoutRef.current = setTimeout(() => {
       setSpinning(false);
-      // Because we spun positively, the selected index is actually backwards
-      // Or we can just randomly pick one and not worry about exact pointer math for now.
-      setResult(options[options.length - 1 - targetIndex] || options[0]);
+      setResult(options[targetIndex]);
     }, 10000);
   };
 
@@ -267,7 +270,7 @@ function Step3Wheel({ onNext, autoPlay, config, isMuted }: { onNext: () => void;
           animate={{ rotate: rotation }}
           transition={{ duration: 10, ease: [0.2, 0.8, 0.2, 1] }}
           className="w-full h-full rounded-full border-4 border-slate-700 overflow-hidden relative shadow-2xl"
-          style={{ background: "conic-gradient(#fecdd3 0 60deg, #fbcfe8 60deg 120deg, #fecdd3 120deg 180deg, #fbcfe8 180deg 240deg, #fecdd3 240deg 300deg, #fbcfe8 300deg 360deg)" }}
+          style={{ background: "conic-gradient(from -30deg, #fecdd3 0 60deg, #fbcfe8 60deg 120deg, #fecdd3 120deg 180deg, #fbcfe8 180deg 240deg, #fecdd3 240deg 300deg, #fbcfe8 300deg 360deg)" }}
         >
           {options.map((opt, i) => {
             const rot = (360 / options.length) * i;
@@ -524,7 +527,7 @@ function Step6Treaty({ onNext, autoPlay, config }: { onNext: () => void; autoPla
             exit={{ opacity: 0, y: -20 }}
             className="absolute bottom-10 bg-pink-500 text-white px-6 py-3 rounded-2xl shadow-2xl font-bold flex flex-col items-center gap-2"
           >
-            <img src="/assets/sad/cat-kitty.webp" className="w-16 h-16 object-contain" alt="cry" />
+            <img src="/assets/sad/rat-cute-cry.webp" className="w-16 h-16 object-contain" alt="cry" />
             Thôi màaaa, xin đấyyyy 😭
           </motion.div>
         )}

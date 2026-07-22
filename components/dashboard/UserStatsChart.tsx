@@ -11,7 +11,6 @@ import {
   ResponsiveContainer,
   BarChart,
   Bar,
-  Legend,
 } from "recharts";
 
 type ChartData = {
@@ -40,19 +39,19 @@ export function UserStatsChart({ data }: { data: ChartData[] }) {
     return Object.values(monthlyData).sort((a, b) => a.date.localeCompare(b.date));
   }, [data, viewMode]);
 
-  if (!data.length) return <div className="p-10 text-center text-white/50">Chưa có dữ liệu</div>;
+  if (!data.length) return <div className="p-10 text-center opacity-50 font-medium">Chưa có dữ liệu</div>;
 
   return (
     <div className="grid gap-6">
       <div className="flex justify-end gap-2">
         <button 
-          className={`rounded-full px-4 py-1.5 text-xs font-semibold ${viewMode === "DAY" ? "bg-white/20 text-white" : "bg-white/5 text-white/50"}`}
+          className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${viewMode === "DAY" ? "bg-rose-950/10 text-rose-950" : "bg-rose-950/5 opacity-50 hover:bg-rose-950/10 hover:opacity-80"}`}
           onClick={() => setViewMode("DAY")}
         >
           Theo ngày
         </button>
         <button 
-          className={`rounded-full px-4 py-1.5 text-xs font-semibold ${viewMode === "MONTH" ? "bg-white/20 text-white" : "bg-white/5 text-white/50"}`}
+          className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${viewMode === "MONTH" ? "bg-rose-950/10 text-rose-950" : "bg-rose-950/5 opacity-50 hover:bg-rose-950/10 hover:opacity-80"}`}
           onClick={() => setViewMode("MONTH")}
         >
           Theo tháng
@@ -61,35 +60,36 @@ export function UserStatsChart({ data }: { data: ChartData[] }) {
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Orders Line Chart */}
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-          <h3 className="mb-4 text-sm font-semibold text-white/80">Số đơn đã tạo</h3>
+        <div className="rounded-2xl border border-rose-950/10 bg-white/40 shadow-sm p-5">
+          <h3 className="mb-6 text-sm font-bold opacity-80">Số đơn đã tạo</h3>
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-              <XAxis dataKey="date" stroke="rgba(255,255,255,0.5)" fontSize={12} tickMargin={10} />
-              <YAxis stroke="rgba(255,255,255,0.5)" fontSize={12} allowDecimals={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
+              <XAxis dataKey="date" stroke="rgba(0,0,0,0.4)" fontSize={12} tickMargin={10} />
+              <YAxis stroke="rgba(0,0,0,0.4)" fontSize={12} allowDecimals={false} />
               <Tooltip 
-                contentStyle={{ backgroundColor: "#1e1e2d", borderColor: "rgba(255,255,255,0.1)", borderRadius: "12px" }}
-                itemStyle={{ color: "#fff" }}
+                contentStyle={{ backgroundColor: "rgba(255,255,255,0.95)", borderColor: "rgba(0,0,0,0.1)", borderRadius: "12px", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)" }}
+                itemStyle={{ color: "#333", fontWeight: 600 }}
               />
-              <Line type="monotone" dataKey="orders" stroke="#e879f9" strokeWidth={3} dot={{ r: 4, fill: "#1e1e2d", stroke: "#e879f9", strokeWidth: 2 }} activeDot={{ r: 6, fill: "#e879f9", stroke: "#fff" }} name="Số đơn" />
+              <Line type="monotone" dataKey="orders" stroke="#ec4899" strokeWidth={3} dot={{ r: 4, fill: "#fff", stroke: "#ec4899", strokeWidth: 2 }} activeDot={{ r: 6, fill: "#ec4899", stroke: "#fff", strokeWidth: 2 }} name="Số đơn" />
             </LineChart>
           </ResponsiveContainer>
         </div>
 
         {/* Commission Bar Chart */}
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-          <h3 className="mb-4 text-sm font-semibold text-white/80">Hoa hồng nhận được (VNĐ)</h3>
+        <div className="rounded-2xl border border-rose-950/10 bg-white/40 shadow-sm p-5">
+          <h3 className="mb-6 text-sm font-bold opacity-80">Hoa hồng nhận được (VNĐ)</h3>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-              <XAxis dataKey="date" stroke="rgba(255,255,255,0.5)" fontSize={12} tickMargin={10} />
-              <YAxis stroke="rgba(255,255,255,0.5)" fontSize={12} tickFormatter={(val) => `${val / 1000}k`} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
+              <XAxis dataKey="date" stroke="rgba(0,0,0,0.4)" fontSize={12} tickMargin={10} />
+              <YAxis stroke="rgba(0,0,0,0.4)" fontSize={12} tickFormatter={(val) => `${val / 1000}k`} />
               <Tooltip 
-                contentStyle={{ backgroundColor: "#1e1e2d", borderColor: "rgba(255,255,255,0.1)", borderRadius: "12px" }}
+                contentStyle={{ backgroundColor: "rgba(255,255,255,0.95)", borderColor: "rgba(0,0,0,0.1)", borderRadius: "12px", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)" }}
+                itemStyle={{ color: "#333", fontWeight: 600 }}
                 formatter={(value: any) => [`${Number(value || 0).toLocaleString("vi-VN")}đ`, "Hoa hồng"]}
               />
-              <Bar dataKey="commission" fill="#38bdf8" radius={[4, 4, 0, 0]} name="Hoa hồng" />
+              <Bar dataKey="commission" fill="#fb923c" radius={[4, 4, 0, 0]} name="Hoa hồng" />
             </BarChart>
           </ResponsiveContainer>
         </div>

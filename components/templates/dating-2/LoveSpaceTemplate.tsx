@@ -115,7 +115,9 @@ export function LoveSpaceTemplate({ compact, fullScreen, hideNavigation, isBuild
   let containerClass = "journey-container w-full overflow-hidden ";
   if (compact) {
     containerClass += "absolute inset-0 rounded-[2.5rem]";
-  } else if (fullScreen || isBuilderPreview) {
+  } else if (fullScreen) {
+    containerClass += "relative min-h-[100dvh] w-full sm:rounded-2xl";
+  } else if (isBuilderPreview) {
     containerClass += "relative h-full min-h-[640px] sm:rounded-2xl";
   } else {
     containerClass += "relative h-[800px] min-h-[640px] max-h-[85vh] sm:rounded-2xl shadow-xl border-4 border-white";

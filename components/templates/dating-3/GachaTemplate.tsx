@@ -197,7 +197,7 @@ export function GachaTemplate({ compact, fullScreen, hideNavigation, isBuilderPr
   if (compact || isBuilderPreview) {
     containerClass += `absolute inset-0`;
   } else if (fullScreen) {
-    containerClass += `relative min-h-screen`;
+    containerClass += `relative min-h-[100dvh] w-full`;
   } else {
     containerClass += `relative w-full h-full min-h-[600px] rounded-[2rem] shadow-[0_20px_50px_rgba(255,105,180,0.3)] mx-auto border-2 border-pink-200`;
   }

@@ -344,15 +344,12 @@ function BirthdayScene({
       const elapsed = (performance.now() - startTime) / 1000;
       setVintageElapsed(elapsed);
       
-      if (elapsed > 26.0) {
-        setBlackout(true);
+      if (elapsed > 30.0) {
+        setPhase("end");
+        return; // stop timer
       }
       
-      if (elapsed < 30.0) {
-        animFrame = requestAnimationFrame(update);
-      } else {
-        setPhase("end");
-      }
+      animFrame = requestAnimationFrame(update);
     };
     
     animFrame = requestAnimationFrame(update);
@@ -447,7 +444,7 @@ function BirthdayScene({
         <Canvas
           resize={{ offsetSize: true }}
           camera={{ fov: 46, position: [0, 0.35, 2.65] }}
-          shadows
+          shadows={{ type: THREE.PCFShadowMap }}
           gl={{ alpha: false, antialias: true }}
           onCreated={({ gl }) => {
             gl.toneMapping = THREE.ACESFilmicToneMapping;
