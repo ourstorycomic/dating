@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, Play, Star, ChevronLeft, ChevronRight, Film, SlidersHorizontal, Check } from "lucide-react";
 import type { MovieData } from "../Valentine2WatchParty";
 import { playClick, playSwoosh } from "./soundFX";
+import { CATEGORIES, COUNTRIES, TYPES, YEARS } from "@/lib/constants";
 
 const ITEMS_PER_PAGE = 24;
 
@@ -188,33 +189,16 @@ export function Step7Lobby({ onSelectMovie, compact: propCompact, fullScreen, au
           {!isSearchMode && (
             <div className={`w-full max-w-[1400px] mx-auto flex flex-wrap items-center ${compact ? "gap-2 mt-3" : "gap-3 mt-4"}`}>
               <select value={typeList} onChange={(e) => { setTypeList(e.target.value); setPage(1); }} className={`bg-white/85 border border-pink-200 text-rose-950 px-3 py-1.5 rounded-lg text-sm font-semibold outline-none focus:border-rose-400 cursor-pointer shadow-inner ${compact ? "flex-1 min-w-[130px]" : ""}`}>
-                <option value="phim-le">Phim Lẻ</option>
-                <option value="phim-bo">Phim Bộ</option>
-                <option value="hoat-hinh">Hoạt Hình</option>
-                <option value="tv-shows">TV Shows</option>
+                {TYPES.map(t => <option key={t.slug} value={t.slug}>{t.name}</option>)}
               </select>
               <select value={category} onChange={(e) => { setCategory(e.target.value); setPage(1); }} className={`bg-white/85 border border-pink-200 text-rose-950 px-3 py-1.5 rounded-lg text-sm font-semibold outline-none focus:border-rose-400 cursor-pointer shadow-inner ${compact ? "flex-1 min-w-[130px]" : ""}`}>
-                <option value="">Mọi thể loại</option>
-                <option value="hanh-dong">Hành động</option>
-                <option value="tinh-cam">Tình cảm</option>
-                <option value="hai-huoc">Hài hước</option>
-                <option value="kinh-di">Kinh dị</option>
-                <option value="tam-ly">Tâm lý</option>
-                <option value="co-trang">Cổ trang</option>
+                {CATEGORIES.map(c => <option key={c.slug} value={c.slug}>{c.name}</option>)}
               </select>
               <select value={country} onChange={(e) => { setCountry(e.target.value); setPage(1); }} className={`bg-white/85 border border-pink-200 text-rose-950 px-3 py-1.5 rounded-lg text-sm font-semibold outline-none focus:border-rose-400 cursor-pointer shadow-inner ${compact ? "flex-1 min-w-[130px]" : ""}`}>
-                <option value="">Mọi quốc gia</option>
-                <option value="han-quoc">Hàn Quốc</option>
-                <option value="trung-quoc">Trung Quốc</option>
-                <option value="nhat-ban">Nhật Bản</option>
-                <option value="au-my">Âu Mỹ</option>
-                <option value="thai-lan">Thái Lan</option>
+                {COUNTRIES.map(c => <option key={c.slug} value={c.slug}>{c.name}</option>)}
               </select>
               <select value={year} onChange={(e) => { setYear(e.target.value); setPage(1); }} className={`bg-white/85 border border-pink-200 text-rose-950 px-3 py-1.5 rounded-lg text-sm font-semibold outline-none focus:border-rose-400 cursor-pointer shadow-inner ${compact ? "flex-1 min-w-[130px]" : ""}`}>
-                <option value="">Mọi năm</option>
-                {Array.from({ length: 15 }, (_, i) => new Date().getFullYear() - i).map(y => (
-                  <option key={y} value={y}>{y}</option>
-                ))}
+                {YEARS.map(y => <option key={y.slug} value={y.slug}>{y.name}</option>)}
               </select>
             </div>
           )}

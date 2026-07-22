@@ -1,7 +1,7 @@
-"use client";
+﻿"use client";
 
 import Hls from "hls.js";
-import { Check, Loader2, Maximize, Minimize, Pause, PictureInPicture2, Play, Volume2, VolumeX, X } from "lucide-react";
+import { Check, Loader2, Maximize, Minimize, Pause, PictureInPicture2, Play, Settings, Volume2, VolumeX, X } from "lucide-react";
 import { type ReactNode, type RefObject, useEffect, useRef, useState } from "react";
 
 type PlayerRequest = {
@@ -63,6 +63,7 @@ export function VideoPlayer({
   requestResolutionKey,
   fullscreenOverlay,
   compact = false,
+  detectedAds,
 }: {
   src?: string;
   poster?: string;
@@ -78,6 +79,7 @@ export function VideoPlayer({
   requestResolutionKey?: string;
   fullscreenOverlay?: ReactNode;
   compact?: boolean;
+  detectedAds?: { start: number; end: number }[];
 }) {
   const ownRef = useRef<HTMLVideoElement | null>(null);
   const videoRef = externalRef ?? ownRef;
@@ -98,6 +100,8 @@ export function VideoPlayer({
   const [resumeTime, setResumeTime] = useState<number | null>(null);
   const [localRequest, setLocalRequest] = useState<(PlayerRequest & { id?: string }) | null>(null);
   const [controlsVisible, setControlsVisible] = useState(true);
+  const [showSettings, setShowSettings] = useState(false);
+  const [isAutoSkipEnabled, setIsAutoSkipEnabled] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isFakeFullscreen, setIsFakeFullscreen] = useState(false);
   const [isPictureInPicture, setIsPictureInPicture] = useState(false);
@@ -109,6 +113,19 @@ export function VideoPlayer({
   const nativeGuardRef = useRef(false);
   const handlersRef = useRef<any>({});
   handlersRef.current = { togglePlay, cancelLocalRequest, seekTo, onRespondRequest };
+
+  const showSkipIntro = introEnd > introStart && currentTime >= Math.max(0, introStart - 1) && currentTime < introEnd - 4;
+  const adStartSec = 15 * 60;
+  const activeAds = detectedAds && detectedAds.length > 0 ? detectedAds : [{ start: adStartSec, end: adStartSec + 30 }];
+  const currentAd = activeAds.find(ad => currentTime >= ad.start && currentTime < ad.end);
+
+  useEffect(() => {
+    if (!isAutoSkipEnabled || !currentAd || locked) return;
+    const video = videoRef.current;
+    if (video && video.currentTime >= currentAd.start && video.currentTime < currentAd.end) {
+      seekTo(currentAd.end + 0.5);
+    }
+  }, [currentAd, isAutoSkipEnabled, locked, videoRef]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -461,8 +478,12 @@ export function VideoPlayer({
         .actions { display: none; gap: 6px; }
         .loader { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: none; color: #f472b6; animation: spin 1s linear infinite; pointer-events: none; }
         @keyframes spin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+        .skip-btn { position: absolute; bottom: 70px; right: 16px; background: rgba(0,0,0,0.78); border: 1px solid rgba(252,211,77,0.28); color: #fef3c7; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: bold; cursor: pointer; display: none; backdrop-filter: blur(8px); transition: background 0.2s; z-index: 50; }
+        .skip-btn:hover { background: rgba(0,0,0,0.9); border-color: rgba(252,211,77,0.5); }
       </style>
       <div class="shell">
+        <button class="skip-btn skip-ad">Bỏ qua quảng cáo</button>
+        <button class="skip-btn skip-intro">Skip intro</button>
         <div class="video-slot"></div>
         <div class="shade"></div>
         <div class="loader"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></div>
@@ -576,6 +597,24 @@ export function VideoPlayer({
         (requestCard.querySelector(".actions") as HTMLElement).style.display = "none";
       }
     }
+
+    const _showSkipIntro = introEnd && introStart ? introEnd > introStart && currentTime >= Math.max(0, introStart - 1) && currentTime < introEnd - 4 : false;
+    const adStartSec = 15 * 60;
+    const activeAds = detectedAds && detectedAds.length > 0 ? detectedAds : [{ start: adStartSec, end: adStartSec + 30 }];
+    const _currentAd = activeAds.find(ad => currentTime >= ad.start && currentTime < ad.end);
+
+    const skipAdBtn = pipWindow.document.querySelector(".skip-ad") as HTMLButtonElement | null;
+    const skipIntroBtn = pipWindow.document.querySelector(".skip-intro") as HTMLButtonElement | null;
+
+    if (skipAdBtn) {
+      skipAdBtn.style.display = _currentAd ? "block" : "none";
+      if (!skipAdBtn.onclick && _currentAd) skipAdBtn.onclick = () => handlersRef.current.seekTo(_currentAd.end);
+    }
+    
+    if (skipIntroBtn) {
+      skipIntroBtn.style.display = _showSkipIntro && !_currentAd ? "block" : "none";
+      if (!skipIntroBtn.onclick && introEnd) skipIntroBtn.onclick = () => handlersRef.current.seekTo(introEnd);
+    }
   }
 
   function showControlsTemporarily() {
@@ -587,7 +626,8 @@ export function VideoPlayer({
   const progress = duration ? (currentTime / duration) * 100 : 0;
   const shownRequest = visibleRequest();
   const requestProgress = shownRequest?.type === "seek" && duration ? ((shownRequest.time ?? 0) / duration) * 100 : null;
-  const showSkipIntro = introEnd > introStart && currentTime >= Math.max(0, introStart - 1) && currentTime < introEnd - 4;
+
+
 
   return (
     <div
@@ -654,17 +694,17 @@ export function VideoPlayer({
         <button
           type="button"
           onClick={() => seekTo(introEnd)}
-          className="absolute bottom-20 right-3 z-30 rounded-md border border-pink-400/30 bg-black/70 px-3 py-2 text-xs font-bold text-pink-100 shadow-xl backdrop-blur-xl hover:bg-pink-400 hover:text-slate-950 sm:bottom-24 sm:right-4 sm:px-4 sm:text-sm"
+          className="absolute bottom-20 right-3 z-30 rounded-md border border-pink-400/30 bg-black/70 px-3 py-2 text-xs font-bold text-pink-100 shadow-xl backdrop-blur-xl hover:bg-pink-400 hover:text-slate-950 sm:bottom-24 sm:right-4 sm:px-4 sm:text-sm animate-in fade-in slide-in-from-right-4"
         >
           Skip intro
         </button>
       )}
       
       {/* ── Skip Ads Button ── */}
-      {currentTime >= 901 && currentTime < 934 && (
+      {currentAd && (
         <button
           type="button"
-          onClick={() => seekTo(934)}
+          onClick={() => seekTo(currentAd.end)}
           className="absolute bottom-20 right-3 z-30 rounded-md border border-pink-400/30 bg-black/70 px-4 py-2 text-xs font-bold text-pink-100 shadow-xl backdrop-blur-xl hover:bg-pink-400 hover:text-slate-950 sm:bottom-24 sm:right-4 sm:px-5 sm:text-sm transition-all animate-in fade-in slide-in-from-right-4"
         >
           Skip Ad / Bỏ qua quảng cáo
@@ -711,43 +751,64 @@ export function VideoPlayer({
             )}
           </div>
         </div>
-        <div className="flex flex-nowrap items-center gap-1 sm:gap-2 text-white overflow-x-auto no-scrollbar pmovies-controls-scroll">
-          <button type="button" onClick={togglePlay} className={`shrink-0 rounded-md p-1.5 sm:p-2 transition-colors ${compact ? "bg-pink-500 hover:bg-pink-400" : "bg-pink-500/80 hover:bg-pink-500"}`}>
-            {paused ? <Play size={compact ? 14 : 16} fill="currentColor" /> : <Pause size={compact ? 14 : 16} fill="currentColor" />}
-          </button>
-          <span className={`shrink-0 font-bold tracking-wide ${compact ? "min-w-[3rem] text-[9px]" : "min-w-[3.5rem] text-[10px] sm:text-[11px]"}`} style={{ color: "white", textShadow: "0px 2px 4px rgba(0,0,0,0.8), 0px 0px 10px rgba(0,0,0,0.6)" }}>
-            {formatTime(currentTime)} <span className="hidden sm:inline" style={{ color: "rgba(255,255,255,0.7)" }}>/ {formatTime(duration)}</span>
-          </span>
-          <button type="button" onClick={() => { const video = videoRef.current; if (video) video.muted = !video.muted; }} className={`shrink-0 rounded-md p-1.5 sm:p-2 transition-colors ${compact ? "bg-pink-500 hover:bg-pink-400" : "bg-pink-500/80 hover:bg-pink-500"}`}>
-            {muted || volume === 0 ? <VolumeX size={compact ? 14 : 16} /> : <Volume2 size={compact ? 14 : 16} />}
-          </button>
-          
-          {!compact && (
-            <>
-              <input type="range" min={0} max={1} step={0.05} value={muted ? 0 : volume} onChange={(event) => changeVolume(Number(event.target.value))} className="pmovies-range accent-pink-500 w-16 hidden md:block shrink-0" />
-              
-              {!locked && (
-                <select value={speed} onChange={(event) => changeSpeed(Number(event.target.value))} className="rounded-md bg-pink-500 hover:bg-pink-400 text-white font-bold appearance-none text-center px-1.5 py-1 text-[10px] sm:text-xs cursor-pointer shadow-sm hidden sm:block shrink-0">
-                  {[0.5, 0.75, 1, 1.25, 1.5, 2].map((item) => <option key={item} value={item} className="bg-slate-900 text-white">{item}x</option>)}
-                </select>
+        <div className="flex w-full items-center gap-1 text-white">
+          {/* LEFT: Play + Time + Mute */}
+          <div className="flex items-center gap-1 shrink-0">
+            <button type="button" onClick={togglePlay} className="shrink-0 rounded p-1 sm:p-1.5 transition-colors bg-pink-500/90 hover:bg-pink-400">
+              {paused ? <Play size={14} fill="currentColor" /> : <Pause size={14} fill="currentColor" />}
+            </button>
+            <span className="shrink-0 text-[10px] sm:text-[11px] font-bold text-white tabular-nums" style={{ textShadow: "0 1px 4px rgba(0,0,0,0.9)" }}>
+              {formatTime(currentTime)}<span className="hidden sm:inline text-white/60"> / {formatTime(duration)}</span>
+            </span>
+            <button type="button" onClick={() => { const video = videoRef.current; if (video) video.muted = !video.muted; }} className="shrink-0 rounded p-1 sm:p-1.5 transition-colors bg-pink-500/80 hover:bg-pink-400">
+              {muted || volume === 0 ? <VolumeX size={13} /> : <Volume2 size={13} />}
+            </button>
+          </div>
+          {/* RIGHT: Settings + PiP + Fullscreen - always visible */}
+          <div className="ml-auto flex items-center gap-1 shrink-0">
+            <div className="relative shrink-0">
+              <button type="button" onClick={() => setShowSettings(!showSettings)} className="rounded p-1 sm:p-1.5 transition-colors bg-pink-500/80 hover:bg-pink-400">
+                <Settings size={13} className={`${showSettings ? "rotate-90" : ""} transition-transform duration-200`} />
+              </button>
+              {showSettings && (
+                <div className="absolute bottom-full right-0 mb-2 w-44 sm:w-52 rounded-lg border border-pink-400/30 bg-slate-900/95 p-3 shadow-xl backdrop-blur-xl flex flex-col gap-3 z-50">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] sm:text-xs font-semibold text-pink-200">Tu tua QC</span>
+                    <button type="button" onClick={() => setIsAutoSkipEnabled(!isAutoSkipEnabled)} className={`relative inline-flex h-4 w-8 items-center rounded-full transition-colors ${isAutoSkipEnabled ? "bg-pink-500" : "bg-slate-700"}`}>
+                      <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${isAutoSkipEnabled ? "translate-x-4" : "translate-x-1"}`} />
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[10px] sm:text-xs font-semibold text-pink-200 shrink-0">Am luong</span>
+                    <input type="range" min={0} max={1} step={0.05} value={muted ? 0 : volume} onChange={(e) => changeVolume(Number(e.target.value))} className="pmovies-range accent-pink-500 flex-1 cursor-pointer" />
+                  </div>
+                  {!locked && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] sm:text-xs font-semibold text-pink-200">Toc do</span>
+                      <select value={speed} onChange={(event) => changeSpeed(Number(event.target.value))} className="rounded bg-pink-500/50 px-1.5 py-1 text-[10px] sm:text-xs font-bold text-white outline-none cursor-pointer">
+                        {[0.5, 0.75, 1, 1.25, 1.5, 2].map((item) => <option key={item} value={item} className="bg-slate-900 text-white">{item}x</option>)}
+                      </select>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] sm:text-xs font-semibold text-pink-200">Chat luong</span>
+                    <select value={level} onChange={(event) => changeLevel(Number(event.target.value))} className="rounded bg-pink-500/50 px-1.5 py-1 text-[10px] sm:text-xs font-bold text-white outline-none cursor-pointer">
+                      <option value={-1} className="bg-slate-900 text-white">Auto</option>
+                      {levels.map((item) => <option key={item.index} value={item.index} className="bg-slate-900 text-white">{item.height}p</option>)}
+                    </select>
+                  </div>
+                </div>
               )}
-              
-              <select value={level} onChange={(event) => changeLevel(Number(event.target.value))} className="min-w-0 rounded-md bg-pink-500 hover:bg-pink-400 text-white font-bold appearance-none text-center px-1.5 py-1 text-[10px] sm:text-xs cursor-pointer shadow-sm hidden md:block shrink-0">
-                <option value={-1} className="bg-slate-900 text-white">Auto</option>
-                {levels.map((item) => <option key={item.index} value={item.index} className="bg-slate-900 text-white">{item.height}p</option>)}
-              </select>
-              
-              {pictureInPictureSupported && (
-                <button type="button" onClick={togglePictureInPicture} className="shrink-0 rounded-md p-1.5 sm:p-2 transition-colors bg-pink-500/80 hover:bg-pink-500 hidden sm:block" title={isPictureInPicture ? "Close mini player" : "Mini player"}>
-                  <PictureInPicture2 size={16} className={isPictureInPicture ? "text-pink-200" : undefined} />
-                </button>
-              )}
-            </>
-          )}
-          
-          <button type="button" onClick={toggleFullscreen} className={`ml-auto shrink-0 rounded-md p-1.5 sm:p-2 transition-colors ${compact ? "bg-pink-500 hover:bg-pink-400" : "bg-pink-500/80 hover:bg-pink-500"}`}>
-            {(isFullscreen || isFakeFullscreen) ? <Minimize size={compact ? 14 : 16} /> : <Maximize size={compact ? 14 : 16} />}
-          </button>
+            </div>
+            {!compact && pictureInPictureSupported && (
+              <button type="button" onClick={togglePictureInPicture} className="shrink-0 rounded p-1 sm:p-1.5 transition-colors bg-pink-500/80 hover:bg-pink-400 hidden sm:block" title={isPictureInPicture ? "Close mini player" : "Mini player"}>
+                <PictureInPicture2 size={13} className={isPictureInPicture ? "text-pink-200" : undefined} />
+              </button>
+            )}
+            <button type="button" onClick={toggleFullscreen} className="shrink-0 rounded p-1 sm:p-1.5 transition-colors bg-pink-500/90 hover:bg-pink-400">
+              {(isFullscreen || isFakeFullscreen) ? <Minimize size={14} /> : <Maximize size={14} />}
+            </button>
+          </div>
         </div>
       </div>
     </div>

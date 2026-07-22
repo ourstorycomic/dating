@@ -447,12 +447,6 @@ export function WatchRoom({
               💕 {viewerCount} người
             </span>
           )}
-          <button
-            onClick={() => { playClick(compact); setShowChat(v => !v); }}
-            className={`font-bold rounded-full bg-gradient-to-r from-pink-400 to-rose-400 text-white shadow-md shadow-pink-300/40 hover:from-pink-500 hover:to-rose-500 transition-all ${compact ? "text-[10px] px-2.5 py-1" : "text-xs px-4 py-1.5"}`}
-          >
-            💬 Chat {showChat ? "▲" : "▼"}
-          </button>
         </div>
       </div>
 
@@ -533,62 +527,59 @@ export function WatchRoom({
             </div>
           </div>
 
-          {/* Right Column: Chat */}
-          {showChat && (
-            <div className={`w-full flex-[1] flex-shrink-0 flex flex-col ${compact ? "h-[300px]" : "xl:w-[400px]"}`}>
-              <div className={`bg-white/95 backdrop-blur-sm border border-pink-200/80 shadow-xl shadow-pink-100/50 flex flex-col overflow-hidden relative ${compact ? "rounded-xl h-full" : "rounded-2xl lg:rounded-3xl h-[350px] sm:h-[400px] xl:h-full"}`}>
-                {/* Chat header */}
-                <div className={`border-b border-pink-100 flex-shrink-0 bg-gradient-to-r from-pink-50 to-rose-50 ${compact ? "px-3 py-2" : "px-5 py-4"}`}>
-                  <h3 className={`text-rose-800 font-black ${compact ? "text-sm" : "text-base"}`}>💬 Trò chuyện</h3>
-                  {!isPreview && (
-                    <p className={`text-rose-500/80 font-medium ${compact ? "text-[10px] mt-0.5" : "text-xs mt-1"}`}>
-                      {isHost ? `Chỉ ${hostDisplayName} mới điều khiển phim nhé 💕` : `Yêu cầu ${hostDisplayName} để tua/dừng nhé 🌸`}
-                    </p>
-                  )}
-                </div>
+        </div>
 
-                {/* Messages */}
-                <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 min-h-0 custom-scrollbar bg-gradient-to-b from-white to-pink-50/30">
-                  {messages.length === 0 && (
-                    <p className="text-rose-400/70 text-sm text-center pt-8 font-semibold">Chưa có tin nhắn nào.<br/>Hãy gửi lời chào nhé! 👋💕</p>
-                  )}
-                  {messages.map((msg) => {
-                    const isMine = msg.senderId === myId;
-                    return (
-                      <div key={msg.id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
-                        <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm shadow-sm ${
-                          isMine
-                            ? "bg-gradient-to-r from-pink-400 to-rose-400 text-white rounded-tr-sm shadow-pink-200/40"
-                            : "bg-pink-50 text-rose-900 border border-pink-100 rounded-tl-sm"
-                        }`}>
-                          {!isMine && <p className="text-[10px] text-rose-700 font-black mb-1 uppercase tracking-[0.18em]">{msg.senderName}</p>}
-                          <p className="leading-relaxed">{msg.body}</p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                  <div ref={chatEndRef} />
-                </div>
+        {/* ── Chat Section (below video) ── */}
+        <div className={`w-full bg-white/95 backdrop-blur-sm border border-pink-200/80 shadow-xl shadow-pink-100/50 flex flex-col overflow-hidden ${compact ? "rounded-xl h-[280px]" : "rounded-2xl lg:rounded-3xl h-[320px] sm:h-[360px]"}`}>
+          {/* Chat header */}
+          <div className={`border-b border-pink-100 flex-shrink-0 bg-gradient-to-r from-pink-50 to-rose-50 ${compact ? "px-3 py-2" : "px-5 py-3"}`}>
+            <h3 className={`text-rose-800 font-black flex items-center gap-2 ${compact ? "text-sm" : "text-base"}`}>💬 Trò chuyện</h3>
+            {!isPreview && (
+              <p className={`text-rose-500/80 font-medium ${compact ? "text-[10px] mt-0.5" : "text-xs mt-0.5"}`}>
+                {isHost ? `Chỉ ${hostDisplayName} mới điều khiển phim nhé 💕` : `Yêu cầu ${hostDisplayName} để tua/dừng nhé 🌸`}
+              </p>
+            )}
+          </div>
 
-                {/* Input */}
-                <form onSubmit={sendChat} className={`flex-shrink-0 flex border-t border-pink-100 bg-pink-50/50 ${compact ? "p-2 gap-1.5" : "p-4 gap-2"}`}>
-                  <input
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    placeholder="Nhắn gì đó cute..."
-                    className={`flex-1 min-w-0 bg-white border border-pink-200 rounded-full text-rose-950 placeholder:text-rose-400 outline-none focus:border-rose-300 focus:ring-2 focus:ring-pink-100 transition-all font-medium ${compact ? "px-3 py-1.5 text-xs" : "px-5 py-3 text-sm"}`}
-                  />
-                  <button
-                    type="submit"
-                    disabled={!chatInput.trim()}
-                    className={`flex-shrink-0 rounded-full bg-gradient-to-br from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 disabled:opacity-40 flex items-center justify-center text-white transition-all shadow-md shadow-pink-300/40 disabled:shadow-none ${compact ? "w-8 h-8" : "w-11 h-11"}`}
-                  >
-                    <Send size={compact ? 14 : 18} className="-ml-0.5" />
-                  </button>
-                </form>
-              </div>
-            </div>
-          )}
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 min-h-0 custom-scrollbar bg-gradient-to-b from-white to-pink-50/30">
+            {messages.length === 0 && (
+              <p className="text-rose-400/70 text-sm text-center pt-6 font-semibold">Chưa có tin nhắn nào.<br/>Hãy gửi lời chào nhé! 👋💕</p>
+            )}
+            {messages.map((msg) => {
+              const isMine = msg.senderId === myId;
+              return (
+                <div key={msg.id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
+                  <div className={`max-w-[85%] rounded-2xl px-4 py-2 text-sm shadow-sm ${
+                    isMine
+                      ? "bg-gradient-to-r from-pink-400 to-rose-400 text-white rounded-tr-sm shadow-pink-200/40"
+                      : "bg-pink-50 text-rose-900 border border-pink-100 rounded-tl-sm"
+                  }`}>
+                    {!isMine && <p className="text-[10px] text-rose-700 font-black mb-1 uppercase tracking-[0.18em]">{msg.senderName}</p>}
+                    <p className="leading-relaxed">{msg.body}</p>
+                  </div>
+                </div>
+              );
+            })}
+            <div ref={chatEndRef} />
+          </div>
+
+          {/* Input */}
+          <form onSubmit={sendChat} className={`flex-shrink-0 flex border-t border-pink-100 bg-pink-50/50 ${compact ? "p-2 gap-1.5" : "p-3 gap-2"}`}>
+            <input
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              placeholder="Nhắn gì đó cute..."
+              className={`flex-1 min-w-0 bg-white border border-pink-200 rounded-full text-rose-950 placeholder:text-rose-400 outline-none focus:border-rose-300 focus:ring-2 focus:ring-pink-100 transition-all font-medium ${compact ? "px-3 py-1.5 text-xs" : "px-4 py-2.5 text-sm"}`}
+            />
+            <button
+              type="submit"
+              disabled={!chatInput.trim()}
+              className={`flex-shrink-0 rounded-full bg-gradient-to-br from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 disabled:opacity-40 flex items-center justify-center text-white transition-all shadow-md shadow-pink-300/40 disabled:shadow-none ${compact ? "w-8 h-8" : "w-10 h-10"}`}
+            >
+              <Send size={compact ? 14 : 16} className="-ml-0.5" />
+            </button>
+          </form>
         </div>
 
         <div className="hidden w-full xl:flex">

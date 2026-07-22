@@ -263,7 +263,7 @@ export function Valentine2WatchParty({
   // Remove the blind autoPlay interval. The children components will advance automatically using their callbacks when autoPlay is true.
   // We keep the container class.
 
-  let containerClass = "w-full overflow-x-hidden overflow-y-auto transition-colors duration-[2000ms] mx-auto text-gray-800 [perspective:1500px] ";
+  let containerClass = `w-full ${step >= 7 ? "overflow-x-hidden overflow-y-auto" : "overflow-hidden"} transition-colors duration-[2000ms] mx-auto text-gray-800 [perspective:1500px] `;
 
   const isCinemaMode = step >= 7;
   const bgClass = isCinemaMode
@@ -366,10 +366,10 @@ export function Valentine2WatchParty({
               <WatchRoom 
                 roomId={roomId || "preview-room"} 
                 movie={selectedMovie} 
-                isHost={isHost}
+                isHost={isHost || isBuilderPreview || (!roomId || roomId === "preview-room")}
                 hostDisplayName={hostDisplayName ?? data.recipientName ?? "Người nhận"}
                 guestDisplayName={guestDisplayName ?? data.senderName ?? "Người gửi"}
-                onBackToLobby={isHost ? () => setStep(7) : undefined}
+                onBackToLobby={(isHost || isBuilderPreview || (!roomId || roomId === "preview-room")) ? () => setStep(7) : undefined}
                 onChangeMovie={(movie) => {
                   setSelectedMovie(movie);
                   if (roomId && roomId !== "preview-room") {

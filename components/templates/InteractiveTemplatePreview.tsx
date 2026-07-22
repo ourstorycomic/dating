@@ -230,7 +230,7 @@ export function InteractiveTemplatePreview({
   const [randomMusicUrl, setRandomMusicUrl] = useState(() => {
     const passedMusic = props.musicUrl || props.generalAudioUrl || props.customData?.musicUrl || props.customData?.generalAudioUrl || props.customData?.audioSrc;
     if (passedMusic && !props.forceRandomMusic) return "";
-    return GENERAL_SONGS[(globalSongIndex++) % GENERAL_SONGS.length];
+    return ""; // Avoid hydration mismatch by initializing with empty string on server
   });
 
   useEffect(() => {
