@@ -15,10 +15,13 @@ export function Step5DateTime({ onNext , customData = {}, autoPlay}: { onNext: (
       const t = setTimeout(() => {
         setSelectedDate("2024-02-14");
         setSelectedTime("19:00");
+        const dateParts = "2024-02-14".split('-');
+        const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+        onNext(formattedDate, "19:00");
       }, 2500);
       return () => clearTimeout(t);
     }
-  }, [autoPlay]);
+  }, [autoPlay, onNext]);
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.5 }} className="absolute inset-0 z-10 flex flex-col items-center justify-center p-4">
