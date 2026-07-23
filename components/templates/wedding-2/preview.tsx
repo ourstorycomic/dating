@@ -12,6 +12,7 @@ export function WeddingTwoPreview(props: TemplatePreviewProps) {
       compact={props.compact}
       isBuilderPreview={props.isBuilderPreview}
       autoPlay={props.autoPlay}
+      fullScreen={props.fullScreen}
       groomName={parsedConfig.groomName || WEDDING_2_DATA.groomName}
       brideName={parsedConfig.brideName || WEDDING_2_DATA.brideName}
       weddingDate={parsedConfig.weddingDate || WEDDING_2_DATA.weddingDate}

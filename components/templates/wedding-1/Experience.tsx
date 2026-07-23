@@ -542,7 +542,7 @@ export function WeddingOneExperience({
           ) : (
             <div className="py-10">
               <h3 className="text-3xl text-[#8c7b6b] mb-4" style={{ fontFamily: "'Dancing Script', cursive" }}>Cảm ơn bạn!</h3>
-              <p className="text-gray-500 text-sm font-sans leading-relaxed">Sự hiện diện của bạn là niềm vinh hạnh lớn nhất của gia đình chúng tôi.</p>
+              <p className="text-gray-500 text-sm font-sans leading-relaxed">{customData?.inviteText || "Sự hiện diện của bạn là niềm vinh hạnh lớn nhất của gia đình chúng tôi."}</p>
             </div>
           )}
           
@@ -583,7 +583,7 @@ export function WeddingOneExperience({
 
               <div className="w-full aspect-square border-4 border-[#9a1a24] p-2 mb-4 bg-white relative flex items-center justify-center">
                  <div className="absolute inset-1 border-[2px] border-dashed border-[#9a1a24]/30 pointer-events-none"></div>
-                 <img src={giftTab === 'groom' ? (groomQR || "/assets/wedding/wedding-1/QR.jpg") : (brideQR || "/assets/wedding/wedding-1/QR.jpg")} alt="QR Code" className="w-[85%] h-[85%] object-contain relative z-10" />
+                 <img src={giftTab === 'groom' ? (customData?.groomQR || groomQR || "/assets/wedding/wedding-1/QR.jpg") : (customData?.brideQR || brideQR || "/assets/wedding/wedding-1/QR.jpg")} alt="QR Code" className="w-[85%] h-[85%] object-contain relative z-10" />
               </div>
               
               <div className="font-sans">

@@ -62,8 +62,8 @@ export function WeddingSixExperience({
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const hasTiecMung = !!customData?.tiecName;
-  const hasTiecMungGai = !!customData?.tiecNameGai;
+  const hasTiecMung = !!(customData?.tiecName || customData?.tiecDate);
+  const hasTiecMungGai = !!(customData?.tiecNameGai || customData?.tiecDateGai);
 
   const parseTiec = (dateString?: string) => {
     if (!dateString) return { date: '', time: '' };
@@ -79,7 +79,7 @@ export function WeddingSixExperience({
   const tiecGai = parseTiec(customData?.tiecDateGai);
 
   useEffect(() => {
-    if (autoPlay || fullScreen) {
+    if (autoPlay || fullScreen || !compact) {
       const openTimer = setTimeout(() => {
         setIsOpened(true);
         setTimeout(() => setAllowScroll(true), 1500);
@@ -87,7 +87,7 @@ export function WeddingSixExperience({
           audioRef.current.play().catch(() => {});
           setIsPlaying(true);
         }
-      }, 1500);
+      }, 2500);
       return () => clearTimeout(openTimer);
     }
   }, [compact, autoPlay, fullScreen]);
@@ -170,7 +170,7 @@ export function WeddingSixExperience({
   };
 
   return (
-    <div ref={containerRef} className={`relative w-full h-full bg-[#FAFAFA] text-[#2C2C2C] scroll-smooth ${allowScroll ? "overflow-y-auto overflow-x-hidden no-scrollbar" : "overflow-hidden"} ${compact ? "rounded-3xl" : ""}`}>
+    <div ref={containerRef} className={`relative w-full bg-[#FAFAFA] text-[#2C2C2C] scroll-smooth ${allowScroll ? "h-full overflow-y-auto overflow-x-hidden no-scrollbar" : "h-[100dvh] overflow-hidden"} ${compact ? "rounded-3xl" : ""}`}>
       
       {/* Background Music */}
       {!compact && musicUrl && <audio ref={audioRef} src={musicUrl} loop />}
@@ -178,7 +178,7 @@ export function WeddingSixExperience({
       {/* MAIN CONTENT (Only visible when opened) */}
       <div className={`relative z-10 w-full flex flex-col items-center transition-opacity duration-1000 ${allowScroll ? "opacity-100" : "opacity-0"}`}>
         
-        <div className="w-full max-w-sm mx-auto flex flex-col items-center pt-16 px-6 md:px-12 pb-16">
+        <div className="w-full max-w-md mx-auto flex flex-col items-center pt-16 px-6 pb-16">
           
           {/* Header */}
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} className="flex flex-col items-center w-full mb-10 text-center">
@@ -217,38 +217,38 @@ export function WeddingSixExperience({
              {/* Groom */}
              <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} className="flex gap-5 items-center bg-white p-3 shadow-sm border border-[#f5f5f5]">
                <div className="w-1/2 aspect-[3/4] overflow-hidden">
-                 <img src={gallery[6] || "/assets/wedding/wedding-6/chure.jpg"} alt="Groom" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                 <img src={customData?.groomImage || gallery[6] || "/assets/wedding/wedding-6/chure.jpg"} alt="Groom" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
                </div>
                <div className="w-1/2 flex flex-col items-center text-center px-1">
-                 <h3 className="text-2xl text-[#2C2C2C] mb-2" style={{ fontFamily: 'var(--font-dancing)' }}>{groomName}</h3>
+                 <h3 className="text-3xl sm:text-4xl text-[#2C2C2C] mb-2" style={{ fontFamily: 'var(--font-dancing)' }}>{groomName}</h3>
                  <p className="text-[9px] uppercase tracking-[0.2em] text-[#a4656c] font-bold mb-4">Chú Rể</p>
                  <p className="text-[8px] uppercase tracking-widest text-[#999] mb-1 border-b border-[#eee] pb-1 w-2/3">Nhà Trai</p>
-                 <p className="text-2xl sm:text-3xl whitespace-pre-line leading-relaxed font-normal  font-medium text-[#555] leading-relaxed mt-2" style={{ fontFamily: 'var(--font-dancing)' }}>{(groomFamily || "Ông Phạm Văn Long\nBà Lê Thị Mai").replace(/ & /g, '\n').replace(/\\n/g, '\n')}</p>
+                 <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] whitespace-pre-line font-medium text-[#555] leading-loose mt-3">{(groomFamily || "Ông Phạm Văn Long\nBà Lê Thị Mai").replace(/ & /g, '\n').replace(/\\n/g, '\n')}</p>
                </div>
              </motion.div>
              
              {/* Bride */}
              <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} className="flex gap-5 items-center flex-row-reverse bg-white p-3 shadow-sm border border-[#f5f5f5]">
                <div className="w-1/2 aspect-[3/4] overflow-hidden">
-                 <img src={gallery[7] || "/assets/wedding/wedding-6/codau.jpg"} alt="Bride" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                 <img src={customData?.brideImage || gallery[7] || "/assets/wedding/wedding-6/codau.jpg"} alt="Bride" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
                </div>
                <div className="w-1/2 flex flex-col items-center text-center px-1">
-                 <h3 className="text-2xl text-[#2C2C2C] mb-2" style={{ fontFamily: 'var(--font-dancing)' }}>{brideName}</h3>
+                 <h3 className="text-3xl sm:text-4xl text-[#2C2C2C] mb-2" style={{ fontFamily: 'var(--font-dancing)' }}>{brideName}</h3>
                  <p className="text-[9px] uppercase tracking-[0.2em] text-[#a4656c] font-bold mb-4">Cô Dâu</p>
                  <p className="text-[8px] uppercase tracking-widest text-[#999] mb-1 border-b border-[#eee] pb-1 w-2/3">Nhà Gái</p>
-                 <p className="text-2xl sm:text-3xl whitespace-pre-line leading-relaxed font-normal  font-medium text-[#555] leading-relaxed mt-2" style={{ fontFamily: 'var(--font-dancing)' }}>{(brideFamily || "Ông Nguyễn Văn Hùng\nBà Trần Thị Hoa").replace(/ & /g, '\n').replace(/\\n/g, '\n')}</p>
+                 <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] whitespace-pre-line font-medium text-[#555] leading-loose mt-3">{(brideFamily || "Ông Nguyễn Văn Hùng\nBà Trần Thị Hoa").replace(/ & /g, '\n').replace(/\\n/g, '\n')}</p>
                </div>
              </motion.div>
           </div>
 
-          {/* Photo Grid */}
+          {/* Photo Album (Combined Masonry) */}
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} className="w-full mb-20 flex flex-col items-center">
             <h3 className="text-4xl text-[#2C2C2C] mb-1" style={{ fontFamily: 'var(--font-dancing)' }}>Photo Album</h3>
             <p className="text-[9px] uppercase tracking-[0.3em] text-[#999] mb-8 font-medium">Lưu giữ khoảnh khắc</p>
-            <div className="grid grid-cols-3 gap-2 w-full">
-              {gallery.slice(3, 6).map((img, i) => (
-                <div key={i} className="aspect-[3/4] overflow-hidden border border-[#eee]">
-                  <img src={img} alt={`Gallery ${i}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+            <div className="columns-2 gap-2 w-full space-y-2">
+              {gallery.slice(3).map((img, index) => (
+                <div key={index} className="relative w-full overflow-hidden inline-block bg-white p-1 shadow-sm">
+                  <img src={img} className="w-full h-auto object-cover hover:scale-105 transition-transform duration-700" alt={`Gallery ${index}`} />
                 </div>
               ))}
             </div>
@@ -263,14 +263,30 @@ export function WeddingSixExperience({
               ))}
               {blanks.map(b => <div key={`blank-${b}`} />)}
               {monthDays.map(day => {
-                const isWedding = day === dDate && parsedDDate.getMonth() + 1 === dMonth && parsedDDate.getFullYear() === dYear;
+                const isWedding = day === parsedDDate.getDate() && parsedDDate.getMonth() + 1 === dMonth && parsedDDate.getFullYear() === dYear;
+                let isTiec = false;
+                if (hasTiecMung && customData?.tiecDate) {
+                  const td = new Date(customData.tiecDate);
+                  if (!isNaN(td.getTime()) && day === td.getDate() && td.getMonth() + 1 === dMonth && td.getFullYear() === dYear) isTiec = true;
+                }
+                if (hasTiecMungGai && customData?.tiecDateGai) {
+                  const td = new Date(customData.tiecDateGai);
+                  if (!isNaN(td.getTime()) && day === td.getDate() && td.getMonth() + 1 === dMonth && td.getFullYear() === dYear) isTiec = true;
+                }
+                
                 return (
-                  <div key={day} className={`relative flex items-center justify-center font-medium ${isWedding ? 'text-[#e58a93] font-bold' : 'text-[#444]'}`}>
+                  <div key={day} className={`relative flex items-center justify-center font-medium mx-auto w-6 h-6 sm:w-8 sm:h-8 ${isWedding ? 'text-[#e58a93] font-bold' : isTiec ? 'text-[#e58a93] font-bold' : 'text-[#444]'}`}>
                     <span className="relative z-10">{day}</span>
                     {isWedding && (
                       <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 2.5, type: "spring" }} className="absolute inset-0 flex items-center justify-center">
-                        <Heart className="w-6 h-6 text-[#f5d0d4] fill-[#f5d0d4]/30" strokeWidth={1.5} />
+                        <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-[#f5d0d4] fill-[#f5d0d4]/30" strokeWidth={1.5} />
                       </motion.div>
+                    )}
+                    {isTiec && !isWedding && (
+                      <div className="absolute inset-0 w-full h-full rounded-full border-[1.5px] border-dashed border-[#e8c0c4] bg-[#e8c0c4]/5 scale-90"></div>
+                    )}
+                    {isTiec && isWedding && (
+                      <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.6, type: "spring" }} className="absolute inset-0 w-[140%] h-[140%] -left-[20%] -top-[20%] rounded-full border-[1.5px] border-dashed border-[#e8c0c4] z-0 opacity-70"></motion.div>
                     )}
                   </div>
                 );
@@ -280,13 +296,18 @@ export function WeddingSixExperience({
               <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#e58a93]">
                 <Heart className="w-3 h-3 text-[#f5d0d4] fill-[#f5d0d4]" /> Lễ Cưới
               </div>
+              {(hasTiecMung || hasTiecMungGai) && (
+                <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#e58a93]">
+                  <div className="w-3 h-3 rounded-full border-[1.5px] border-dashed border-[#e8c0c4]"></div> Tiệc Mừng
+                </div>
+              )}
             </div>
           </motion.div>
 
           {/* Event Details */}
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} className="border border-[#e8c0c4]/40 pt-10 pb-8 px-6 flex flex-col items-center text-center w-full mb-16 bg-[#fffcfc] shadow-sm relative">
             <h3 className="text-3xl text-[#2C2C2C] mb-2" style={{ fontFamily: 'var(--font-dancing)' }}>Lễ Cưới</h3>
-            <p className="text-[9px] uppercase tracking-widest text-[#999] mb-8 font-bold">Sự hiện diện của bạn là niềm vinh hạnh</p>
+            <p className="text-[9px] uppercase tracking-widest text-[#999] mb-8 font-bold">{customData?.inviteText || "Sự hiện diện của bạn là niềm vinh hạnh"}</p>
             
             <p className="text-[10px] font-bold text-[#a4656c] uppercase tracking-widest mb-3">Thời gian</p>
             <p className="text-3xl font-serif text-[#2C2C2C] mb-1">{dHours}:{dMinutes}</p>
@@ -371,16 +392,7 @@ export function WeddingSixExperience({
             </div>
           </motion.div>
 
-          {/* Full Gallery Masonry */}
-          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} className="w-full mb-16">
-            <div className="columns-2 gap-2 w-full space-y-2">
-              {gallery.map((img, index) => (
-                <div key={index} className="relative w-full overflow-hidden inline-block bg-white p-1 shadow-sm">
-                  <img src={img} className="w-full h-auto object-cover hover:scale-105 transition-transform duration-700" alt={`Gallery ${index}`} />
-                </div>
-              ))}
-            </div>
-          </motion.div>
+
 
           {/* RSVP Form */}
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} className="w-full flex flex-col items-center mb-20 px-6">
@@ -421,7 +433,7 @@ export function WeddingSixExperience({
 
         {/* Footer Full Image */}
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1 }} className="relative w-full aspect-[4/5] flex flex-col items-center justify-end pb-12 overflow-hidden">
-          <img src={heroImage} alt="Thank You" className="absolute inset-0 w-full h-full object-cover" />
+          <img src={customData?.footerImage || heroImage} alt="Thank You" className="absolute inset-0 w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent" />
           <div className="relative z-10 flex flex-col items-center">
             <h2 className="text-5xl text-[#1a1a1a] mb-4" style={{ fontFamily: 'var(--font-dancing)' }}>Thank You</h2>
@@ -457,7 +469,7 @@ export function WeddingSixExperience({
               </div>
               
               <div className="w-48 h-48 bg-white p-2 border border-[#eee] mb-6 flex items-center justify-center overflow-hidden rounded-xl shadow-inner">
-                <img src={giftTab === 'groom' ? (groomQR || "/assets/wedding/wedding-1/QR.jpg") : (brideQR || "/assets/wedding/wedding-1/QR.jpg")} alt="QR Mừng Cưới" className="w-full h-full object-contain" />
+                <img src={giftTab === 'groom' ? (customData?.groomQR || groomQR || "/assets/wedding/wedding-1/QR.jpg") : (customData?.brideQR || brideQR || "/assets/wedding/wedding-1/QR.jpg")} alt="QR Mừng Cưới" className="w-full h-full object-contain" />
               </div>
               
               <button 

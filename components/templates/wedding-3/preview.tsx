@@ -12,6 +12,7 @@ export function WeddingThreePreview(props: TemplatePreviewProps) {
       compact={props.compact}
       isBuilderPreview={props.isBuilderPreview}
       autoPlay={props.autoPlay}
+      fullScreen={props.fullScreen}
       groomName={parsedConfig.groomName || WEDDING_3_DATA.groomName}
       brideName={parsedConfig.brideName || WEDDING_3_DATA.brideName}
       weddingDate={parsedConfig.weddingDate || WEDDING_3_DATA.weddingDate}

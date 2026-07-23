@@ -484,6 +484,7 @@ function Section({
 
 export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFree, initialOrder }: { currentRole: "ADMIN" | "STAFF" | "EMPLOYEE"; myOrders: MyOrderRow[]; templates: TemplateCatalogItem[]; canCreateFree?: boolean; initialOrder?: any }) {
   const router = useRouter();
+  const [isInitializing, setIsInitializing] = useState(!!initialOrder);
   const [isMobileDevice, setIsMobileDevice] = useState(false);
   const valentineOne = templates.find((template) => template.component_key.includes("constellation")) ?? templates[0];
   const [selectedTemplateId, setSelectedTemplateId] = useState(valentineOne?.id ?? "");
@@ -518,7 +519,10 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   useEffect(() => {
     if (initialOrder) {
       // Small delay so templates list is ready
-      const t = setTimeout(() => loadOrder(initialOrder), 50);
+      const t = setTimeout(() => {
+        loadOrder(initialOrder);
+        setIsInitializing(false);
+      }, 50);
       return () => clearTimeout(t);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -811,15 +815,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
         eventAddress: "Tư gia nhà trai: Số 10, Đường Vườn Lài, Tân Phú, TP. HCM",
         mapUrl: "https://maps.app.goo.gl/xxx",
         mapImage: "/assets/lovepics/map-preview.jpg",
-        tiecDate: "2026-12-14T17:30",
-        tiecName: "Nhà Hàng Tiệc Cưới The Adora",
-        tiecAddress: "123 Đường Tên Lửa, Q.Bình Tân, TP.HCM",
-        tiecMapUrl: "https://maps.app.goo.gl/xxx",
-        // for "goi2" tiec nha gai
-        tiecDateGai: "2026-12-13T17:30",
-        tiecNameGai: "Nhà Hàng Tiệc Cưới Đông Phương",
-        tiecAddressGai: "456 Hoàng Văn Thụ, Q.Tân Bình, TP.HCM",
-        tiecMapUrlGai: "https://maps.app.goo.gl/yyy",
+        // tiecDate and tiecName removed to prevent showing uneditable sections
         // for qr codes
         qrBankName: "MB BANK",
         qrBankAccount: "123456789",
@@ -1006,19 +1002,34 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
       hasTiecMung: !!(dynamicData.tiecName || dynamicData.tiecDate),
       // hasTiecMungGai = true chỉ khi Gói 2 (cả 2 tiệc) VÀ có data Nhà Gái
       hasTiecMungGai: isGoi2 ? !!(dynamicData.tiecNameGai || dynamicData.tiecDateGai) : false,
+      ...(!isGoi2 ? {
+        tiecNameGai: undefined,
+        tiecDateGai: undefined,
+        tiecAddressGai: undefined,
+        tiecMapUrlGai: undefined
+      } : {})
     } : {}),
-    groomFamily: dynamicData.groomFamily || [dynamicData.groomFather, dynamicData.groomMother].filter(Boolean).join("\n"),
-    brideFamily: dynamicData.brideFamily || [dynamicData.brideFather, dynamicData.brideMother].filter(Boolean).join("\n"),
+    groomFamily: (dynamicData.groomFather !== undefined || dynamicData.groomMother !== undefined) 
+      ? [dynamicData.groomFather, dynamicData.groomMother].filter(Boolean).join("\n") 
+      : dynamicData.groomFamily,
+    brideFamily: (dynamicData.brideFather !== undefined || dynamicData.brideMother !== undefined)
+      ? [dynamicData.brideFather, dynamicData.brideMother].filter(Boolean).join("\n")
+      : dynamicData.brideFamily,
     ...(function() {
       const wdStr = dynamicData.weddingDate || "2026-12-14T11:30";
       let d = new Date(wdStr);
       if (isNaN(d.getTime())) d = new Date("2026-12-14T11:30");
       const dayNames = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+      
+      // If the user is currently interacting with weddingDate, we MUST recompute the parts
+      // rather than using the statically saved ones in dynamicData.
+      const hasWeddingDateInput = dynamicData.weddingDate !== undefined;
+      
       return {
-        weddingDay: dynamicData.weddingDay || d.getDate().toString(),
-        weddingMonth: dynamicData.weddingMonth || `Tháng ${d.getMonth() + 1}`,
-        weddingYear: dynamicData.weddingYear || d.getFullYear().toString(),
-        weddingDayOfWeek: dynamicData.weddingDayOfWeek || dayNames[d.getDay()]
+        weddingDay: hasWeddingDateInput ? d.getDate().toString() : (dynamicData.weddingDay || d.getDate().toString()),
+        weddingMonth: hasWeddingDateInput ? `Tháng ${d.getMonth() + 1}` : (dynamicData.weddingMonth || `Tháng ${d.getMonth() + 1}`),
+        weddingYear: hasWeddingDateInput ? d.getFullYear().toString() : (dynamicData.weddingYear || d.getFullYear().toString()),
+        weddingDayOfWeek: hasWeddingDateInput ? dayNames[d.getDay()] : (dynamicData.weddingDayOfWeek || dayNames[d.getDay()])
       };
     })()
   };
@@ -1518,6 +1529,15 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
 
   const orderIsLocked = false; // !!result && !result.unlocked;
   const showSetupWorkspace = true; // !result || result.unlocked;
+
+  if (isInitializing) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] w-full">
+        <div className="w-8 h-8 border-4 border-pink-500/20 border-t-pink-500 rounded-full animate-spin mb-4"></div>
+        <p className="text-white/60">Đang tải dữ liệu đơn...</p>
+      </div>
+    );
+  }
 
   return (
     <div className={showSetupWorkspace ? "grid items-start gap-6 xl:grid-cols-[1fr_460px]" : "grid items-start gap-6"}>
@@ -2618,13 +2638,96 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               </>
             ) : null}
 
-            {Array.isArray(selectedTemplate?.data_schema) && selectedTemplate.data_schema.length !== 0 && (
+            {Array.isArray(selectedTemplate?.data_schema) && selectedTemplate.data_schema.length !== 0 && (() => {
+              let schema = [...selectedTemplate.data_schema];
+              if (isWedding) {
+                // Remove engagementDate
+                schema = schema.filter((f: any) => f.key !== 'engagementDate');
+                
+                // Only wedding-1 uses letterText, remove for others
+                if (selectedComponentKey !== 'wedding-1') {
+                  schema = schema.filter((f: any) => f.key !== 'letterText');
+                }
+
+                // Add template-specific text fields so users can edit hardcoded text
+                if (selectedComponentKey === 'wedding-5') {
+                  schema.push(
+                    { section: "3. Lời Mời", key: "inviteTitle", label: "Tiêu đề lời mời", type: "text", default: "Trân trọng báo tin lễ thành hôn" },
+                    { section: "3. Lời Mời", key: "inviteText", label: "Nội dung lời mời", type: "textarea", default: "Sự hiện diện của quý khách là niềm vinh hạnh cho gia đình chúng tôi" },
+                    { section: "3. Lời Mời", key: "closingText", label: "Lời kết", type: "text", default: "Rất hân hạnh được đón tiếp!" },
+                    { section: "5. Thư Viện Ảnh", key: "groomImage", label: "Ảnh chân dung Chú Rể", type: "media" },
+                    { section: "5. Thư Viện Ảnh", key: "brideImage", label: "Ảnh chân dung Cô Dâu", type: "media" }
+                  );
+                } else if (selectedComponentKey === 'wedding-6') {
+                  schema.push(
+                    { section: "3. Lời Mời", key: "inviteText", label: "Nội dung lời mời", type: "textarea", default: "Sự hiện diện của bạn là niềm vinh hạnh" },
+                    { section: "5. Thư Viện Ảnh", key: "groomImage", label: "Ảnh chân dung Chú Rể", type: "media" },
+                    { section: "5. Thư Viện Ảnh", key: "brideImage", label: "Ảnh chân dung Cô Dâu", type: "media" },
+                    { section: "5. Thư Viện Ảnh", key: "footerImage", label: "Ảnh nền cuối trang (Thank You)", type: "media" }
+                  );
+                } else if (selectedComponentKey === 'wedding-3') {
+                  schema.push(
+                    { section: "3. Lời Mời", key: "inviteTitle", label: "Tiêu đề lời mời", type: "text", default: "Lời Mời Trân Trọng Từ Gia Đình Chúng Tôi" },
+                    { section: "3. Lời Mời", key: "inviteText", label: "Nội dung lời mời", type: "textarea", default: "Sự hiện diện của quý vị là niềm vinh hạnh\\ncho gia đình chúng tôi" }
+                  );
+                } else if (selectedComponentKey === 'wedding-2') {
+                  schema.push(
+                    { section: "3. Lời Mời", key: "inviteTitle", label: "Tiêu đề lời mời", type: "text", default: "Thiệp Mời" },
+                    { section: "3. Lời Mời", key: "inviteText", label: "Nội dung lời mời", type: "textarea", default: "Mời bạn dùng cỗ cùng tụi mình nhé" },
+                    { section: "3. Lời Mời", key: "closingText", label: "Lời kết", type: "text", default: "Trân Trọng Cảm Ơn" }
+                  );
+                } else if (selectedComponentKey === 'wedding-4') {
+                  schema.push(
+                    { section: "3. Lời Mời", key: "inviteTitle", label: "Tiêu đề lời mời", type: "text", default: "Trân Trọng Kính Mời Tới Dự Bữa Tiệc" },
+                    { section: "3. Lời Mời", key: "inviteText", label: "Nội dung lời mời", type: "textarea", default: "Sự hiện diện của quý khách là vinh hạnh\\ncho gia đình chúng tôi" },
+                    { section: "3. Lời Mời", key: "closingText", label: "Lời kết", type: "text", default: "Trân Trọng Cảm Ơn" }
+                  );
+                }
+
+                // Rename existing wedding fields for clarity
+                schema = schema.map((f: any) => {
+                  if (f.key === 'weddingDate') return { ...f, label: "Ngày & Giờ (Lễ Cưới)" };
+                  if (f.key === 'eventAddress') return { ...f, label: "Tên & Địa chỉ nhà hàng (Lễ Cưới)" };
+                  if (f.key === 'mapUrl') return { ...f, label: "Link Google Maps (Lễ Cưới)" };
+                  if (f.key === 'mapImage') return { ...f, label: "Ảnh bản đồ (Lễ Cưới)" };
+                  return f;
+                });
+
+                if (!schema.some((f: any) => f.key === 'tiecName')) {
+                  // Add Tiệc Mừng dates to Thời Gian
+                  const thoiGianIndex = schema.findIndex(f => f.section === "2. Thời Gian");
+                  if (thoiGianIndex !== -1) {
+                    schema.splice(thoiGianIndex + 1, 0, { section: "2. Thời Gian", key: "tiecDate", label: "Ngày & Giờ (Tiệc Mừng)", type: "datetime" });
+                    if (isGoi2) {
+                      schema.splice(thoiGianIndex + 2, 0, { section: "2. Thời Gian", key: "tiecDateGai", label: "Ngày & Giờ (Nhà Gái)", type: "datetime" });
+                    }
+                  } else {
+                    schema.push({ section: "2. Thời Gian", key: "tiecDate", label: "Ngày & Giờ (Tiệc Mừng)", type: "datetime" });
+                    if (isGoi2) schema.push({ section: "2. Thời Gian", key: "tiecDateGai", label: "Ngày & Giờ (Nhà Gái)", type: "datetime" });
+                  }
+
+                  // Add Tiệc Mừng locations to Địa Điểm
+                  schema.push(
+                    { section: "4. Địa Điểm", key: "tiecName", label: "Tên nhà hàng (Tiệc Mừng)", type: "text" },
+                    { section: "4. Địa Điểm", key: "tiecAddress", label: "Địa chỉ cụ thể (Tiệc Mừng)", type: "textarea" },
+                    { section: "4. Địa Điểm", key: "tiecMapUrl", label: "Link Google Maps (Tiệc Mừng)", type: "text" }
+                  );
+                  if (isGoi2) {
+                    schema.push(
+                      { section: "4. Địa Điểm", key: "tiecNameGai", label: "Tên nhà hàng (Nhà Gái)", type: "text" },
+                      { section: "4. Địa Điểm", key: "tiecAddressGai", label: "Địa chỉ cụ thể (Nhà Gái)", type: "textarea" },
+                      { section: "4. Địa Điểm", key: "tiecMapUrlGai", label: "Link Google Maps (Nhà Gái)", type: "text" }
+                    );
+                  }
+                }
+              }
+              return (
               <>
-                {Array.from(new Set(selectedTemplate.data_schema.map((f: any) => f.section || "Tùy chỉnh nội dung")))
+                {Array.from(new Set(schema.map((f: any) => f.section || "Tùy chỉnh nội dung")))
                   .filter((sectionName: any) => sectionName !== "6. Âm Nhạc")
                   .map((sectionName: any, secIdx) => (
                   <Section key={secIdx} title={sectionName}>
-                    {selectedTemplate.data_schema
+                    {schema
                       .filter((f: any) => (f.section || "Tùy chỉnh nội dung") === sectionName)
                       .map((field: any, i: number) => {
                         const val = dynamicData[field.key] ?? field.default ?? "";
@@ -2645,7 +2748,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                   </Section>
                 ))}
               </>
-            )}
+              );
+            })()}
             
             <div className="sticky bottom-0 z-50 mt-8 pb-2 bg-transparent">
               <div className="flex gap-3 py-4 justify-center">

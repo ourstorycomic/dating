@@ -79,11 +79,11 @@ export function WeddingTwoExperience({
   const tiecGai = parseTiec(customData?.tiecDateGai);
 
   useEffect(() => {
-    if (autoPlay || fullScreen) {
+    if (autoPlay || fullScreen || !compact) {
       const openTimer = setTimeout(() => {
         setIsOpened(true);
         setTimeout(() => setAllowScroll(true), 1500);
-      }, 1500); // 1.5s delay like wedding-6
+      }, 2500); // 2.5s delay so users can see the envelope
       return () => clearTimeout(openTimer);
     }
   }, [autoPlay, fullScreen]);
@@ -162,15 +162,13 @@ export function WeddingTwoExperience({
   const monthDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
   return (
-    <div ref={containerRef} className={`relative w-full h-full bg-[#FFFDF9] text-[#7A1F1F] scroll-smooth ${allowScroll ? "overflow-y-auto overflow-x-hidden no-scrollbar" : "overflow-hidden"} ${compact ? "rounded-3xl" : ""}`}>
+    <div ref={containerRef} className={`relative w-full bg-[#FFFDF9] text-[#7A1F1F] scroll-smooth ${allowScroll ? "h-full overflow-y-auto overflow-x-hidden no-scrollbar" : "h-[100dvh] overflow-hidden"} ${compact ? "rounded-3xl" : ""}`}>
       
-      {/* Background Borders */}
-      <div 
-        className="fixed inset-y-0 left-0 w-5 md:w-8 z-0 pointer-events-none opacity-80"
+      {/* Background Borders - responsive constraints */}
+      <div className="fixed inset-y-0 left-0 max-sm:w-[4vw] sm:left-1/2 sm:-translate-x-[210px] w-5 md:w-8 z-0 pointer-events-none opacity-80"
         style={{ backgroundImage: "url('/assets/wedding/wedding-2/vien2ben.webp')", backgroundSize: "200% auto", backgroundPosition: "left top", backgroundRepeat: "repeat-y" }}
       />
-      <div 
-        className="fixed inset-y-0 right-0 w-5 md:w-8 z-0 pointer-events-none scale-x-[-1] opacity-80"
+      <div className="fixed inset-y-0 right-0 max-sm:w-[4vw] sm:right-auto sm:left-1/2 sm:translate-x-[210px] sm:-translate-x-full w-5 md:w-8 z-0 pointer-events-none scale-x-[-1] opacity-80"
         style={{ backgroundImage: "url('/assets/wedding/wedding-2/vien2ben.webp')", backgroundSize: "200% auto", backgroundPosition: "left top", backgroundRepeat: "repeat-y" }}
       />
       
@@ -184,7 +182,7 @@ export function WeddingTwoExperience({
           
           {/* Top Section */}
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="flex flex-col items-center w-full">
-            <p className="text-[10px] tracking-widest text-[#B58B5C] uppercase mb-4 font-sans font-semibold">Thiệp Mời</p>
+            <p className="text-[10px] tracking-widest text-[#B58B5C] uppercase mb-4 font-sans font-semibold">{customData?.inviteTitle || "Thiệp Mời"}</p>
             <h1 className="text-[26px] sm:text-3xl md:text-4xl text-[#7A1F1F] mb-6 font-bold text-center px-2 leading-tight whitespace-nowrap" style={{ fontFamily: 'var(--font-dancing)' }}>
               <span className="flex flex-col items-center gap-1 sm:gap-2"><span>{groomName}</span> <span className="text-sm font-sans mx-2 opacity-80">&amp;</span> <span>{brideName}</span></span>
             </h1>
@@ -236,7 +234,7 @@ export function WeddingTwoExperience({
           {/* Dashed Invite Box (Fallback for Gói 1) */}
           {!hasTiecMung && (
             <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="border border-dashed border-[#7A1F1F] rounded-lg p-6 flex flex-col items-center text-center w-full mb-16 bg-[#FFFDF9]">
-              <p className="text-xs font-bold text-[#7A1F1F] uppercase tracking-widest mb-4">Mời bạn dùng cỗ cùng tụi mình nhé</p>
+              <p className="text-xs font-bold text-[#7A1F1F] uppercase tracking-widest mb-4">{customData?.inviteText || "Mời bạn dùng cỗ cùng tụi mình nhé"}</p>
               <p className="text-[10px] text-[#5A5552] leading-relaxed mb-6 uppercase max-w-[180px] font-bold">
                 {eventAddress}
               </p>
@@ -403,7 +401,7 @@ export function WeddingTwoExperience({
           <div className="absolute inset-0 bg-[#7A1F1F]/60 mix-blend-multiply" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#7A1F1F] via-[#7A1F1F]/40 to-transparent" />
           <div className="relative z-10 flex flex-col items-center">
-            <p className="text-[10px] text-[#F2C583] uppercase tracking-[0.2em] mb-4 font-bold">Trân Trọng Cảm Ơn</p>
+            <p className="text-[10px] text-[#F2C583] uppercase tracking-[0.2em] mb-4 font-bold">{customData?.closingText || "Trân Trọng Cảm Ơn"}</p>
             <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1, delay: 0.3 }} className="text-6xl text-white mb-8" style={{ fontFamily: 'var(--font-dancing)' }}>Thank You</motion.h2>
           </div>
         </motion.div>
@@ -435,7 +433,7 @@ export function WeddingTwoExperience({
               </div>
               
               <div className="w-48 h-48 bg-white p-2 border-2 border-[#C5A880]/50 rounded-xl mb-6 shadow-inner flex items-center justify-center overflow-hidden">
-                <img src={giftTab === 'groom' ? (groomQR || "/assets/wedding/wedding-1/QR.jpg") : (brideQR || "/assets/wedding/wedding-1/QR.jpg")} alt="QR Mừng Cưới" className="w-full h-full object-contain" />
+                <img src={giftTab === 'groom' ? (customData?.groomQR || groomQR || "/assets/wedding/wedding-1/QR.jpg") : (customData?.brideQR || brideQR || "/assets/wedding/wedding-1/QR.jpg")} alt="QR Mừng Cưới" className="w-full h-full object-contain" />
               </div>
               
               <button 
@@ -452,7 +450,7 @@ export function WeddingTwoExperience({
       {/* Opening Doors Animation */}
       <AnimatePresence>
         {!isOpened && (
-          <div className="absolute inset-0 z-50 overflow-hidden cursor-pointer flex" onClick={handleOpen}>
+          <div className={`absolute top-0 left-0 right-0 z-50 overflow-hidden cursor-pointer flex ${compact || isBuilderPreview ? 'h-full' : 'h-[100dvh]'}`} onClick={handleOpen}>
              {/* Left Door */}
              <motion.div 
                initial={{ x: 0 }}

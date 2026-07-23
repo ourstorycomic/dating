@@ -187,7 +187,7 @@ export function WeddingFourExperience({
   const monthDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
   return (
-    <div className={`@container relative w-full h-full bg-[#FAF5F0] text-[#7A1F1F] overflow-hidden ${compact ? "rounded-3xl" : ""}`}>
+    <div className={`@container relative w-full bg-[#FAF5F0] text-[#7A1F1F] overflow-hidden ${compact || isBuilderPreview ? 'h-full' : 'h-[100dvh]'} ${compact ? "rounded-3xl" : ""}`}>
       
       {/* Background Image fixed for the whole template */}
       <div 
@@ -317,7 +317,7 @@ export function WeddingFourExperience({
 
           {/* Invitation Text */}
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="text-center mb-16 w-full">
-            <p className="text-[9px] uppercase tracking-widest text-[#2D2A28] mb-4 font-bold">Trân Trọng Kính Mời Tới Dự Bữa Tiệc</p>
+            <p className="text-[9px] uppercase tracking-widest text-[#2D2A28] mb-4 font-bold">{customData?.inviteTitle || "Trân Trọng Kính Mời Tới Dự Bữa Tiệc"}</p>
             <h2 className="text-4xl text-[#7A1F1F] mb-2" style={{ fontFamily: 'var(--font-dancing)' }}>Lễ Thành Hôn</h2>
             <div className="w-12 h-[1px] bg-[#D6C1A5] mx-auto my-6"></div>
             
@@ -335,7 +335,9 @@ export function WeddingFourExperience({
               </div>
             </div>
             
-            <p className="text-[10px] text-[#5A5552] italic leading-relaxed">Sự hiện diện của quý khách là vinh hạnh<br/>cho gia đình chúng tôi</p>
+            <p className="text-[10px] text-[#5A5552] italic leading-relaxed whitespace-pre-line">
+              {customData?.inviteText || "Sự hiện diện của quý khách là vinh hạnh\\ncho gia đình chúng tôi"}
+            </p>
           </motion.div>
 
           {/* Event Details Cards */}
@@ -620,7 +622,7 @@ export function WeddingFourExperience({
               </div>
               
               <div className="w-48 h-48 bg-white p-2 border border-[#D6C1A5]/50 mb-6 flex items-center justify-center overflow-hidden">
-                <img src={giftTab === 'groom' ? (groomQR || "/assets/wedding/wedding-1/QR.jpg") : (brideQR || "/assets/wedding/wedding-1/QR.jpg")} alt="QR Mừng Cưới" className="w-full h-full object-contain" />
+                <img src={giftTab === 'groom' ? (customData?.groomQR || groomQR || "/assets/wedding/wedding-1/QR.jpg") : (customData?.brideQR || brideQR || "/assets/wedding/wedding-1/QR.jpg")} alt="QR Mừng Cưới" className="w-full h-full object-contain" />
               </div>
               
               <button 

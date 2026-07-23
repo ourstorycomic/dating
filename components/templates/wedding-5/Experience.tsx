@@ -134,7 +134,7 @@ export function WeddingFiveExperience({
   };
 
   return (
-    <div className={`@container relative w-full h-full bg-[#f8faeb] text-[#3e4a3d] overflow-hidden ${compact ? "rounded-3xl" : ""}`}>
+    <div className={`@container relative w-full bg-[#f8faeb] text-[#3e4a3d] overflow-hidden ${compact || isBuilderPreview ? 'h-full' : 'h-[100dvh]'} ${compact ? "rounded-3xl" : ""}`}>
       
       {/* Fixed Background */}
       <div 
@@ -302,7 +302,7 @@ export function WeddingFiveExperience({
                 </div>
               </div>
               
-              <p className="text-[9px] uppercase tracking-[0.2em] text-[#555] mb-4">Trân trọng báo tin lễ thành hôn</p>
+              <p className="text-[9px] uppercase tracking-[0.2em] text-[#555] mb-4">{customData?.inviteTitle ?? "Trân trọng báo tin lễ thành hôn"}</p>
               
               <div className="text-3xl text-[#4a5a40] flex flex-col items-center gap-1" style={{ fontFamily: 'var(--font-dancing)' }}>
                 <span>{groomName}</span>
@@ -322,7 +322,7 @@ export function WeddingFiveExperience({
             {/* Groom */}
             <div className="flex flex-col items-start w-full relative mb-16">
               <div className="w-[55%] aspect-[3/4] relative z-10 border-[4px] border-white shadow-md bg-white rounded-sm overflow-hidden">
-                <img src="/assets/wedding/wedding-5/chure.jpg" className="w-full h-full object-cover" />
+                <img src={customData?.groomImage || "/assets/wedding/wedding-5/chure.jpg"} className="w-full h-full object-cover" />
               </div>
               <div className="absolute top-1/2 -translate-y-1/2 right-4 w-[60%] z-20 text-right">
                 <p className="text-[10px] uppercase tracking-widest text-[#b19556] font-bold mb-1">Chú Rể</p>
@@ -335,7 +335,7 @@ export function WeddingFiveExperience({
             {/* Bride */}
             <div className="flex flex-col items-end w-full relative">
               <div className="w-[55%] aspect-[3/4] relative z-10 border-[4px] border-white shadow-md bg-white rounded-sm overflow-hidden">
-                <img src="/assets/wedding/wedding-5/codau.jpg" className="w-full h-full object-cover" />
+                <img src={customData?.brideImage || "/assets/wedding/wedding-5/codau.jpg"} className="w-full h-full object-cover" />
               </div>
               <div className="absolute top-1/2 -translate-y-1/2 left-4 w-[60%] z-20 text-left">
                 <p className="text-[10px] uppercase tracking-widest text-[#b19556] font-bold mb-1">Cô Dâu</p>
@@ -360,8 +360,8 @@ export function WeddingFiveExperience({
             <div className="w-full rounded-sm overflow-hidden shadow-md border-4 border-white bg-white">
               <img src={heroImage} className="w-full h-auto" />
             </div>
-            <p className="text-center text-[11px] text-[#4a5a40] italic mt-6 px-4 leading-relaxed font-serif">
-              Sự hiện diện của quý khách là niềm vinh hạnh cho gia đình chúng tôi
+            <p className="text-center text-[11px] text-[#4a5a40] italic mt-6 px-4 leading-relaxed font-serif whitespace-pre-line">
+              {customData?.inviteText ?? "Sự hiện diện của quý khách là niềm vinh hạnh cho gia đình chúng tôi"}
             </p>
           </motion.div>
 
@@ -451,8 +451,8 @@ export function WeddingFiveExperience({
               <img src="/assets/wedding/wedding-5/lasen.webp" className="absolute top-0 right-0 w-24 opacity-30 mix-blend-multiply pointer-events-none" />
               
               <div className="w-full bg-[#4a5a40] text-[#FFFFFF] py-3 px-4 rounded-full text-center mb-6 relative z-10 shadow-sm">
-                <h3 className="text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-2">
-                  <span className="w-4 h-4 border border-white/50 rounded-full flex items-center justify-center text-[8px]">✉</span>
+                <h3 className="text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 !text-white">
+                  <span className="w-4 h-4 border border-white/50 rounded-full flex items-center justify-center text-[8px] !text-white">💌</span>
                   Xác Nhận Tham Dự Lễ Cưới
                 </h3>
               </div>
@@ -502,7 +502,7 @@ export function WeddingFiveExperience({
 
           {/* FOOTER */}
           <div className="w-full flex flex-col items-center text-center relative pt-8 pb-32 overflow-hidden px-6">
-            <p className="text-[12px] uppercase tracking-widest font-serif text-[#b19556] font-bold mb-4">Rất hân hạnh được đón tiếp!</p>
+            <p className="text-[12px] uppercase tracking-widest font-serif text-[#b19556] font-bold mb-4">{customData?.closingText ?? "Rất hân hạnh được đón tiếp!"}</p>
             <h2 className="text-4xl text-[#4a5a40] mb-2" style={{ fontFamily: 'var(--font-dancing)' }}>{groomName}</h2>
             <h2 className="text-4xl text-[#4a5a40] ml-12" style={{ fontFamily: 'var(--font-dancing)' }}>{brideName}</h2>
             
@@ -538,7 +538,7 @@ export function WeddingFiveExperience({
               </div>
               
               <div className="w-48 h-48 bg-white p-2 border border-[#c5b182]/50 mb-6 flex items-center justify-center overflow-hidden rounded-xl shadow-inner">
-                <img src={giftTab === 'groom' ? (groomQR || "/assets/wedding/wedding-1/QR.jpg") : (brideQR || "/assets/wedding/wedding-1/QR.jpg")} alt="QR Mừng Cưới" className="w-full h-full object-contain" />
+                <img src={giftTab === 'groom' ? (customData?.customData?.groomQR || groomQR || customData?.groomQR || groomQR || "/assets/wedding/wedding-1/QR.jpg") : (customData?.customData?.brideQR || brideQR || customData?.brideQR || brideQR || "/assets/wedding/wedding-1/QR.jpg")} alt="QR Mừng Cưới" className="w-full h-full object-contain" />
               </div>
               
               <button 

@@ -352,6 +352,7 @@ export function InteractiveTemplatePreview({
         );
       }
     }
+
     return <Component {...finalProps} roomId={roomId} />;
   }
 

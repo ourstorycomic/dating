@@ -476,9 +476,21 @@ export function CameraRig({
       return; 
     } else if (phase === "vintage-gallery" || phase === "end") {
       const finalX = memoriesCount * 3.5;  // This perfectly matches envelope x position
-      const t = Math.min(1, vintageElapsed / 15.0); const xPos = -1.5 + t * (finalX + 1.5); 
-      camera.position.set(xPos, 0.9, 7.0);
-      camera.lookAt(xPos, 0.9, 0); return;
+      const t = Math.min(1, vintageElapsed / 15.0); 
+      const xPos = -1.5 + t * (finalX + 1.5); 
+        
+      // Zoom in to the letter at the end
+      let zPos = 7.0;
+      let yPos = 0.9;
+      if (t > 0.8) {
+        const zoomProgress = (t - 0.8) / 0.2; // 0 to 1
+        zPos = 7.0 - zoomProgress * 1.8; // Ends at 5.2 (zoom in gently)
+        yPos = 0.9 + zoomProgress * 0.2; // Ends at 1.1 (look slightly higher)
+      }
+
+      camera.position.set(xPos, yPos, zPos);
+      camera.lookAt(xPos, yPos, 0); 
+      return;
     }
     
     targetLookAt.set(lookX.current, lookY.current, 0);
@@ -2444,7 +2456,7 @@ function HangingItem({ x, startX, ropeLength, index, children, isLetter = false 
 
       <group position={[0, -0.2, 0]}>
         <Html transform distanceFactor={2.8}>
-          <div style={{ transform: 'translate3d(-50%, 0, 0)' }}>
+          <div style={{ position: 'absolute', left: '-160px', top: 0, width: '320px', display: 'flex', justifyContent: 'center' }}>
             {children}
           </div>
         </Html>

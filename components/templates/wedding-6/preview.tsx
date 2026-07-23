@@ -33,7 +33,8 @@ export function WeddingSixPreview(props: TemplatePreviewProps) {
           : parsedConfig.gallery || config.defaultData.gallery
       }
       compact={props.compact} 
-      autoPlay={props.autoPlay} 
+      autoPlay={props.autoPlay}
+      fullScreen={props.fullScreen}
     />
   );
 }

@@ -28,6 +28,7 @@ interface WeddingThreeProps {
 }
 
 export function WeddingThreeExperience({
+
   compact,
   isBuilderPreview,
   autoPlay,
@@ -47,7 +48,9 @@ export function WeddingThreeExperience({
   groomQR,
   brideQR,
   customData,
+
 }: WeddingThreeProps) {
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [isOpened, setIsOpened] = useState(false);
   const [allowScroll, setAllowScroll] = useState(false);
@@ -77,11 +80,11 @@ export function WeddingThreeExperience({
   const tiecGai = parseTiec(customData?.tiecDateGai);
 
   useEffect(() => {
-    if (autoPlay || fullScreen) {
+    if (autoPlay || fullScreen || !compact) {
       const openTimer = setTimeout(() => {
         setIsOpened(true);
         setTimeout(() => setAllowScroll(true), 1500);
-      }, 1500); // 1.5s delay like wedding-6
+      }, 2500); // 2.5s delay so users can see the envelope
       return () => clearTimeout(openTimer);
     }
   }, [autoPlay, fullScreen]);
@@ -164,7 +167,7 @@ export function WeddingThreeExperience({
   const monthDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
   return (
-    <div ref={containerRef} className={`relative w-full h-full bg-[#FFFFFF] text-[#2D2A28] scroll-smooth ${allowScroll ? "overflow-y-auto overflow-x-hidden no-scrollbar" : "overflow-hidden"} ${compact ? "rounded-3xl" : ""}`}>
+    <div ref={containerRef} className={`relative w-full bg-[#FFFFFF] text-[#2D2A28] scroll-smooth ${allowScroll ? "h-full overflow-y-auto overflow-x-hidden no-scrollbar" : "h-[100dvh] overflow-hidden"} ${compact ? "rounded-3xl" : ""}`}>
       
       {/* Background Music */}
       {!compact && <audio ref={audioRef} src={musicUrl} loop />}
@@ -302,8 +305,8 @@ export function WeddingThreeExperience({
             <p className="text-[10px] text-[#2D2A28] leading-relaxed font-bold uppercase">Tại Tư Gia</p>
             <p className="text-[10px] text-[#2D2A28] leading-relaxed mb-4">{eventAddress}</p>
             {mapUrl && (
-              <a href={mapUrl} target="_blank" rel="noreferrer" className="inline-block bg-[#7A1F1F] text-white text-[10px] uppercase font-bold tracking-widest px-5 py-2 rounded-sm shadow-md hover:bg-opacity-80">
-                Xem Bản Đồ
+              <a href={mapUrl} target="_blank" rel="noopener noreferrer" className="inline-block mt-4 px-8 py-3 bg-[#7A1F1F] !text-white text-xs font-bold uppercase tracking-widest hover:bg-[#7A1F1F]/80 shadow-md transition-colors duration-300 rounded-sm">
+                XEM BẢN ĐỒ
               </a>
             )}
           </motion.div>
@@ -319,7 +322,7 @@ export function WeddingThreeExperience({
                 {customData?.tiecAddress}
               </p>
               {customData?.tiecMapUrl && (
-                <a href={customData.tiecMapUrl} target="_blank" rel="noreferrer" className="bg-[#7A1F1F]  text-[10px] px-8 py-3 rounded-sm uppercase tracking-widest font-bold shadow-md hover:bg-opacity-80 text-white">
+                <a href={customData.tiecMapUrl} target="_blank" rel="noreferrer" className="inline-block bg-[#7A1F1F] !text-white text-xs px-8 py-3 rounded-sm uppercase tracking-widest font-bold shadow-md hover:bg-opacity-80">
                   Xem Chỉ Đường
                 </a>
               )}
@@ -337,7 +340,7 @@ export function WeddingThreeExperience({
                 {customData?.tiecAddressGai}
               </p>
               {customData?.tiecMapUrlGai && (
-                <a href={customData.tiecMapUrlGai} target="_blank" rel="noreferrer" className="bg-[#7A1F1F]  text-[10px] px-8 py-3 rounded-sm uppercase tracking-widest font-bold shadow-md hover:bg-opacity-80 text-white">
+                <a href={customData.tiecMapUrlGai} target="_blank" rel="noreferrer" className="inline-block bg-[#7A1F1F] !text-white text-xs px-8 py-3 rounded-sm uppercase tracking-widest font-bold shadow-md hover:bg-opacity-80">
                   Xem Chỉ Đường
                 </a>
               )}
@@ -427,7 +430,7 @@ export function WeddingThreeExperience({
               </div>
               
               <div className="w-48 h-48 bg-white p-2 border-2 border-[#C5A880]/50 rounded-xl mb-6 shadow-inner flex items-center justify-center overflow-hidden">
-                <img src={giftTab === 'groom' ? (groomQR || "/assets/wedding/wedding-1/QR.jpg") : (brideQR || "/assets/wedding/wedding-1/QR.jpg")} alt="QR Mừng Cưới" className="w-full h-full object-contain" />
+                <img src={giftTab === 'groom' ? (customData?.groomQR || groomQR || "/assets/wedding/wedding-1/QR.jpg") : (customData?.brideQR || brideQR || "/assets/wedding/wedding-1/QR.jpg")} alt="QR Mừng Cưới" className="w-full h-full object-contain" />
               </div>
               
               <button 
@@ -444,7 +447,7 @@ export function WeddingThreeExperience({
       {/* Opening Doors Animation */}
       <AnimatePresence>
         {!isOpened && (
-          <div className="absolute inset-0 z-50 overflow-hidden cursor-pointer flex" onClick={handleOpen}>
+          <div className={`absolute top-0 left-0 right-0 z-50 overflow-hidden cursor-pointer flex ${compact || isBuilderPreview ? 'h-full' : 'h-[100dvh]'}`} onClick={handleOpen}>
              {/* Left Door */}
              <motion.div 
                initial={{ x: 0 }}

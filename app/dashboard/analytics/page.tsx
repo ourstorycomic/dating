@@ -4,7 +4,6 @@ import Link from "next/link";
 export const dynamic = "force-dynamic";
 import { EmployeeStatsPanel } from "@/components/dashboard/EmployeeStatsPanel";
 import { EmployeeLeaderboardPanel } from "@/components/dashboard/EmployeeLeaderboardPanel";
-import { CommissionListPanel } from "@/components/dashboard/CommissionListPanel";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { getSession } from "@/lib/auth/session";
 import {
@@ -58,8 +57,6 @@ export default async function AnalyticsPage() {
       <EmployeeLeaderboardPanel monthlyStats={monthlyStats} />
 
       <EmployeeStatsPanel dailyStats={dailyStats} monthlyStats={monthlyStats} />
-
-      <CommissionListPanel commissions={commissions as any} />
     </div>
   );
 }

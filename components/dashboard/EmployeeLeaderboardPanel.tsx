@@ -78,10 +78,10 @@ export function EmployeeLeaderboardPanel({ monthlyStats }: { monthlyStats: Month
             placeholder="Tìm nhân viên..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="rounded-full border border-rose-950/20 bg-rose-950/[0.03] px-4 py-2 text-sm font-semibold outline-none focus:bg-rose-950/[0.05] transition-colors min-w-[200px]"
+            className="rounded-full border border-white/20 bg-white/5 px-4 py-2 text-sm font-semibold outline-none focus:bg-white/10 transition-colors min-w-[200px] text-white"
           />
           <select
-            className="rounded-full border border-rose-950/20 bg-rose-950/[0.03] px-4 py-2 text-sm font-semibold outline-none focus:bg-rose-950/[0.05] transition-colors"
+            className="rounded-full border border-white/20 bg-[#0a0514] px-4 py-2 text-sm font-semibold outline-none focus:bg-white/10 transition-colors text-white"
             onChange={(event) => setPeriodFilter(event.target.value)}
             value={periodFilter}
           >
@@ -120,27 +120,27 @@ export function EmployeeLeaderboardPanel({ monthlyStats }: { monthlyStats: Month
           }
 
           return (
-            <div key={emp.employeeId} className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl border ${borderClass} ${bgClass} transition hover:bg-rose-950/[0.05]`}>
+            <Link href={`/dashboard/users/${emp.employeeId}`} key={emp.employeeId} className={`block group flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl border ${borderClass} ${bgClass} transition hover:bg-white/10 hover:border-pink-500/50 hover:shadow-[0_0_20px_rgba(236,72,153,0.15)] cursor-pointer`}>
               <div className="flex items-center gap-4 mb-3 sm:mb-0">
                 <div className="flex items-center justify-center w-10 h-10 text-3xl">
                   {rankIcon}
                 </div>
                 <div>
-                  <Link href={`/dashboard/users/${emp.employeeId}`} className="font-bold text-lg hover:text-pink-600 hover:underline">
+                  <div className="font-bold text-lg text-white group-hover:text-pink-400 group-hover:underline transition-colors">
                     {emp.employeeName}
-                  </Link>
-                  <p className="text-xs opacity-50 font-medium">{emp.employeeEmail}</p>
+                  </div>
+                  <p className="text-xs opacity-50 font-medium text-white">{emp.employeeEmail}</p>
                 </div>
               </div>
               <div className="text-left sm:text-right ml-14 sm:ml-0">
-                <div className="font-bold text-pink-600 text-xl">
-                  {money(emp.commissionEarned)} <span className="text-xs font-normal opacity-50">hoa hồng</span>
+                <div className="font-bold text-pink-400 text-xl group-hover:text-pink-300 transition-colors">
+                  {money(emp.commissionEarned)} <span className="text-xs font-normal opacity-50 text-white group-hover:text-pink-200">hoa hồng</span>
                 </div>
-                <div className="text-xs opacity-60 mt-1 font-medium">
+                <div className="text-xs opacity-60 mt-1 font-medium text-white">
                   {emp.activeOrders} đơn thành công - Doanh thu: {money(emp.revenue)}
                 </div>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>
