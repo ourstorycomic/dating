@@ -60,8 +60,8 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
       // Calculate scale for PC preview (desktop mode)
       if (isMobile) {
         // When rotated, we use flex-col so they stack vertically in the landscape view.
-        // The user wants NO empty space, so we scale it so the 800px width perfectly matches the physical height (which is the logical width in rotated mode)
-        setDesktopScale(window.innerHeight / 800);
+        // The user wants it huge, so we scale it up to 1.15. The scroll wrapper will handle overflow.
+        setDesktopScale(1.15);
       } else {
         // On actual PC, use standard scale
         setDesktopScale(Math.max(0.4, Math.min(1, Math.min(scaleH, scaleW) * 1.2)));
@@ -222,7 +222,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
          <div className={`w-full h-full max-w-7xl flex flex-col lg:flex-row items-center ${isRotated ? "justify-start" : "justify-center"} gap-8 lg:gap-16 z-10`}>
 
             {/* Left Column: Info Box */}
-            <div className={`order-2 lg:order-1 shrink-0 bg-white/90 backdrop-blur-xl p-7 lg:p-8 rounded-[2.5rem] border-4 ${isWedding ? "border-[#f0eadd] shadow-[0_20px_60px_-15px_rgba(216,195,165,0.4)]" : "border-pink-100 shadow-[0_20px_60px_-15px_rgba(255,192,203,0.6)]"} flex flex-col items-start text-left ${isRotated ? "h-fit w-full max-w-[800px]" : "max-h-[90vh] overflow-y-auto w-full max-w-[420px]"} [&::-webkit-scrollbar]:hidden mt-8 lg:mt-0 mb-12 lg:mb-0`}>
+            <div className={`order-2 lg:order-1 w-full max-w-[420px] shrink-0 bg-white/90 backdrop-blur-xl p-7 lg:p-8 rounded-[2.5rem] border-4 ${isWedding ? "border-[#f0eadd] shadow-[0_20px_60px_-15px_rgba(216,195,165,0.4)]" : "border-pink-100 shadow-[0_20px_60px_-15px_rgba(255,192,203,0.6)]"} flex flex-col items-start text-left ${isRotated ? "h-fit" : "max-h-[90vh] overflow-y-auto"} [&::-webkit-scrollbar]:hidden mt-8 lg:mt-0 mb-12 lg:mb-0`}>
                 <div className={`${isWedding ? "bg-[#f4f1ea] text-[#bfa993]" : "bg-pink-100 text-pink-500"} px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-3`}>
                   {template.template_categories?.name || "Mẫu HOT"}
                 </div>
@@ -269,9 +269,10 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                  </button>
                </div>
 
-               {/* Scaled Preview Frame */}
-               <div 
-                 className="relative shrink-0 flex items-center justify-center"
+               {/* Scaled Preview Frame with horizontal scrolling for huge sizes */}
+               <div className="w-full max-w-full overflow-x-auto pb-4 [&::-webkit-scrollbar]:hidden flex justify-start sm:justify-center">
+                 <div 
+                   className="relative shrink-0 flex items-center justify-center"
                  style={{ 
                    width: (mode === "mobile" ? 380 : 800) * (mode === "mobile" ? phoneScale : desktopScale), 
                    height: (mode === "mobile" ? 780 : 600) * (mode === "mobile" ? phoneScale : desktopScale),
@@ -333,6 +334,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                    )}
                    </div>
                  </div>
+               </div>
                </div>
 
 
