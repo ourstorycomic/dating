@@ -197,10 +197,10 @@ export async function POST(
         const MAX_DEPTH = 20;
 
         while (currentManagerId && depth < MAX_DEPTH) {
-          const managerUser = await prisma.user.findUnique({
+          const managerUser = (await prisma.user.findUnique({
             where: { id: currentManagerId },
             select: { id: true, customRoleId: true, managerId: true },
-          });
+          })) as { id: string; customRoleId: string | null; managerId: string | null } | null;
 
           if (!managerUser) break;
 
