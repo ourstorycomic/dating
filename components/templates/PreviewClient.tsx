@@ -59,12 +59,10 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
       
       // Calculate scale for PC preview (desktop mode)
       if (isMobile) {
-        // When rotated, width becomes height and vice versa
-        const rotatedHeight = window.innerWidth;
-        const rotatedWidth = window.innerHeight;
-        const deskScaleH = (rotatedHeight - 120) / 600; // 600 is PC frame height
-        const deskScaleW = (rotatedWidth - 80) / 800; // 800 is PC frame width
-        setDesktopScale(Math.max(0.3, Math.min(1, Math.min(deskScaleH, deskScaleW))));
+        // When rotated, we use flex-row, so logical height is the physical width (innerWidth).
+        // We want the PC frame (600px tall) to perfectly fit the physical width.
+        const deskScale = window.innerWidth / 600; 
+        setDesktopScale(Math.max(0.3, deskScale));
       } else {
         // On actual PC, use standard scale
         setDesktopScale(Math.max(0.4, Math.min(1, Math.min(scaleH, scaleW) * 1.2)));
@@ -153,7 +151,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
       </header>
 
       {/* Main Content Area */}
-      <main className={`flex-1 relative flex flex-col lg:flex-row items-center ${isRotated ? "justify-start" : "justify-center"} p-4 lg:p-8 overflow-x-hidden lg:overflow-hidden ${isWedding ? "bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#faf7ef] via-[#f4f1ea] to-white" : "bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-pink-100 via-pink-50 to-white"}`}>
+      <main className={`flex-1 relative flex ${isRotated ? "flex-row" : "flex-col lg:flex-row"} items-center ${isRotated ? "justify-start" : "justify-center"} p-4 lg:p-8 overflow-x-hidden lg:overflow-hidden ${isWedding ? "bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#faf7ef] via-[#f4f1ea] to-white" : "bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-pink-100 via-pink-50 to-white"}`}>
          
          {/* Background Particles/Decorations */}
          {mounted && (
@@ -222,7 +220,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
          )}
 
           {/* Layout Wrapper to perfectly center Info and Phone side by side */}
-         <div className={`w-full h-full max-w-7xl flex flex-col lg:flex-row items-center ${isRotated ? "justify-start" : "justify-center"} gap-8 lg:gap-16 z-10`}>
+         <div className={`w-full h-full max-w-7xl flex ${isRotated ? "flex-row" : "flex-col lg:flex-row"} items-center ${isRotated ? "justify-start" : "justify-center"} gap-8 lg:gap-16 z-10`}>
 
             {/* Left Column: Info Box */}
             <div className={`order-2 lg:order-1 w-full max-w-[420px] shrink-0 bg-white/90 backdrop-blur-xl p-7 lg:p-8 rounded-[2.5rem] border-4 ${isWedding ? "border-[#f0eadd] shadow-[0_20px_60px_-15px_rgba(216,195,165,0.4)]" : "border-pink-100 shadow-[0_20px_60px_-15px_rgba(255,192,203,0.6)]"} flex flex-col items-start text-left max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:hidden mt-8 lg:mt-0 mb-12 lg:mb-0`}>
