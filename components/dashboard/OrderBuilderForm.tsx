@@ -709,10 +709,36 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const [isConfirmingPayment, setIsConfirmingPayment] = useState(false);
   const [isConfirmingFree, setIsConfirmingFree] = useState(false);
   const [isSavingEdits, setIsSavingEdits] = useState(false);
+  const [isDeletingOrder, setIsDeletingOrder] = useState(false);
   const [error, setError] = useState("");
   const [saveMessage, setSaveMessage] = useState("");
   const [copyMessage, setCopyMessage] = useState("");
   const [builderVolume, setBuilderVolume] = useState(0.5);
+  
+  async function handleDeleteOrder(targetId?: string) {
+    const idToDelete = typeof targetId === "string" ? targetId : result?.orderId;
+    if (!idToDelete) return;
+    setIsDeletingOrder(true);
+    try {
+      const response = await fetch(`/api/orders/${idToDelete}`, {
+        method: "DELETE"
+      });
+      if (response.ok) {
+        toast.success("Đã xóa đơn thành công.");
+        if (idToDelete === result?.orderId) {
+          router.push("/dashboard/orders/new");
+        } else {
+          window.location.reload();
+        }
+      } else {
+        const data = await response.json().catch(() => ({}));
+        toast.error(data.error ?? "Lỗi xóa đơn.");
+      }
+    } catch (e) {
+      toast.error("Lỗi kết nối.");
+    }
+    setIsDeletingOrder(false);
+  }
   
 
   const [orderPage, setOrderPage] = useState(1);
@@ -1927,6 +1953,21 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                             Xem QR / Thanh toán
                           </div>
                         )}
+                        <div
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setConfirmModal({
+                              open: true,
+                              type: "DELETE",
+                              title: "Xác nhận xóa đơn",
+                              desc: "Hành động này sẽ xóa vĩnh viễn đơn hàng và TẤT CẢ hình ảnh đính kèm. Không thể hoàn tác!",
+                              onConfirm: () => handleDeleteOrder(order.public_id)
+                            });
+                          }}
+                          className="cursor-pointer flex items-center justify-center rounded-full bg-red-500/10 border border-red-500/20 px-3 py-1 text-[11px] leading-none font-bold text-red-500 hover:bg-red-500/20 transition-colors"
+                        >
+                          Xóa
+                        </div>
                         <div className={`flex items-center justify-center rounded-full border px-3 py-1 text-[11px] leading-none font-bold ${paid ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "border-pink-200 bg-pink-50 text-pink-500 dark:border-pink-500/20 dark:bg-pink-500/10"}`}>
                           {paid ? "Đã thanh toán" : "Chờ thanh toán"}
                         </div>
