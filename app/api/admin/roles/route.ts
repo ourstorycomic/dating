@@ -109,8 +109,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Không tạo được vai trò." }, { status: 500 });
   }
 
-  await saveProductRules(supabase, data.id, productRules);
-  await saveCrossRoleCommissions(data.id, role.crossRoleCommissions);
+  try {
+    await saveProductRules(supabase, data.id, productRules);
+    await saveCrossRoleCommissions(data.id, role.crossRoleCommissions);
+  } catch (err: any) {
+    console.error("Save associated rules error:", err);
+    return NextResponse.json({ error: err.message || "Lỗi lưu cấu hình phụ của vai trò." }, { status: 500 });
+  }
 
   const { data: fullRole } = await supabase
     .from("custom_roles")
@@ -167,8 +172,13 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "Không lưu được vai trò." }, { status: 500 });
   }
 
-  await saveProductRules(supabase, data.id, productRules);
-  await saveCrossRoleCommissions(data.id, role.crossRoleCommissions);
+  try {
+    await saveProductRules(supabase, data.id, productRules);
+    await saveCrossRoleCommissions(data.id, role.crossRoleCommissions);
+  } catch (err: any) {
+    console.error("Save associated rules error:", err);
+    return NextResponse.json({ error: err.message || "Lỗi lưu cấu hình phụ của vai trò." }, { status: 500 });
+  }
 
   const { data: fullRole } = await supabase
     .from("custom_roles")
@@ -263,10 +273,15 @@ async function saveCrossRoleCommissions(parentRoleId: string, crossRoleCommissio
       isActive: rule.isActive !== false,
     }));
 
-  await prisma.$transaction(async (tx) => {
-    await tx.crossRoleCommission.deleteMany({ where: { parentRoleId } });
-    if (validRules.length > 0) {
-      await tx.crossRoleCommission.createMany({ data: validRules });
-    }
-  });
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.crossRoleCommission.deleteMany({ where: { parentRoleId } });
+      if (validRules.length > 0) {
+        await tx.crossRoleCommission.createMany({ data: validRules });
+      }
+    });
+  } catch (error) {
+    console.error("saveCrossRoleCommissions Error:", error);
+    throw error;
+  }
 }
