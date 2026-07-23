@@ -1253,6 +1253,11 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   }
 
   function handleLock() {
+    // Chỉ cho khóa khi đơn đã được thanh toán
+    if (!result?.unlocked) {
+      toast.error("Đơn chưa được thanh toán, không thể khóa!");
+      return;
+    }
     setConfirmModal({
       open: true,
       type: "LOCK",
@@ -1273,20 +1278,21 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     setConfirmModal({
       open: true,
       type: "UNLOCK",
-      title: hasFreeEdit ? "Mở khóa miễn phí" : "Mở khóa tính phí",
+      title: hasFreeEdit ? `Mở khóa miễn phí (lần ${editUnlockCount + 1}/${freeEdits})` : "Mở khóa tính phí",
       desc: hasFreeEdit 
-        ? `Bạn còn ${freeEdits - editUnlockCount} lần mở khóa miễn phí.\n\nXác nhận mở khóa?`
-        : `Đơn này ĐÃ HẾT lượt sửa miễn phí.\n\nViệc mở khóa sửa tiếp sẽ TÍNH PHÍ THÊM 19K (Vui lòng thu phí 19K từ khách).\n\nBạn có chắc chắn mở khóa?`,
+        ? `Bạn còn ${freeEdits - editUnlockCount} lần mở khóa miễn phí theo gói dịch vụ.\n\nXác nhận mở khóa để sửa tiếp?`
+        : `Đơn này ĐÃ HẾT lượt sửa miễn phí theo gói.\n\nViệc mở khóa sửa tiếp sẽ TÍNH PHÍ THÊM 19.000đ (Vui lòng thu phí từ khách).\n\nHệ thống sẽ tạo QR thanh toán. Sau khi thanh toán xong, đơn mới được mở khóa.`,
       onConfirm: async () => {
         const newCount = editUnlockCount + 1;
         
         if (hasFreeEdit) {
+          // Mở khóa miễn phí: mở ngay
           setIsLocked(false);
           setEditUnlockCount(newCount);
           await saveOrderEdits({ isLocked: false, editUnlockCount: newCount });
-          toast.success("Đã mở khóa sửa miễn phí!");
+          toast.success(`Đã mở khóa miễn phí (lần ${newCount}/${freeEdits})! Bạn có thể sửa tiếp.`);
         } else {
-          // Trả phí: Gọi API tạo thanh toán mở khóa
+          // Hết lượt miễn phí: tạo QR thanh toán, giữ khóa đến khi thanh toán xong
           setIsSavingEdits(true);
           try {
             const res = await fetch(`/api/orders/${result?.orderId}/unlock`, {
@@ -1299,10 +1305,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
             if (!res.ok) {
               toast.error(data.error || "Không thể tạo thanh toán mở khóa.");
             } else {
-              toast.success("Vui lòng thanh toán phí 19K để mở khóa!");
-              setIsLocked(false);
-              setEditUnlockCount(newCount);
-              // Cập nhật lại UI hiển thị QR code
+              toast.success("Đã tạo QR thanh toán 19K. Sau khi khách chuyển khoản, đơn sẽ tự động mở khóa!");
+              // Giữ isLocked = true, đợi thanh toán xong webhook mới mở
               setResult({
                 ...result!,
                 status: "PENDING_PAYMENT",
@@ -1544,8 +1548,10 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     }
   }
 
-  const orderIsLocked = false; // !!result && !result.unlocked;
-  const showSetupWorkspace = true; // !result || result.unlocked;
+  // Đơn được coi là khóa nếu: đã có result (tạo đơn xong) VÀ được bật khóa thủ công
+  const orderIsLocked = !!result && isLocked;
+  // Hiển thị workspace sửa khi: chưa có đơn, hoặc đơn đã mở khóa (thanh toán được)
+  const showSetupWorkspace = !result || result.unlocked;
 
   if (isInitializing) {
     return (
@@ -2812,14 +2818,15 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                   </span>
                 </button>
                 <button
-                  className="group relative overflow-hidden rounded-[2rem] border-[2px] border-white/20 bg-gradient-to-r from-[#ff9100] via-[#ffb347] to-[#ff9100] bg-[length:200%_auto] px-8 py-3 text-base font-black !text-white shadow-[0_10px_25px_rgba(255,145,0,0.4)] backdrop-blur-md transition-all animate-gradient-x hover:scale-[1.02] hover:shadow-[0_15px_35px_rgba(255,145,0,0.6)] active:scale-95 disabled:opacity-50"
-                  disabled={isSavingEdits}
+                  className="group relative overflow-hidden rounded-[2rem] border-[2px] border-white/20 bg-gradient-to-r from-[#ff9100] via-[#ffb347] to-[#ff9100] bg-[length:200%_auto] px-8 py-3 text-base font-black !text-white shadow-[0_10px_25px_rgba(255,145,0,0.4)] backdrop-blur-md transition-all animate-gradient-x hover:scale-[1.02] hover:shadow-[0_15px_35px_rgba(255,145,0,0.6)] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+                  disabled={isSavingEdits || !result?.unlocked}
                   onClick={handleLock}
+                  title={!result?.unlocked ? "Đơn phải được thanh toán trước khi khóa" : "Khóa đơn sau khi đã hoàn tất chỉnh sửa"}
                   type="button"
                 >
                   <div className="absolute inset-0 bg-white/20 opacity-0 transition-opacity group-hover:opacity-100" />
                   <span className="relative z-10 drop-shadow-md tracking-wide">
-                    🔒 Khóa đơn
+                    {result?.unlocked ? "🔒 Khóa đơn" : "🔒 Chờ thanh toán"}
                   </span>
                 </button>
               </div>
