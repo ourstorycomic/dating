@@ -482,7 +482,7 @@ function Section({
   );
 }
 
-export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFree, initialOrder }: { currentRole: "ADMIN" | "STAFF" | "EMPLOYEE" | "FANPAGE"; myOrders: MyOrderRow[]; templates: TemplateCatalogItem[]; canCreateFree?: boolean; initialOrder?: any }) {
+export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFree, initialOrder }: { currentRole: "ADMIN" | "STAFF" | "EMPLOYEE"; myOrders: MyOrderRow[]; templates: TemplateCatalogItem[]; canCreateFree?: boolean; initialOrder?: any }) {
   const router = useRouter();
   const [isInitializing, setIsInitializing] = useState(!!initialOrder);
   const [isMobileDevice, setIsMobileDevice] = useState(false);
@@ -566,6 +566,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const [buyerContact, setBuyerContact] = useState("");
   const [senderName, setSenderName] = useState("Anh");
   const [recipientName, setRecipientName] = useState("Em");
+  const [affiliateId, setAffiliateId] = useState("");
+  const [affiliates, setAffiliates] = useState<Array<{ id: string; name: string; ref_code: string }>>([]);
   const [qrTimeLeft, setQrTimeLeft] = useState(600);
   const [qrKey, setQrKey] = useState<number>(0);
   const [anniversaryCode, setAnniversaryCode] = useState("1402");
@@ -776,6 +778,18 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const isWedding1 = selectedComponentKey === "wedding-1" || selectedComponentKey === "wedding #1";
   const isWedding = selectedComponentKey.includes("wedding");
   const ALL_PACKAGES = [...SERVICE_PACKAGES, ...WEDDING_SERVICE_PACKAGES];
+
+  useEffect(() => {
+    // Load danh sách affiliate (người giới thiệu) nếu là ADMIN
+    if (currentRole === "ADMIN") {
+      fetch("/api/admin/affiliates")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.affiliates) setAffiliates(data.affiliates);
+        })
+        .catch(() => {});
+    }
+  }, [currentRole]);
 
   useEffect(() => {
     // Tự động chuyển Mẫu giao diện nếu Gói dịch vụ thay đổi loại (Cưới <-> Thường)
@@ -1107,6 +1121,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
         recipientName,
         templateId: selectedTemplateId,
         isFreeOrder: canCreateFree,
+        affiliateId: affiliateId || undefined,
       }),
     });
 
@@ -1187,6 +1202,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
         recipientName,
         buyerName,
         templateId: selectedTemplateId,
+        affiliateId: affiliateId || undefined,
       }),
     });
     const data = await response.json().catch(() => ({}));
@@ -1346,6 +1362,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     setBuyerContact(order.buyer_contact || "");
     setRecipientName(order.recipient_name || "");
     setSenderName(order.custom_data?.senderName || "Anh");
+    setAffiliateId(order.affiliate_id || "");
     if (fullTemplate) {
       setLoadedTemplate(fullTemplate as any);
       setSelectedTemplateId((fullTemplate as any).id);
@@ -1545,8 +1562,25 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
         <Section title="Thông tin đơn" className={`relative z-50 ${orderIsLocked ? "pointer-events-none opacity-60" : ""}`}>
           <TextInput label="Tên khách mua" onChange={setBuyerName} value={buyerName} />
           <TextInput label="TikTok / SĐT khách" onChange={setBuyerContact} value={buyerContact} />
-          {(currentRole === "FANPAGE" || currentRole === "ADMIN") && (
-            <TextInput label="Người giới thiệu (Đối tác / Cò)" onChange={setReferrerName} value={referrerName} />
+          {currentRole === "ADMIN" && affiliates.length > 0 && (
+            <label className="grid gap-2 text-sm md:col-span-2">
+              <span className="text-white/64 flex items-center gap-2">
+                <span>Người giới thiệu</span>
+                <span className="text-[10px] text-pink-400/80 font-normal bg-pink-500/10 px-2 py-0.5 rounded-full">Hoa hồng Affiliate</span>
+              </span>
+              <select
+                className="rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3 outline-none focus:border-pink-300/50 text-white"
+                value={affiliateId}
+                onChange={(e) => setAffiliateId(e.target.value)}
+              >
+                <option value="" className="text-black">-- Không có người giới thiệu --</option>
+                {affiliates.map((af) => (
+                  <option key={af.id} value={af.id} className="text-black">
+                    {af.name} ({af.ref_code})
+                  </option>
+                ))}
+              </select>
+            </label>
           )}
           {/* BỘ LỌC LOẠI ĐƠN */}
           <div className="md:col-span-2 mt-2 mb-2 flex items-center gap-6">

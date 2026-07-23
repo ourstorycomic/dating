@@ -29,6 +29,7 @@ const permissionOptions = [
   { key: "orders:create", label: "Tạo đơn" },
   { key: "orders:create_free", label: "Tạo đơn Miễn phí/Test" },
   { key: "orders:view_all", label: "Xem mọi đơn" },
+  { key: "orders:fanpage", label: "Quyền Fanpage (đơn qua kênh fanpage)" },
   { key: "users:view", label: "Xem nhân sự" },
   { key: "users:edit", label: "Sửa nhân sự" },
   { key: "logs:view", label: "Xem nhật ký" },
@@ -37,6 +38,7 @@ const permissionOptions = [
   { key: "commissions:edit", label: "Chỉnh hoa hồng" },
   { key: "templates:edit", label: "Quản lý kho template" },
 ];
+
 
 const emptyForm = {
   commissionPercentage: 0,

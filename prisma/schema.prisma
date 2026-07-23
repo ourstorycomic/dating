@@ -11,7 +11,6 @@ enum Role {
   ADMIN
   STAFF
   EMPLOYEE
-  FANPAGE
 }
 
 enum OrderStatus {
@@ -190,7 +189,6 @@ model Order {
   buyerName         String?
   buyerContact      String?
   buyerSocialHandle String?
-  referrerName      String?
 
   customData Json
   amount     Decimal     @db.Decimal(12, 2)

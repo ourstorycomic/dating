@@ -98,7 +98,6 @@ export async function POST(request: Request) {
       buyer_contact: body.buyerContact ?? null,
       buyer_name: body.buyerName ?? null,
       buyer_social_handle: body.buyerContact ?? null,
-      referrer_name: body.referrerName ?? null,
       created_by_id: session.userId,
       custom_data: customData,
       public_id: publicId,
@@ -106,6 +105,7 @@ export async function POST(request: Request) {
       status: isFreeOrder ? "ACTIVE" : "PENDING_PAYMENT",
       template_id: templateId,
       expires_at: customData.expiresAtDate ? new Date(customData.expiresAtDate).toISOString() : null,
+      affiliate_id: body.affiliateId ?? null,
     })
     .select("id, public_id")
     .single();
@@ -198,6 +198,7 @@ export async function PATCH(request: Request) {
       buyer_name: buyerName !== null ? buyerName : undefined,
       ...(newTemplateId ? { template_id: newTemplateId } : {}),
       expires_at: customData.expiresAtDate ? new Date(customData.expiresAtDate).toISOString() : undefined,
+      ...(body.affiliateId !== undefined ? { affiliate_id: body.affiliateId || null } : {}),
     })
     .eq("id", order.id);
 
