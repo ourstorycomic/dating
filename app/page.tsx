@@ -75,13 +75,13 @@ export default function PortalPage() {
 
                 {/* Unified Showcase Container */}
                 <div className="relative flex-1 min-h-[420px] mb-8 rounded-[1.5rem] bg-white/60 border border-white backdrop-blur-md flex items-center justify-center overflow-hidden shadow-inner group-hover:shadow-[inset_0_10px_30px_rgba(255,182,193,0.1)] transition-shadow duration-500">
-                  <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/20 to-transparent z-20 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-transparent to-transparent z-20 pointer-events-none" />
 
                   {/* Decorative glow behind phone */}
                   <div className="absolute w-[200px] h-[200px] bg-pink-300/30 blur-[60px] rounded-full group-hover:scale-150 transition-transform duration-1000 ease-out" />
 
                   {/* Phone Frame */}
-                  <div className="relative w-[240px] h-[480px] origin-center translate-y-0 group-hover:-translate-y-2 transition-transform duration-[1s] ease-out z-30">
+                  <div className="relative w-[240px] h-[420px] origin-center -translate-y-4 group-hover:-translate-y-6 transition-transform duration-[1s] ease-out z-30">
                     <TiltPhonePreview />
                   </div>
 
@@ -125,13 +125,13 @@ export default function PortalPage() {
 
                 {/* Unified Showcase Container */}
                 <div className="relative flex-1 min-h-[420px] mb-8 rounded-[1.5rem] bg-[#FAFAF8]/60 border border-white backdrop-blur-md flex items-center justify-center overflow-hidden shadow-inner group-hover:shadow-[inset_0_10px_30px_rgba(197,168,128,0.1)] transition-shadow duration-500">
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#FAFAF8]/90 via-[#FAFAF8]/20 to-transparent z-20 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#FAFAF8]/90 via-transparent to-transparent z-20 pointer-events-none" />
 
                   {/* Decorative glow behind phone */}
                   <div className="absolute w-[200px] h-[200px] bg-[#C5A880]/20 blur-[60px] rounded-full group-hover:scale-150 transition-transform duration-1000 ease-out" />
 
                   {/* Phone Frame */}
-                  <div className="relative w-[240px] h-[480px] origin-center translate-y-0 group-hover:-translate-y-2 transition-transform duration-[1s] ease-out shadow-[0_24px_60px_rgba(197,168,128,0.15)] rounded-[2.5rem] z-30 bg-[#2D2A28] border-[8px] border-[#2D2A28]">
+                  <div className="relative w-[240px] h-[420px] origin-center -translate-y-4 group-hover:-translate-y-6 transition-transform duration-[1s] ease-out shadow-[0_24px_60px_rgba(197,168,128,0.15)] rounded-[2.5rem] z-30 bg-[#2D2A28] border-[8px] border-[#2D2A28]">
                     <div className="relative w-full h-full rounded-[2rem] overflow-hidden bg-white">
                       <InteractiveTemplatePreview componentKey="wedding-1" compact={true} noFrame={true} />
                     </div>
