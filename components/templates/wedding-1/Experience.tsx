@@ -361,24 +361,24 @@ export function WeddingOneExperience({
         <h2 className="text-[11px] uppercase tracking-[0.3em] text-[#8c7b6b] font-bold mb-12 font-sans">Sự kiện sắp tới</h2>
         
         {/* Countdown */}
-        <div className="flex gap-2 sm:gap-6 justify-center font-sans mb-20 text-[#444]">
-          <div className="flex flex-col items-center">
-            <span className="text-2xl sm:text-4xl font-light">{days}</span>
+        <div className="flex gap-1 sm:gap-6 justify-center font-sans mb-20 text-[#444] w-full px-2 max-w-[320px] sm:max-w-none mx-auto">
+          <div className="flex flex-col items-center w-12 sm:w-16 shrink-0">
+            <span className="text-xl sm:text-4xl font-light">{days}</span>
             <span className="text-[8px] uppercase tracking-[0.2em] mt-2 opacity-60">Ngày</span>
           </div>
-          <span className="text-xl sm:text-2xl font-light opacity-30 pt-1">:</span>
-          <div className="flex flex-col items-center">
-            <span className="text-2xl sm:text-4xl font-light">{hours}</span>
+          <span className="text-lg sm:text-2xl font-light opacity-30 pt-1 shrink-0">:</span>
+          <div className="flex flex-col items-center w-12 sm:w-16 shrink-0">
+            <span className="text-xl sm:text-4xl font-light">{hours}</span>
             <span className="text-[8px] uppercase tracking-[0.2em] mt-2 opacity-60">Giờ</span>
           </div>
-          <span className="text-xl sm:text-2xl font-light opacity-30 pt-1">:</span>
-          <div className="flex flex-col items-center">
-            <span className="text-2xl sm:text-4xl font-light">{minutes}</span>
+          <span className="text-lg sm:text-2xl font-light opacity-30 pt-1 shrink-0">:</span>
+          <div className="flex flex-col items-center w-12 sm:w-16 shrink-0">
+            <span className="text-xl sm:text-4xl font-light">{minutes}</span>
             <span className="text-[8px] uppercase tracking-[0.2em] mt-2 opacity-60">Phút</span>
           </div>
-          <span className="text-xl sm:text-2xl font-light opacity-30 pt-1">:</span>
-          <div className="flex flex-col items-center">
-            <span className="text-2xl sm:text-4xl font-light">{seconds}</span>
+          <span className="text-lg sm:text-2xl font-light opacity-30 pt-1 shrink-0">:</span>
+          <div className="flex flex-col items-center w-12 sm:w-16 shrink-0">
+            <span className="text-xl sm:text-4xl font-light">{seconds}</span>
             <span className="text-[8px] uppercase tracking-[0.2em] mt-2 opacity-60">Giây</span>
           </div>
         </div>
@@ -397,14 +397,15 @@ export function WeddingOneExperience({
               {blanks.map(b => <div key={`b-${b}`} />)}
               {monthDays.map(day => {
                 const isWedding = day === parsedDDate.getDate() && parsedDDate.getMonth() + 1 === dMonthNumber;
-                let isTiec = false;
+                let isTiecTrai = false;
+                let isTiecGai = false;
                 if (hasTiecMung && customData?.tiecDate) {
                   const td = new Date(customData.tiecDate);
-                  if (!isNaN(td.getTime()) && day.toString() === td.getDate().toString() && td.getMonth() + 1 === dMonthNumber && td.getFullYear() === parsedDDate.getFullYear()) isTiec = true;
+                  if (!isNaN(td.getTime()) && day.toString() === td.getDate().toString() && td.getMonth() + 1 === dMonthNumber && td.getFullYear() === parsedDDate.getFullYear()) isTiecTrai = true;
                 }
                 if (hasTiecMungGai && customData?.tiecDateGai) {
                   const td = new Date(customData.tiecDateGai);
-                  if (!isNaN(td.getTime()) && day.toString() === td.getDate().toString() && td.getMonth() + 1 === dMonthNumber && td.getFullYear() === parsedDDate.getFullYear()) isTiec = true;
+                  if (!isNaN(td.getTime()) && day.toString() === td.getDate().toString() && td.getMonth() + 1 === dMonthNumber && td.getFullYear() === parsedDDate.getFullYear()) isTiecGai = true;
                 }
                 
                 return (
@@ -414,28 +415,37 @@ export function WeddingOneExperience({
                         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                       </svg>
                     )}
-                    {isTiec && !isWedding && (
+                    {isTiecTrai && !isWedding && (
                       <div className="absolute inset-0 w-full h-full rounded-full border-[1.5px] border-dashed border-[#8c7b6b] bg-[#8c7b6b]/5 scale-90"></div>
                     )}
-                    <span className={`relative z-10 font-bold ${isWedding ? "text-[11px]" : isTiec ? "" : "text-gray-500 font-normal"}`} style={{ color: isWedding ? "white" : isTiec ? "#8c7b6b" : undefined }}>
+                    {isTiecGai && !isWedding && (
+                      <div className="absolute inset-0 w-full h-full rounded-full border-[1.5px] border-solid border-[#8c7b6b] bg-[#8c7b6b]/10 scale-75"></div>
+                    )}
+                    <span className={`relative z-10 font-bold ${isWedding ? "text-[11px]" : (isTiecTrai || isTiecGai) ? "" : "text-gray-500 font-normal"}`} style={{ color: isWedding ? "white" : (isTiecTrai || isTiecGai) ? "#8c7b6b" : undefined }}>
                       {day}
                     </span>
-                    {isTiec && isWedding && (
+                    {(isTiecTrai || isTiecGai) && isWedding && (
                       <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.6, type: "spring" }} className="absolute inset-0 w-[150%] h-[150%] -left-[25%] -top-[25%] rounded-full border-[1.5px] border-dashed border-[#8c7b6b] z-0 opacity-80"></motion.div>
                     )}
                   </div>
                 );
               })}
            </div>
-           <div className="flex justify-center gap-6 mt-6 pt-4 border-t border-[#d6cfc5]/50">
+           <div className="flex justify-center flex-wrap gap-x-6 gap-y-3 mt-6 pt-4 border-t border-[#d6cfc5]/50">
              <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#8c7b6b]">
                <svg className="w-3.5 h-3.5 text-[#8c7b6b]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg> 
                Lễ Cưới
              </div>
-             {(hasTiecMung || hasTiecMungGai) && (
+             {hasTiecMung && (
                <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#8c7b6b]">
-                 <div className="w-3.5 h-3.5 rounded-full border-[1.5px] border-dashed border-[#8c7b6b] bg-[#8c7b6b]/5"></div> 
-                 Tiệc Mừng
+                 <div className="w-3.5 h-3.5 rounded-full border-[1.5px] border-dashed border-[#8c7b6b] bg-[#8c7b6b]/5 shrink-0"></div> 
+                 {hasTiecMungGai ? "Tiệc Nhà Trai" : "Tiệc Mừng"}
+               </div>
+             )}
+             {hasTiecMungGai && (
+               <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#8c7b6b]">
+                 <div className="w-3.5 h-3.5 rounded-full border-[1.5px] border-solid border-[#8c7b6b] bg-[#8c7b6b]/10 shrink-0"></div> 
+                 {hasTiecMung ? "Tiệc Nhà Gái" : "Tiệc Mừng"}
                </div>
              )}
            </div>
