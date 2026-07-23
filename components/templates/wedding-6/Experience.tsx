@@ -264,41 +264,53 @@ export function WeddingSixExperience({
               {blanks.map(b => <div key={`blank-${b}`} />)}
               {monthDays.map(day => {
                 const isWedding = day === parsedDDate.getDate() && parsedDDate.getMonth() + 1 === dMonth && parsedDDate.getFullYear() === dYear;
-                let isTiec = false;
+                let isTiecTrai = false;
+                let isTiecGai = false;
                 if (hasTiecMung && customData?.tiecDate) {
                   const td = new Date(customData.tiecDate);
-                  if (!isNaN(td.getTime()) && day === td.getDate() && td.getMonth() + 1 === dMonth && td.getFullYear() === dYear) isTiec = true;
+                  if (!isNaN(td.getTime()) && day === td.getDate() && td.getMonth() + 1 === dMonth && td.getFullYear() === dYear) isTiecTrai = true;
                 }
                 if (hasTiecMungGai && customData?.tiecDateGai) {
                   const td = new Date(customData.tiecDateGai);
-                  if (!isNaN(td.getTime()) && day === td.getDate() && td.getMonth() + 1 === dMonth && td.getFullYear() === dYear) isTiec = true;
+                  if (!isNaN(td.getTime()) && day === td.getDate() && td.getMonth() + 1 === dMonth && td.getFullYear() === dYear) isTiecGai = true;
                 }
                 
                 return (
-                  <div key={day} className={`relative flex items-center justify-center font-medium mx-auto w-6 h-6 sm:w-8 sm:h-8 ${isWedding ? 'text-[#e58a93] font-bold' : isTiec ? 'text-[#e58a93] font-bold' : 'text-[#444]'}`}>
+                  <div key={day} className={`relative flex items-center justify-center font-medium mx-auto w-6 h-6 sm:w-8 sm:h-8 ${isWedding ? 'text-[#e58a93] font-bold' : (isTiecTrai || isTiecGai) ? 'text-[#e58a93] font-bold' : 'text-[#444]'}`}>
                     <span className="relative z-10">{day}</span>
                     {isWedding && (
                       <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 2.5, type: "spring" }} className="absolute inset-0 flex items-center justify-center">
                         <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-[#f5d0d4] fill-[#f5d0d4]/30" strokeWidth={1.5} />
                       </motion.div>
                     )}
-                    {isTiec && !isWedding && (
+                    {isTiecTrai && !isWedding && (
                       <div className="absolute inset-0 w-full h-full rounded-full border-[1.5px] border-dashed border-[#e8c0c4] bg-[#e8c0c4]/5 scale-90"></div>
                     )}
-                    {isTiec && isWedding && (
+                    {isTiecGai && !isWedding && (
+                      <div className="absolute inset-0 w-full h-full rounded-full border-[1.5px] border-solid border-[#e8c0c4] bg-[#e8c0c4]/10 scale-75"></div>
+                    )}
+                    {isTiecTrai && isWedding && (
                       <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.6, type: "spring" }} className="absolute inset-0 w-[140%] h-[140%] -left-[20%] -top-[20%] rounded-full border-[1.5px] border-dashed border-[#e8c0c4] z-0 opacity-70"></motion.div>
+                    )}
+                    {isTiecGai && isWedding && (
+                      <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.7, type: "spring" }} className="absolute inset-0 w-[170%] h-[170%] -left-[35%] -top-[35%] rounded-full border-[1.5px] border-solid border-[#e8c0c4] z-0 opacity-60"></motion.div>
                     )}
                   </div>
                 );
               })}
             </div>
-            <div className="flex justify-center gap-6 mt-6">
+            <div className="flex justify-center flex-wrap gap-x-6 gap-y-3 mt-6">
               <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#e58a93]">
                 <Heart className="w-3 h-3 text-[#f5d0d4] fill-[#f5d0d4]" /> Lễ Cưới
               </div>
-              {(hasTiecMung || hasTiecMungGai) && (
+              {hasTiecMung && (
                 <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#e58a93]">
-                  <div className="w-3 h-3 rounded-full border-[1.5px] border-dashed border-[#e8c0c4]"></div> Tiệc Mừng
+                  <div className="w-3.5 h-3.5 rounded-full border-[1.5px] border-dashed border-[#e8c0c4] bg-[#e8c0c4]/5 shrink-0"></div> {hasTiecMungGai ? "Tiệc Nhà Trai" : "Tiệc Mừng"}
+                </div>
+              )}
+              {hasTiecMungGai && (
+                <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#e58a93]">
+                  <div className="w-3.5 h-3.5 rounded-full border-[1.5px] border-solid border-[#e8c0c4] bg-[#e8c0c4]/10 shrink-0"></div> {hasTiecMung ? "Tiệc Nhà Gái" : "Tiệc Mừng"}
                 </div>
               )}
             </div>

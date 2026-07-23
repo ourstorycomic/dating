@@ -262,12 +262,18 @@ export function WeddingThreeExperience({
               {monthDays.map(day => {
                 const isWedding = day === Number(dDay) && parsedDDate.getMonth() + 1 === dMonthNumber && parsedDDate.getFullYear() === Number(dYear);
                 let tiecDay = 0, tiecMonth = 0, tiecYear = 0;
-                const tiecToUse = (!hasTiecMungGai) ? tiecTrai : tiecGai;
-                if (tiecToUse && tiecToUse.date) {
-                  const [td, tm, ty] = tiecToUse.date.split("/");
+                let tiecDayGai = 0, tiecMonthGai = 0, tiecYearGai = 0;
+                
+                if (tiecTrai && tiecTrai.date) {
+                  const [td, tm, ty] = tiecTrai.date.split("/");
                   tiecDay = parseInt(td); tiecMonth = parseInt(tm); tiecYear = parseInt(ty);
                 }
-                const isTiec = tiecDay === day && tiecMonth === dMonthNumber && tiecYear === Number(dYear);
+                if (tiecGai && tiecGai.date) {
+                  const [td, tm, ty] = tiecGai.date.split("/");
+                  tiecDayGai = parseInt(td); tiecMonthGai = parseInt(tm); tiecYearGai = parseInt(ty);
+                }
+                const isTiecTrai = hasTiecMung && tiecDay === day && tiecMonth === dMonthNumber && tiecYear === Number(dYear);
+                const isTiecGai = hasTiecMungGai && tiecDayGai === day && tiecMonthGai === dMonthNumber && tiecYearGai === Number(dYear);
                 return (
                   <div key={day} className="relative flex justify-center items-center w-7 h-7 mx-auto">
                     {isWedding && (
@@ -275,24 +281,35 @@ export function WeddingThreeExperience({
                         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                       </motion.svg>
                     )}
-                    {isTiec && !isWedding && (
+                    {isTiecTrai && !isWedding && (
                       <motion.div initial={{ scale: 0 }} whileInView={{ scale: 0.9 }} viewport={{ once: true }} transition={{ delay: 0.6, type: "spring" }} className="absolute inset-0 border-[1.5px] border-dashed border-[#7A1F1F] rounded-full bg-[#7A1F1F]/5" />
                     )}
-                    <span className={`relative z-10 font-bold ${isWedding ? "text-[11px]" : ""}`} style={{ color: isWedding ? "white" : isTiec ? "#7A1F1F" : "#2D2A28" }}>{day}</span>
-                    {isTiec && isWedding && (
+                    {isTiecGai && !isWedding && (
+                      <motion.div initial={{ scale: 0 }} whileInView={{ scale: 0.75 }} viewport={{ once: true }} transition={{ delay: 0.7, type: "spring" }} className="absolute inset-0 border-[1.5px] border-solid border-[#7A1F1F] rounded-full bg-[#7A1F1F]/10" />
+                    )}
+                    <span className={`relative z-10 font-bold ${isWedding ? "text-[11px]" : ""}`} style={{ color: isWedding ? "white" : (isTiecTrai || isTiecGai) ? "#7A1F1F" : "#2D2A28" }}>{day}</span>
+                    {isTiecTrai && isWedding && (
                       <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.6, type: "spring" }} className="absolute inset-0 w-[150%] h-[150%] -left-[25%] -top-[25%] rounded-full border-[1.5px] border-dashed border-[#7A1F1F] z-0 opacity-80"></motion.div>
+                    )}
+                    {isTiecGai && isWedding && (
+                      <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.7, type: "spring" }} className="absolute inset-0 w-[180%] h-[180%] -left-[40%] -top-[40%] rounded-full border-[1.5px] border-solid border-[#7A1F1F] z-0 opacity-60"></motion.div>
                     )}
                   </div>
                 );
               })}
             </div>
-            <div className="flex justify-center gap-6 mt-4">
+            <div className="flex justify-center flex-wrap gap-x-6 gap-y-3 mt-4">
               <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#7A1F1F]">
                 <svg className="w-4 h-4 text-[#7A1F1F]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg> Lễ Cưới
               </div>
-              {(hasTiecMung || hasTiecMungGai) && (
+              {hasTiecMung && (
                 <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#7A1F1F]">
-                  <div className="w-3.5 h-3.5 rounded-full border-[1.5px] border-dashed border-[#7A1F1F] bg-[#7A1F1F]/5"></div> Tiệc Mừng
+                  <div className="w-3.5 h-3.5 rounded-full border-[1.5px] border-dashed border-[#7A1F1F] bg-[#7A1F1F]/5 shrink-0"></div> {hasTiecMungGai ? "Tiệc Nhà Trai" : "Tiệc Mừng"}
+                </div>
+              )}
+              {hasTiecMungGai && (
+                <div className="flex items-center gap-2 text-[9px] font-sans font-bold uppercase tracking-widest text-[#7A1F1F]">
+                  <div className="w-3.5 h-3.5 rounded-full border-[1.5px] border-solid border-[#7A1F1F] bg-[#7A1F1F]/10 shrink-0"></div> {hasTiecMung ? "Tiệc Nhà Gái" : "Tiệc Mừng"}
                 </div>
               )}
             </div>
