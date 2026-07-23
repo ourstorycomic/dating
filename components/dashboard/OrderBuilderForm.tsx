@@ -482,7 +482,7 @@ function Section({
   );
 }
 
-export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFree, initialOrder }: { currentRole: "ADMIN" | "STAFF" | "EMPLOYEE"; myOrders: MyOrderRow[]; templates: TemplateCatalogItem[]; canCreateFree?: boolean; initialOrder?: any }) {
+export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFree, initialOrder }: { currentRole: "ADMIN" | "STAFF" | "EMPLOYEE" | "FANPAGE"; myOrders: MyOrderRow[]; templates: TemplateCatalogItem[]; canCreateFree?: boolean; initialOrder?: any }) {
   const router = useRouter();
   const [isInitializing, setIsInitializing] = useState(!!initialOrder);
   const [isMobileDevice, setIsMobileDevice] = useState(false);
@@ -1545,6 +1545,9 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
         <Section title="Thông tin đơn" className={`relative z-50 ${orderIsLocked ? "pointer-events-none opacity-60" : ""}`}>
           <TextInput label="Tên khách mua" onChange={setBuyerName} value={buyerName} />
           <TextInput label="TikTok / SĐT khách" onChange={setBuyerContact} value={buyerContact} />
+          {(currentRole === "FANPAGE" || currentRole === "ADMIN") && (
+            <TextInput label="Người giới thiệu (Đối tác / Cò)" onChange={setReferrerName} value={referrerName} />
+          )}
           {/* BỘ LỌC LOẠI ĐƠN */}
           <div className="md:col-span-2 mt-2 mb-2 flex items-center gap-6">
             <span className="text-white/64 text-sm font-medium">Phân loại:</span>

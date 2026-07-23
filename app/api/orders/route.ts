@@ -98,6 +98,7 @@ export async function POST(request: Request) {
       buyer_contact: body.buyerContact ?? null,
       buyer_name: body.buyerName ?? null,
       buyer_social_handle: body.buyerContact ?? null,
+      referrer_name: body.referrerName ?? null,
       created_by_id: session.userId,
       custom_data: customData,
       public_id: publicId,
