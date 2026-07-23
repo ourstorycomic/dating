@@ -17,6 +17,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
   const [mode, setMode] = useState<"mobile" | "desktop">("mobile");
   const [isMobileDevice, setIsMobileDevice] = useState(false);
   const [phoneScale, setPhoneScale] = useState(1);
+  const [desktopScale, setDesktopScale] = useState(1);
   const [mounted, setMounted] = useState(false);
 
   const isWedding = template.component_key?.includes('wedding') || template.template_categories?.slug === 'wedding';
@@ -54,8 +55,20 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
       
       const scaleH = availableHeight / 820; // 820 is the phone frame height + toggle buttons
       const scaleW = availableWidth / 420; // 420 is phone frame width
-      
       setPhoneScale(Math.max(0.4, Math.min(1, Math.min(scaleH, scaleW))));
+      
+      // Calculate scale for PC preview (desktop mode)
+      if (isMobile) {
+        // When rotated, width becomes height and vice versa
+        const rotatedHeight = window.innerWidth;
+        const rotatedWidth = window.innerHeight;
+        const deskScaleH = (rotatedHeight - 120) / 600; // 600 is PC frame height
+        const deskScaleW = (rotatedWidth - 80) / 800; // 800 is PC frame width
+        setDesktopScale(Math.max(0.3, Math.min(1, Math.min(deskScaleH, deskScaleW))));
+      } else {
+        // On actual PC, use standard scale
+        setDesktopScale(Math.max(0.4, Math.min(1, Math.min(scaleH, scaleW) * 1.2)));
+      }
     };
     
     handleResize();
@@ -65,9 +78,58 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
 
   const isRotated = isMobileDevice && mode === "desktop";
 
+  const suggestionsBox = relatedTemplates.length > 0 ? (
+    <div className={`w-full border-t ${isWedding ? "border-[#f0eadd]" : "border-pink-100"} pt-5`}>
+      <h3 className={`text-xs font-bold ${isWedding ? "text-[#bfa993]" : "text-pink-300"} mb-3 uppercase tracking-widest`}>Gợi ý mẫu cùng chủ đề:</h3>
+      <div className="grid grid-cols-4 gap-2 pb-2">
+        {relatedTemplates.map((relTemplate) => (
+          <Link
+            href={`/templates/${relTemplate.slug}/preview`}
+            key={relTemplate.id}
+            className={`relative h-[110px] rounded-xl overflow-hidden border-2 ${isWedding ? "border-[#f4f1ea] hover:border-[#d8c3a5] hover:shadow-[0_8px_16px_-4px_rgba(216,195,165,0.6)]" : "border-pink-100 hover:border-pink-400 hover:shadow-[0_8px_16px_-4px_rgba(255,192,203,0.6)]"} transition-all group bg-[#05020a]`}
+          >
+            {/* Static thumbnail — DB url > webp > png > dark bg */}
+            <picture className="absolute inset-0 w-full h-full">
+              {relTemplate.thumbnail_url ? (
+                <>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={relTemplate.thumbnail_url}
+                    alt={relTemplate.name}
+                    className="w-full h-full object-cover object-top"
+                    loading="lazy"
+                    decoding="async"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                  />
+                </>
+              ) : (
+                <>
+                  <source srcSet={`/thumbnails/${relTemplate.slug}.webp`} type="image/webp" />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`/thumbnails/${relTemplate.slug}.png`}
+                    alt={relTemplate.name}
+                    className="w-full h-full object-cover object-top"
+                    loading="lazy"
+                    decoding="async"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                  />
+                </>
+              )}
+            </picture>
+            {/* Gradient overlay for text legibility */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+            <span className="absolute bottom-1.5 left-1.5 right-1.5 text-white font-bold text-[9px] leading-tight drop-shadow-md z-10 pointer-events-none line-clamp-2 text-center">{relTemplate.name}</span>
+          </Link>
+        ))}
+      </div>
+    </div>
+  ) : null;
+
+  // Add overflow-y-auto to allow scrolling the toggles/preview when rotated
   return (
     <div 
-      className={`${isWedding ? "bg-[#f4f1ea] text-[#3a3532]" : "bg-pink-50 text-gray-800"} flex flex-col font-sans relative overflow-x-hidden ${isRotated ? "fixed inset-0 z-[9999]" : "min-h-[100dvh] w-full lg:h-[100dvh] lg:overflow-hidden"}`}
+      className={`${isWedding ? "bg-[#f4f1ea] text-[#3a3532]" : "bg-pink-50 text-gray-800"} flex flex-col font-sans relative overflow-x-hidden ${isRotated ? "fixed inset-0 z-[9999] overflow-y-auto" : "min-h-[100dvh] w-full lg:h-[100dvh] lg:overflow-hidden"}`}
       style={isRotated ? {
         transform: "rotate(90deg)",
         transformOrigin: "center center",
@@ -183,54 +245,10 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                   Nhắn shop làm mẫu này ♥
                 </a>
 
-                {/* Suggestions Box to fill space */}
-                {relatedTemplates.length > 0 && (
-                  <div className={`mt-6 w-full border-t ${isWedding ? "border-[#f0eadd]" : "border-pink-100"} pt-5`}>
-                    <h3 className={`text-xs font-bold ${isWedding ? "text-[#bfa993]" : "text-pink-300"} mb-3 uppercase tracking-widest`}>Gợi ý mẫu cùng chủ đề:</h3>
-                    <div className="grid grid-cols-4 gap-2 pb-2">
-                      {relatedTemplates.map((relTemplate) => (
-                        <Link
-                          href={`/templates/${relTemplate.slug}/preview`}
-                          key={relTemplate.id}
-                          className={`relative h-[110px] rounded-xl overflow-hidden border-2 ${isWedding ? "border-[#f4f1ea] hover:border-[#d8c3a5] hover:shadow-[0_8px_16px_-4px_rgba(216,195,165,0.6)]" : "border-pink-100 hover:border-pink-400 hover:shadow-[0_8px_16px_-4px_rgba(255,192,203,0.6)]"} transition-all group bg-[#05020a]`}
-                        >
-                          {/* Static thumbnail — DB url > webp > png > dark bg */}
-                          <picture className="absolute inset-0 w-full h-full">
-                            {relTemplate.thumbnail_url ? (
-                              <>
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                  src={relTemplate.thumbnail_url}
-                                  alt={relTemplate.name}
-                                  className="w-full h-full object-cover object-top"
-                                  loading="lazy"
-                                  decoding="async"
-                                  onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-                                />
-                              </>
-                            ) : (
-                              <>
-                                <source srcSet={`/thumbnails/${relTemplate.slug}.webp`} type="image/webp" />
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                  src={`/thumbnails/${relTemplate.slug}.png`}
-                                  alt={relTemplate.name}
-                                  className="w-full h-full object-cover object-top"
-                                  loading="lazy"
-                                  decoding="async"
-                                  onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-                                />
-                              </>
-                            )}
-                          </picture>
-                          {/* Gradient overlay for text legibility */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
-                          <span className="absolute bottom-1.5 left-1.5 right-1.5 text-white font-bold text-[9px] leading-tight drop-shadow-md z-10 pointer-events-none line-clamp-2 text-center">{relTemplate.name}</span>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                {/* Suggestions Box - Hidden on mobile, visible on desktop */}
+                <div className="hidden lg:block w-full">
+                  {suggestionsBox}
+                </div>
             </div>
 
             {/* Right Column: The Phone / PC Preview */}
@@ -258,8 +276,8 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                <div 
                  className="relative shrink-0 flex items-center justify-center"
                  style={{ 
-                   width: (mode === "mobile" ? 380 : 800) * (mode === "mobile" ? phoneScale : Math.min(1, phoneScale * 1.2)), 
-                   height: (mode === "mobile" ? 780 : 600) * (mode === "mobile" ? phoneScale : Math.min(1, phoneScale * 1.2)),
+                   width: (mode === "mobile" ? 380 : 800) * (mode === "mobile" ? phoneScale : desktopScale), 
+                   height: (mode === "mobile" ? 780 : 600) * (mode === "mobile" ? phoneScale : desktopScale),
                  }}
                >
                  <div
@@ -267,7 +285,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                    style={{ 
                      width: mode === "mobile" ? '380px' : '800px', 
                      height: mode === "mobile" ? '780px' : '600px',
-                     transform: `scale(${mode === "mobile" ? phoneScale : Math.min(1, phoneScale * 1.2)})`,
+                     transform: `scale(${mode === "mobile" ? phoneScale : desktopScale})`,
                    }}
                  >
                    <div className="relative w-full h-full">
@@ -316,9 +334,15 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                        />
                      </div>
                    )}
+                   </div>
                  </div>
                </div>
-              </div>
+               
+               {/* Suggestions Box - Visible on mobile, hidden on desktop */}
+               <div className="block lg:hidden w-full max-w-[420px] mt-12 mb-8 bg-white/60 backdrop-blur-sm p-4 rounded-3xl border border-pink-100 shadow-sm">
+                 {suggestionsBox}
+               </div>
+
             </div>
             </div>
       </main>
