@@ -13,6 +13,7 @@ export default function Birthday2Preview(props: TemplatePreviewProps) {
       onStepChange={props.onStepChange}
       hideNavigation={props.hideNavigation}
       config={props.customData as Record<string, string | undefined>}
+      fullScreen={props.fullScreen}
     />
   );
 }

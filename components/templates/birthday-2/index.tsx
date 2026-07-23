@@ -12,7 +12,7 @@ import { Step6Letter } from "./components/Step6Letter";
 import { Step7Climax } from "./components/Step7Climax";
 import { TemplateNavigator } from "../TemplateNavigator";
 
-export default function Birthday2Diary({ autoPlay = false, compact = false, isBuilderPreview = false, generalAudioUrl, forceStep, onStepChange, hideNavigation = false, config = {} }: { autoPlay?: boolean; compact?: boolean; isBuilderPreview?: boolean; generalAudioUrl?: string; forceStep?: number; onStepChange?: (step: number, total: number) => void; hideNavigation?: boolean; config?: Birthday2Config }) {
+export default function Birthday2Diary({ autoPlay = false, compact = false, isBuilderPreview = false, generalAudioUrl, forceStep, onStepChange, hideNavigation = false, config = {}, fullScreen = false }: { autoPlay?: boolean; compact?: boolean; isBuilderPreview?: boolean; generalAudioUrl?: string; forceStep?: number; onStepChange?: (step: number, total: number) => void; hideNavigation?: boolean; config?: Birthday2Config; fullScreen?: boolean }) {
   const [step, setStep] = useState(1);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -46,7 +46,7 @@ export default function Birthday2Diary({ autoPlay = false, compact = false, isBu
     <div 
       onClick={handleInteraction}
       onTouchStart={handleInteraction}
-      className={`relative w-full overflow-hidden text-slate-800 font-sans mx-auto h-full bg-pink-50`}
+      className={`relative w-full overflow-hidden text-slate-800 font-sans mx-auto bg-pink-50 ${compact ? 'absolute inset-0 rounded-[2.5rem]' : fullScreen ? 'min-h-[100dvh]' : 'h-full'}`}
       style={{ backgroundImage: "url('/assets/bg/bg2.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
       {generalAudioUrl && <audio ref={audioRef} src={generalAudioUrl} loop muted={compact && !autoPlay && !isBuilderPreview} />}
