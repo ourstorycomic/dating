@@ -312,7 +312,7 @@ export function UserManager({
                         </span>
                       )}
                     </td>
-                    <td className="px-5 py-4 text-white/58">{new Date(user.created_at).toLocaleString("vi-VN")}</td>
+                    <td className="px-5 py-4 text-white/58">{new Date(user.created_at).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })}</td>
                     {currentRole === "ADMIN" && (
                       <td className="px-5 py-4 text-right">
                         <div className="flex justify-end gap-2">

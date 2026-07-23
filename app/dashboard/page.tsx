@@ -75,7 +75,7 @@ export default async function DashboardPage(props: { searchParams?: Promise<{ qu
                     <td className="px-5 py-4">
                       <span className="rounded-full border border-white/10 bg-white/[0.07] px-3 py-1 text-xs font-semibold">{order.status}</span>
                     </td>
-                    <td className="px-5 py-4 text-white/58">{new Date(order.created_at).toLocaleString("vi-VN")}</td>
+                    <td className="px-5 py-4 text-white/58">{new Date(order.created_at).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })}</td>
                   </tr>
                 ))}
               </tbody>

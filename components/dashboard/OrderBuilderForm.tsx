@@ -1896,7 +1896,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                       <p><span className="text-white/48">Mã CK:</span> <b className="text-pink-100">{payment?.payment_code ?? "Chưa có"}</b></p>
                     </div>
                     <p className="mt-3 text-xs text-white/48">
-                      Tạo lúc {new Date(order.created_at).toLocaleString("vi-VN")}
+                      Tạo lúc {new Date(order.created_at).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })}
                     </p>
                   </article>
                 );

@@ -44,7 +44,7 @@ function money(value: unknown) {
 
 function time(value: string | null | undefined) {
   if (!value) return "Chưa có";
-  return new Date(value).toLocaleString("vi-VN");
+  return new Date(value).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
 }
 
 function getPayment(order: Order | null) {

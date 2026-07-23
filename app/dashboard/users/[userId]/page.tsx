@@ -132,7 +132,7 @@ export default async function UserDetailPage(props: { params: Promise<{ userId: 
                         <span className="rounded-full bg-white/10 px-2 py-1 text-xs">{order.status}</span>
                       </td>
                       <td className="px-5 py-4">{Number(order.amount).toLocaleString("vi-VN")}đ</td>
-                      <td className="px-5 py-4 text-white/60">{new Date(order.created_at).toLocaleString("vi-VN")}</td>
+                      <td className="px-5 py-4 text-white/60">{new Date(order.created_at).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })}</td>
                       <td className="px-5 py-4 font-semibold text-green-300">{com ? `+${Number(com.amount).toLocaleString("vi-VN")}đ` : "-"}</td>
                     </tr>
                   );
