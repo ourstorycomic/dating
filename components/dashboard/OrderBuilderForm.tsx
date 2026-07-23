@@ -722,7 +722,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const ordersPerPage = 5;
   const [isLocked, setIsLocked] = useState(false);
   const [editUnlockCount, setEditUnlockCount] = useState(0);
-  const [confirmModal, setConfirmModal] = useState<{ open: boolean; type: "LOCK" | "UNLOCK"; title: string; desc: string; onConfirm: () => void } | null>(null);
+  const [confirmModal, setConfirmModal] = useState<{ open: boolean; type: "LOCK" | "UNLOCK" | "DELETE"; title: string; desc: string; onConfirm: () => void } | null>(null);
 
   const templateId = selectedTemplateId || (valentineOne?.id ?? "");
   const isConstellation = !!templateId && (templateId.includes("constellation") || templateId.includes("starry") || templateId.includes("valentine-1"));
@@ -2829,6 +2829,23 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                     {result?.unlocked ? "🔒 Khóa đơn" : "🔒 Chờ thanh toán"}
                   </span>
                 </button>
+                <button
+                  className="group relative overflow-hidden rounded-[2rem] border-[2px] border-white/20 bg-gradient-to-r from-red-500 to-red-600 bg-[length:200%_auto] px-8 py-3 text-base font-black !text-white shadow-[0_10px_25px_rgba(239,68,68,0.4)] backdrop-blur-md transition-all animate-gradient-x hover:scale-[1.02] hover:shadow-[0_15px_35px_rgba(239,68,68,0.6)] active:scale-95 disabled:opacity-50"
+                  disabled={isDeletingOrder || isSavingEdits}
+                  onClick={() => setConfirmModal({
+                    open: true,
+                    type: "DELETE",
+                    title: "Xác nhận xóa đơn",
+                    desc: "Hành động này sẽ xóa vĩnh viễn đơn hàng và TẤT CẢ hình ảnh đính kèm. Không thể hoàn tác!",
+                    onConfirm: handleDeleteOrder
+                  })}
+                  type="button"
+                >
+                  <div className="absolute inset-0 bg-white/20 opacity-0 transition-opacity group-hover:opacity-100" />
+                  <span className="relative z-10 drop-shadow-md tracking-wide">
+                    {isDeletingOrder ? "Đang xóa..." : "🗑️ Xóa đơn"}
+                  </span>
+                </button>
               </div>
             </div>
           </>
@@ -3039,7 +3056,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
       {confirmModal && (
         <div className="fixed inset-0 z-[99999] grid place-items-center bg-black/60 backdrop-blur-sm p-4" onClick={() => setConfirmModal(null)}>
           <div className="w-full max-w-sm rounded-3xl border border-pink-200 bg-[#fff5fb] p-6 text-center text-pink-950 shadow-2xl animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
-            <div className="text-5xl mb-4 drop-shadow-md">{confirmModal.type === "LOCK" ? "🔒" : "🔓"}</div>
+            <div className="text-5xl mb-4 drop-shadow-md">{confirmModal.type === "LOCK" ? "🔒" : confirmModal.type === "DELETE" ? "🗑️" : "🔓"}</div>
             <h2 className="text-xl font-black text-pink-900 mb-3">{confirmModal.title}</h2>
             <p className="text-sm text-pink-800/80 mb-8 whitespace-pre-line leading-relaxed font-medium">{confirmModal.desc}</p>
             <div className="grid grid-cols-2 gap-3">
