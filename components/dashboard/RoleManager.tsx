@@ -404,8 +404,6 @@ export function RoleManager({ initialRoles, templates }: { initialRoles: CustomR
                     ))}
                   </div>
                 </div>
-                  </div>
-                </div>
               ) : null}
 
               <div className="grid gap-2 mt-2">
