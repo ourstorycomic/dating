@@ -337,33 +337,39 @@ export async function POST(request: Request) {
                 childRoleId: creatorRoleId,
               },
             },
+            include: { parentRole: true }
           });
 
-          if (rule && rule.isActive && Number(rule.percentage) > 0) {
-            // Prevent double-paying if we already paid this manager via the basic STAFF rule
-            const alreadyPaid = commissions.some(
-              (c) => c.user_id === managerUser.id && c.recipient_type === "STAFF"
-            );
+          if (rule && rule.isActive) {
+            const customPercentage = Number(rule.percentage);
+            const rulePercentage = customPercentage > 0 ? customPercentage : Number(rule.parentRole.commissionPercentage);
             
-            if (!alreadyPaid) {
-              commissions.push({
-                amount: (orderAmount * Number(rule.percentage)) / 100,
-                order_id: order.id,
-                percentage: Number(rule.percentage),
-                recipient_type: "STAFF", // using STAFF for manager commissions
-                user_id: managerUser.id,
-              });
-            } else {
-              // If already paid, we can choose to add them up, but usually we just prefer the cross-role rule.
-              // We'll update the existing STAFF commission to use the cross-role percentage instead if they prefer.
-              // To keep it simple, we just ADD it. Or rather, let's just add it as another STAFF record or replace it.
-              // Let's replace the basic STAFF rule with the specific cross-role rule since it's more specific.
-              const existingIdx = commissions.findIndex(
+            if (rulePercentage > 0) {
+              // Prevent double-paying if we already paid this manager via the basic STAFF rule
+              const alreadyPaid = commissions.some(
                 (c) => c.user_id === managerUser.id && c.recipient_type === "STAFF"
               );
-              if (existingIdx !== -1) {
-                commissions[existingIdx].percentage = Number(rule.percentage);
-                commissions[existingIdx].amount = (orderAmount * Number(rule.percentage)) / 100;
+              
+              if (!alreadyPaid) {
+                commissions.push({
+                  amount: (orderAmount * rulePercentage) / 100,
+                  order_id: order.id,
+                  percentage: rulePercentage,
+                  recipient_type: "STAFF", // using STAFF for manager commissions
+                  user_id: managerUser.id,
+                });
+              } else {
+                // If already paid, we can choose to add them up, but usually we just prefer the cross-role rule.
+                // We'll update the existing STAFF commission to use the cross-role percentage instead if they prefer.
+                // To keep it simple, we just ADD it. Or rather, let's just add it as another STAFF record or replace it.
+                // Let's replace the basic STAFF rule with the specific cross-role rule since it's more specific.
+                const existingIdx = commissions.findIndex(
+                  (c) => c.user_id === managerUser.id && c.recipient_type === "STAFF"
+                );
+                if (existingIdx !== -1) {
+                  commissions[existingIdx].percentage = rulePercentage;
+                  commissions[existingIdx].amount = (orderAmount * rulePercentage) / 100;
+                }
               }
             }
           }

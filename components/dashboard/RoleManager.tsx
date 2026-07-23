@@ -197,19 +197,27 @@ export function RoleManager({ initialRoles, templates }: { initialRoles: CustomR
     });
   }
 
-  function getCrossRolePercentage(childRoleId: string) {
-    return form.crossRoleCommissions.find((rule) => rule.childRoleId === childRoleId)?.percentage ?? 0;
+  function getCrossRoleActive(childRoleId: string) {
+    const rule = form.crossRoleCommissions.find((rule) => rule.childRoleId === childRoleId);
+    return rule?.isActive ?? false;
   }
 
-  function setCrossRolePercentage(childRoleId: string, percentage: number) {
+  function setCrossRoleActive(childRoleId: string, isActive: boolean) {
     setForm((current) => {
-      const exists = current.crossRoleCommissions.some((rule) => rule.childRoleId === childRoleId);
-      return {
-        ...current,
-        crossRoleCommissions: exists
-          ? current.crossRoleCommissions.map((rule) => rule.childRoleId === childRoleId ? { ...rule, isActive: true, percentage } : rule)
-          : [...current.crossRoleCommissions, { isActive: true, percentage, childRoleId }],
-      };
+      if (isActive) {
+        return {
+          ...current,
+          crossRoleCommissions: [
+            ...current.crossRoleCommissions.filter(r => r.childRoleId !== childRoleId),
+            { childRoleId, percentage: 0, isActive: true }
+          ]
+        };
+      } else {
+        return {
+          ...current,
+          crossRoleCommissions: current.crossRoleCommissions.filter(r => r.childRoleId !== childRoleId)
+        };
+      }
     });
   }
 
@@ -412,19 +420,16 @@ export function RoleManager({ initialRoles, templates }: { initialRoles: CustomR
                 <div className="grid gap-2">
                   {roles.filter(r => r.id !== form.id && r.id && !r.system).map((role) => (
                     <label
-                      className="grid gap-2 rounded-xl border border-pink-200 bg-white px-3 py-2 text-sm sm:grid-cols-[1fr_120px]"
+                      className="flex items-center gap-2 rounded-xl border border-pink-200 bg-white px-3 py-3 text-sm cursor-pointer hover:bg-pink-50 transition-colors"
                       key={role.id}
                     >
-                      <span className="text-pink-950 font-medium">{role.name}</span>
                       <input
-                        className="rounded-lg border border-pink-200 bg-white px-3 py-2 outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400/50 text-pink-950"
-                        max={100}
-                        min={0}
-                        onChange={(event) => setCrossRolePercentage(role.id, Number(event.target.value))}
-                        step="0.1"
-                        type="number"
-                        value={getCrossRolePercentage(role.id)}
+                        type="checkbox"
+                        className="w-4 h-4 rounded border-pink-300 text-pink-600 focus:ring-pink-500"
+                        checked={getCrossRoleActive(role.id)}
+                        onChange={(event) => setCrossRoleActive(role.id, event.target.checked)}
                       />
+                      <span className="text-pink-950 font-medium select-none">{role.name}</span>
                     </label>
                   ))}
                 </div>

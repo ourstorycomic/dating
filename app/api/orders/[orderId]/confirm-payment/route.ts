@@ -212,28 +212,34 @@ export async function POST(
                   childRoleId: creatorRoleId,
                 },
               },
+              include: { parentRole: true }
             });
 
-            if (rule && rule.isActive && Number(rule.percentage) > 0) {
-              const alreadyPaid = commissions.some(
-                (c) => c.user_id === managerUser.id && c.recipient_type === "STAFF"
-              );
+            if (rule && rule.isActive) {
+              const customPercentage = Number(rule.percentage);
+              const rulePercentage = customPercentage > 0 ? customPercentage : Number(rule.parentRole.commissionPercentage);
               
-              if (!alreadyPaid) {
-                commissions.push({
-                  amount: (orderAmount * Number(rule.percentage)) / 100,
-                  order_id: order.id,
-                  percentage: Number(rule.percentage),
-                  recipient_type: "STAFF", // using STAFF for manager commissions
-                  user_id: managerUser.id,
-                });
-              } else {
-                const existingIdx = commissions.findIndex(
+              if (rulePercentage > 0) {
+                const alreadyPaid = commissions.some(
                   (c) => c.user_id === managerUser.id && c.recipient_type === "STAFF"
                 );
-                if (existingIdx !== -1) {
-                  commissions[existingIdx].percentage = Number(rule.percentage);
-                  commissions[existingIdx].amount = (orderAmount * Number(rule.percentage)) / 100;
+                
+                if (!alreadyPaid) {
+                  commissions.push({
+                    amount: (orderAmount * rulePercentage) / 100,
+                    order_id: order.id,
+                    percentage: rulePercentage,
+                    recipient_type: "STAFF", // using STAFF for manager commissions
+                    user_id: managerUser.id,
+                  });
+                } else {
+                  const existingIdx = commissions.findIndex(
+                    (c) => c.user_id === managerUser.id && c.recipient_type === "STAFF"
+                  );
+                  if (existingIdx !== -1) {
+                    commissions[existingIdx].percentage = rulePercentage;
+                    commissions[existingIdx].amount = (orderAmount * rulePercentage) / 100;
+                  }
                 }
               }
             }
