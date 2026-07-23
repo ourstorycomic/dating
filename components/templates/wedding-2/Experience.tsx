@@ -178,7 +178,7 @@ export function WeddingTwoExperience({
       {/* MAIN CONTENT (Only visible when opened) */}
       <div className={`relative z-10 w-full flex flex-col items-center transition-opacity duration-1000 ${allowScroll ? "opacity-100" : "opacity-0"}`}>
         
-        <div className="w-full max-w-md mx-auto flex flex-col items-center pt-16 px-6 md:px-12 pb-16">
+        <div className="w-full max-w-md mx-auto flex flex-col items-center pt-16 px-2 md:px-4 pb-16">
           
           {/* Top Section */}
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="flex flex-col items-center w-full">
@@ -235,7 +235,7 @@ export function WeddingTwoExperience({
           {!hasTiecMung && (
             <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="border border-dashed border-[#7A1F1F] rounded-lg p-6 flex flex-col items-center text-center w-full mb-16 bg-[#FFFDF9]">
               <p className="text-xs font-bold text-[#7A1F1F] uppercase tracking-widest mb-4">{customData?.inviteText || "Mời bạn dùng cỗ cùng tụi mình nhé"}</p>
-              <p className="text-xs text-[#5A5552] leading-relaxed mb-6 uppercase max-w-[240px] font-bold">
+              <p className="text-sm text-[#5A5552] leading-relaxed mb-6 uppercase max-w-[300px] font-bold">
                 {eventAddress}
               </p>
               <a href={mapUrl} target="_blank" rel="noreferrer" className="bg-[#7A1F1F] text-[#FFFFFF] text-xs px-8 py-3 rounded-full uppercase tracking-widest font-bold shadow-md hover:bg-[#5a1515]">
@@ -250,7 +250,7 @@ export function WeddingTwoExperience({
             <h3 className="text-sm font-bold text-[#7A1F1F] tracking-widest uppercase mb-4">LỄ THÀNH HÔN</h3>
             <div className="w-full h-[1px] bg-[#C5A880]/30 mb-6 relative"></div>
             <p className="text-xs text-[#5A5552] mb-2 uppercase font-bold">Tại Tư Gia</p>
-            <p className="text-xs text-[#5A5552] leading-relaxed uppercase max-w-[240px] font-bold mb-4">{eventAddress}</p>
+            <p className="text-sm text-[#5A5552] leading-relaxed uppercase max-w-[300px] font-bold mb-4">{eventAddress}</p>
             {mapUrl && (
               <a href={mapUrl} target="_blank" rel="noreferrer" className="inline-block border border-[#7A1F1F] text-[#7A1F1F] text-[9px] px-5 py-2 uppercase tracking-[0.2em] font-bold hover:bg-[#7A1F1F] hover:text-white transition-colors mb-4">
                 Xem Bản Đồ
@@ -268,7 +268,7 @@ export function WeddingTwoExperience({
               <h3 className="text-sm font-bold text-[#7A1F1F] tracking-widest uppercase mb-4">TIỆC MỪNG LỄ THÀNH HÔN {hasTiecMungGai ? "(NHÀ TRAI)" : ""}</h3>
               <p className="text-xs text-[#5A5552] mb-2 uppercase">Vào lúc <span className="font-bold">{tiecTrai.time}</span></p>
               <p className="text-3xl font-serif text-[#2D2A28] leading-none my-2">{tiecTrai.date}</p>
-              <p className="text-xs text-[#5A5552] leading-relaxed mb-6 uppercase max-w-[240px] font-bold">
+              <p className="text-sm text-[#5A5552] leading-relaxed mb-6 uppercase max-w-[300px] font-bold">
                   <span className="text-[#A67C52] block mb-1">{customData?.tiecName}</span>
                   {customData?.tiecAddress}
                 </p>
@@ -286,7 +286,7 @@ export function WeddingTwoExperience({
               <h3 className="text-sm font-bold text-[#7A1F1F] tracking-widest uppercase mb-4">TIỆC MỪNG LỄ THÀNH HÔN (NHÀ GÁI)</h3>
               <p className="text-xs text-[#5A5552] mb-2 uppercase">Vào lúc <span className="font-bold">{tiecGai.time}</span></p>
               <p className="text-3xl font-serif text-[#2D2A28] leading-none my-2">{tiecGai.date}</p>
-              <p className="text-xs text-[#5A5552] leading-relaxed mb-6 uppercase max-w-[240px] font-bold">
+              <p className="text-sm text-[#5A5552] leading-relaxed mb-6 uppercase max-w-[300px] font-bold">
                   <span className="text-[#A67C52] block mb-1">{customData?.tiecNameGai}</span>
                   {customData?.tiecAddressGai}
                 </p>
@@ -302,7 +302,7 @@ export function WeddingTwoExperience({
           {/* Calendar Section */}
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="w-full flex flex-col items-center mb-16 px-6">
             <h3 className="text-sm font-serif font-bold text-[#5A5552] mb-6 uppercase tracking-[0.2em]">Tháng {dMonth} - {dYear}</h3>
-            <div className="grid grid-cols-7 gap-2 w-full max-w-[320px] text-center text-xs border border-[#C5A880]/30 p-4 rounded-lg bg-white shadow-sm">
+            <div className="grid grid-cols-7 gap-2 w-full max-w-[360px] text-center text-xs border border-[#C5A880]/30 p-4 rounded-lg bg-white shadow-sm">
               {['T2','T3','T4','T5','T6','T7','CN'].map(day => (
                 <div key={day} className="font-bold text-[#A67C52]">{day}</div>
               ))}
