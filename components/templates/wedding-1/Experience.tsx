@@ -415,11 +415,11 @@ export function WeddingOneExperience({
                     {isTiec && !isWedding && (
                       <div className="absolute inset-0 w-full h-full rounded-full border-[1.5px] border-dashed border-[#8c7b6b] bg-[#8c7b6b]/5 scale-90"></div>
                     )}
-                    <span className={`relative z-10 ${isWedding ? "text-white font-bold text-[11px]" : isTiec ? "font-bold text-[#8c7b6b]" : "text-gray-500"}`}>
+                    <span className={`relative z-10 font-bold ${isWedding ? "text-[11px]" : isTiec ? "" : "text-gray-500 font-normal"}`} style={{ color: isWedding ? "white" : isTiec ? "#8c7b6b" : undefined }}>
                       {day}
                     </span>
                     {isTiec && isWedding && (
-                      <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.6, type: "spring" }} className="absolute inset-0 w-[140%] h-[140%] -left-[20%] -top-[20%] rounded-full border-[1.5px] border-dashed border-[#8c7b6b] z-0 opacity-70"></motion.div>
+                      <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.6, type: "spring" }} className="absolute inset-0 w-[150%] h-[150%] -left-[25%] -top-[25%] rounded-full border-[1.5px] border-dashed border-[#8c7b6b] z-0 opacity-80"></motion.div>
                     )}
                   </div>
                 );

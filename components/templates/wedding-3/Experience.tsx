@@ -278,9 +278,9 @@ export function WeddingThreeExperience({
                     {isTiec && !isWedding && (
                       <motion.div initial={{ scale: 0 }} whileInView={{ scale: 0.9 }} viewport={{ once: true }} transition={{ delay: 0.6, type: "spring" }} className="absolute inset-0 border-[1.5px] border-dashed border-[#7A1F1F] rounded-full bg-[#7A1F1F]/5" />
                     )}
-                    <span className={`relative z-10 ${isWedding ? "text-white font-bold text-[11px]" : isTiec ? "text-[#7A1F1F] font-bold" : "text-[#2D2A28]"}`}>{day}</span>
+                    <span className={`relative z-10 font-bold ${isWedding ? "text-[11px]" : ""}`} style={{ color: isWedding ? "white" : isTiec ? "#7A1F1F" : "#2D2A28" }}>{day}</span>
                     {isTiec && isWedding && (
-                      <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.6, type: "spring" }} className="absolute inset-0 w-[140%] h-[140%] -left-[20%] -top-[20%] rounded-full border-[1.5px] border-dashed border-[#7A1F1F] z-0 opacity-70"></motion.div>
+                      <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.6, type: "spring" }} className="absolute inset-0 w-[150%] h-[150%] -left-[25%] -top-[25%] rounded-full border-[1.5px] border-dashed border-[#7A1F1F] z-0 opacity-80"></motion.div>
                     )}
                   </div>
                 );
