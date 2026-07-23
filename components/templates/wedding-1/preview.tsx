@@ -27,6 +27,15 @@ export function WeddingOnePreview(props: TemplatePreviewProps) {
       letterText={parsedConfig.letterText || WEDDING_DATA.letterText}
       groomFamily={parsedConfig.groomFamily || WEDDING_DATA.groomFamily}
       brideFamily={parsedConfig.brideFamily || WEDDING_DATA.brideFamily}
+      gallery={[
+        parsedConfig.gallery1,
+        parsedConfig.gallery2,
+        parsedConfig.gallery3,
+        parsedConfig.gallery4,
+        parsedConfig.gallery5,
+        parsedConfig.gallery6,
+        parsedConfig.gallery7,
+      ].filter(Boolean)}
       eventAddress={parsedConfig.eventAddress || WEDDING_DATA.eventAddress}
       mapUrl={parsedConfig.mapUrl || WEDDING_DATA.mapUrl}
       mapImage={parsedConfig.mapImage || WEDDING_DATA.mapImage}

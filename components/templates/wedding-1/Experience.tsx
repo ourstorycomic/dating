@@ -35,6 +35,7 @@ export function WeddingOneExperience({
   groomQR,
   brideQR,
   customData,
+  gallery,
   fullScreen,
 }: {
   compact?: boolean;
@@ -65,6 +66,7 @@ export function WeddingOneExperience({
   groomQR?: string;
   brideQR?: string;
   customData?: any;
+  gallery?: string[];
 }) {
   const parsedDDate = new Date(customData?.weddingDate || weddingDate || '2026-12-14T11:30:00.000Z');
   const parsedEDate = new Date(customData?.engagementDate || engagementDate || '2026-12-12T09:00:00.000Z');
@@ -462,36 +464,36 @@ export function WeddingOneExperience({
         <div className="max-w-4xl mx-auto flex flex-col gap-4">
            {/* Row 1: 1 large */}
            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} viewport={{ once: true }}>
-             <MediaDisplay src="/assets/wedding/wedding-1/anhchung2.jpg" alt="Album 1" className="w-full h-[400px] object-cover" />
+             <MediaDisplay src={gallery?.[0] || dividerImage || "/assets/wedding/wedding-1/anhchung2.jpg"} alt="Album 1" className="w-full h-[400px] object-cover" />
            </motion.div>
            
            {/* Row 2: 2 cols */}
            <div className="grid grid-cols-2 gap-4">
              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} viewport={{ once: true }}>
-               <MediaDisplay src="/assets/wedding/wedding-1/anhchung3.jpg" alt="Album 2" className="w-full h-[300px] @sm:h-[400px] object-cover" />
+               <MediaDisplay src={gallery?.[1] || "/assets/wedding/wedding-1/anhchung3.jpg"} alt="Album 2" className="w-full h-[300px] @sm:h-[400px] object-cover" />
              </motion.div>
              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.1 }} viewport={{ once: true }}>
-               <MediaDisplay src="/assets/wedding/wedding-1/anhchung4.jpg" alt="Album 3" className="w-full h-[300px] @sm:h-[400px] object-cover" />
+               <MediaDisplay src={gallery?.[2] || "/assets/wedding/wedding-1/anhchung4.jpg"} alt="Album 3" className="w-full h-[300px] @sm:h-[400px] object-cover" />
              </motion.div>
            </div>
            
            {/* Row 3: 2 cols diff ratio */}
            <div className="grid grid-cols-5 gap-4">
              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} viewport={{ once: true }} className="col-span-2">
-               <MediaDisplay src="/assets/wedding/wedding-1/anhchung5.jpg" alt="Album 4" className="w-full h-[250px] @sm:h-[350px] object-cover" />
+               <MediaDisplay src={gallery?.[3] || "/assets/wedding/wedding-1/anhchung5.jpg"} alt="Album 4" className="w-full h-[250px] @sm:h-[350px] object-cover" />
              </motion.div>
              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.1 }} viewport={{ once: true }} className="col-span-3">
-               <MediaDisplay src="/assets/wedding/wedding-1/anhchung6.jpg" alt="Album 5" className="w-full h-[250px] @sm:h-[350px] object-cover" />
+               <MediaDisplay src={gallery?.[4] || "/assets/wedding/wedding-1/anhchung6.jpg"} alt="Album 5" className="w-full h-[250px] @sm:h-[350px] object-cover" />
              </motion.div>
            </div>
            
            {/* Row 4: 2 cols */}
            <div className="grid grid-cols-2 gap-4">
              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} viewport={{ once: true }}>
-               <MediaDisplay src="/assets/wedding/wedding-1/anhchung7.jpg" alt="Album 6" className="w-full h-[300px] @sm:h-[400px] object-cover" />
+               <MediaDisplay src={gallery?.[5] || "/assets/wedding/wedding-1/anhchung7.jpg"} alt="Album 6" className="w-full h-[300px] @sm:h-[400px] object-cover" />
              </motion.div>
              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.1 }} viewport={{ once: true }}>
-               <MediaDisplay src="/assets/wedding/wedding-1/anhchung8.jpg" alt="Album 7" className="w-full h-[300px] @sm:h-[400px] object-cover" />
+               <MediaDisplay src={gallery?.[6] || footerImage || "/assets/wedding/wedding-1/anhchung8.jpg"} alt="Album 7" className="w-full h-[300px] @sm:h-[400px] object-cover" />
              </motion.div>
            </div>
         </div>
