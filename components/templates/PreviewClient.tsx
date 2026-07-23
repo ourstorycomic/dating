@@ -59,8 +59,9 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
       
       // Calculate scale for PC preview (desktop mode)
       if (isMobile) {
-        // When rotated, use a large readable scale
-        setDesktopScale(0.85);
+        // When rotated, we use flex-row, so logical height is the physical width (innerWidth).
+        // The user wants it BIGGER than fitting perfectly, so we use a very large scale
+        setDesktopScale(0.95);
       } else {
         // On actual PC, use standard scale
         setDesktopScale(Math.max(0.4, Math.min(1, Math.min(scaleH, scaleW) * 1.2)));
@@ -122,10 +123,10 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
     </div>
   ) : null;
 
-  // Add overflow-y-auto to allow scrolling the toggles/preview when rotated
+  // Add overflow-auto to allow scrolling the toggles/preview when rotated
   return (
     <div 
-      className={`${isWedding ? "bg-[#f4f1ea] text-[#3a3532]" : "bg-pink-50 text-gray-800"} flex flex-col font-sans relative overflow-x-hidden ${isRotated ? "fixed inset-0 z-[9999] overflow-y-auto" : "min-h-[100dvh] w-full lg:h-[100dvh] lg:overflow-hidden"}`}
+      className={`${isWedding ? "bg-[#f4f1ea] text-[#3a3532]" : "bg-pink-50 text-gray-800"} flex flex-col font-sans relative overflow-x-hidden ${isRotated ? "fixed inset-0 z-[9999] overflow-auto" : "min-h-[100dvh] w-full lg:h-[100dvh] lg:overflow-hidden"}`}
       style={isRotated ? {
         transform: "rotate(90deg)",
         transformOrigin: "center center",
@@ -149,7 +150,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
       </header>
 
       {/* Main Content Area */}
-      <main className={`flex-1 relative flex flex-col lg:flex-row items-center ${isRotated ? "justify-start py-12" : "justify-center"} p-4 lg:p-8 overflow-x-hidden lg:overflow-hidden ${isWedding ? "bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#faf7ef] via-[#f4f1ea] to-white" : "bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-pink-100 via-pink-50 to-white"}`}>
+      <main className={`flex-1 relative flex ${isRotated ? "flex-row" : "flex-col lg:flex-row"} items-center ${isRotated ? "justify-start" : "justify-center"} p-4 lg:p-8 overflow-x-hidden lg:overflow-hidden ${isWedding ? "bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#faf7ef] via-[#f4f1ea] to-white" : "bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-pink-100 via-pink-50 to-white"}`}>
          
          {/* Background Particles/Decorations */}
          {mounted && (
@@ -218,10 +219,10 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
          )}
 
           {/* Layout Wrapper to perfectly center Info and Phone side by side */}
-         <div className={`w-full h-full max-w-7xl flex flex-col lg:flex-row items-center ${isRotated ? "justify-start" : "justify-center"} gap-8 lg:gap-16 z-10`}>
+         <div className={`w-full h-full max-w-7xl flex ${isRotated ? "flex-row" : "flex-col lg:flex-row"} items-center ${isRotated ? "justify-start" : "justify-center"} gap-8 lg:gap-16 z-10`}>
 
             {/* Left Column: Info Box */}
-            <div className={`order-2 lg:order-1 w-full max-w-[420px] shrink-0 bg-white/90 backdrop-blur-xl p-7 lg:p-8 rounded-[2.5rem] border-4 ${isWedding ? "border-[#f0eadd] shadow-[0_20px_60px_-15px_rgba(216,195,165,0.4)]" : "border-pink-100 shadow-[0_20px_60px_-15px_rgba(255,192,203,0.6)]"} flex flex-col items-start text-left max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:hidden mt-8 lg:mt-0 mb-12 lg:mb-0`}>
+            <div className={`order-2 lg:order-1 w-full max-w-[420px] shrink-0 bg-white/90 backdrop-blur-xl p-7 lg:p-8 rounded-[2.5rem] border-4 ${isWedding ? "border-[#f0eadd] shadow-[0_20px_60px_-15px_rgba(216,195,165,0.4)]" : "border-pink-100 shadow-[0_20px_60px_-15px_rgba(255,192,203,0.6)]"} flex flex-col items-start text-left ${isRotated ? "h-fit" : "max-h-[90vh] overflow-y-auto"} [&::-webkit-scrollbar]:hidden mt-8 lg:mt-0 mb-12 lg:mb-0`}>
                 <div className={`${isWedding ? "bg-[#f4f1ea] text-[#bfa993]" : "bg-pink-100 text-pink-500"} px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-3`}>
                   {template.template_categories?.name || "Mẫu HOT"}
                 </div>
@@ -241,14 +242,14 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                   Nhắn shop làm mẫu này ♥
                 </a>
 
-                {/* Suggestions Box - Hidden on mobile, visible on desktop */}
-                <div className="hidden lg:block w-full">
+                {/* Suggestions Box */}
+                <div className="w-full mt-2">
                   {suggestionsBox}
                 </div>
             </div>
 
             {/* Right Column: The Phone / PC Preview */}
-            <div className="shrink-0 flex flex-col items-center justify-start relative pt-8">
+            <div className="order-1 lg:order-2 shrink-0 flex flex-col items-center justify-start relative pt-8">
                
                {/* Mode Toggles */}
                <div className={`flex items-center bg-white rounded-full p-1.5 border-2 ${isWedding ? "border-[#f0eadd]" : "border-pink-100"} shadow-md mb-6 relative z-20`}>
@@ -333,11 +334,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                    </div>
                  </div>
                </div>
-               
-               {/* Suggestions Box - Visible on mobile, hidden on desktop */}
-               <div className="block lg:hidden w-full max-w-[420px] mt-12 mb-8 bg-white/60 backdrop-blur-sm p-4 rounded-3xl border border-pink-100 shadow-sm">
-                 {suggestionsBox}
-               </div>
+
 
             </div>
             </div>
