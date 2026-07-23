@@ -1964,7 +1964,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                               onConfirm: () => handleDeleteOrder(order.public_id)
                             });
                           }}
-                          className="cursor-pointer flex items-center justify-center rounded-full bg-red-500/10 border border-red-500/20 px-3 py-1 text-[11px] leading-none font-bold text-red-500 hover:bg-red-500/20 transition-colors"
+                          className="cursor-pointer flex items-center justify-center rounded-full bg-slate-100 border border-slate-200 px-3 py-1 text-[11px] leading-none font-bold text-slate-500 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-red-900/30 dark:hover:text-red-400"
                         >
                           Xóa
                         </div>
