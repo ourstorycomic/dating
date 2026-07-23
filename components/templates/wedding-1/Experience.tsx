@@ -424,8 +424,11 @@ export function WeddingOneExperience({
                     <span className={`relative z-10 font-bold ${isWedding ? "text-[11px]" : (isTiecTrai || isTiecGai) ? "" : "text-gray-500 font-normal"}`} style={{ color: isWedding ? "white" : (isTiecTrai || isTiecGai) ? "#8c7b6b" : undefined }}>
                       {day}
                     </span>
-                    {(isTiecTrai || isTiecGai) && isWedding && (
+                    {isTiecTrai && isWedding && (
                       <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.6, type: "spring" }} className="absolute inset-0 w-[150%] h-[150%] -left-[25%] -top-[25%] rounded-full border-[1.5px] border-dashed border-[#8c7b6b] z-0 opacity-80"></motion.div>
+                    )}
+                    {isTiecGai && isWedding && (
+                      <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.7, type: "spring" }} className="absolute inset-0 w-[180%] h-[180%] -left-[40%] -top-[40%] rounded-full border-[1.5px] border-solid border-[#8c7b6b] z-0 opacity-60"></motion.div>
                     )}
                   </div>
                 );
