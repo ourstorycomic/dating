@@ -2650,7 +2650,17 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                 }
 
                 // Add template-specific text fields so users can edit hardcoded text
-                if (selectedComponentKey === 'wedding-5') {
+                if (selectedComponentKey === 'wedding-1') {
+                  schema.push(
+                    { section: "5. Thư Viện Ảnh", key: "gallery1", label: "Ảnh Album 1", type: "media" },
+                    { section: "5. Thư Viện Ảnh", key: "gallery2", label: "Ảnh Album 2", type: "media" },
+                    { section: "5. Thư Viện Ảnh", key: "gallery3", label: "Ảnh Album 3", type: "media" },
+                    { section: "5. Thư Viện Ảnh", key: "gallery4", label: "Ảnh Album 4", type: "media" },
+                    { section: "5. Thư Viện Ảnh", key: "gallery5", label: "Ảnh Album 5", type: "media" },
+                    { section: "5. Thư Viện Ảnh", key: "gallery6", label: "Ảnh Album 6", type: "media" },
+                    { section: "5. Thư Viện Ảnh", key: "gallery7", label: "Ảnh Album 7", type: "media" }
+                  );
+                } else if (selectedComponentKey === 'wedding-5') {
                   schema.push(
                     { section: "3. Lời Mời", key: "inviteTitle", label: "Tiêu đề lời mời", type: "text", default: "Trân trọng báo tin lễ thành hôn" },
                     { section: "3. Lời Mời", key: "inviteText", label: "Nội dung lời mời", type: "textarea", default: "Sự hiện diện của quý khách là niềm vinh hạnh cho gia đình chúng tôi" },
