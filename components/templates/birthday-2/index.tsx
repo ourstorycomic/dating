@@ -46,7 +46,7 @@ export default function Birthday2Diary({ autoPlay = false, compact = false, isBu
     <div 
       onClick={handleInteraction}
       onTouchStart={handleInteraction}
-      className={`relative w-full overflow-hidden text-slate-800 font-sans mx-auto bg-pink-50 ${compact ? 'absolute inset-0 rounded-[2.5rem]' : fullScreen ? 'min-h-[100dvh]' : 'h-full'}`}
+      className={`relative w-full overflow-hidden text-slate-800 font-sans mx-auto bg-pink-50 ${compact ? 'absolute inset-0 rounded-[2.5rem]' : fullScreen ? 'min-h-[100dvh] max-w-[430px] shadow-2xl' : 'h-full max-w-[430px] shadow-2xl'}`}
       style={{ backgroundImage: "url('/assets/bg/bg2.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
       {generalAudioUrl && <audio ref={audioRef} src={generalAudioUrl} loop muted={compact && !autoPlay && !isBuilderPreview} />}
