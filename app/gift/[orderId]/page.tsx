@@ -27,9 +27,27 @@ export async function generateMetadata({
     return { title: "Không tìm thấy món quà | Lovora" };
   }
 
-  const recipient = order.recipient_name || "bạn";
-  const title = `Một món quà đặc biệt dành cho ${recipient} 🎁 | Lovora`;
-  const description = "Bạn có một món quà bất ngờ đã được chuẩn bị sẵn. Hãy mở ra xem nhé!";
+  const cd = (order.custom_data || {}) as any;
+  let componentKey = cd.componentKey ?? (order.templates as any)?.component_key ?? "";
+  if (side === "gai" && cd.gai) {
+    if (cd.gai.templateId) componentKey = cd.gai.templateId;
+  }
+  const isWedding = componentKey.startsWith("wedding");
+
+  let title, description;
+  
+  if (isWedding) {
+     const groom = cd.groomName || "Chú Rể";
+     const bride = cd.brideName || "Cô Dâu";
+     const guest = order.recipient_name ? ` ${order.recipient_name}` : " bạn";
+     title = `Thiệp Mời Đám Cưới | ${groom} & ${bride}`;
+     description = `Trân trọng kính mời${guest} đến chung vui cùng gia đình chúng tôi.`;
+  } else {
+     const guest = order.recipient_name || "bạn";
+     title = `Một món quà đặc biệt dành cho ${guest} 🎁 | Lovora`;
+     description = `${guest} có một món quà bất ngờ đã được chuẩn bị sẵn. Hãy mở ra xem nhé!`;
+  }
+
   const thumbnail = order.templates?.thumbnail_url || "/thumbnails/valentine1.png";
   // Use absolute URL for Zalo/social crawlers
   const imageUrl = thumbnail.startsWith('http') ? thumbnail : `https://lovora.click${thumbnail}`;
