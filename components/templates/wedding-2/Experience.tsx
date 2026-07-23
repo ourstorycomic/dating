@@ -473,7 +473,7 @@ export function WeddingTwoExperience({
                initial={{ x: 0 }}
                exit={{ x: "-200%" }}
                transition={{ duration: 3.5, ease: [0.4, 0, 0.2, 1] }}
-               className="w-1/2 h-full relative z-30"
+               className="w-1/2 h-full relative z-30 overflow-hidden"
              >
                <img src="/assets/wedding/wedding-2/sidebentrai.webp" alt="Door Left" className="absolute top-0 left-0 h-full w-[200%] max-w-none object-cover object-left pointer-events-none" />
              </motion.div>
@@ -482,7 +482,7 @@ export function WeddingTwoExperience({
                initial={{ x: 0 }}
                exit={{ x: "200%" }}
                transition={{ duration: 3.5, ease: [0.4, 0, 0.2, 1] }}
-               className="w-1/2 h-full relative z-20"
+               className="w-1/2 h-full relative z-20 overflow-hidden"
              >
                <img src="/assets/wedding/wedding-2/sidebenphai.webp" alt="Door Right" className="absolute top-0 right-0 h-full w-[200%] max-w-none object-cover object-right pointer-events-none" />
              </motion.div>
