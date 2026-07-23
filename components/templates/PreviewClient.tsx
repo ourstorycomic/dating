@@ -59,12 +59,12 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
       
       // Calculate scale for PC preview (desktop mode)
       if (isMobile) {
-        // When rotated, width becomes height and vice versa
-        const rotatedHeight = window.innerWidth;
-        const rotatedWidth = window.innerHeight;
-        const deskScaleH = (rotatedHeight - 120) / 600; // 600 is PC frame height
-        const deskScaleW = (rotatedWidth - 80) / 800; // 800 is PC frame width
-        setDesktopScale(Math.max(0.3, Math.min(1, Math.min(deskScaleH, deskScaleW))));
+        // We will rotate only the preview frame, so width=800 becomes width=600 physically
+        // We want 600 * scale to fit in window.innerWidth.
+        const rotatedPhysicalWidth = 600;
+        const availableWidth = window.innerWidth - 32; // Add some padding
+        const deskScale = availableWidth / rotatedPhysicalWidth;
+        setDesktopScale(Math.max(0.3, Math.min(1, deskScale)));
       } else {
         // On actual PC, use standard scale
         setDesktopScale(Math.max(0.4, Math.min(1, Math.min(scaleH, scaleW) * 1.2)));
@@ -75,8 +75,6 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  const isRotated = isMobileDevice && mode === "desktop";
 
   const suggestionsBox = relatedTemplates.length > 0 ? (
     <div className={`w-full border-t ${isWedding ? "border-[#f0eadd]" : "border-pink-100"} pt-5`}>
@@ -126,22 +124,12 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
     </div>
   ) : null;
 
-  // Add overflow-y-auto to allow scrolling the toggles/preview when rotated
   return (
     <div 
-      className={`${isWedding ? "bg-[#f4f1ea] text-[#3a3532]" : "bg-pink-50 text-gray-800"} flex flex-col font-sans relative overflow-x-hidden ${isRotated ? "fixed inset-0 z-[9999] overflow-y-auto" : "min-h-[100dvh] w-full lg:h-[100dvh] lg:overflow-hidden"}`}
-      style={isRotated ? {
-        transform: "rotate(90deg)",
-        transformOrigin: "center center",
-        width: "100vh",
-        height: "100vw",
-        position: "fixed",
-        top: "calc(50% - 50vw)",
-        left: "calc(50% - 50vh)",
-      } : {}}
+      className={`${isWedding ? "bg-[#f4f1ea] text-[#3a3532]" : "bg-pink-50 text-gray-800"} flex flex-col font-sans relative overflow-x-hidden min-h-[100dvh] w-full lg:h-[100dvh] lg:overflow-hidden`}
     >
       {/* Top Header */}
-      <header className={`h-[70px] px-6 bg-white/90 backdrop-blur-md border-b ${isWedding ? "border-[#e0d5c1]" : "border-pink-100"} flex items-center justify-between z-50 shadow-sm shrink-0 ${isRotated ? "h-16" : ""}`}>
+      <header className={`h-[70px] px-6 bg-white/90 backdrop-blur-md border-b ${isWedding ? "border-[#e0d5c1]" : "border-pink-100"} flex items-center justify-between z-50 shadow-sm shrink-0`}>
         <Link href={isWedding ? "/wedding" : "/love"} className={`${isWedding ? "bg-[#f0eadd] hover:bg-[#e0d5c1] text-[#8a7b66]" : "bg-pink-100 hover:bg-pink-200 text-pink-600"} px-5 py-2.5 rounded-full transition font-bold text-sm shadow-sm flex items-center gap-2`}>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
           <span className="hidden sm:inline">Quay lại</span>
@@ -225,7 +213,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
          <div className="w-full h-full max-w-7xl flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 z-10">
 
             {/* Left Column: Info Box */}
-            <div className={`order-2 lg:order-1 w-full max-w-[420px] shrink-0 bg-white/90 backdrop-blur-xl p-7 lg:p-8 rounded-[2.5rem] border-4 ${isWedding ? "border-[#f0eadd] shadow-[0_20px_60px_-15px_rgba(216,195,165,0.4)]" : "border-pink-100 shadow-[0_20px_60px_-15px_rgba(255,192,203,0.6)]"} flex flex-col items-start text-left max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:hidden ${isRotated ? "hidden" : "block"} mt-8 lg:mt-0 mb-12 lg:mb-0`}>
+            <div className={`order-2 lg:order-1 w-full max-w-[420px] shrink-0 bg-white/90 backdrop-blur-xl p-7 lg:p-8 rounded-[2.5rem] border-4 ${isWedding ? "border-[#f0eadd] shadow-[0_20px_60px_-15px_rgba(216,195,165,0.4)]" : "border-pink-100 shadow-[0_20px_60px_-15px_rgba(255,192,203,0.6)]"} flex flex-col items-start text-left max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:hidden mt-8 lg:mt-0 mb-12 lg:mb-0`}>
                 <div className={`${isWedding ? "bg-[#f4f1ea] text-[#bfa993]" : "bg-pink-100 text-pink-500"} px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-3`}>
                   {template.template_categories?.name || "Mẫu HOT"}
                 </div>
@@ -274,19 +262,30 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
 
                {/* Scaled Preview Frame */}
                <div 
-                 className="relative shrink-0 flex items-center justify-center"
-                 style={{ 
-                   width: (mode === "mobile" ? 380 : 800) * (mode === "mobile" ? phoneScale : desktopScale), 
-                   height: (mode === "mobile" ? 780 : 600) * (mode === "mobile" ? phoneScale : desktopScale),
-                 }}
+                 className={`relative shrink-0 ${mode === "desktop" && isMobileDevice ? "my-12" : ""}`}
+                 style={
+                   mode === "desktop" && isMobileDevice ? {
+                     width: 600 * desktopScale, 
+                     height: 800 * desktopScale,
+                   } : { 
+                     width: (mode === "mobile" ? 380 : 800) * (mode === "mobile" ? phoneScale : desktopScale), 
+                     height: (mode === "mobile" ? 780 : 600) * (mode === "mobile" ? phoneScale : desktopScale),
+                   }
+                 }
                >
                  <div
-                   className="absolute top-0 left-0 origin-top-left transition-all duration-300"
-                   style={{ 
-                     width: mode === "mobile" ? '380px' : '800px', 
-                     height: mode === "mobile" ? '780px' : '600px',
-                     transform: `scale(${mode === "mobile" ? phoneScale : desktopScale})`,
-                   }}
+                   className="absolute top-1/2 left-1/2 transition-all duration-300"
+                   style={
+                     mode === "desktop" && isMobileDevice ? {
+                       width: '800px', 
+                       height: '600px',
+                       transform: `translate(-50%, -50%) scale(${desktopScale}) rotate(90deg)`,
+                     } : { 
+                       width: mode === "mobile" ? '380px' : '800px', 
+                       height: mode === "mobile" ? '780px' : '600px',
+                       transform: `translate(-50%, -50%) scale(${mode === "mobile" ? phoneScale : desktopScale})`,
+                     }
+                   }
                  >
                    <div className="relative w-full h-full">
                    {mode === "mobile" ? (
