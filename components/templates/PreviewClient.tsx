@@ -337,11 +337,6 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                    </div>
                  </div>
                </div>
-               
-               {/* Suggestions Box - Visible on mobile, hidden on desktop */}
-               <div className="block lg:hidden w-full max-w-[420px] mt-12 mb-8 bg-white/60 backdrop-blur-sm p-4 rounded-3xl border border-pink-100 shadow-sm">
-                 {suggestionsBox}
-               </div>
 
             </div>
             </div>
