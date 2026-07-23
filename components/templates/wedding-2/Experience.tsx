@@ -178,11 +178,11 @@ export function WeddingTwoExperience({
       {/* MAIN CONTENT (Only visible when opened) */}
       <div className={`relative z-10 w-full flex flex-col items-center transition-opacity duration-1000 ${allowScroll ? "opacity-100" : "opacity-0"}`}>
         
-        <div className="w-full max-w-sm mx-auto flex flex-col items-center pt-16 px-6 md:px-12 pb-16">
+        <div className="w-full max-w-md mx-auto flex flex-col items-center pt-16 px-6 md:px-12 pb-16">
           
           {/* Top Section */}
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="flex flex-col items-center w-full">
-            <p className="text-[10px] tracking-widest text-[#B58B5C] uppercase mb-4 font-sans font-semibold">{customData?.inviteTitle || "Thiệp Mời"}</p>
+            <p className="text-xs tracking-widest text-[#B58B5C] uppercase mb-4 font-sans font-semibold">{customData?.inviteTitle || "Thiệp Mời"}</p>
             <h1 className="text-[26px] sm:text-3xl md:text-4xl text-[#7A1F1F] mb-6 font-bold text-center px-2 leading-tight whitespace-nowrap" style={{ fontFamily: 'var(--font-dancing)' }}>
               <span className="flex flex-col items-center gap-1 sm:gap-2"><span>{groomName}</span> <span className="text-sm font-sans mx-2 opacity-80">&amp;</span> <span>{brideName}</span></span>
             </h1>
@@ -203,10 +203,10 @@ export function WeddingTwoExperience({
           {/* Parents Section */}
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="flex flex-col items-center gap-1 mb-12 text-center px-4">
             <img src="/assets/wedding/wedding-2/logotrungthu2.webp" alt="Decor" className="w-12 h-12 opacity-80 mb-4 mix-blend-multiply" />
-            <p className="text-[10px] text-[#B58B5C] uppercase tracking-widest mb-1 font-bold">Nhà Trai</p>
+            <p className="text-xs text-[#B58B5C] uppercase tracking-widest mb-1 font-bold">Nhà Trai</p>
             <p className="text-2xl sm:text-3xl whitespace-pre-line leading-relaxed font-normal  text-[#7A1F1F] mb-4" style={{ fontFamily: 'var(--font-dancing)' }}>{(groomFamily || "Ông Phạm Văn Long\nBà Lê Thị Mai").replace(/ & /g, '\n').replace(/\\n/g, '\n')}</p>
             <div className="w-8 h-[2px] bg-[#B58B5C] mb-4"></div>
-            <p className="text-[10px] text-[#B58B5C] uppercase tracking-widest mb-1 font-bold">Nhà Gái</p>
+            <p className="text-xs text-[#B58B5C] uppercase tracking-widest mb-1 font-bold">Nhà Gái</p>
             <p className="text-2xl sm:text-3xl whitespace-pre-line leading-relaxed font-normal  text-[#7A1F1F] " style={{ fontFamily: 'var(--font-dancing)' }}>{(brideFamily || "Ông Nguyễn Văn Hùng\nBà Trần Thị Hoa").replace(/ & /g, '\n').replace(/\\n/g, '\n')}</p>
           </motion.div>
 
@@ -235,10 +235,10 @@ export function WeddingTwoExperience({
           {!hasTiecMung && (
             <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="border border-dashed border-[#7A1F1F] rounded-lg p-6 flex flex-col items-center text-center w-full mb-16 bg-[#FFFDF9]">
               <p className="text-xs font-bold text-[#7A1F1F] uppercase tracking-widest mb-4">{customData?.inviteText || "Mời bạn dùng cỗ cùng tụi mình nhé"}</p>
-              <p className="text-[10px] text-[#5A5552] leading-relaxed mb-6 uppercase max-w-[180px] font-bold">
+              <p className="text-xs text-[#5A5552] leading-relaxed mb-6 uppercase max-w-[240px] font-bold">
                 {eventAddress}
               </p>
-              <a href={mapUrl} target="_blank" rel="noreferrer" className="bg-[#7A1F1F] text-[#FFFFFF] text-[10px] px-8 py-3 rounded-full uppercase tracking-widest font-bold shadow-md hover:bg-[#5a1515]">
+              <a href={mapUrl} target="_blank" rel="noreferrer" className="bg-[#7A1F1F] text-[#FFFFFF] text-xs px-8 py-3 rounded-full uppercase tracking-widest font-bold shadow-md hover:bg-[#5a1515]">
                 Xem Chỉ Đường
               </a>
             </motion.div>
@@ -250,16 +250,16 @@ export function WeddingTwoExperience({
             <h3 className="text-sm font-bold text-[#7A1F1F] tracking-widest uppercase mb-4">LỄ THÀNH HÔN</h3>
             <div className="w-full h-[1px] bg-[#C5A880]/30 mb-6 relative"></div>
             <p className="text-xs text-[#5A5552] mb-2 uppercase font-bold">Tại Tư Gia</p>
-            <p className="text-[10px] text-[#5A5552] leading-relaxed uppercase max-w-[180px] font-bold mb-4">{eventAddress}</p>
+            <p className="text-xs text-[#5A5552] leading-relaxed uppercase max-w-[240px] font-bold mb-4">{eventAddress}</p>
             {mapUrl && (
               <a href={mapUrl} target="_blank" rel="noreferrer" className="inline-block border border-[#7A1F1F] text-[#7A1F1F] text-[9px] px-5 py-2 uppercase tracking-[0.2em] font-bold hover:bg-[#7A1F1F] hover:text-white transition-colors mb-4">
                 Xem Bản Đồ
               </a>
             )}
 
-            <p className="text-[10px] text-[#A67C52] uppercase tracking-widest font-bold">{dDayOfWeek}</p>
+            <p className="text-xs text-[#A67C52] uppercase tracking-widest font-bold">{dDayOfWeek}</p>
             <p className="text-7xl font-serif text-[#2D2A28] leading-none my-2">{dDate}</p>
-            <p className="text-[10px] text-[#A67C52] uppercase tracking-widest font-bold">Tháng {dMonth}</p>
+            <p className="text-xs text-[#A67C52] uppercase tracking-widest font-bold">Tháng {dMonth}</p>
             
           </motion.div>
           
@@ -268,13 +268,13 @@ export function WeddingTwoExperience({
               <h3 className="text-sm font-bold text-[#7A1F1F] tracking-widest uppercase mb-4">TIỆC MỪNG LỄ THÀNH HÔN {hasTiecMungGai ? "(NHÀ TRAI)" : ""}</h3>
               <p className="text-xs text-[#5A5552] mb-2 uppercase">Vào lúc <span className="font-bold">{tiecTrai.time}</span></p>
               <p className="text-3xl font-serif text-[#2D2A28] leading-none my-2">{tiecTrai.date}</p>
-              <p className="text-[10px] text-[#5A5552] leading-relaxed mb-6 uppercase max-w-[180px] font-bold">
+              <p className="text-xs text-[#5A5552] leading-relaxed mb-6 uppercase max-w-[240px] font-bold">
                   <span className="text-[#A67C52] block mb-1">{customData?.tiecName}</span>
                   {customData?.tiecAddress}
                 </p>
               
               {customData?.tiecMapUrl && (
-                <a href={customData.tiecMapUrl} target="_blank" rel="noreferrer" className="bg-[#7A1F1F] text-[#FFFFFF] text-[10px] px-8 py-3 rounded-full uppercase tracking-widest font-bold shadow-md hover:bg-[#5a1515]">
+                <a href={customData.tiecMapUrl} target="_blank" rel="noreferrer" className="bg-[#7A1F1F] text-[#FFFFFF] text-xs px-8 py-3 rounded-full uppercase tracking-widest font-bold shadow-md hover:bg-[#5a1515]">
                   Xem Chỉ Đường
                 </a>
               )}
@@ -286,13 +286,13 @@ export function WeddingTwoExperience({
               <h3 className="text-sm font-bold text-[#7A1F1F] tracking-widest uppercase mb-4">TIỆC MỪNG LỄ THÀNH HÔN (NHÀ GÁI)</h3>
               <p className="text-xs text-[#5A5552] mb-2 uppercase">Vào lúc <span className="font-bold">{tiecGai.time}</span></p>
               <p className="text-3xl font-serif text-[#2D2A28] leading-none my-2">{tiecGai.date}</p>
-              <p className="text-[10px] text-[#5A5552] leading-relaxed mb-6 uppercase max-w-[180px] font-bold">
+              <p className="text-xs text-[#5A5552] leading-relaxed mb-6 uppercase max-w-[240px] font-bold">
                   <span className="text-[#A67C52] block mb-1">{customData?.tiecNameGai}</span>
                   {customData?.tiecAddressGai}
                 </p>
               
               {customData?.tiecMapUrlGai && (
-                <a href={customData.tiecMapUrlGai} target="_blank" rel="noreferrer" className="bg-[#7A1F1F] text-[#FFFFFF] text-[10px] px-8 py-3 rounded-full uppercase tracking-widest font-bold shadow-md hover:bg-[#5a1515]">
+                <a href={customData.tiecMapUrlGai} target="_blank" rel="noreferrer" className="bg-[#7A1F1F] text-[#FFFFFF] text-xs px-8 py-3 rounded-full uppercase tracking-widest font-bold shadow-md hover:bg-[#5a1515]">
                   Xem Chỉ Đường
                 </a>
               )}
@@ -302,7 +302,7 @@ export function WeddingTwoExperience({
           {/* Calendar Section */}
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }} className="w-full flex flex-col items-center mb-16 px-6">
             <h3 className="text-sm font-serif font-bold text-[#5A5552] mb-6 uppercase tracking-[0.2em]">Tháng {dMonth} - {dYear}</h3>
-            <div className="grid grid-cols-7 gap-2 w-full max-w-[280px] text-center text-xs border border-[#C5A880]/30 p-4 rounded-lg bg-white shadow-sm">
+            <div className="grid grid-cols-7 gap-2 w-full max-w-[320px] text-center text-xs border border-[#C5A880]/30 p-4 rounded-lg bg-white shadow-sm">
               {['T2','T3','T4','T5','T6','T7','CN'].map(day => (
                 <div key={day} className="font-bold text-[#A67C52]">{day}</div>
               ))}
@@ -366,12 +366,12 @@ export function WeddingTwoExperience({
               <textarea placeholder="Gửi Chút Lời Chúc Tới..." rows={2} className="w-full bg-white text-[#2D2A28] text-xs px-4 py-3 rounded-md outline-none resize-none"></textarea>
               <button 
                 onClick={() => !compact && onComplete?.({ name: rsvpName, phone: rsvpPhone, count: rsvpCount === "Khác" ? customCount : rsvpCount })}
-                className="w-full bg-[#FFFFFF] text-[#7A1F1F] text-[10px] font-bold uppercase tracking-widest py-3 rounded-md mt-2 shadow-md hover:bg-stone-100"
+                className="w-full bg-[#FFFFFF] text-[#7A1F1F] text-xs font-bold uppercase tracking-widest py-3 rounded-md mt-2 shadow-md hover:bg-stone-100"
               >
                 Gửi Xác Nhận
               </button>
             </div>
-            <button onClick={() => setShowQR(true)} className="bg-[#7A1F1F] text-[#FFFFFF] text-[10px] uppercase font-bold tracking-widest px-8 py-3 rounded-full shadow-md mt-6 hover:bg-[#5a1515] transition-colors">
+            <button onClick={() => setShowQR(true)} className="bg-[#7A1F1F] text-[#FFFFFF] text-xs uppercase font-bold tracking-widest px-8 py-3 rounded-full shadow-md mt-6 hover:bg-[#5a1515] transition-colors">
               Mừng Cưới (QR)
             </button>
           </motion.div>
@@ -401,7 +401,7 @@ export function WeddingTwoExperience({
           <div className="absolute inset-0 bg-[#7A1F1F]/60 mix-blend-multiply" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#7A1F1F] via-[#7A1F1F]/40 to-transparent" />
           <div className="relative z-10 flex flex-col items-center">
-            <p className="text-[10px] text-[#F2C583] uppercase tracking-[0.2em] mb-4 font-bold">{customData?.closingText || "Trân Trọng Cảm Ơn"}</p>
+            <p className="text-xs text-[#F2C583] uppercase tracking-[0.2em] mb-4 font-bold">{customData?.closingText || "Trân Trọng Cảm Ơn"}</p>
             <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1, delay: 0.3 }} className="text-6xl text-white mb-8" style={{ fontFamily: 'var(--font-dancing)' }}>Thank You</motion.h2>
           </div>
         </motion.div>
@@ -422,14 +422,14 @@ export function WeddingTwoExperience({
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="bg-[#FFFDF9] p-8 rounded-3xl flex flex-col items-center max-w-sm w-full shadow-2xl border-2 border-[#C5A880]/30" 
+              className="bg-[#FFFDF9] p-8 rounded-3xl flex flex-col items-center max-w-md w-full shadow-2xl border-2 border-[#C5A880]/30" 
               onClick={e => e.stopPropagation()}
             >
               <h3 className="text-3xl text-[#7A1F1F] mb-4" style={{ fontFamily: 'var(--font-dancing)' }}>Mừng Cưới</h3>
               
               <div className="flex justify-center gap-4 mb-4">
-                <button onClick={() => setGiftTab('groom')} className={`pb-1 px-2 border-b-2 font-sans font-bold uppercase tracking-widest text-[10px] ${giftTab === 'groom' ? 'border-[#7A1F1F] text-[#7A1F1F]' : 'border-transparent text-[#A67C52]'}`}>Mừng Chú Rể</button>
-                <button onClick={() => setGiftTab('bride')} className={`pb-1 px-2 border-b-2 font-sans font-bold uppercase tracking-widest text-[10px] ${giftTab === 'bride' ? 'border-[#7A1F1F] text-[#7A1F1F]' : 'border-transparent text-[#A67C52]'}`}>Mừng Cô Dâu</button>
+                <button onClick={() => setGiftTab('groom')} className={`pb-1 px-2 border-b-2 font-sans font-bold uppercase tracking-widest text-xs ${giftTab === 'groom' ? 'border-[#7A1F1F] text-[#7A1F1F]' : 'border-transparent text-[#A67C52]'}`}>Mừng Chú Rể</button>
+                <button onClick={() => setGiftTab('bride')} className={`pb-1 px-2 border-b-2 font-sans font-bold uppercase tracking-widest text-xs ${giftTab === 'bride' ? 'border-[#7A1F1F] text-[#7A1F1F]' : 'border-transparent text-[#A67C52]'}`}>Mừng Cô Dâu</button>
               </div>
               
               <div className="w-48 h-48 bg-white p-2 border-2 border-[#C5A880]/50 rounded-xl mb-6 shadow-inner flex items-center justify-center overflow-hidden">
@@ -438,7 +438,7 @@ export function WeddingTwoExperience({
               
               <button 
                 onClick={() => setShowQR(false)} 
-                className="w-full py-3 bg-[#7A1F1F] text-[#FFFFFF] font-bold text-[10px] uppercase tracking-widest rounded-xl hover:bg-[#5a1515] transition-colors"
+                className="w-full py-3 bg-[#7A1F1F] text-[#FFFFFF] font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-[#5a1515] transition-colors"
               >
                 Đóng
               </button>
