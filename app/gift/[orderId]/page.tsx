@@ -20,7 +20,7 @@ export async function generateMetadata({
   params: Promise<{ orderId: string }>;
 }): Promise<Metadata> {
   const { orderId: rawId } = await params;
-  const { baseId } = parseOrderId(rawId);
+  const { baseId, side } = parseOrderId(rawId);
   const order = await getOrderByPublicId(baseId);
 
   if (!order) {
