@@ -59,10 +59,8 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
       
       // Calculate scale for PC preview (desktop mode)
       if (isMobile) {
-        // When rotated, we use flex-row, so logical height is the physical width (innerWidth).
-        // We want the PC frame (600px tall) to perfectly fit the physical width.
-        const deskScale = window.innerWidth / 600; 
-        setDesktopScale(Math.max(0.3, deskScale));
+        // Provide a comfortably readable scale on mobile, allow horizontal scrolling
+        setDesktopScale(0.85);
       } else {
         // On actual PC, use standard scale
         setDesktopScale(Math.max(0.4, Math.min(1, Math.min(scaleH, scaleW) * 1.2)));
@@ -73,9 +71,6 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  const isRotated = isMobileDevice && mode === "desktop";
-
   const suggestionsBox = relatedTemplates.length > 0 ? (
     <div className={`w-full border-t ${isWedding ? "border-[#f0eadd]" : "border-pink-100"} pt-5`}>
       <h3 className={`text-xs font-bold ${isWedding ? "text-[#bfa993]" : "text-pink-300"} mb-3 uppercase tracking-widest`}>Gợi ý mẫu cùng chủ đề:</h3>
@@ -124,22 +119,10 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
     </div>
   ) : null;
 
-  // Add overflow-y-auto to allow scrolling the toggles/preview when rotated
   return (
-    <div 
-      className={`${isWedding ? "bg-[#f4f1ea] text-[#3a3532]" : "bg-pink-50 text-gray-800"} flex flex-col font-sans relative overflow-x-hidden ${isRotated ? "fixed inset-0 z-[9999] overflow-y-auto" : "min-h-[100dvh] w-full lg:h-[100dvh] lg:overflow-hidden"}`}
-      style={isRotated ? {
-        transform: "rotate(90deg)",
-        transformOrigin: "center center",
-        width: "100vh",
-        height: "100vw",
-        position: "fixed",
-        top: "calc(50% - 50vw)",
-        left: "calc(50% - 50vh)",
-      } : {}}
-    >
+    <div className={`${isWedding ? "bg-[#f4f1ea] text-[#3a3532]" : "bg-pink-50 text-gray-800"} flex flex-col font-sans relative overflow-x-hidden min-h-[100dvh] w-full lg:h-[100dvh] lg:overflow-hidden`}>
       {/* Top Header */}
-      <header className={`h-[70px] px-6 bg-white/90 backdrop-blur-md border-b ${isWedding ? "border-[#e0d5c1]" : "border-pink-100"} flex items-center justify-between z-50 shadow-sm shrink-0 ${isRotated ? "h-16" : ""}`}>
+      <header className={`h-[70px] px-6 bg-white/90 backdrop-blur-md border-b ${isWedding ? "border-[#e0d5c1]" : "border-pink-100"} flex items-center justify-between z-50 shadow-sm shrink-0`}>
         <Link href={isWedding ? "/wedding" : "/love"} className={`${isWedding ? "bg-[#f0eadd] hover:bg-[#e0d5c1] text-[#8a7b66]" : "bg-pink-100 hover:bg-pink-200 text-pink-600"} px-5 py-2.5 rounded-full transition font-bold text-sm shadow-sm flex items-center gap-2`}>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
           <span className="hidden sm:inline">Quay lại</span>
@@ -151,7 +134,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
       </header>
 
       {/* Main Content Area */}
-      <main className={`flex-1 relative flex ${isRotated ? "flex-row" : "flex-col lg:flex-row"} items-center ${isRotated ? "justify-start" : "justify-center"} p-4 lg:p-8 overflow-x-hidden lg:overflow-hidden ${isWedding ? "bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#faf7ef] via-[#f4f1ea] to-white" : "bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-pink-100 via-pink-50 to-white"}`}>
+      <main className={`flex-1 relative flex flex-col lg:flex-row items-center justify-center p-4 lg:p-8 overflow-x-hidden lg:overflow-hidden ${isWedding ? "bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#faf7ef] via-[#f4f1ea] to-white" : "bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-pink-100 via-pink-50 to-white"}`}>
          
          {/* Background Particles/Decorations */}
          {mounted && (
@@ -220,7 +203,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
          )}
 
           {/* Layout Wrapper to perfectly center Info and Phone side by side */}
-         <div className={`w-full h-full max-w-7xl flex ${isRotated ? "flex-row" : "flex-col lg:flex-row"} items-center ${isRotated ? "justify-start" : "justify-center"} gap-8 lg:gap-16 z-10`}>
+         <div className="w-full h-full max-w-7xl flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 z-10">
 
             {/* Left Column: Info Box */}
             <div className={`order-2 lg:order-1 w-full max-w-[420px] shrink-0 bg-white/90 backdrop-blur-xl p-7 lg:p-8 rounded-[2.5rem] border-4 ${isWedding ? "border-[#f0eadd] shadow-[0_20px_60px_-15px_rgba(216,195,165,0.4)]" : "border-pink-100 shadow-[0_20px_60px_-15px_rgba(255,192,203,0.6)]"} flex flex-col items-start text-left max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:hidden mt-8 lg:mt-0 mb-12 lg:mb-0`}>
@@ -243,14 +226,14 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                   Nhắn shop làm mẫu này ♥
                 </a>
 
-                {/* Suggestions Box */}
-                <div className="w-full mt-2">
+                {/* Suggestions Box - Hidden on mobile, visible on desktop */}
+                <div className="hidden lg:block w-full">
                   {suggestionsBox}
                 </div>
             </div>
 
             {/* Right Column: The Phone / PC Preview */}
-            <div className="order-1 lg:order-2 shrink-0 flex flex-col items-center justify-start relative pt-8">
+            <div className="shrink-0 flex flex-col items-center justify-start relative pt-8">
                
                {/* Mode Toggles */}
                <div className={`flex items-center bg-white rounded-full p-1.5 border-2 ${isWedding ? "border-[#f0eadd]" : "border-pink-100"} shadow-md mb-6 relative z-20`}>
@@ -270,14 +253,15 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                  </button>
                </div>
 
-               {/* Scaled Preview Frame */}
-               <div 
-                 className="relative shrink-0 flex items-center justify-center"
-                 style={{ 
-                   width: (mode === "mobile" ? 380 : 800) * (mode === "mobile" ? phoneScale : desktopScale), 
-                   height: (mode === "mobile" ? 780 : 600) * (mode === "mobile" ? phoneScale : desktopScale),
-                 }}
-               >
+               {/* Scaled Preview Frame with Horizontal Scroll for Mobile */}
+               <div className="w-[100vw] lg:w-auto max-w-full overflow-x-auto pb-4 [&::-webkit-scrollbar]:hidden flex justify-center lg:justify-center">
+                 <div 
+                   className="relative shrink-0 flex items-center justify-center"
+                   style={{ 
+                     width: (mode === "mobile" ? 380 : 800) * (mode === "mobile" ? phoneScale : desktopScale), 
+                     height: (mode === "mobile" ? 780 : 600) * (mode === "mobile" ? phoneScale : desktopScale),
+                   }}
+                 >
                  <div
                    className="absolute top-0 left-0 origin-top-left transition-all duration-300"
                    style={{ 
@@ -334,6 +318,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                    )}
                    </div>
                  </div>
+               </div>
                </div>
 
 
