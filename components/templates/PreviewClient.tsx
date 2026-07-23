@@ -67,7 +67,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
 
   return (
     <div 
-      className={`${isWedding ? "bg-[#f4f1ea] text-[#3a3532]" : "bg-pink-50 text-gray-800"} flex flex-col font-sans relative overflow-hidden ${isRotated ? "fixed inset-0 z-[9999]" : "h-[100dvh] w-full"}`}
+      className={`${isWedding ? "bg-[#f4f1ea] text-[#3a3532]" : "bg-pink-50 text-gray-800"} flex flex-col font-sans relative overflow-x-hidden ${isRotated ? "fixed inset-0 z-[9999]" : "min-h-[100dvh] w-full lg:h-[100dvh] lg:overflow-hidden"}`}
       style={isRotated ? {
         transform: "rotate(90deg)",
         transformOrigin: "center center",
@@ -90,8 +90,8 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
         <div className="w-[120px]"></div> {/* Spacer for perfect centering */}
       </header>
 
-      {/* Main Content Area - Strictly 1 Page */}
-      <main className={`flex-1 relative flex flex-col lg:flex-row items-center justify-center p-4 lg:p-8 overflow-hidden ${isWedding ? "bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#faf7ef] via-[#f4f1ea] to-white" : "bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-pink-100 via-pink-50 to-white"}`}>
+      {/* Main Content Area */}
+      <main className={`flex-1 relative flex flex-col lg:flex-row items-center justify-center p-4 lg:p-8 overflow-x-hidden lg:overflow-hidden ${isWedding ? "bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#faf7ef] via-[#f4f1ea] to-white" : "bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-pink-100 via-pink-50 to-white"}`}>
          
          {/* Background Particles/Decorations */}
          {mounted && (
