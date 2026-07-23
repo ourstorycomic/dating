@@ -258,7 +258,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
 
   return (
     <div
-      className={`flex flex-col items-center justify-center overflow-hidden font-sans text-gray-800 ${compact ? "absolute inset-0 rounded-[2.5rem]" : fullScreen ? "relative min-h-[100dvh] w-full sm:rounded-2xl" : isBuilderPreview ? "relative h-full min-h-[640px] w-full sm:rounded-2xl" : "relative h-[800px] min-h-[640px] max-h-[85vh] w-full sm:rounded-2xl border border-pink-100"}`}
+      className={`flex flex-col items-center justify-center overflow-hidden font-sans text-gray-800 ${compact ? "absolute inset-0 rounded-[2.5rem]" : fullScreen ? "relative min-h-[100dvh] w-full sm:rounded-2xl" : isBuilderPreview ? "relative h-full min-h-[720px] w-full sm:rounded-2xl" : "relative h-[900px] min-h-[720px] max-h-[92vh] w-full sm:rounded-2xl border border-pink-100"}`}
       style={{ backgroundColor }}
     >
       {backgroundImage ? (
@@ -301,7 +301,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-6 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
+            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md min-h-[420px] max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-6 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md flex flex-col items-center justify-center"
           >
             { questionImage ? (
               <MediaDisplay src={questionImage} alt="question" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
@@ -342,7 +342,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-6 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
+            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md min-h-[420px] max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-6 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md flex flex-col items-center justify-center"
           >
             { successImage ? (
               <MediaDisplay src={successImage} alt="success" className="mb-4 h-24 w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
@@ -369,7 +369,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-6 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
+            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md min-h-[420px] max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-6 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md flex flex-col items-center justify-center"
           >
             { locationImage ? (
               <MediaDisplay src={locationImage} alt="location" className="mb-2 h-16 w-16 sm:mb-4 sm:h-24 sm:w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
@@ -413,7 +413,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-6 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
+            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md min-h-[420px] max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-6 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md flex flex-col items-center justify-center"
           >
             { datetimeImage ? (
               <MediaDisplay src={datetimeImage} alt="datetime" className="mb-2 h-16 w-16 sm:mb-4 sm:h-24 sm:w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
@@ -462,7 +462,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-6 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
+            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md min-h-[420px] max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-6 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md flex flex-col items-center justify-center"
           >
             { foodImage ? (
               <MediaDisplay src={foodImage} alt="food" className="mb-2 h-16 w-16 sm:mb-4 sm:h-24 sm:w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
@@ -506,7 +506,7 @@ const [stage, setStage] = useState<"question" | "success" | "location" | "dateti
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-6 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md"
+            className="relative z-10 mx-auto w-[85%] sm:w-[90%] max-w-md min-h-[420px] max-h-[95%] overflow-y-auto [&::-webkit-scrollbar]:hidden rounded-[2rem] border border-white/60 bg-white/70 p-4 sm:p-6 text-center shadow-[0_12px_40px_rgba(255,192,203,0.5)] backdrop-blur-md flex flex-col items-center justify-center"
           >
             { drinkImage ? (
               <MediaDisplay src={drinkImage} alt="drink" className="mb-2 h-16 w-16 sm:mb-4 sm:h-24 sm:w-24 object-cover mx-auto rounded-2xl animate-bounce shadow-md" />
