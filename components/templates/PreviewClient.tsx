@@ -217,6 +217,201 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
              </div>
              <div className="absolute right-[30%] top-[15%] animate-[wiggle_6s_ease-in-out_infinite] pointer-events-none opacity-30 z-0">
                 <img src="/assets/dumb/kids.webp" alt="cute pet" className="w-24 h-24 lg:w-40 lg:h-40 object-contain drop-shadow-xl" />
+  const particles = useMemo(() => Array.from({ length: 15 }).map((_, i) => ({
+    id: i,
+    width: Math.random() * 20 + 10,
+    height: Math.random() * 20 + 10,
+    left: Math.random() * 100,
+    top: Math.random() * 100,
+    duration: Math.random() * 10 + 10,
+    delay: Math.random() * 10,
+  })), []);
+
+  const hearts = useMemo(() => Array.from({ length: 10 }).map((_, i) => ({
+    id: i,
+    left: Math.random() * 100,
+    top: Math.random() * 100,
+    duration: Math.random() * 8 + 8,
+    delay: Math.random() * 8,
+  })), []);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const isMobile = window.innerWidth < 1024;
+      setIsMobileDevice(isMobile);
+      
+      // Calculate perfect scale to fit the 780px tall phone into the screen without scrolling
+      const availableHeight = window.innerHeight - 140; // Subtract header and paddings
+      const availableWidth = isMobile ? window.innerWidth - 40 : (window.innerWidth / 2) - 80;
+      
+      const scaleH = availableHeight / 820; // 820 is the phone frame height + toggle buttons
+      const scaleW = availableWidth / 420; // 420 is phone frame width
+      setPhoneScale(Math.max(0.4, Math.min(1, Math.min(scaleH, scaleW))));
+      
+      // Calculate scale for PC preview (desktop mode)
+      if (isMobile) {
+        // When rotated, width becomes height and vice versa
+        const rotatedHeight = window.innerWidth;
+        const rotatedWidth = window.innerHeight;
+        const deskScaleH = (rotatedHeight - 120) / 600; // 600 is PC frame height
+        const deskScaleW = (rotatedWidth - 80) / 800; // 800 is PC frame width
+        setDesktopScale(Math.max(0.3, Math.min(1, Math.min(deskScaleH, deskScaleW))));
+      } else {
+        // On actual PC, use standard scale
+        setDesktopScale(Math.max(0.4, Math.min(1, Math.min(scaleH, scaleW) * 1.2)));
+      }
+    };
+    
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const isRotated = isMobileDevice && mode === "desktop";
+
+  const suggestionsBox = relatedTemplates.length > 0 ? (
+    <div className={`w-full border-t ${isWedding ? "border-[#f0eadd]" : "border-pink-100"} pt-5`}>
+      <h3 className={`text-xs font-bold ${isWedding ? "text-[#bfa993]" : "text-pink-300"} mb-3 uppercase tracking-widest`}>Gợi ý mẫu cùng chủ đề:</h3>
+      <div className="grid grid-cols-4 gap-2 pb-2">
+        {relatedTemplates.map((relTemplate) => (
+          <Link
+            href={`/templates/${relTemplate.slug}/preview`}
+            key={relTemplate.id}
+            className={`relative h-[110px] rounded-xl overflow-hidden border-2 ${isWedding ? "border-[#f4f1ea] hover:border-[#d8c3a5] hover:shadow-[0_8px_16px_-4px_rgba(216,195,165,0.6)]" : "border-pink-100 hover:border-pink-400 hover:shadow-[0_8px_16px_-4px_rgba(255,192,203,0.6)]"} transition-all group bg-[#05020a]`}
+          >
+            {/* Static thumbnail — DB url > webp > png > dark bg */}
+            <picture className="absolute inset-0 w-full h-full">
+              {relTemplate.thumbnail_url ? (
+                <>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={relTemplate.thumbnail_url}
+                    alt={relTemplate.name}
+                    className="w-full h-full object-cover object-top"
+                    loading="lazy"
+                    decoding="async"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                  />
+                </>
+              ) : (
+                <>
+                  <source srcSet={`/thumbnails/${relTemplate.slug}.webp`} type="image/webp" />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`/thumbnails/${relTemplate.slug}.png`}
+                    alt={relTemplate.name}
+                    className="w-full h-full object-cover object-top"
+                    loading="lazy"
+                    decoding="async"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                  />
+                </>
+              )}
+            </picture>
+            {/* Gradient overlay for text legibility */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+            <span className="absolute bottom-1.5 left-1.5 right-1.5 text-white font-bold text-[9px] leading-tight drop-shadow-md z-10 pointer-events-none line-clamp-2 text-center">{relTemplate.name}</span>
+          </Link>
+        ))}
+      </div>
+    </div>
+  ) : null;
+
+  // Add overflow-y-auto to allow scrolling the toggles/preview when rotated
+  return (
+    <div 
+      className={`${isWedding ? "bg-[#f4f1ea] text-[#3a3532]" : "bg-pink-50 text-gray-800"} flex flex-col font-sans relative overflow-x-hidden ${isRotated ? "fixed inset-0 z-[9999] overflow-y-auto" : "min-h-[100dvh] w-full lg:h-[100dvh] lg:overflow-hidden"}`}
+      style={isRotated ? {
+        transform: "rotate(90deg)",
+        transformOrigin: "center center",
+        width: "100vh",
+        height: "100vw",
+        position: "fixed",
+        top: "calc(50% - 50vw)",
+        left: "calc(50% - 50vh)",
+      } : {}}
+    >
+      {/* Top Header */}
+      <header className={`h-[70px] px-6 bg-white/90 backdrop-blur-md border-b ${isWedding ? "border-[#e0d5c1]" : "border-pink-100"} flex items-center justify-between z-50 shadow-sm shrink-0 ${isRotated ? "h-16" : ""}`}>
+        <Link href={isWedding ? "/wedding" : "/love"} className={`${isWedding ? "bg-[#f0eadd] hover:bg-[#e0d5c1] text-[#8a7b66]" : "bg-pink-100 hover:bg-pink-200 text-pink-600"} px-5 py-2.5 rounded-full transition font-bold text-sm shadow-sm flex items-center gap-2`}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          <span className="hidden sm:inline">Quay lại</span>
+        </Link>
+        <h1 className={`text-xl font-black ${isWedding ? "text-[#bfa993]" : "text-pink-500"} uppercase tracking-widest hidden sm:block`}>
+          {template.name}
+        </h1>
+        <div className="w-[120px]"></div> {/* Spacer for perfect centering */}
+      </header>
+
+      {/* Main Content Area */}
+      <main className={`flex-1 relative flex flex-col lg:flex-row items-center justify-center p-4 lg:p-8 overflow-x-hidden lg:overflow-hidden ${isWedding ? "bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#faf7ef] via-[#f4f1ea] to-white" : "bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-pink-100 via-pink-50 to-white"}`}>
+         
+         {/* Background Particles/Decorations */}
+         {mounted && (
+           <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+             {particles.map((p) => (
+               <div
+                 key={`particle-${p.id}`}
+                 className={`absolute rounded-full ${isWedding ? "bg-[#d8c3a5]/20" : "bg-pink-300/30"} blur-[2px]`}
+                 style={{
+                   width: p.width + 'px',
+                   height: p.height + 'px',
+                   left: p.left + '%',
+                   top: p.top + '%',
+                   animation: `float ${p.duration}s linear infinite`,
+                   animationDelay: `-${p.delay}s`,
+                 }}
+               />
+             ))}
+             {hearts.map((h) => (
+               <div
+                 key={`heart-${h.id}`}
+                 className={`absolute ${isWedding ? "text-[#d8c3a5]/30 font-serif" : "text-pink-200/40"} text-xl select-none`}
+                 style={{
+                   left: h.left + '%',
+                   top: h.top + '%',
+                   animation: `float-up ${h.duration}s linear infinite`,
+                   animationDelay: `-${h.delay}s`,
+                 }}
+               >
+                 {isWedding ? "✧" : "❤"}
+               </div>
+             ))}
+             <style>{`
+               @keyframes float {
+                 0% { transform: translate(0, 0) rotate(0deg); }
+                 33% { transform: translate(30px, -50px) rotate(120deg); }
+                 66% { transform: translate(-20px, -100px) rotate(240deg); }
+                 100% { transform: translate(0, -150px) rotate(360deg); opacity: 0; }
+               }
+               @keyframes float-up {
+                 0% { transform: translateY(0) scale(0.8); opacity: 0; }
+                 20% { opacity: 1; transform: translateY(-20px) scale(1.2); }
+                 80% { opacity: 1; transform: translateY(-80px) scale(1); }
+                 100% { transform: translateY(-100px) scale(0.8); opacity: 0; }
+               }
+             `}</style>
+           </div>
+         )}
+         
+         {/* Decorative Elements for Non-Wedding Templates */}
+         {!isWedding && (
+           <>
+             <div className="absolute left-[5%] top-[10%] animate-[bounce_4s_ease-in-out_infinite] pointer-events-none opacity-40 z-0">
+                <img src="/assets/dumb/hm.webp" alt="cute pet" className="w-32 h-32 lg:w-48 lg:h-48 object-contain drop-shadow-2xl" />
+             </div>
+             <div className="absolute right-[5%] bottom-[10%] animate-[bounce_5s_ease-in-out_infinite] pointer-events-none opacity-40 z-0" style={{ animationDelay: '1s' }}>
+                <img src="/assets/dumb/auau.webp" alt="cute pet" className="w-40 h-40 lg:w-64 lg:h-64 object-contain drop-shadow-2xl" />
+             </div>
+             <div className="absolute left-[40%] bottom-[5%] animate-pulse pointer-events-none opacity-30 z-0">
+                <img src="/assets/dumb/suho-cat.webp" alt="cute pet" className="w-24 h-24 lg:w-40 lg:h-40 object-contain drop-shadow-xl" />
+             </div>
+             <div className="absolute right-[30%] top-[15%] animate-[wiggle_6s_ease-in-out_infinite] pointer-events-none opacity-30 z-0">
+                <img src="/assets/dumb/kids.webp" alt="cute pet" className="w-24 h-24 lg:w-40 lg:h-40 object-contain drop-shadow-xl" />
              </div>
            </>
          )}
@@ -225,7 +420,7 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
          <div className="w-full h-full max-w-7xl flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 z-10">
 
             {/* Left Column: Info Box */}
-            <div className={`w-full max-w-[420px] shrink-0 bg-white/90 backdrop-blur-xl p-7 lg:p-8 rounded-[2.5rem] border-4 ${isWedding ? "border-[#f0eadd] shadow-[0_20px_60px_-15px_rgba(216,195,165,0.4)]" : "border-pink-100 shadow-[0_20px_60px_-15px_rgba(255,192,203,0.6)]"} flex flex-col items-start text-left max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:hidden ${isRotated ? "hidden" : "block"}`}>
+            <div className={`order-2 lg:order-1 w-full max-w-[420px] shrink-0 bg-white/90 backdrop-blur-xl p-7 lg:p-8 rounded-[2.5rem] border-4 ${isWedding ? "border-[#f0eadd] shadow-[0_20px_60px_-15px_rgba(216,195,165,0.4)]" : "border-pink-100 shadow-[0_20px_60px_-15px_rgba(255,192,203,0.6)]"} flex flex-col items-start text-left max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:hidden ${isRotated ? "hidden" : "block"} mt-8 lg:mt-0 mb-12 lg:mb-0`}>
                 <div className={`${isWedding ? "bg-[#f4f1ea] text-[#bfa993]" : "bg-pink-100 text-pink-500"} px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-3`}>
                   {template.template_categories?.name || "Mẫu HOT"}
                 </div>
@@ -245,14 +440,14 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                   Nhắn shop làm mẫu này ♥
                 </a>
 
-                {/* Suggestions Box - Hidden on mobile, visible on desktop */}
-                <div className="hidden lg:block w-full">
+                {/* Suggestions Box */}
+                <div className="w-full mt-2">
                   {suggestionsBox}
                 </div>
             </div>
 
             {/* Right Column: The Phone / PC Preview */}
-            <div className="shrink-0 flex flex-col items-center justify-start relative pt-8">
+            <div className="order-1 lg:order-2 shrink-0 flex flex-col items-center justify-start relative pt-8">
                
                {/* Mode Toggles */}
                <div className={`flex items-center bg-white rounded-full p-1.5 border-2 ${isWedding ? "border-[#f0eadd]" : "border-pink-100"} shadow-md mb-6 relative z-20`}>
@@ -336,11 +531,6 @@ export function PreviewClient({ template, relatedTemplates = [] }: { template: a
                    )}
                    </div>
                  </div>
-               </div>
-               
-               {/* Suggestions Box - Visible on mobile, hidden on desktop */}
-               <div className="block lg:hidden w-full max-w-[420px] mt-12 mb-8 bg-white/60 backdrop-blur-sm p-4 rounded-3xl border border-pink-100 shadow-sm">
-                 {suggestionsBox}
                </div>
 
             </div>
