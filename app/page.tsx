@@ -81,7 +81,7 @@ export default function PortalPage() {
                   <div className="absolute w-[200px] h-[200px] bg-pink-300/30 blur-[60px] rounded-full group-hover:scale-150 transition-transform duration-1000 ease-out" />
 
                   {/* Phone Frame */}
-                  <div className="relative w-[240px] h-[480px] origin-center translate-y-8 group-hover:translate-y-2 transition-transform duration-[1s] ease-out z-30">
+                  <div className="relative w-[240px] h-[480px] origin-center translate-y-0 group-hover:-translate-y-2 transition-transform duration-[1s] ease-out z-30">
                     <TiltPhonePreview />
                   </div>
 
@@ -131,7 +131,7 @@ export default function PortalPage() {
                   <div className="absolute w-[200px] h-[200px] bg-[#C5A880]/20 blur-[60px] rounded-full group-hover:scale-150 transition-transform duration-1000 ease-out" />
 
                   {/* Phone Frame */}
-                  <div className="relative w-[240px] h-[480px] origin-center translate-y-8 group-hover:translate-y-2 transition-transform duration-[1s] ease-out shadow-[0_24px_60px_rgba(197,168,128,0.15)] rounded-[2.5rem] z-30 bg-[#2D2A28] border-[8px] border-[#2D2A28]">
+                  <div className="relative w-[240px] h-[480px] origin-center translate-y-0 group-hover:-translate-y-2 transition-transform duration-[1s] ease-out shadow-[0_24px_60px_rgba(197,168,128,0.15)] rounded-[2.5rem] z-30 bg-[#2D2A28] border-[8px] border-[#2D2A28]">
                     <div className="relative w-full h-full rounded-[2rem] overflow-hidden bg-white">
                       <InteractiveTemplatePreview componentKey="wedding-1" compact={true} noFrame={true} />
                     </div>
