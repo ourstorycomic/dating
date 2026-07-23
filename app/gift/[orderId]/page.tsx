@@ -119,8 +119,8 @@ export default async function GiftPage({
   }
 
   return (
-    <div className={`min-h-[100dvh] w-full bg-[#f5e6ee] flex items-start justify-center relative ${!isWedding ? "overflow-hidden" : ""}`}>
-      <div className={`relative w-full min-h-[100dvh] shadow-2xl bg-gradient-to-br from-[#fff6fa] via-[#ffe4ef] to-[#ffd4e5] text-rose-950 ${isWedding ? "max-w-[430px]" : "h-[100dvh] overflow-hidden"}`}>
+    <div className="min-h-[100dvh] w-full bg-[#f5e6ee] flex items-start justify-center relative">
+      <div className={`relative w-full min-h-[100dvh] shadow-2xl bg-gradient-to-br from-[#fff6fa] via-[#ffe4ef] to-[#ffd4e5] text-rose-950 ${isWedding ? "max-w-[430px]" : ""}`}>
         <GiftFullscreenView order={order} side={side} />
       </div>
     </div>

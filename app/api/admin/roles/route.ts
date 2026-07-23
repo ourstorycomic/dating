@@ -17,6 +17,11 @@ type RolePayload = {
     percentage?: number | string;
     templateId?: string;
   }>;
+  crossRoleCommissions?: Array<{
+    childRoleId: string;
+    percentage: number | string;
+    isActive?: boolean;
+  }>;
 };
 
 function normalizePayload(body: RolePayload) {
@@ -31,6 +36,7 @@ function normalizePayload(body: RolePayload) {
       ? body.permissions.map((item) => String(item)).filter(Boolean)
       : [],
     productRules: Array.isArray(body.productRules) ? body.productRules : [],
+    crossRoleCommissions: Array.isArray(body.crossRoleCommissions) ? body.crossRoleCommissions : [],
   };
 }
 
@@ -52,12 +58,22 @@ export async function GET() {
   const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
     .from("custom_roles")
-    .select("id, name, description, base_role, permissions, commission_percentage, is_active, created_at, role_commission_rules(template_id, percentage, is_active)")
+    .select("id, name, description, base_role, permissions, commission_percentage, is_active, created_at, role_commission_rules(template_id, percentage, is_active), cross_role_commissions:CrossRoleCommission!CrossRoleCommission_parentRoleId_fkey(child_role_id:childRoleId, percentage, is_active)")
     .order("created_at", { ascending: false });
 
+  // If the explicit foreign key name fails, we will try the other one in a fallback, or just use Prisma later if needed.
   if (error) {
     console.error("Load roles failed", error);
-    return NextResponse.json({ error: "Không tải được vai trò." }, { status: 500 });
+    // Fallback try without cross_role_commissions if it fails due to relationship name
+    const fallback = await supabase
+      .from("custom_roles")
+      .select("id, name, description, base_role, permissions, commission_percentage, is_active, created_at, role_commission_rules(template_id, percentage, is_active)")
+      .order("created_at", { ascending: false });
+    
+    if (fallback.error) {
+      return NextResponse.json({ error: "Không tải được vai trò." }, { status: 500 });
+    }
+    return NextResponse.json({ roles: fallback.data ?? [] });
   }
 
   return NextResponse.json({ roles: data ?? [] });
@@ -94,12 +110,20 @@ export async function POST(request: Request) {
   }
 
   await saveProductRules(supabase, data.id, productRules);
+  await saveCrossRoleCommissions(data.id, role.crossRoleCommissions);
 
   const { data: fullRole } = await supabase
     .from("custom_roles")
-    .select("id, name, description, base_role, permissions, commission_percentage, is_active, created_at, role_commission_rules(template_id, percentage, is_active)")
+    .select("id, name, description, base_role, permissions, commission_percentage, is_active, created_at, role_commission_rules(template_id, percentage, is_active), cross_role_commissions:CrossRoleCommission!CrossRoleCommission_parentRoleId_fkey(child_role_id:childRoleId, percentage, is_active)")
     .eq("id", data.id)
     .single();
+
+  const finalRole = fullRole ?? data;
+  if (!fullRole?.cross_role_commissions) {
+     const { prisma } = await import("@/lib/prisma");
+     const crossData = await prisma.crossRoleCommission.findMany({ where: { parentRoleId: data.id } });
+     (finalRole as any).cross_role_commissions = crossData.map(c => ({ child_role_id: c.childRoleId, percentage: Number(c.percentage), is_active: c.isActive }));
+  }
 
   await supabase.from("order_logs").insert({
     action: "USER_UPDATED",
@@ -107,7 +131,7 @@ export async function POST(request: Request) {
     metadata: { roleId: data.id, type: "CUSTOM_ROLE_CREATED" },
   });
 
-  return NextResponse.json({ ok: true, role: fullRole ?? data });
+  return NextResponse.json({ ok: true, role: finalRole });
 }
 
 export async function PATCH(request: Request) {
@@ -144,12 +168,20 @@ export async function PATCH(request: Request) {
   }
 
   await saveProductRules(supabase, data.id, productRules);
+  await saveCrossRoleCommissions(data.id, role.crossRoleCommissions);
 
   const { data: fullRole } = await supabase
     .from("custom_roles")
-    .select("id, name, description, base_role, permissions, commission_percentage, is_active, created_at, role_commission_rules(template_id, percentage, is_active)")
-    .eq("id", data.id)
+    .select("id, name, description, base_role, permissions, commission_percentage, is_active, created_at, role_commission_rules(template_id, percentage, is_active), cross_role_commissions:CrossRoleCommission!CrossRoleCommission_parentRoleId_fkey(child_role_id:childRoleId, percentage, is_active)")
+    .eq("id", role.id)
     .single();
+
+  const finalRole = fullRole ?? data;
+  if (!fullRole?.cross_role_commissions) {
+     const { prisma } = await import("@/lib/prisma");
+     const crossData = await prisma.crossRoleCommission.findMany({ where: { parentRoleId: data.id } });
+     (finalRole as any).cross_role_commissions = crossData.map(c => ({ child_role_id: c.childRoleId, percentage: Number(c.percentage), is_active: c.isActive }));
+  }
 
   await supabase.from("order_logs").insert({
     action: "USER_UPDATED",
@@ -157,7 +189,7 @@ export async function PATCH(request: Request) {
     metadata: { roleId: data.id, type: "CUSTOM_ROLE_UPDATED" },
   });
 
-  return NextResponse.json({ ok: true, role: fullRole ?? data });
+  return NextResponse.json({ ok: true, role: finalRole });
 }
 
 export async function DELETE(request: Request) {
@@ -216,4 +248,25 @@ async function saveProductRules(
   await supabase
     .from("role_commission_rules")
     .upsert(rows, { onConflict: "role_id,template_id" });
+}
+
+async function saveCrossRoleCommissions(parentRoleId: string, crossRoleCommissions?: any[]) {
+  if (!crossRoleCommissions) return;
+  const { prisma } = await import("@/lib/prisma");
+
+  const validRules = crossRoleCommissions
+    .filter((rule) => rule.childRoleId && Number.isFinite(Number(rule.percentage)) && Number(rule.percentage) >= 0 && Number(rule.percentage) <= 100)
+    .map((rule) => ({
+      parentRoleId,
+      childRoleId: String(rule.childRoleId),
+      percentage: Number(rule.percentage),
+      isActive: rule.isActive !== false,
+    }));
+
+  await prisma.$transaction(async (tx) => {
+    await tx.crossRoleCommission.deleteMany({ where: { parentRoleId } });
+    if (validRules.length > 0) {
+      await tx.crossRoleCommission.createMany({ data: validRules });
+    }
+  });
 }

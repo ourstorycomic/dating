@@ -18,6 +18,11 @@ type CustomRole = {
     percentage: number;
     template_id: string;
   }>;
+  cross_role_commissions?: Array<{
+    child_role_id: string;
+    is_active: boolean;
+    percentage: number;
+  }>;
 };
 
 type TemplateOption = {
@@ -48,6 +53,7 @@ const emptyForm = {
   name: "",
   permissions: ["orders:create"],
   productRules: [] as Array<{ isActive: boolean; percentage: number; templateId: string }>,
+  crossRoleCommissions: [] as Array<{ childRoleId: string; percentage: number; isActive: boolean }>,
 };
 
 const defaultRoles: CustomRole[] = [
@@ -156,6 +162,11 @@ export function RoleManager({ initialRoles, templates }: { initialRoles: CustomR
         percentage: Number(rule.percentage),
         templateId: rule.template_id,
       })),
+      crossRoleCommissions: (role.cross_role_commissions ?? []).map((rule) => ({
+        isActive: rule.is_active,
+        percentage: Number(rule.percentage),
+        childRoleId: rule.child_role_id,
+      })),
     });
     setMessage("");
     setOpen(true);
@@ -182,6 +193,22 @@ export function RoleManager({ initialRoles, templates }: { initialRoles: CustomR
         productRules: exists
           ? current.productRules.map((rule) => rule.templateId === templateId ? { ...rule, isActive: true, percentage } : rule)
           : [...current.productRules, { isActive: true, percentage, templateId }],
+      };
+    });
+  }
+
+  function getCrossRolePercentage(childRoleId: string) {
+    return form.crossRoleCommissions.find((rule) => rule.childRoleId === childRoleId)?.percentage ?? 0;
+  }
+
+  function setCrossRolePercentage(childRoleId: string, percentage: number) {
+    setForm((current) => {
+      const exists = current.crossRoleCommissions.some((rule) => rule.childRoleId === childRoleId);
+      return {
+        ...current,
+        crossRoleCommissions: exists
+          ? current.crossRoleCommissions.map((rule) => rule.childRoleId === childRoleId ? { ...rule, isActive: true, percentage } : rule)
+          : [...current.crossRoleCommissions, { isActive: true, percentage, childRoleId }],
       };
     });
   }
@@ -377,9 +404,35 @@ export function RoleManager({ initialRoles, templates }: { initialRoles: CustomR
                     ))}
                   </div>
                 </div>
+                  </div>
+                </div>
               ) : null}
 
-              <label className="flex items-center gap-2 text-sm font-medium text-pink-800">
+              <div className="grid gap-2 mt-2">
+                <p className="text-sm font-medium text-pink-800">Hoa hồng từ tuyến dưới (Multi-tier)</p>
+                <p className="text-xs text-pink-600 mb-1">Khi người dùng thuộc Role dưới đây tạo đơn, Role này sẽ được hưởng % hoa hồng tương ứng nếu nằm trong chuỗi quản lý.</p>
+                <div className="grid gap-2">
+                  {roles.filter(r => r.id !== form.id && r.id && !r.system).map((role) => (
+                    <label
+                      className="grid gap-2 rounded-xl border border-pink-200 bg-white px-3 py-2 text-sm sm:grid-cols-[1fr_120px]"
+                      key={role.id}
+                    >
+                      <span className="text-pink-950 font-medium">{role.name}</span>
+                      <input
+                        className="rounded-lg border border-pink-200 bg-white px-3 py-2 outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400/50 text-pink-950"
+                        max={100}
+                        min={0}
+                        onChange={(event) => setCrossRolePercentage(role.id, Number(event.target.value))}
+                        step="0.1"
+                        type="number"
+                        value={getCrossRolePercentage(role.id)}
+                      />
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <label className="flex items-center gap-2 text-sm font-medium text-pink-800 mt-2">
                 <input
                   checked={form.isActive}
                   onChange={(event) => setForm((current) => ({ ...current, isActive: event.target.checked }))}

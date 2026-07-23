@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/session";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import prisma from "@/lib/prisma";
 
 type CommissionRuleRow = {
   percentage: number | string;
@@ -179,6 +180,71 @@ export async function POST(
         user_id: creator.manager_id,
       });
     }
+
+    // --- MULTI-TIER CROSS-ROLE COMMISSION LOGIC ---
+    if (creator?.id) {
+      const creatorUser = await prisma.user.findUnique({
+        where: { id: creator.id },
+        select: { customRoleId: true, managerId: true },
+      });
+
+      const creatorRoleId = creatorUser?.customRoleId;
+
+      if (creatorRoleId && creatorUser?.managerId) {
+        let currentManagerId: string | null = creatorUser.managerId;
+        // Guard against infinite loops with max depth
+        let depth = 0;
+        const MAX_DEPTH = 20;
+
+        while (currentManagerId && depth < MAX_DEPTH) {
+          const managerUser = await prisma.user.findUnique({
+            where: { id: currentManagerId },
+            select: { id: true, customRoleId: true, managerId: true },
+          });
+
+          if (!managerUser) break;
+
+          if (managerUser.customRoleId) {
+            const rule = await prisma.crossRoleCommission.findUnique({
+              where: {
+                parentRoleId_childRoleId: {
+                  parentRoleId: managerUser.customRoleId,
+                  childRoleId: creatorRoleId,
+                },
+              },
+            });
+
+            if (rule && rule.isActive && Number(rule.percentage) > 0) {
+              const alreadyPaid = commissions.some(
+                (c) => c.user_id === managerUser.id && c.recipient_type === "STAFF"
+              );
+              
+              if (!alreadyPaid) {
+                commissions.push({
+                  amount: (orderAmount * Number(rule.percentage)) / 100,
+                  order_id: order.id,
+                  percentage: Number(rule.percentage),
+                  recipient_type: "STAFF", // using STAFF for manager commissions
+                  user_id: managerUser.id,
+                });
+              } else {
+                const existingIdx = commissions.findIndex(
+                  (c) => c.user_id === managerUser.id && c.recipient_type === "STAFF"
+                );
+                if (existingIdx !== -1) {
+                  commissions[existingIdx].percentage = Number(rule.percentage);
+                  commissions[existingIdx].amount = (orderAmount * Number(rule.percentage)) / 100;
+                }
+              }
+            }
+          }
+
+          currentManagerId = managerUser.managerId;
+          depth++;
+        }
+      }
+    }
+    // --- END MULTI-TIER ---
 
     const affiliatePercentage = getGlobalPercentage(commissionRules, "AFFILIATE");
     if (affiliatePercentage > 0 && order.affiliate_id) {

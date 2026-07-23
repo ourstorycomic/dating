@@ -3016,7 +3016,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
             <input type="range" min="0" max="1" step="0.05" value={builderVolume} onChange={(e) => setBuilderVolume(Number(e.target.value))} className="w-24 accent-pink-500" />
           </div>
         </div>
-        <div id="builder-preview" className="flex-1 w-full min-h-[58svh] xl:min-h-0 flex items-center justify-center relative">
+        <div id="builder-preview" className="flex-1 w-full min-h-[58svh] xl:min-h-0 flex items-center justify-center relative xl:pb-16">
             <InteractiveTemplatePreview
               componentKey={selectedComponentKey}
               customData={isGoi3 && activeTab === "gai" ? { ...customData, ...(dynamicData.gai || {}) } : customData}

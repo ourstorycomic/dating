@@ -120,11 +120,33 @@ model CustomRole {
 
   users               User[]
   roleCommissionRules RoleCommissionRule[]
+  crossRoleCommissionsAsParent CrossRoleCommission[] @relation("ParentRole")
+  crossRoleCommissionsAsChild  CrossRoleCommission[] @relation("ChildRole")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([baseRole])
+}
+
+model CrossRoleCommission {
+  id             String     @id @default(cuid())
+  
+  parentRoleId   String
+  parentRole     CustomRole @relation("ParentRole", fields: [parentRoleId], references: [id], onDelete: Cascade)
+  
+  childRoleId    String
+  childRole      CustomRole @relation("ChildRole", fields: [childRoleId], references: [id], onDelete: Cascade)
+  
+  percentage     Decimal    @db.Decimal(5, 2)
+  isActive       Boolean    @default(true)
+
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  @@unique([parentRoleId, childRoleId])
+  @@index([parentRoleId])
+  @@index([childRoleId])
 }
 
 model Affiliate {

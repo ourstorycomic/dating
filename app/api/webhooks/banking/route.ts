@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import prisma from "@/lib/prisma";
 
 type BankingWebhookPayload = {
   amount?: number | string;
@@ -304,6 +305,76 @@ export async function POST(request: Request) {
       user_id: creator.manager_id,
     });
   }
+
+  // --- MULTI-TIER CROSS-ROLE COMMISSION LOGIC ---
+  if (creator?.id) {
+    const creatorUser = await prisma.user.findUnique({
+      where: { id: creator.id },
+      select: { customRoleId: true, managerId: true },
+    });
+
+    const creatorRoleId = creatorUser?.customRoleId;
+
+    if (creatorRoleId && creatorUser?.managerId) {
+      let currentManagerId: string | null = creatorUser.managerId;
+      // Guard against infinite loops with max depth
+      let depth = 0;
+      const MAX_DEPTH = 20;
+
+      while (currentManagerId && depth < MAX_DEPTH) {
+        const managerUser = await prisma.user.findUnique({
+          where: { id: currentManagerId },
+          select: { id: true, customRoleId: true, managerId: true },
+        });
+
+        if (!managerUser) break;
+
+        if (managerUser.customRoleId) {
+          const rule = await prisma.crossRoleCommission.findUnique({
+            where: {
+              parentRoleId_childRoleId: {
+                parentRoleId: managerUser.customRoleId,
+                childRoleId: creatorRoleId,
+              },
+            },
+          });
+
+          if (rule && rule.isActive && Number(rule.percentage) > 0) {
+            // Prevent double-paying if we already paid this manager via the basic STAFF rule
+            const alreadyPaid = commissions.some(
+              (c) => c.user_id === managerUser.id && c.recipient_type === "STAFF"
+            );
+            
+            if (!alreadyPaid) {
+              commissions.push({
+                amount: (orderAmount * Number(rule.percentage)) / 100,
+                order_id: order.id,
+                percentage: Number(rule.percentage),
+                recipient_type: "STAFF", // using STAFF for manager commissions
+                user_id: managerUser.id,
+              });
+            } else {
+              // If already paid, we can choose to add them up, but usually we just prefer the cross-role rule.
+              // We'll update the existing STAFF commission to use the cross-role percentage instead if they prefer.
+              // To keep it simple, we just ADD it. Or rather, let's just add it as another STAFF record or replace it.
+              // Let's replace the basic STAFF rule with the specific cross-role rule since it's more specific.
+              const existingIdx = commissions.findIndex(
+                (c) => c.user_id === managerUser.id && c.recipient_type === "STAFF"
+              );
+              if (existingIdx !== -1) {
+                commissions[existingIdx].percentage = Number(rule.percentage);
+                commissions[existingIdx].amount = (orderAmount * Number(rule.percentage)) / 100;
+              }
+            }
+          }
+        }
+
+        currentManagerId = managerUser.managerId;
+        depth++;
+      }
+    }
+  }
+  // --- END MULTI-TIER ---
 
   const affiliatePercentage = getGlobalPercentage(commissionRules, "AFFILIATE");
 
