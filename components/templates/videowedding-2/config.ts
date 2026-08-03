@@ -1,0 +1,30 @@
+export const VIDEOWEDDING_2_DATA = {
+  text1: "LỄ THÀNH HÔN",
+  text2: "CHÚNG TÔI SẮP KẾT HÔN!",
+  text3: "TÌNH YÊU ĐÍCH THỰC",
+  text4: "Trân trọng cảm ơn",
+  text5: "Hai trái tim, một nhịp đập.",
+  text6: "Chuyện tình viết nên từ những vì sao.",
+  text7: "Từ hôm nay và mãi về sau...",
+  date: "25.07.2026",
+  groomName: "Huy Bình",
+  brideName: "Anh Thư",
+  voiceUrl: "/assets/videowedding-2/intro.mp3",
+  photos: [
+    "/assets/videowedding-2/anhchung.jpg",
+    "/assets/videowedding-2/anhchung2.jpg",
+    "/assets/videowedding-2/anhchung3.jpg",
+    "/assets/videowedding-2/anhchung4.jpg",
+    "/assets/videowedding-2/chure.jpg",
+    "/assets/videowedding-2/codau.jpg",
+    "/assets/videowedding-2/anhchung7.jpg",
+    "/assets/videowedding-2/anhchung8.jpg",
+    "/assets/videowedding-2/anhchung9.jpg",
+    "/assets/videowedding-2/anhchung10.jpg",
+    "/assets/videowedding-2/anhchung11.jpg",
+    "/assets/videowedding-2/anhchung12.jpg",
+    "/assets/videowedding-2/anhchung13.jpg",
+    "/assets/videowedding-2/chure.jpg",
+    "/assets/videowedding-2/codau.jpg"
+  ]
+};

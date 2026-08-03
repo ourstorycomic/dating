@@ -231,7 +231,7 @@ export function TemplateManager({ initialTemplates }: { initialTemplates: Templa
 
                   {/* Phone-frame thumbnail preview — updates instantly on file select */}
                   <div
-                    className="relative flex h-32 w-16 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-pink-300 bg-[#05020a] shadow transition hover:border-pink-500"
+                    className={`relative flex shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-pink-300 bg-[#05020a] shadow transition hover:border-pink-500 ${editing?.component_key?.toLowerCase().includes('video') ? 'w-32 h-18 aspect-video' : 'h-32 w-16'}`}
                     onClick={() => fileInputRef.current?.click()}
                     title="Click để chọn ảnh"
                   >
@@ -269,7 +269,7 @@ export function TemplateManager({ initialTemplates }: { initialTemplates: Templa
                       ) : "Chọn ảnh thumbnail…"}
                     </button>
 
-                    <p className="text-xs text-pink-400">PNG / JPG / WebP · Tỉ lệ 9:19 (điện thoại) · Max 10MB</p>
+                    <p className="text-xs text-pink-400">PNG / JPG / WebP · {editing?.component_key?.toLowerCase().includes('video') ? 'Tỉ lệ 16:9 (ngang)' : 'Tỉ lệ 9:19 (điện thoại)'} · Max 10MB</p>
                     <p className="text-xs text-pink-400">Ảnh sẽ được nén tự động và lưu lên Supabase Storage.</p>
 
                     {thumbFile && (

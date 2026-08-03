@@ -18,14 +18,18 @@ function facebookLink(templateName?: string) {
   return `${FACEBOOK_URL}?text=${encodeURIComponent(text)}`;
 }
 
-const OTHER_TEMPLATES = [
-  { name: "Classic Elegance", image: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000&auto=format&fit=crop", componentKey: "wedding-1" },
-  { name: "Modern Romance", image: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1000&auto=format&fit=crop", componentKey: "wedding-2" },
-  { name: "Crimson Love", image: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1000&auto=format&fit=crop", componentKey: "wedding-3" },
-  { name: "Blue Envelope", image: "https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=1000&auto=format&fit=crop", componentKey: "wedding-4" },
-  { name: "Earth & Greenery", image: "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?q=80&w=1000&auto=format&fit=crop", componentKey: "wedding-5" },
-  { name: "Double Happiness", image: "https://images.unsplash.com/photo-1621252179027-94459d278660?q=80&w=1000&auto=format&fit=crop", componentKey: "wedding-6" },
-];
+const renderDescription = (text?: string) => {
+  if (!text) return null;
+  const parts = text.split(/(\*\*.*?\*\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={i} className="font-semibold text-[#2D2A28]">{part.slice(2, -2)}</strong>;
+    }
+    return <React.Fragment key={i}>{part}</React.Fragment>;
+  });
+};
+
+// Replaced OTHER_TEMPLATES with dynamic fetch from /api/templates/published
 
 export default function TemplatePreviewPage({ params }: { params: Promise<{ id: string }> }) {
   const unwrappedParams = React.use(params);
@@ -54,12 +58,34 @@ export default function TemplatePreviewPage({ params }: { params: Promise<{ id: 
     fetchTemplate();
   }, [componentKey]);
 
-  const [randomTemplates, setRandomTemplates] = useState<typeof OTHER_TEMPLATES>([]);
+  const [randomTemplates, setRandomTemplates] = useState<any[]>([]);
 
   useEffect(() => {
-    const available = OTHER_TEMPLATES.filter(t => t.componentKey !== componentKey);
-    const shuffled = [...available].sort(() => 0.5 - Math.random());
-    setRandomTemplates(shuffled.slice(0, 2));
+    async function fetchOthers() {
+      try {
+        const res = await fetch('/api/templates/published');
+        const allTemplates = await res.json();
+        const isCurrentVideo = componentKey.toLowerCase().includes("videowedding");
+        const weddingTemplates = allTemplates.filter((t: any) => {
+          const key = t.component_key?.toLowerCase() || "";
+          if (isCurrentVideo) {
+            return key.includes("videowedding");
+          } else {
+            return key.includes("wedding") && !key.includes("videowedding");
+          }
+        });
+        const available = weddingTemplates.filter((t: any) => t.component_key !== componentKey);
+        const shuffled = [...available].sort(() => 0.5 - Math.random());
+        setRandomTemplates(shuffled.slice(0, 2).map((t: any) => ({
+          name: t.name,
+          image: t.thumbnail_url || "",
+          componentKey: t.component_key
+        })));
+      } catch (e) {
+        console.error("Failed to fetch other templates", e);
+      }
+    }
+    fetchOthers();
   }, [componentKey]);
 
   useEffect(() => {
@@ -70,6 +96,7 @@ export default function TemplatePreviewPage({ params }: { params: Promise<{ id: 
   }, []);
 
   const activeDevice = isMobileScreen ? 'mobile' : device;
+  const isVideo = componentKey.toLowerCase().includes("video");
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -103,7 +130,7 @@ export default function TemplatePreviewPage({ params }: { params: Promise<{ id: 
         </div>
 
         {/* Center: Device Toggle */}
-        {!isMobileScreen && (
+        {!isMobileScreen && !isVideo && (
           <div className="flex-1 flex justify-center">
             <div className="bg-[#F8F6F0] p-1 rounded-full flex items-center gap-1 border border-[#F4EFEA]">
               <button
@@ -155,12 +182,26 @@ export default function TemplatePreviewPage({ params }: { params: Promise<{ id: 
         {/* A. Cột Trái (Preview Area) */}
         <div className="flex-1 bg-[#F8F6F0] relative flex items-center justify-center p-4 lg:p-8 min-h-[850px] lg:min-h-0 lg:overflow-hidden">
           <div
-            className={`transition-all duration-500 ease-out flex flex-col bg-white relative shadow-2xl overflow-hidden shrink-0 ${activeDevice === 'desktop'
-              ? 'w-full max-w-[1200px] rounded-xl border border-[#E5E5E5] h-full max-h-[800px]'
-              : 'w-full max-w-[375px] sm:max-w-[400px] rounded-[2.5rem] border-[8px] border-[#1A1A1A] h-full max-h-[850px]'
+            className={`transition-all duration-500 ease-out flex flex-col bg-white relative shadow-2xl overflow-hidden shrink-0 ${
+              isVideo 
+                ? 'w-full max-w-[1200px] aspect-video rounded-xl border border-[#E5E5E5]'
+                : activeDevice === 'desktop'
+                  ? 'w-full max-w-[1200px] rounded-xl border border-[#E5E5E5] h-full max-h-[800px]'
+                  : 'w-full max-w-[375px] sm:max-w-[400px] rounded-[2.5rem] border-[8px] border-[#1A1A1A] h-full max-h-[850px]'
               } [transform:translateZ(0)]`}
           >
-            {activeDevice === 'desktop' ? (
+            {isVideo ? (
+              <div className="flex-none w-full bg-[#1A1A1A] border-b border-[#333] flex items-center px-4 py-3 gap-2">
+                <div className="flex gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-[#FF5F56]"></div>
+                  <div className="w-3 h-3 rounded-full bg-[#FFBD2E]"></div>
+                  <div className="w-3 h-3 rounded-full bg-[#27C93F]"></div>
+                </div>
+                <div className="mx-auto bg-[#333] rounded-md px-6 py-1 text-xs font-medium text-[#A89F9A] flex items-center gap-2 max-w-sm w-full justify-center">
+                  <Monitor className="w-3 h-3" /> Màn hình trình chiếu Video 16:9 (Nhà hàng)
+                </div>
+              </div>
+            ) : activeDevice === 'desktop' ? (
               // Desktop Minimalist Browser Mockup
               <div className="flex-none w-full bg-white border-b border-[#E5E5E5] flex items-center px-4 py-3 gap-2">
                 <div className="flex gap-1.5">
@@ -179,7 +220,7 @@ export default function TemplatePreviewPage({ params }: { params: Promise<{ id: 
               </div>
             )}
 
-            <div className="flex-1 w-full relative overflow-y-auto bg-white">
+            <div className={`flex-1 w-full relative overflow-y-auto ${isVideo ? 'bg-black' : 'bg-white'}`}>
               <InteractiveTemplatePreview
                 componentKey={componentKey}
                 noFrame={true}
@@ -208,7 +249,7 @@ export default function TemplatePreviewPage({ params }: { params: Promise<{ id: 
                 </h1>
 
                 <p className="text-[#7A726D] text-sm leading-relaxed mb-10 whitespace-pre-line">
-                  {dbTemplate?.description || "Template cưới tuyệt đẹp."}
+                  {renderDescription(dbTemplate?.description || "Template cưới tuyệt đẹp.")}
                 </p>
 
 
@@ -227,8 +268,12 @@ export default function TemplatePreviewPage({ params }: { params: Promise<{ id: 
                   <div className="grid grid-cols-2 gap-4">
                     {randomTemplates.map((t) => (
                       <Link href={`/wedding/preview/${t.componentKey}`} key={t.componentKey} className="group block rounded-xl overflow-hidden border border-[#F4EFEA] hover:border-[#C5A880] transition shadow-sm hover:shadow-md">
-                        <div className="aspect-[3/4] overflow-hidden relative bg-[#F8F6F0]">
-                          <img src={t.image} alt={t.name} className="absolute inset-0 w-full h-full object-cover transition duration-500 group-hover:scale-110" />
+                        <div className={`${t.componentKey.toLowerCase().includes('video') ? 'aspect-video' : 'aspect-[3/4]'} overflow-hidden relative bg-[#F8F6F0]`}>
+                          {t.image ? (
+                            <img src={t.image} alt={t.name} className="absolute inset-0 w-full h-full object-cover transition duration-500 group-hover:scale-110" />
+                          ) : (
+                            <div className="absolute inset-0 flex items-center justify-center text-[#C5A880] text-xs">Xem trước</div>
+                          )}
                         </div>
                         <div className="p-3 bg-white text-center">
                           <p className="text-xs font-semibold text-[#2D2A28] truncate">{t.name}</p>

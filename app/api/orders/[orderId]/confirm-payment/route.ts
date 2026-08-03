@@ -252,7 +252,9 @@ export async function POST(
     }
     // --- END MULTI-TIER ---
 
-    const affiliatePercentage = getGlobalPercentage(commissionRules, "AFFILIATE");
+    const customData = order.custom_data as any || {};
+    const customAffiliatePercentage = customData.affiliateCommissionRate !== undefined ? Number(customData.affiliateCommissionRate) : null;
+    const affiliatePercentage = customAffiliatePercentage !== null ? customAffiliatePercentage : getGlobalPercentage(commissionRules, "AFFILIATE");
     if (affiliatePercentage > 0 && order.affiliate_id) {
       commissions.push({
         affiliate_id: order.affiliate_id,

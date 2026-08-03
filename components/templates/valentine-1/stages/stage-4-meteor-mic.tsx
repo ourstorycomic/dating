@@ -94,7 +94,7 @@ export function Stage4MeteorMic({
       if (!caught) {
         const t = setTimeout(() => {
           setCaught(true);
-        }, 1500);
+        }, 3000);
         return () => clearTimeout(t);
       } else if (!blown) {
         const t = setTimeout(() => {

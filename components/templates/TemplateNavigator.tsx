@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+
 export function TemplateNavigator({
   currentIndex,
   totalSteps,
@@ -15,10 +18,19 @@ export function TemplateNavigator({
   accentColor?: string;
   isHidden?: boolean;
 }) {
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    setPortalTarget(document.getElementById('template-navigator-portal'));
+  }, []);
+
   if (isHidden) return null;
 
-  return (
-    <div className="absolute bottom-4 left-4 right-4 z-[9999] flex items-center justify-between gap-1 sm:gap-2 rounded-full border border-white/40 bg-white/95 backdrop-blur-md p-1.5 sm:p-2 shadow-2xl transition-all">
+  const content = (
+    <div className={portalTarget 
+      ? "w-full max-w-sm mx-auto flex items-center justify-between gap-2 rounded-full border border-pink-500/20 bg-pink-500/5 p-2 mt-6 shadow-sm"
+      : "absolute bottom-4 left-4 right-4 z-[9999] flex items-center justify-between gap-1 sm:gap-2 rounded-full border border-white/40 bg-white/95 backdrop-blur-md p-1.5 sm:p-2 shadow-2xl transition-all"
+    }>
       <button
         className="rounded-full px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-bold shadow-md transition-all active:scale-95 disabled:opacity-50 disabled:shadow-none disabled:active:scale-100 disabled:cursor-not-allowed"
         style={{ backgroundColor: accentColor, color: "#ffffff" }}
@@ -47,4 +59,6 @@ export function TemplateNavigator({
       </button>
     </div>
   );
+
+  return portalTarget ? createPortal(content, portalTarget) : content;
 }

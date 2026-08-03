@@ -361,24 +361,24 @@ export function WeddingOneExperience({
         <h2 className="text-[11px] uppercase tracking-[0.3em] text-[#8c7b6b] font-bold mb-12 font-sans">Sự kiện sắp tới</h2>
         
         {/* Countdown */}
-        <div className="flex gap-1 sm:gap-6 justify-center font-sans mb-20 text-[#444] w-full px-2 max-w-[320px] sm:max-w-none mx-auto">
-          <div className="flex flex-col items-center w-12 sm:w-16 shrink-0">
-            <span className="text-xl sm:text-4xl font-light">{days}</span>
+        <div className="flex gap-2 sm:gap-4 justify-center font-sans mb-20 text-[#444] w-full px-2 max-w-[320px] sm:max-w-none mx-auto">
+          <div className="flex flex-col items-center w-10 sm:w-14 shrink-0">
+            <span className="text-2xl sm:text-3xl font-light">{days}</span>
             <span className="text-[8px] uppercase tracking-[0.2em] mt-2 opacity-60">Ngày</span>
           </div>
-          <span className="text-lg sm:text-2xl font-light opacity-30 pt-1 shrink-0">:</span>
-          <div className="flex flex-col items-center w-12 sm:w-16 shrink-0">
-            <span className="text-xl sm:text-4xl font-light">{hours}</span>
+          <span className="text-lg sm:text-xl font-light opacity-30 pt-1 shrink-0">:</span>
+          <div className="flex flex-col items-center w-10 sm:w-14 shrink-0">
+            <span className="text-2xl sm:text-3xl font-light">{hours}</span>
             <span className="text-[8px] uppercase tracking-[0.2em] mt-2 opacity-60">Giờ</span>
           </div>
-          <span className="text-lg sm:text-2xl font-light opacity-30 pt-1 shrink-0">:</span>
-          <div className="flex flex-col items-center w-12 sm:w-16 shrink-0">
-            <span className="text-xl sm:text-4xl font-light">{minutes}</span>
+          <span className="text-lg sm:text-xl font-light opacity-30 pt-1 shrink-0">:</span>
+          <div className="flex flex-col items-center w-10 sm:w-14 shrink-0">
+            <span className="text-2xl sm:text-3xl font-light">{minutes}</span>
             <span className="text-[8px] uppercase tracking-[0.2em] mt-2 opacity-60">Phút</span>
           </div>
-          <span className="text-lg sm:text-2xl font-light opacity-30 pt-1 shrink-0">:</span>
-          <div className="flex flex-col items-center w-12 sm:w-16 shrink-0">
-            <span className="text-xl sm:text-4xl font-light">{seconds}</span>
+          <span className="text-lg sm:text-xl font-light opacity-30 pt-1 shrink-0">:</span>
+          <div className="flex flex-col items-center w-10 sm:w-14 shrink-0">
+            <span className="text-2xl sm:text-3xl font-light">{seconds}</span>
             <span className="text-[8px] uppercase tracking-[0.2em] mt-2 opacity-60">Giây</span>
           </div>
         </div>

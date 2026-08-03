@@ -81,6 +81,8 @@ const allowedTemplateMatches = [
   "wedding #5",
   "wedding-6",
   "wedding #6",
+  "videowedding-1",
+  "videowedding-2",
 ];
 
 const futureWeddingDate = new Date();
@@ -346,7 +348,41 @@ export const MOCK_TEMPLATES: any[] = [
     ],
     sample_data: { screens: ["Thiệp Mời", "Lời Ngỏ", "Thư Viện Ảnh", "Xác Nhận"] },
     template_categories: { slug: "wedding", name: "Wedding", description: null }
-  }))
+  })),
+  {
+    id: "videowedding-1-mock",
+    slug: "videowedding-1",
+    name: "Story of Us",
+    component_key: "videowedding-1",
+    description: "Mẫu video ngày cưới kể lại câu chuyện tình yêu của hai người với những khung hình lãng mạn, hiệu ứng mượt mà và âm nhạc cảm xúc. Độ phân giải 4K sắc nét.",
+    tagline: "Lãng mạn",
+    base_price: 209000,
+    visual_label: "HOT",
+    gradient: "from-gray-100 to-gray-400",
+    status_label: "Mới",
+    sort_order: 31,
+    thumbnail_url: "/assets/videowedding-1/anhchung2.jpg",
+    data_schema: [],
+    sample_data: {},
+    template_categories: { slug: "wedding", name: "Wedding", description: null }
+  },
+  {
+    id: "videowedding-2-mock",
+    slug: "videowedding-2",
+    name: "Cinema Luxury",
+    component_key: "videowedding-2",
+    description: "Mẫu video trình chiếu tiệc cưới phong cách rạp chiếu phim (Cinematic). Sang trọng, tinh tế với hiệu ứng ánh sáng, màu sắc điện ảnh và những châm ngôn tình yêu cảm động. Độ phân giải 4K sắc nét.",
+    tagline: "Sang Trọng",
+    base_price: 259000,
+    visual_label: "NEW",
+    gradient: "from-[#C69C6D] to-[#0f0407]",
+    status_label: "Mới",
+    sort_order: 32,
+    thumbnail_url: "/assets/videowedding-2/anhchung12.jpg",
+    data_schema: [],
+    sample_data: { voiceUrl: "/assets/videowedding-2/intro.mp3" },
+    template_categories: { slug: "wedding", name: "Wedding", description: null }
+  }
 ];
 
 function isSupportedTemplate(template: Pick<TemplateCatalogItem, "component_key" | "name" | "slug">) {

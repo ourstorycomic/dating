@@ -125,9 +125,14 @@ export async function POST(request: Request) {
 
   const finalRole = fullRole ?? data;
   if (!fullRole?.cross_role_commissions) {
-     const { prisma } = await import("@/lib/prisma");
-     const crossData = await prisma.crossRoleCommission.findMany({ where: { parentRoleId: data.id } });
-     (finalRole as any).cross_role_commissions = crossData.map(c => ({ child_role_id: c.childRoleId, percentage: Number(c.percentage), is_active: c.isActive }));
+     try {
+       const { prisma } = await import("@/lib/prisma");
+       const crossData = await prisma.crossRoleCommission.findMany({ where: { parentRoleId: data.id } });
+       (finalRole as any).cross_role_commissions = crossData.map(c => ({ child_role_id: c.childRoleId, percentage: Number(c.percentage), is_active: c.isActive }));
+     } catch (err) {
+       console.error("Failed to fallback query crossRoleCommissions:", err);
+       (finalRole as any).cross_role_commissions = [];
+     }
   }
 
   await supabase.from("order_logs").insert({
@@ -188,9 +193,14 @@ export async function PATCH(request: Request) {
 
   const finalRole = fullRole ?? data;
   if (!fullRole?.cross_role_commissions) {
-     const { prisma } = await import("@/lib/prisma");
-     const crossData = await prisma.crossRoleCommission.findMany({ where: { parentRoleId: data.id } });
-     (finalRole as any).cross_role_commissions = crossData.map(c => ({ child_role_id: c.childRoleId, percentage: Number(c.percentage), is_active: c.isActive }));
+     try {
+       const { prisma } = await import("@/lib/prisma");
+       const crossData = await prisma.crossRoleCommission.findMany({ where: { parentRoleId: data.id } });
+       (finalRole as any).cross_role_commissions = crossData.map(c => ({ child_role_id: c.childRoleId, percentage: Number(c.percentage), is_active: c.isActive }));
+     } catch (err) {
+       console.error("Failed to fallback query crossRoleCommissions:", err);
+       (finalRole as any).cross_role_commissions = [];
+     }
   }
 
   await supabase.from("order_logs").insert({

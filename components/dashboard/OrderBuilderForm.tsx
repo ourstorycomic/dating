@@ -28,24 +28,45 @@ const GENERAL_SONGS = [
   "/assets/songs/general/tlinh - Thích Quá Rùi Nà (ft. Trung Trần) _ OFFICIAL LYRICS VIDEO_128k.mp3",
 ];
 
+// Nhạc dành riêng cho mẫu video wedding (cần nhạc nhẹ nhàng, không có lời hoặc lời sang trọng)
+const VIDEOWEDDING_SONGS = [
+  { value: "", label: "Mặc định (Nhạc có sẵn trong video)" },
+  { value: "/assets/songs/general/Da LAB - Từ Ngày Em Đến (Official Music Video)_128k.mp3", label: "Da LAB - Từ Ngày Em Đến" },
+  { value: "/assets/songs/general/GREY D - hoá ra….mp3", label: "GREY D - Hoá Ra" },
+  { value: "/assets/songs/general/GREY D - yêu em như…_128k.mp3", label: "GREY D - Yêu Em Như" },
+  { value: "/assets/songs/general/Soulloom - Dance in the Rain.m4a", label: "Soulloom - Dance in the Rain" },
+  { value: "/assets/songs/general/TÌNH CỜ YÊU EM  Kuun Đức Nam ft. Linh Thộn Official Music Video  KEY ENTERTAINMENT.mp3.mp3", label: "Tình Cờ Yêu Em - Kuun Đức Nam" },
+];
+
+// Gói cho Valentine & Sinh nhật (giá gốc)
 const SERVICE_PACKAGES = [
-  { id: "goi1-thuong", label: "GÓI 1: THEO MẪU (Làm thường - 99.000đ)", price: 99000 },
-  { id: "goi1-gap", label: "GÓI 1: THEO MẪU (Làm gấp - Từ 119.000đ)", price: 119000 },
-  { id: "goi2-thuong", label: "GÓI 2: CHỈNH CẢM XÚC (Làm thường - 119.000đ)", price: 119000 },
-  { id: "goi2-gap", label: "GÓI 2: CHỈNH CẢM XÚC (Làm gấp - Từ 139.000đ)", price: 139000 },
-  { id: "goi3-thuong", label: "GÓI 3: ĐẶC BIỆT (Làm thường - 179.000đ)", price: 179000 },
-  { id: "goi3-gap", label: "GÓI 3: ĐẶC BIỆT (Làm gấp - Từ 199.000đ)", price: 199000 },
+  { id: "goi1-thuong", label: "GÓI 1: THEO MẪU (~24h): 99K", price: 99000 },
+  { id: "goi1-gap", label: "GÓI 1: THEO MẪU (Vài giờ): 119K", price: 119000 },
+  { id: "goi2-thuong", label: "GÓI 2: CHỈNH CẢM XÚC (~24h): 119K", price: 119000 },
+  { id: "goi2-gap", label: "GÓI 2: CHỈNH CẢM XÚC (Vài giờ): 139K", price: 139000 },
+  { id: "goi3-thuong", label: "GÓI 3: ĐẶC BIỆT (~24h): 179K", price: 179000 },
+  { id: "goi3-gap", label: "GÓI 3: ĐẶC BIỆT (Vài giờ): 199K", price: 199000 },
+];
+
+// Gói cho Dating & Xin lỗi (giảm 20k)
+const DATING_SORRY_PACKAGES = [
+  { id: "dating-goi1-thuong", label: "GÓI 1: THEO MẪU (~24h): 79K", price: 79000 },
+  { id: "dating-goi1-gap", label: "GÓI 1: THEO MẪU (Vài giờ): 99K", price: 99000 },
+  { id: "dating-goi2-thuong", label: "GÓI 2: CHỈNH CẢM XÚC (~24h): 99K", price: 99000 },
+  { id: "dating-goi2-gap", label: "GÓI 2: CHỈNH CẢM XÚC (Vài giờ): 119K", price: 119000 },
+  { id: "dating-goi3-thuong", label: "GÓI 3: ĐẶC BIỆT (~24h): 159K", price: 159000 },
+  { id: "dating-goi3-gap", label: "GÓI 3: ĐẶC BIỆT (Vài giờ): 179K", price: 179000 },
 ];
 
 const WEDDING_SERVICE_PACKAGES = [
-  { id: "wedding-goi1-thuong", label: "GÓI 1 (1 thiệp Nhà Trai HOẶC Nhà Gái) - Làm thường (2-3 ngày): 139.000 VNĐ", price: 139000 },
-  { id: "wedding-goi1-gap", label: "GÓI 1 (1 thiệp Nhà Trai HOẶC Nhà Gái) - Làm gấp (<24h): 189.000 VNĐ", price: 189000 },
-  { id: "wedding-goi2-thuong", label: "GÓI 2 (1 thiệp chung cho cả 2 nhà) - Làm thường (2-3 ngày): 209.000 VNĐ", price: 209000 },
-  { id: "wedding-goi2-gap", label: "GÓI 2 (1 thiệp chung cho cả 2 nhà) - Làm gấp (<24h): 279.000 VNĐ", price: 279000 },
-  { id: "wedding-goi3-chung-thuong", label: "GÓI 3 (Combo 2 thiệp) Chung mẫu - Làm thường (2-3 ngày): 239.000 VNĐ", price: 239000 },
-  { id: "wedding-goi3-chung-gap", label: "GÓI 3 (Combo 2 thiệp) Chung mẫu - Làm gấp (<24h): 319.000 VNĐ", price: 319000 },
-  { id: "wedding-goi3-khac-thuong", label: "GÓI 3 (Combo 2 thiệp) Khác mẫu - Làm thường (2-3 ngày): 269.000 VNĐ", price: 269000 },
-  { id: "wedding-goi3-khac-gap", label: "GÓI 3 (Combo 2 thiệp) Khác mẫu - Làm gấp (<24h): 359.000 VNĐ", price: 359000 },
+  { id: "wedding-goi1-thuong", label: "GÓI 1 (1 Thiệp Lẻ) - ~24h: 139K", price: 139000 },
+  { id: "wedding-goi1-gap", label: "GÓI 1 (1 Thiệp Lẻ) - Vài giờ: 189K", price: 189000 },
+  { id: "wedding-goi2-thuong", label: "GÓI 2 (1 Thiệp Chung) - ~24h: 209K", price: 209000 },
+  { id: "wedding-goi2-gap", label: "GÓI 2 (1 Thiệp Chung) - Vài giờ: 279K", price: 279000 },
+  { id: "wedding-goi3-chung-thuong", label: "GÓI 3 (Combo Chung Mẫu) - ~24h: 239K", price: 239000 },
+  { id: "wedding-goi3-chung-gap", label: "GÓI 3 (Combo Chung Mẫu) - Vài giờ: 319K", price: 319000 },
+  { id: "wedding-goi4-khac-thuong", label: "GÓI 4 (Combo Khác Mẫu) - ~24h: 269K", price: 269000 },
+  { id: "wedding-goi4-khac-gap", label: "GÓI 4 (Combo Khác Mẫu) - Vài giờ: 359K", price: 359000 },
 ];
 
 type MyOrderRow = {
@@ -329,10 +350,12 @@ function MediaInput({
   label,
   onChange,
   accept = "image/*,video/*,audio/*",
+  currentValue,
 }: {
   label: string;
   onChange: (url: string, type: string) => void;
   accept?: string;
+  currentValue?: string;
 }) {
   const [isUploading, setIsUploading] = useState(false);
   const [cropFile, setCropFile] = useState<File | null>(null);
@@ -342,17 +365,15 @@ function MediaInput({
     setIsUploading(true);
     try {
       let fileToUpload = file;
-      // Nén ảnh nếu là định dạng hình ảnh (bỏ qua gif, video, audio)
       if (file.type.startsWith("image/") && file.type !== "image/gif") {
         const options = {
-          maxSizeMB: 0.3, // Nén xuống tối đa 300KB
-          maxWidthOrHeight: 1920, // Kích thước tối đa
+          maxSizeMB: 0.3,
+          maxWidthOrHeight: 1920,
           useWebWorker: true,
           initialQuality: 0.8
         };
         try {
           fileToUpload = await imageCompression(file, options);
-          console.log(`Đã nén ảnh từ ${(file.size / 1024 / 1024).toFixed(2)}MB xuống ${(fileToUpload.size / 1024 / 1024).toFixed(2)}MB`);
         } catch (error) {
           console.error("Lỗi nén ảnh, tiếp tục up ảnh gốc", error);
         }
@@ -360,18 +381,12 @@ function MediaInput({
 
       const formData = new FormData();
       formData.append("file", fileToUpload);
-      
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-      
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
       if (!res.ok) {
-         const errData = await res.json().catch(() => ({}));
-         throw new Error(errData.error || "Upload failed");
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || "Upload failed");
       }
       const data = await res.json();
-      
       onChange(data.url, file.type);
     } catch (error: any) {
       console.error("Upload error", error);
@@ -386,26 +401,48 @@ function MediaInput({
   return (
     <label className="grid gap-2 text-sm md:col-span-2">
       {label && <span className="text-white/64">{label}</span>}
-      <input
-        accept={accept}
-        disabled={isUploading}
-        className="rounded-xl border border-white/10 bg-white/[0.07] px-4 py-3 outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-pink-500/10 file:text-pink-500 hover:file:bg-pink-500/20 disabled:opacity-50"
-        onChange={(event) => {
-          const file = event.target.files?.[0];
-          if (!file) {
-            onChange("", "");
-            return;
-          }
-          if (file.type.startsWith("image/")) {
-            setCropFile(file);
-            setCropSrc(URL.createObjectURL(file));
-          } else {
-            uploadFile(file);
-          }
-        }}
-        type="file"
-      />
-      {isUploading && <span className="text-xs font-semibold text-pink-400">Đang tải file lên đám mây...</span>}
+      {/* Preview thumbnail */}
+      {currentValue && !currentValue.match(/\.(mp3|mp4|wav|ogg|webm|aac|m4a|avi|mov)$/i) && (
+        <div className="relative w-32 md:w-40 rounded-lg overflow-hidden bg-black/20" style={{ aspectRatio: '3/4' }}>
+          <img src={currentValue} alt="preview" className="w-full h-full object-cover"
+            onError={(e: any) => { e.target.parentElement.style.display = 'none'; }} />
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-2 py-2">
+            <span className="text-[10px] font-medium text-white/90">Ảnh hiện tại</span>
+          </div>
+        </div>
+      )}
+      {/* Custom file button */}
+      <div className="relative">
+        <input
+          accept={accept}
+          disabled={isUploading}
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            if (!file) { onChange("", ""); return; }
+            if (file.type.startsWith("image/")) {
+              setCropFile(file);
+              setCropSrc(URL.createObjectURL(file));
+            } else {
+              uploadFile(file);
+            }
+          }}
+          type="file"
+        />
+        <div className={`flex items-center justify-center gap-2 w-full rounded-xl border-2 border-dashed border-white/20 bg-white/[0.04] px-4 py-3 text-sm font-medium text-white/60 hover:border-pink-400/50 hover:text-pink-300 hover:bg-pink-500/5 transition-all cursor-pointer ${isUploading ? 'opacity-50' : ''}`}>
+          {isUploading ? (
+            <>
+              <svg className="w-4 h-4 animate-spin text-pink-400" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+              <span className="text-pink-400 text-xs">Đang tải lên...</span>
+            </>
+          ) : (
+            <>
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+              <span>{currentValue ? 'Thay ảnh khác' : 'Chọn ảnh / file'}</span>
+            </>
+          )}
+        </div>
+      </div>
       {cropSrc && (
         <ImageCropperModal
           isOpen={!!cropSrc}
@@ -691,10 +728,10 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
 
   const [dynamicData, setDynamicData] = useState<Record<string, any>>({});
   const [activeTab, setActiveTab] = useState<"trai" | "gai">("trai");
-  const isGoi3 = selectedPackage?.includes("wedding-goi3") || false;
+  const isGoi3 = selectedPackage?.includes("wedding-goi3") || selectedPackage?.includes("wedding-goi4") || false;
   const isGoi2 = selectedPackage?.includes("wedding-goi2") || false;
   const isGoi1 = selectedPackage?.includes("wedding-goi1") || false;
-  const isGoi3KhacMau = selectedPackage?.includes("wedding-goi3-khac") || false;
+  const isGoi3KhacMau = selectedPackage?.includes("wedding-goi4-khac") || false;
   const activeTemplateId = (isGoi3KhacMau && activeTab === "gai") ? (dynamicData?.gai?.templateId || selectedTemplateId) : selectedTemplateId;
 
   const getVal = (key: string) => (isGoi3 && activeTab === "gai") ? (dynamicData.gai?.[key] ?? "") : (dynamicData[key] ?? "");
@@ -705,6 +742,10 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     return { ...d, [key]: val };
   });
   const [result, setResult] = useState<{ amount: number; giftLink: string; orderId: string; paymentCode: string; paymentStatus: string; qrCodeUrl: string | null; status: string; trackLink: string; unlocked: boolean; templateKey?: string } | null>(null);
+  const [isRenderingMP4, setIsRenderingMP4] = useState(false);
+  const [renderProgress, setRenderProgress] = useState(0);
+  const [renderETA, setRenderETA] = useState("");
+  const [videoQuality, setVideoQuality] = useState<"FHD" | "4K">("FHD");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isConfirmingPayment, setIsConfirmingPayment] = useState(false);
   const [isConfirmingFree, setIsConfirmingFree] = useState(false);
@@ -803,7 +844,11 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const isSorry3 = selectedComponentKey.includes("sorry-3") || selectedComponentKey.includes("sorry #3");
   const isWedding1 = selectedComponentKey === "wedding-1" || selectedComponentKey === "wedding #1";
   const isWedding = selectedComponentKey.includes("wedding");
-  const ALL_PACKAGES = [...SERVICE_PACKAGES, ...WEDDING_SERVICE_PACKAGES];
+  const isVideoTemplate = selectedComponentKey?.includes("video");
+  // Dating & Sorry dùng bảng giá giảm 20k
+  const isDatingSorry = selectedComponentKey.includes("dating") || selectedComponentKey.includes("will-you-date-me") || selectedComponentKey.includes("sorry");
+  const activeServicePackages = isDatingSorry ? DATING_SORRY_PACKAGES : SERVICE_PACKAGES;
+  const ALL_PACKAGES = [...SERVICE_PACKAGES, ...DATING_SORRY_PACKAGES, ...WEDDING_SERVICE_PACKAGES];
 
   useEffect(() => {
     // Load danh sách affiliate (người giới thiệu) nếu là ADMIN
@@ -1646,13 +1691,22 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               disabled={!!result}
             >
               {orderCategory !== "WEDDING" && (
-                <optgroup label="Gói Thiệp Thường (Valentine, Sinh nhật, Tỏ tình)">
-                  {SERVICE_PACKAGES.map((pkg) => (
-                    <option key={pkg.id} value={pkg.id} className="text-black">
-                      {pkg.label}
-                    </option>
-                  ))}
-                </optgroup>
+                <>
+                  <optgroup label="Gói Thiệp Thường (Valentine, Sinh nhật)">
+                    {SERVICE_PACKAGES.map((pkg) => (
+                      <option key={pkg.id} value={pkg.id} className="text-black">
+                        {pkg.label}
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Gói Tỏ tình / Xin lỗi">
+                    {DATING_SORRY_PACKAGES.map((pkg) => (
+                      <option key={pkg.id} value={pkg.id} className="text-black">
+                        {pkg.label}
+                      </option>
+                    ))}
+                  </optgroup>
+                </>
               )}
               {orderCategory !== "REGULAR" && (
                 <optgroup label="Gói Thiệp Cưới (Wedding)">
@@ -1693,12 +1747,19 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                     filteredTemplates.reduce((acc, template) => {
                       const searchable = `${template.component_key} ${template.name} ${(template as any).slug || ""}`.toLowerCase();
                       let categoryName = "Valentine";
-                      if (searchable.includes("wedding")) categoryName = "Cưới hỏi";
-                      else if (searchable.includes("dating") || searchable.includes("gacha") || searchable.includes("will-you-date-me") || searchable.includes("vé hẹn hò") || searchable.includes("mật mã")) categoryName = "Tỏ tình";
-                      else if (searchable.includes("birthday") || searchable.includes("sinh nhật") || searchable.includes("báo thức") || searchable.includes("hộp quà")) categoryName = "Sinh nhật";
-                      else if (searchable.includes("sorry") || searchable.includes("xin lỗi") || searchable.includes("làm hòa") || searchable.includes("xả giận") || searchable.includes("khủng long")) categoryName = "Xin lỗi";
+                      if (searchable.includes("videowedding") || searchable.includes("video wedding") || searchable.includes("video cưới")) {
+                        categoryName = "🎬 Video Cưới";
+                      } else if (searchable.includes("wedding")) {
+                        categoryName = "💌 Thiệp Cưới";
+                      } else if (searchable.includes("dating") || searchable.includes("gacha") || searchable.includes("will-you-date-me") || searchable.includes("vé hẹn hò") || searchable.includes("mật mã")) {
+                        categoryName = "Tỏ tình";
+                      } else if (searchable.includes("birthday") || searchable.includes("sinh nhật") || searchable.includes("báo thức") || searchable.includes("hộp quà")) {
+                        categoryName = "Sinh nhật";
+                      } else if (searchable.includes("sorry") || searchable.includes("xin lỗi") || searchable.includes("làm hòa") || searchable.includes("xả giận") || searchable.includes("khủng long")) {
+                        categoryName = "Xin lỗi";
+                      }
 
-                      const isWeddingTemp = categoryName === "Cưới hỏi";
+                      const isWeddingTemp = categoryName === "💌 Thiệp Cưới" || categoryName === "🎬 Video Cưới";
                       const isPackageWedding = selectedPackage.includes("wedding");
                       
                       // Bắt buộc: Loại Mẫu giao diện phải khớp hoàn toàn với loại Gói dịch vụ đã chọn
@@ -1796,19 +1857,32 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
           <TextInput label="Người nhận" onChange={setRecipientName} value={recipientName} />
           
           <div className="md:col-span-2">
-            <label className="mb-2 block text-sm font-semibold opacity-90">Nhạc nền (General)</label>
+            <label className="mb-2 block text-sm font-semibold opacity-90">
+              {isVideoTemplate ? "Nhạc nền Video (không bắt buộc)" : "Nhạc nền (General)"}
+            </label>
             <select
               className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 outline-none focus:border-pink-500/50"
               value={generalAudioUrl}
               onChange={(e) => setGeneralAudioUrl(e.target.value)}
             >
-              <option value="" className="text-gray-900">Mặc định (Random theo template)</option>
-              {GENERAL_SONGS.map(song => (
-                <option key={song} value={song} className="text-gray-900">
-                  {song.split('/').pop()?.replace('_128k.mp3', '').replace('.mp3', '')}
-                </option>
-              ))}
+              {isVideoTemplate ? (
+                // Video wedding: chỉ show nhạc phù hợp
+                VIDEOWEDDING_SONGS.map(s => (
+                  <option key={s.value} value={s.value} className="text-gray-900">{s.label}</option>
+                ))
+              ) : (
+                // Các template khác: show full list
+                <>
+                  <option value="" className="text-gray-900">Mặc định (Random theo template)</option>
+                  {GENERAL_SONGS.map(song => (
+                    <option key={song} value={song} className="text-gray-900">
+                      {song.split('/').pop()?.replace('_128k.mp3', '').replace('.mp3', '').replace('.m4a', '')}
+                    </option>
+                  ))}
+                </>
+              )}
             </select>
+            {isVideoTemplate && <p className="text-xs text-white/40 mt-1">Video đã có nhạc sẵn (intro.mp3). Bạn có thể thay bằng bài khác ở đây.</p>}
           </div>
 
             <div className="md:col-span-2 mt-4">
@@ -2734,15 +2808,59 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                 }
 
                 // Add template-specific text fields so users can edit hardcoded text
+                if (isVideoTemplate) {
+                  // Default photos per template so form shows the current placeholder images
+                  const defaultPhotosByTemplate: Record<string, string[]> = {
+                    'videowedding-2': [
+                      "/assets/videowedding-2/anhchung.jpg",
+                      "/assets/videowedding-2/anhchung2.jpg",
+                      "/assets/videowedding-2/anhchung3.jpg",
+                      "/assets/videowedding-2/anhchung4.jpg",
+                      "/assets/videowedding-2/chure.jpg",
+                      "/assets/videowedding-2/codau.jpg",
+                      "/assets/videowedding-2/anhchung7.jpg",
+                      "/assets/videowedding-2/anhchung8.jpg",
+                      "/assets/videowedding-2/anhchung9.jpg",
+                      "/assets/videowedding-2/anhchung10.jpg",
+                      "/assets/videowedding-2/anhchung11.jpg",
+                      "/assets/videowedding-2/anhchung12.jpg",
+                      "/assets/videowedding-2/anhchung13.jpg",
+                      "/assets/videowedding-2/chure.jpg",
+                      "/assets/videowedding-2/codau.jpg",
+                    ],
+                    'videowedding-1': [
+                      "/assets/videowedding-1/anhchung1.jpg",
+                      "/assets/videowedding-1/anhchung2.jpg",
+                      "/assets/videowedding-1/anhchung3.jpg",
+                      "/assets/videowedding-1/anhchung4.jpg",
+                      "/assets/videowedding-1/anhchung5.jpg",
+                      "/assets/videowedding-1/anhchung6.jpg",
+                      "/assets/videowedding-1/anhchung7.jpg",
+                      "/assets/videowedding-1/anhchung8.jpg",
+                      "/assets/videowedding-1/chure.jpg",
+                      "/assets/videowedding-1/codau.jpg",
+                      "/assets/videowedding-1/anhchung1.jpg",
+                      "/assets/videowedding-1/anhchung2.jpg",
+                      "/assets/videowedding-1/anhchung3.jpg",
+                      "/assets/videowedding-1/anhchung4.jpg",
+                      "/assets/videowedding-1/anhchung5.jpg",
+                    ],
+                  };
+                  const templateDefaultPhotos = defaultPhotosByTemplate[selectedComponentKey] || [];
+                  schema.push(
+                    { section: "5. Thư Viện Ảnh", key: "photos", label: "Album Ảnh Của Bạn", type: "photo_array", fixedCount: 15, defaultValues: templateDefaultPhotos }
+                  );
+                }
+                
                 if (selectedComponentKey === 'wedding-1') {
                   schema.push(
-                    { section: "5. Thư Viện Ảnh", key: "gallery1", label: "Ảnh Album 1", type: "media" },
-                    { section: "5. Thư Viện Ảnh", key: "gallery2", label: "Ảnh Album 2", type: "media" },
-                    { section: "5. Thư Viện Ảnh", key: "gallery3", label: "Ảnh Album 3", type: "media" },
-                    { section: "5. Thư Viện Ảnh", key: "gallery4", label: "Ảnh Album 4", type: "media" },
-                    { section: "5. Thư Viện Ảnh", key: "gallery5", label: "Ảnh Album 5", type: "media" },
-                    { section: "5. Thư Viện Ảnh", key: "gallery6", label: "Ảnh Album 6", type: "media" },
-                    { section: "5. Thư Viện Ảnh", key: "gallery7", label: "Ảnh Album 7", type: "media" }
+                    { section: "5. Thư Viện Ảnh", key: "gallery1", label: "Ảnh Album 1", type: "media", default: "/assets/wedding/wedding-1/anhchung2.jpg" },
+                    { section: "5. Thư Viện Ảnh", key: "gallery2", label: "Ảnh Album 2", type: "media", default: "/assets/wedding/wedding-1/anhchung3.jpg" },
+                    { section: "5. Thư Viện Ảnh", key: "gallery3", label: "Ảnh Album 3", type: "media", default: "/assets/wedding/wedding-1/anhchung4.jpg" },
+                    { section: "5. Thư Viện Ảnh", key: "gallery4", label: "Ảnh Album 4", type: "media", default: "/assets/wedding/wedding-1/anhchung5.jpg" },
+                    { section: "5. Thư Viện Ảnh", key: "gallery5", label: "Ảnh Album 5", type: "media", default: "/assets/wedding/wedding-1/anhchung6.jpg" },
+                    { section: "5. Thư Viện Ảnh", key: "gallery6", label: "Ảnh Album 6", type: "media", default: "/assets/wedding/wedding-1/anhchung7.jpg" },
+                    { section: "5. Thư Viện Ảnh", key: "gallery7", label: "Ảnh Album 7", type: "media", default: "/assets/wedding/wedding-1/anhchung8.jpg" }
                   );
                 } else if (selectedComponentKey === 'wedding-5') {
                   schema.push(
@@ -2828,8 +2946,11 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                         if (field.type === "color") {
                           return <ColorInput key={i} label={field.label} value={val} onCommit={v => setDynamicData(d => ({ ...d, [field.key]: v }))} />;
                         }
+                        if (field.type === "photo_array") {
+                          return <PhotoArrayInput key={i} label={field.label} values={val || []} fixedCount={field.fixedCount} defaultValues={field.defaultValues || []} onChange={v => setDynamicData(d => ({ ...d, [field.key]: v }))} />;
+                        }
                         if (field.type === "media" || field.type === "image" || field.type === "audio" || field.type === "video") {
-                          return <MediaInput key={i} label={field.label} onChange={(v) => setDynamicData(d => ({ ...d, [field.key]: v }))} />;
+                          return <MediaInput key={i} label={field.label} currentValue={val} onChange={(v) => setDynamicData(d => ({ ...d, [field.key]: v }))} />;
                         }
                         if (field.type === "textarea") {
                           return <TextArea key={i} label={field.label} value={val} onChange={v => setDynamicData(d => ({ ...d, [field.key]: v }))} />;
@@ -2983,7 +3104,94 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                 </div>
               </div>
               ) : null}
-              {true ? (
+              {isVideoTemplate ? (
+                 <>
+                    <div className="mt-2 grid gap-2">
+                    <span className="block text-xs font-semibold text-pink-300">Tải xuống Video của bạn</span>
+                    <div className="grid gap-2">
+                      <div className="flex items-center gap-2">
+                        <select
+                          className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white outline-none focus:border-pink-300/50 flex-1"
+                          value={videoQuality}
+                          onChange={(e) => setVideoQuality(e.target.value as "FHD" | "4K")}
+                          disabled={isRenderingMP4}
+                        >
+                          <option value="FHD" className="text-black">Video FHD (1080p) - Render nhanh</option>
+                          <option value="4K" className="text-black">Video 4K (2160p) - Chậm hơn, cực nét</option>
+                        </select>
+                      </div>
+                      <button
+                        className="rounded-xl border border-pink-400/50 bg-gradient-to-r from-pink-500 to-rose-600 px-6 py-4 text-sm font-bold text-white shadow-lg hover:from-pink-600 hover:to-rose-700 transition-all flex flex-col items-center justify-center gap-1.5 disabled:opacity-50 w-full overflow-hidden relative"
+                        disabled={isRenderingMP4}
+                        onClick={async () => {
+                        try {
+                          setIsRenderingMP4(true);
+                          setRenderProgress(2);
+                          setRenderETA("");
+                          toast.success(`Đang render MP4 chất lượng ${videoQuality}, vui lòng đợi...`);
+                          const startTime = Date.now();
+                          const estimatedMs = videoQuality === "4K" ? 180000 : 90000;
+                          const progressInterval = setInterval(() => {
+                            const elapsed = Date.now() - startTime;
+                            const pct = Math.min(93, Math.round((elapsed / estimatedMs) * 100));
+                            setRenderProgress(pct);
+                            const remaining = Math.max(0, Math.round((estimatedMs - elapsed) / 1000));
+                            setRenderETA(remaining > 0 ? `~${remaining}s còn lại` : "Sắp xong...");
+                          }, 1000);
+                          const payloadCustomData = { ...customData, serverUrl: window.location.origin };
+                          const res = await fetch("/api/render-mp4", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ componentKey: selectedComponentKey, customData: payloadCustomData, quality: videoQuality })
+                          });
+                          clearInterval(progressInterval);
+                          const data = await res.json();
+                          if (res.ok && data.url) {
+                            setRenderProgress(100);
+                            setRenderETA("Xong!");
+                            toast.success("Render xong! Đang tải về...");
+                            const a = document.createElement('a');
+                            a.href = data.url;
+                            a.download = `Video_${selectedComponentKey}.mp4`;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                          } else {
+                            toast.error("Lỗi render: " + (data.error || "Không rõ"));
+                          }
+                        } catch (e) {
+                          toast.error("Lỗi kết nối khi render");
+                        } finally {
+                          setIsRenderingMP4(false);
+                          setTimeout(() => { setRenderProgress(0); setRenderETA(""); }, 3000);
+                        }
+                      }}
+                        type="button"
+                      >
+                        {/* Progress bar layer inside button */}
+                        {isRenderingMP4 && (
+                          <div
+                            className="absolute inset-0 bg-white/20 transition-all duration-700 rounded-xl"
+                            style={{ width: `${renderProgress}%` }}
+                          />
+                        )}
+                        <div className="relative flex items-center gap-2">
+                          {isRenderingMP4 ? (
+                            <svg className="w-5 h-5 animate-spin shrink-0" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                          ) : (
+                            <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                          )}
+                          <span>{isRenderingMP4 ? `Đang render... ${renderProgress}%` : "⬇ Render & Tải MP4"}</span>
+                        </div>
+                        {isRenderingMP4 && renderETA && (
+                          <span className="relative text-[11px] text-white/70">{renderETA} • Video FHD</span>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                 </>
+              ) : null}
+              {!isVideoTemplate ? (
                  <>
                     <div className="mt-2 grid gap-2">
                     <span className="block text-xs font-semibold text-pink-300">Link gửi cho người ấy</span>
@@ -3074,7 +3282,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
             <input type="range" min="0" max="1" step="0.05" value={builderVolume} onChange={(e) => setBuilderVolume(Number(e.target.value))} className="w-24 accent-pink-500" />
           </div>
         </div>
-        <div id="builder-preview" className="flex-1 w-full min-h-[58svh] xl:min-h-0 flex items-center justify-center relative xl:pb-16">
+        <div id="builder-preview" className="flex-1 w-full min-h-[58svh] xl:min-h-0 flex items-center justify-center relative">
             <InteractiveTemplatePreview
               componentKey={selectedComponentKey}
               customData={isGoi3 && activeTab === "gai" ? { ...customData, ...(dynamicData.gai || {}) } : customData}
@@ -3089,6 +3297,8 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               fullScreen={false}
             />
         </div>
+        {/* Target for TemplateNavigator portal */}
+        <div id="template-navigator-portal" className="w-full shrink-0 mt-2"></div>
       </aside>
       );
       })() : null}
@@ -3160,6 +3370,124 @@ function ArrayInput({ label, onChange, values }: { label: string; onChange: (v: 
         >
           + Thêm lựa chọn
         </button>
+      </div>
+    </div>
+  );
+}
+
+function PhotoArrayInput({ label, onChange, values, fixedCount, defaultValues = [] }: { label: string; onChange: (v: string[]) => void; values: string[], fixedCount?: number, defaultValues?: string[] }) {
+  const slots = fixedCount ? Array.from({ length: fixedCount }) : values;
+
+  return (
+    <div className="grid gap-2 text-sm md:col-span-2">
+      <div className="flex items-center justify-between">
+        <span className="text-white/64">{label}</span>
+        <span className="text-xs text-white/40">{fixedCount ? `${values.filter(v => !!v).length} / ${fixedCount} ảnh đã thay` : `${values.length} ảnh`}</span>
+      </div>
+      <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
+        {slots.map((_, i) => {
+          // values[i] = custom uploaded photo, defaultValues[i] = template default photo
+          const customVal = values[i];
+          const defaultVal = defaultValues[i];
+          const displayVal = customVal || defaultVal; // show custom if exists, else show default
+          const isCustom = !!customVal;
+
+          return displayVal ? (
+            <div key={i} className={`group relative aspect-square rounded-xl overflow-hidden bg-black/20 border-2 ${isCustom ? 'border-green-500/60' : 'border-white/10'}`}>
+              <img src={displayVal} alt="" className="w-full h-full object-cover" onError={(e: any) => { e.target.src = "https://placehold.co/100x100/1a1a1a/666?text=L%E1%BB%97i" }} />
+              
+              {/* Replace button overlay */}
+              <label className="absolute inset-0 bg-black/60 opacity-0 transition-opacity group-hover:opacity-100 flex flex-col items-center justify-center cursor-pointer gap-1">
+                 <div className="p-2 bg-pink-500 rounded-full text-white shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+                    </svg>
+                 </div>
+                 <span className="text-[10px] text-white font-semibold">Bấm để thay</span>
+                 <input type="file" accept="image/*,video/*" className="hidden" onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const formData = new FormData();
+                    formData.append("file", file);
+                    try {
+                      const res = await fetch("/api/upload", { method: "POST", body: formData });
+                      if (res.ok) {
+                        const data = await res.json();
+                        const newValues = [...values];
+                        newValues[i] = data.url;
+                        onChange(newValues);
+                      }
+                    } catch(err) {}
+                 }} />
+              </label>
+
+              {/* Reset to default button (only show for custom photos) */}
+              {isCustom && (
+                <button
+                  type="button"
+                  title="Khôi phục ảnh mặc định"
+                  className="absolute top-1 right-1 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white/80 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-500 hover:text-white text-xs"
+                  onClick={(e) => { e.preventDefault(); const nv = [...values]; nv[i] = ""; onChange(nv); }}
+                >✕</button>
+              )}
+
+              {/* Badge: show slot number, green if custom */}
+              <div className={`absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-bold shadow-md ${isCustom ? 'bg-green-500 text-white' : 'bg-pink-500 text-white'}`}>
+                {isCustom ? '✓' : ''} Ảnh {i + 1}
+              </div>
+            </div>
+          ) : (
+            <label key={i} className="flex aspect-square cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-white/20 bg-white/[0.02] text-white/40 transition-colors hover:border-pink-500/50 hover:bg-pink-500/10 hover:text-pink-300 relative">
+              <span className="text-xl">+</span>
+              <span className="text-[10px]">{fixedCount ? `Ảnh ${i + 1}` : `Thêm ảnh`}</span>
+              <input type="file" accept="image/*,video/*" className="hidden" onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  const formData = new FormData();
+                  formData.append("file", file);
+                  try {
+                    const res = await fetch("/api/upload", { method: "POST", body: formData });
+                    if (res.ok) {
+                      const data = await res.json();
+                      const newValues = [...values];
+                      newValues[i] = data.url;
+                      onChange(newValues);
+                    }
+                  } catch(err) {}
+              }} />
+            </label>
+          )
+        })}
+
+        {!fixedCount && (
+          <label className="flex aspect-square cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-white/20 bg-white/[0.02] text-white/40 transition-colors hover:border-pink-500/50 hover:bg-pink-500/10 hover:text-pink-300">
+            <span className="text-xl">+</span>
+            <span className="text-[10px]">Thêm ảnh</span>
+            <input
+              type="file"
+              accept="image/*,video/*"
+              className="hidden"
+              multiple
+              onChange={async (e) => {
+                const files = Array.from(e.target.files || []);
+                if (!files.length) return;
+                const newUrls = [...values];
+                for (const file of files) {
+                  const formData = new FormData();
+                  formData.append("file", file);
+                  try {
+                    const res = await fetch("/api/upload", { method: "POST", body: formData });
+                    if (res.ok) {
+                      const data = await res.json();
+                      newUrls.push(data.url);
+                      onChange([...newUrls]);
+                    }
+                  } catch(err) {}
+                }
+              }}
+            />
+          </label>
+        )}
       </div>
     </div>
   );

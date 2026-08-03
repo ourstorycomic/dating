@@ -162,7 +162,7 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
           />
 
           {/* Content-attached Blur Overlay */}
-          {isLocked && showPayment && (
+          {isLocked && showPayment && !isWedding && (
             <div 
               className={`absolute left-0 right-0 z-10 pointer-events-none backdrop-blur-xl ${
                 isWedding ? 'bg-gradient-to-t from-white/50 via-white/10 to-transparent' : 'bg-gradient-to-t from-black/40 via-black/10 to-transparent'
@@ -203,7 +203,7 @@ export function GiftFullscreenView({ order, side: sideProp }: { order: GiftOrder
           />
           
           {/* Payment Box (Only when showPayment is true) */}
-          {showPayment && (
+          {showPayment && !isWedding && (
             <div className="absolute inset-0 flex flex-col pointer-events-none">
               {/* Payment Box Container */}
               <div className="absolute bottom-6 left-0 right-0 z-20 pointer-events-auto flex flex-col items-center px-4">

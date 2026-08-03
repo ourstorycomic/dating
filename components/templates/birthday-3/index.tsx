@@ -64,7 +64,7 @@ function BackgroundSparkles() {
 
 import { Step8Success } from "../dating-3/components/Step8Success";
 
-export default function Birthday3Template({ autoPlay = false, compact = false, hideNavigation = false, isBuilderPreview = false, config = {}, generalAudioUrl, onStepChange }: { autoPlay?: boolean; compact?: boolean; hideNavigation?: boolean; isBuilderPreview?: boolean; config?: any; generalAudioUrl?: string; onStepChange?: any; }) {
+export default function Birthday3Template({ autoPlay = false, compact = false, hideNavigation = false, isBuilderPreview = false, config = {}, generalAudioUrl, onStepChange, fullScreen = false }: { autoPlay?: boolean; compact?: boolean; hideNavigation?: boolean; isBuilderPreview?: boolean; config?: any; generalAudioUrl?: string; onStepChange?: any; fullScreen?: boolean; }) {
   const [step, setStep] = useState(1);
   const [dateTime, setDateTime] = useState({d: "", t: ""});
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -86,7 +86,7 @@ export default function Birthday3Template({ autoPlay = false, compact = false, h
   }, []);
 
   return (
-    <div className={`relative w-full overflow-hidden text-gray-800 font-sans mx-auto h-full ${compact ? 'bg-transparent' : 'bg-pink-50'}`} style={{ backgroundImage: "url('/assets/bg/bg6.jpg')", backgroundSize: 'cover', backgroundBlendMode: 'overlay' }}>
+    <div className={`relative w-full overflow-hidden text-gray-800 font-sans mx-auto ${compact ? 'h-full bg-transparent' : fullScreen ? 'min-h-[100dvh] h-[100dvh] bg-pink-50' : 'h-full bg-pink-50'}`} style={{ backgroundImage: "url('/assets/bg/bg6.jpg')", backgroundSize: 'cover', backgroundBlendMode: 'overlay' }}>
       {generalAudioUrl && <audio ref={audioRef} src={generalAudioUrl} autoPlay loop muted={compact && !autoPlay && !isBuilderPreview} />}
       <AnimatePresence mode="wait">
         {step === 1 && <Step1Knock key="step1" onNext={nextStep} autoPlay={autoPlay} compact={compact} config={config} />}

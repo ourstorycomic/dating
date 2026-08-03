@@ -236,7 +236,7 @@ export function Stage5Supernova({
                   </button>
                 </motion.div>
               ) : (
-                <motion.div key="gift" className="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl text-pink-600 relative overflow-y-auto max-h-[90dvh] w-full max-w-sm mx-auto"
+                <motion.div key="gift" className="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl text-pink-600 relative overflow-y-auto overflow-x-hidden max-h-[90dvh] w-full max-w-sm mx-auto"
                   initial={{ opacity: 0, scale: 0.8, rotate: -5 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} transition={{ type: "spring", bounce: 0.6 }}
                 >
                   {!giftAccepted && !giftDeclined && (

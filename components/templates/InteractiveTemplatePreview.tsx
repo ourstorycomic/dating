@@ -22,6 +22,8 @@ import { WeddingThreePreview } from "./wedding-3/preview";
 import { WeddingFourPreview } from "./wedding-4/preview";
 import { WeddingFivePreview } from "./wedding-5/preview";
 import { WeddingSixPreview } from "./wedding-6/preview";
+import VideoWeddingOnePreview from "./videowedding-1/preview";
+import VideoWeddingTwoPreview from "./videowedding-2/preview";
 
 type InteractiveTemplatePreviewProps = TemplatePreviewProps & {
   componentKey: string;
@@ -33,6 +35,8 @@ type InteractiveTemplatePreviewProps = TemplatePreviewProps & {
 };
 
 const previewRegistry = [
+  { match: "videowedding-1", Component: VideoWeddingOnePreview as any },
+  { match: "videowedding-2", Component: VideoWeddingTwoPreview as any },
   { match: "val-starry-constellation", Component: StarryConstellationPreview },
   { match: "constellation", Component: StarryConstellationPreview },
   { match: "starry", Component: StarryConstellationPreview },
@@ -281,11 +285,16 @@ export function InteractiveTemplatePreview({
     }
   }, [isInView]);
 
+  const normalizedKey = componentKey.toLowerCase();
+  const preview = previewRegistry.find((item) => normalizedKey.includes(item.match));
+  const isLandscape = normalizedKey.includes("video");
+
   const isPreviewActive = props.disableAutoPlay ? false : (props.isBuilderPreview || (props.isActive ?? ((isMobile && delayedInView) || (!isMobile && isHovered))));
 
   // Fast-forward audio to chorus (30s) for more engaging auto-preview
   useEffect(() => {
-    if (isPreviewActive && props.compact && !props.isBuilderPreview) {
+    // DO NOT fast-forward video templates because they have strictly synchronized audio/voice intros!
+    if (isPreviewActive && props.compact && !props.isBuilderPreview && !isLandscape) {
       const interval = setInterval(() => {
         if (containerRef.current) {
           const audios = containerRef.current.querySelectorAll('audio');
@@ -299,9 +308,7 @@ export function InteractiveTemplatePreview({
       }, 500);
       return () => clearInterval(interval);
     }
-  }, [isPreviewActive, props.compact, props.isBuilderPreview]);
-  const normalizedKey = componentKey.toLowerCase();
-  const preview = previewRegistry.find((item) => normalizedKey.includes(item.match));
+  }, [isPreviewActive, props.compact, props.isBuilderPreview, isLandscape]);
 
   if (preview) {
     const Component = preview.Component;
@@ -316,7 +323,7 @@ export function InteractiveTemplatePreview({
         return (
           <div 
             ref={containerRef} 
-            className="mx-auto flex aspect-[9/19] w-full max-w-[340px] shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative isolate z-0 ring-1 ring-inset ring-black/10"
+            className={`mx-auto flex w-full shrink-0 flex-col overflow-hidden border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative isolate z-0 ring-1 ring-inset ring-black/10 ${isLandscape ? 'aspect-video max-w-[600px] rounded-xl' : 'aspect-[9/19] max-w-[420px] rounded-[2.5rem]'}`}
             style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)', transform: 'translateZ(0)' }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -344,17 +351,18 @@ export function InteractiveTemplatePreview({
         return (
           <div 
             ref={containerRef} 
-            className="mx-auto flex shrink-0 flex-col overflow-hidden rounded-[2.5rem] border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative isolate z-0 [&::-webkit-scrollbar]:hidden [&_*::-webkit-scrollbar]:hidden"
+            className={`mx-auto flex shrink-0 flex-col overflow-hidden border-[6px] border-[#150a21] bg-[#05020a] shadow-2xl relative isolate z-0 [&::-webkit-scrollbar]:hidden [&_*::-webkit-scrollbar]:hidden ${isLandscape ? 'rounded-xl' : 'rounded-[2.5rem]'}`}
             style={{ 
-              aspectRatio: '9/19',
-              height: '100%',
-              maxHeight: '780px',
+              aspectRatio: isLandscape ? '16/9' : '9/19',
+              height: isLandscape ? 'auto' : '100%',
+              width: isLandscape ? '100%' : 'auto',
+              maxHeight: isLandscape ? 'none' : '100%',
               maxWidth: '100%',
               WebkitMaskImage: '-webkit-radial-gradient(white, black)', 
               transform: 'translateZ(0)' 
             }}
           >
-            <Component {...finalProps} roomId={roomId} autoPlay={false} />
+            <Component {...finalProps} roomId={roomId} autoPlay={false} compact={false} />
           </div>
         );
       }

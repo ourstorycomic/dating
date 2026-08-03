@@ -233,8 +233,7 @@ export function UserManager({
               <tr className="border-b border-white/10">
                 <th className="px-5 py-4 font-medium">Tên</th>
                 <th className="px-5 py-4 font-medium">Email</th>
-                <th className="px-5 py-4 font-medium">Role gốc</th>
-                <th className="px-5 py-4 font-medium">Vai trò tuỳ chỉnh</th>
+                <th className="px-5 py-4 font-medium">Vai trò</th>
                 <th className="px-5 py-4 font-medium">Quản lý</th>
                 <th className="px-5 py-4 font-medium">Trạng thái</th>
                 <th className="px-5 py-4 font-medium">Ngày tạo</th>
@@ -256,31 +255,26 @@ export function UserManager({
                     <td className="px-5 py-4">
                       {currentRole === "ADMIN" ? (
                         <select
-                          className="rounded-xl border border-white/10 bg-white/[0.07] px-3 py-2 outline-none"
-                          onChange={(event) => updateUser(user, { customRoleId: "", role: event.target.value as BaseRole })}
-                          value={user.role}
-                        >
-                          <option value="ADMIN">Admin</option>
-                          <option value="STAFF">Staff</option>
-                          <option value="EMPLOYEE">Nhân viên</option>
-                        </select>
-                      ) : user.role}
-                    </td>
-                    <td className="px-5 py-4">
-                      {currentRole === "ADMIN" ? (
-                        <select
                           className="min-w-44 rounded-xl border border-white/10 bg-white/[0.07] px-3 py-2 outline-none"
-                          onChange={(event) => updateUser(user, { customRoleId: event.target.value })}
-                          value={user.custom_role_id ?? ""}
+                          onChange={(event) => {
+                            const val = event.target.value;
+                            updateUser(user, { customRoleId: val, role: val ? inferRoleFromCustomRole(val, user.role) : user.role });
+                          }}
+                          value={user.custom_role_id || ""}
                         >
                           <option value="">Không gán</option>
                           {activeRoles.map((role) => (
                             <option key={role.id} value={role.id}>
-                              {role.name} ({role.commission_percentage}%)
+                              {role.name}
                             </option>
                           ))}
                         </select>
-                      ) : customRole?.name ?? "-"}
+                      ) : (
+                         customRole ? customRole.name : (
+                           user.role === "ADMIN" ? "Admin" :
+                           user.role === "STAFF" ? "Staff" : "Nhân viên"
+                         )
+                      )}
                     </td>
                     <td className="px-5 py-4">
                       {currentRole === "ADMIN" && user.role === "EMPLOYEE" ? (
@@ -351,35 +345,28 @@ export function UserManager({
               <Input label="Email đăng nhập" onChange={(email) => setForm((current) => ({ ...current, email }))} value={form.email} />
               <Input label="Mật khẩu" onChange={(password) => setForm((current) => ({ ...current, password }))} type="password" value={form.password} autoComplete="new-password" />
               <label className="grid gap-2 text-sm">
-                <span className="font-medium text-pink-800">Vai trò tuỳ chỉnh</span>
+                <span className="font-medium text-pink-800">Vai trò</span>
                 <select
                   className="rounded-xl border border-pink-200 bg-white px-4 py-3 outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400/50"
                   onChange={(event) => {
-                    const customRole = activeRoles.find((role) => role.id === event.target.value);
+                    const val = event.target.value;
+                    const customRole = activeRoles.find((r) => r.id === val);
+                    const inferredRole = customRole?.base_role ?? "EMPLOYEE";
                     setForm((current) => ({
                       ...current,
-                      customRoleId: event.target.value,
-                      role: customRole?.base_role ?? current.role,
+                      customRoleId: val,
+                      role: inferredRole,
+                      managerId: inferredRole === "EMPLOYEE" ? current.managerId : "",
                     }));
                   }}
-                  value={form.customRoleId}
+                  value={form.customRoleId || ""}
                 >
                   <option value="">Không gán</option>
                   {activeRoles.map((role) => (
-                    <option key={role.id} value={role.id}>{role.name} - {role.base_role} - {role.commission_percentage}%</option>
+                    <option key={role.id} value={role.id}>
+                      {role.name} - {role.commission_percentage}%
+                    </option>
                   ))}
-                </select>
-              </label>
-              <label className="grid gap-2 text-sm">
-                <span className="font-medium text-pink-800">Role gốc</span>
-                <select
-                  className="rounded-xl border border-pink-200 bg-white px-4 py-3 outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400/50"
-                  onChange={(event) => setForm((current) => ({ ...current, role: event.target.value as BaseRole, managerId: "" }))}
-                  value={form.role}
-                >
-                  <option value="EMPLOYEE">Nhân viên</option>
-                  <option value="STAFF">Staff</option>
-                  <option value="ADMIN">Admin</option>
                 </select>
               </label>
               {form.role === "EMPLOYEE" ? (

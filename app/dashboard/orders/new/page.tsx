@@ -11,7 +11,8 @@ export default async function NewOrderPage() {
     session?.userId ? supabase.from("users").select("role, custom_roles(permissions)").eq("id", session.userId).single().then(res => res.data) : Promise.resolve(null),
   ]);
 
-  const permissions = (userRecord?.custom_roles as any)?.permissions || [];
+  const customRoles = userRecord?.custom_roles as any;
+  const permissions = Array.isArray(customRoles) ? customRoles[0]?.permissions || [] : customRoles?.permissions || [];
   const canCreateFree = session?.role === "ADMIN" || userRecord?.role === "ADMIN" || permissions.includes("orders:create_free");
 
   return (
@@ -25,7 +26,7 @@ export default async function NewOrderPage() {
           <h2 className="text-2xl font-semibold">Chưa có template khả dụng</h2>
         </div>
       ) : (
-          <OrderBuilderForm currentRole={session?.role ?? "EMPLOYEE"} myOrders={myOrders as never} templates={templates} canCreateFree={canCreateFree} />
+          <OrderBuilderForm currentRole={session?.role ?? "EMPLOYEE"} userPermissions={permissions} myOrders={myOrders as never} templates={templates} canCreateFree={canCreateFree} />
         )}
       </div>
   );

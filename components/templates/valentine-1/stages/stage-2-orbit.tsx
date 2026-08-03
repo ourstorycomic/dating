@@ -47,8 +47,8 @@ export function Stage2Orbit({
     if (autoPlay) {
       if (placed.length < 3) {
         const t = setTimeout(() => {
-          setPlaced([0, 1, 2]);
-        }, 1500);
+          setPlaced(prev => [...prev, prev.length]);
+        }, 1200);
         return () => clearTimeout(t);
       } else {
         const t = setTimeout(() => {

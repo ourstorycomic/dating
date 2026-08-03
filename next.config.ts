@@ -17,6 +17,21 @@ const nextConfig: NextConfig = {
       "canvas-confetti",
     ],
   },
+  turbopack: {},
+
+  webpack: (config, { webpack }) => {
+    config.plugins.push(
+      new webpack.IgnorePlugin({
+        resourceRegExp: /^node:/,
+      })
+    );
+    
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+    };
+    return config;
+  },
 };
 
 export default nextConfig;

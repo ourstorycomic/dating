@@ -4,8 +4,8 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export async function GET() {
   const session = await getSession();
-  if (!session || session.role !== "ADMIN") {
-    return NextResponse.json({ error: "Chỉ admin mới được xem danh sách người giới thiệu." }, { status: 403 });
+  if (!session || !["ADMIN", "STAFF"].includes(session.role)) {
+    return NextResponse.json({ error: "Chỉ admin và nhân viên quản lý mới được xem danh sách người giới thiệu." }, { status: 403 });
   }
 
   const supabase = createServerSupabaseClient();

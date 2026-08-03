@@ -91,6 +91,20 @@ export async function POST(request: Request) {
   const paymentCode = randomCode("PAY", 6);
   const qrCodeUrl = createVietQrUrl({ amount, paymentCode });
 
+  let finalAffiliateId = null;
+  if (body.affiliateName) {
+    const { data: existingAff } = await supabase.from("affiliates").select("id").eq("name", body.affiliateName).maybeSingle();
+    if (existingAff) {
+      finalAffiliateId = existingAff.id;
+    } else {
+      const { data: newAff } = await supabase.from("affiliates").insert({
+        name: body.affiliateName,
+        ref_code: "REF" + Date.now().toString().slice(-6),
+      }).select("id").maybeSingle();
+      if (newAff) finalAffiliateId = newAff.id;
+    }
+  }
+
   const { data: order, error: orderError } = await supabase
     .from("orders")
     .insert({
@@ -105,7 +119,7 @@ export async function POST(request: Request) {
       status: isFreeOrder ? "ACTIVE" : "PENDING_PAYMENT",
       template_id: templateId,
       expires_at: customData.expiresAtDate ? new Date(customData.expiresAtDate).toISOString() : null,
-      affiliate_id: body.affiliateId ?? null,
+      affiliate_id: finalAffiliateId,
     })
     .select("id, public_id")
     .single();
@@ -190,6 +204,24 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "Bạn không có quyền sửa đơn này." }, { status: 403 });
   }
 
+  let updateAffiliateData = {};
+  if (body.affiliateName !== undefined) {
+    if (!body.affiliateName) {
+      updateAffiliateData = { affiliate_id: null };
+    } else {
+      const { data: existingAff } = await supabase.from("affiliates").select("id").eq("name", body.affiliateName).maybeSingle();
+      if (existingAff) {
+        updateAffiliateData = { affiliate_id: existingAff.id };
+      } else {
+        const { data: newAff } = await supabase.from("affiliates").insert({
+          name: body.affiliateName,
+          ref_code: "REF" + Date.now().toString().slice(-6),
+        }).select("id").maybeSingle();
+        if (newAff) updateAffiliateData = { affiliate_id: newAff.id };
+      }
+    }
+  }
+
   const { error } = await supabase
     .from("orders")
     .update({
@@ -198,7 +230,7 @@ export async function PATCH(request: Request) {
       buyer_name: buyerName !== null ? buyerName : undefined,
       ...(newTemplateId ? { template_id: newTemplateId } : {}),
       expires_at: customData.expiresAtDate ? new Date(customData.expiresAtDate).toISOString() : undefined,
-      ...(body.affiliateId !== undefined ? { affiliate_id: body.affiliateId || null } : {}),
+      ...updateAffiliateData,
     })
     .eq("id", order.id);
 
