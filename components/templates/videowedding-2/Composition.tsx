@@ -286,13 +286,13 @@ const Slide8 = ({ img1, img2, img3 }: any) => {
   return (
     <AbsoluteFill className="flex-row items-center justify-center gap-12" style={{ opacity }}>
       <div className="w-[22%] h-[60%] rounded-xl overflow-hidden shadow-xl" style={{ transform: `translateY(${y1}px)` }}>
-        <Img src={img1} className="w-full h-full object-cover" style={{ objectPosition: "center 25%", objectPosition: "center 25%" }} />
+        <Img src={img1} className="w-full h-full object-cover" style={{ objectPosition: "center 25%" }} />
       </div>
       <div className="w-[22%] h-[60%] rounded-xl overflow-hidden shadow-xl mt-40" style={{ transform: `translateY(${y2}px)` }}>
-        <Img src={img2} className="w-full h-full object-cover" style={{ objectPosition: "center 25%", objectPosition: "center 25%" }} />
+        <Img src={img2} className="w-full h-full object-cover" style={{ objectPosition: "center 25%" }} />
       </div>
       <div className="w-[22%] h-[60%] rounded-xl overflow-hidden shadow-xl mb-40" style={{ transform: `translateY(${y3}px)` }}>
-        <Img src={img3} className="w-full h-full object-cover" style={{ objectPosition: "center 25%", objectPosition: "center 25%" }} />
+        <Img src={img3} className="w-full h-full object-cover" style={{ objectPosition: "center 25%" }} />
       </div>
     </AbsoluteFill>
   );
