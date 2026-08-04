@@ -1,1 +1,0 @@
-const { PrismaClient } = require('@prisma/client'); const prisma = new PrismaClient(); prisma.template.findFirst({ where: { componentKey: 'videowedding-1' } }).then((t) => console.log(JSON.stringify(t.dataSchema))).finally(() => prisma.$disconnect());
