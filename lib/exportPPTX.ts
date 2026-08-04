@@ -88,7 +88,7 @@ export async function exportVideoWedding1ToPPTX(customData: any) {
     slide4.addImage({ path: img8, x: "71%", y: "20%", w: "20%", h: "60%" });
   } catch(e) { console.error(e); }
 
-  slide4.addText("OUR JOURNEY", { ...textProps, x: "0%", y: "5%", w: "100%", fontSize: 36, color: "D4AF37", bold: true, letterSpacing: 5 });
+  slide4.addText("OUR JOURNEY", { ...textProps, x: "0%", y: "5%", w: "100%", fontSize: 36, color: "D4AF37", bold: true });
 
   // SLIDE 5: Thank You
   const slide5 = pptx.addSlide();
