@@ -16,6 +16,7 @@ type Template = {
   visual_label: string | null;
   sort_order: number;
   thumbnail_url?: string | null;
+  component_key?: string | null;
 };
 
 export function TemplateManager({ initialTemplates }: { initialTemplates: Template[] }) {
