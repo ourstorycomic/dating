@@ -199,7 +199,7 @@ const Slide3 = ({ img, text }: any) => {
     <AbsoluteFill className="justify-center items-center" style={{ opacity }}>
       <h2 className="absolute top-16 text-[#C69C6D] drop-shadow-[0_0_15px_rgba(198,156,109,0.5)] text-4xl tracking-[0.4em] font-serif uppercase z-10">{text}</h2>
       <div className="w-[85%] h-[75%] rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-[3px] border-[#C69C6D]/30 mt-10">
-        <Img src={img} className="w-full h-full object-cover" style={{ objectPosition: "center 25%", objectPosition: "center 25%", transform: `scale(${scale})` }} />
+        <Img src={img} className="w-full h-full object-cover" style={{ objectPosition: "center 25%", transform: `scale(${scale})` }} />
       </div>
     </AbsoluteFill>
   );
@@ -217,7 +217,7 @@ const Slide4 = ({ img, name, title }: any) => {
         <h2 className="text-[#C69C6D] drop-shadow-[0_0_15px_rgba(198,156,109,0.5)] text-9xl font-sans font-bold tracking-widest uppercase">{name}</h2>
       </div>
       <div className="w-[45%] h-[80%] rounded-3xl overflow-hidden shadow-2xl relative border border-2 border-[#C69C6D]/40">
-        <Img src={img} className="w-full h-full object-cover" style={{ objectPosition: "center 25%", objectPosition: "center 25%", transform: `scale(${interpolate(frame, [0, SLIDE_DURATION], [1.1, 1])})` }} />
+        <Img src={img} className="w-full h-full object-cover" style={{ objectPosition: "center 25%", transform: `scale(${interpolate(frame, [0, SLIDE_DURATION], [1.1, 1])})` }} />
       </div>
     </AbsoluteFill>
   );
@@ -235,7 +235,7 @@ const Slide5 = ({ img, name, title }: any) => {
         <h2 className="text-[#C69C6D] drop-shadow-[0_0_15px_rgba(198,156,109,0.5)] text-9xl font-sans font-bold tracking-widest uppercase">{name}</h2>
       </div>
       <div className="w-[45%] h-[80%] rounded-3xl overflow-hidden shadow-2xl relative border border-2 border-[#C69C6D]/40">
-        <Img src={img} className="w-full h-full object-cover" style={{ objectPosition: "center 25%", objectPosition: "center 25%", transform: `scale(${interpolate(frame, [0, SLIDE_DURATION], [1.1, 1])})` }} />
+        <Img src={img} className="w-full h-full object-cover" style={{ objectPosition: "center 25%", transform: `scale(${interpolate(frame, [0, SLIDE_DURATION], [1.1, 1])})` }} />
       </div>
     </AbsoluteFill>
   );
@@ -249,10 +249,10 @@ const Slide6 = ({ img1, img2 }: any) => {
   return (
     <AbsoluteFill className="flex-row items-center justify-center gap-10 px-20" style={{ opacity }}>
       <div className="w-[45%] h-[85%] rounded-2xl overflow-hidden shadow-2xl">
-        <Img src={img1} className="w-full h-full object-cover" style={{ objectPosition: "center 25%", objectPosition: "center 25%", transform: `scale(${interpolate(frame, [0, SLIDE_DURATION], [1.1, 1])})` }} />
+        <Img src={img1} className="w-full h-full object-cover" style={{ objectPosition: "center 25%", transform: `scale(${interpolate(frame, [0, SLIDE_DURATION], [1.1, 1])})` }} />
       </div>
       <div className="w-[45%] h-[85%] rounded-2xl overflow-hidden shadow-2xl">
-        <Img src={img2} className="w-full h-full object-cover" style={{ objectPosition: "center 25%", objectPosition: "center 25%", transform: `scale(${interpolate(frame, [0, SLIDE_DURATION], [1, 1.1])})` }} />
+        <Img src={img2} className="w-full h-full object-cover" style={{ objectPosition: "center 25%", transform: `scale(${interpolate(frame, [0, SLIDE_DURATION], [1, 1.1])})` }} />
       </div>
     </AbsoluteFill>
   );
