@@ -115,7 +115,6 @@ export default function VideoWeddingOnePreview({
         controls={!compact}
         autoPlay={compact ? autoPlay : false}
         loop
-        inPlaybackVolume={compact ? 0 : 1}
         initialFrame={0}
         playbackRate={compact ? 3 : 1}
         spaceKeyToPlayOrPause={false}
