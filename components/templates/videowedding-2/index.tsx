@@ -1,8 +1,7 @@
-import { TemplateConfig } from "@/lib/types/template";
 import { default as Preview } from "./preview";
 import { VIDEOWEDDING_2_DATA } from "./config";
 
-export const VideoWeddingTwoTemplateConfig: TemplateConfig = {
+export const VideoWeddingTwoTemplateConfig = {
   id: "videowedding-2",
   name: "Cinema Luxury",
   description: "Video trình chiếu đám cưới phong cách điện ảnh, ánh đèn sân khấu sang trọng và lãng mạn.",
