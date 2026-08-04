@@ -226,7 +226,6 @@ export const VideoWeddingOneComposition = ({ customData }: any) => {
         {(!customData?.isCompact && customData?.generalAudioUrl) && <Audio src={getAudioUrl(customData.generalAudioUrl)} volume={0.6} />}
         <OffthreadVideo 
           src={getBgVideoUrl()} 
-          loop 
           muted={customData?.isCompact}
           style={{ width: "100%", height: "100%", objectFit: "cover" }} 
         />
