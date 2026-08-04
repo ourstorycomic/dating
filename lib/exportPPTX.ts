@@ -52,9 +52,9 @@ export async function exportVideoWedding1ToPPTX(customData: any) {
   
   // Add images to slide 2
   try {
-    slide2.addImage({ path: img1, x: "5%", y: "15%", w: "18%", h: "70%", sizing: { type: "crop" } });
-    slide2.addImage({ path: img2, x: "25%", y: "15%", w: "18%", h: "70%", sizing: { type: "crop" } });
-    slide2.addImage({ path: img3, x: "45%", y: "15%", w: "18%", h: "70%", sizing: { type: "crop" } });
+    slide2.addImage({ path: img1, x: "5%", y: "15%", w: "18%", h: "70%" });
+    slide2.addImage({ path: img2, x: "25%", y: "15%", w: "18%", h: "70%" });
+    slide2.addImage({ path: img3, x: "45%", y: "15%", w: "18%", h: "70%" });
   } catch(e) { console.error(e); }
 
   slide2.addText(text1, { ...textProps, x: "65%", y: "40%", w: "30%", fontSize: 60, fontFace: "Great Vibes" });
@@ -66,7 +66,7 @@ export async function exportVideoWedding1ToPPTX(customData: any) {
   slide3.background = { color: "11070A" };
   const img4 = getPhoto(4, "/assets/videowedding-1/anhchung5.jpg");
   try {
-    slide3.addImage({ path: img4, x: "0%", y: "0%", w: "100%", h: "100%", sizing: { type: "crop" } });
+    slide3.addImage({ path: img4, x: "0%", y: "0%", w: "100%", h: "100%" });
   } catch(e) { console.error(e); }
   
   // Add semi-transparent overlay
@@ -82,10 +82,10 @@ export async function exportVideoWedding1ToPPTX(customData: any) {
   const img8 = getPhoto(7, "/assets/videowedding-1/anhchung8.jpg");
   
   try {
-    slide4.addImage({ path: img5, x: "5%", y: "20%", w: "20%", h: "60%", sizing: { type: "crop" } });
-    slide4.addImage({ path: img6, x: "27%", y: "20%", w: "20%", h: "60%", sizing: { type: "crop" } });
-    slide4.addImage({ path: img7, x: "49%", y: "20%", w: "20%", h: "60%", sizing: { type: "crop" } });
-    slide4.addImage({ path: img8, x: "71%", y: "20%", w: "20%", h: "60%", sizing: { type: "crop" } });
+    slide4.addImage({ path: img5, x: "5%", y: "20%", w: "20%", h: "60%" });
+    slide4.addImage({ path: img6, x: "27%", y: "20%", w: "20%", h: "60%" });
+    slide4.addImage({ path: img7, x: "49%", y: "20%", w: "20%", h: "60%" });
+    slide4.addImage({ path: img8, x: "71%", y: "20%", w: "20%", h: "60%" });
   } catch(e) { console.error(e); }
 
   slide4.addText("OUR JOURNEY", { ...textProps, x: "0%", y: "5%", w: "100%", fontSize: 36, color: "D4AF37", bold: true, letterSpacing: 5 });
@@ -95,7 +95,7 @@ export async function exportVideoWedding1ToPPTX(customData: any) {
   slide5.background = { color: "11070A" };
   const img9 = getPhoto(8, "/assets/videowedding-1/anhchung9.jpg");
   try {
-    slide5.addImage({ path: img9, x: "0%", y: "0%", w: "100%", h: "100%", sizing: { type: "crop" } });
+    slide5.addImage({ path: img9, x: "0%", y: "0%", w: "100%", h: "100%" });
   } catch(e) { console.error(e); }
   
   slide5.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: "100%", h: "100%", fill: { color: "000000", transparency: 50 } });
@@ -135,9 +135,9 @@ export async function exportVideoWedding2ToPPTX(customData: any) {
   const slide2 = pptx.addSlide();
   slide2.background = { color: "0F0407" };
   try {
-    slide2.addImage({ path: getPhoto(0, "/assets/videowedding-2/anhchung.jpg"), x: "5%", y: "15%", w: "20%", h: "70%", sizing: { type: "crop" } });
-    slide2.addImage({ path: getPhoto(1, "/assets/videowedding-2/anhchung2.jpg"), x: "30%", y: "15%", w: "20%", h: "70%", sizing: { type: "crop" } });
-    slide2.addImage({ path: getPhoto(2, "/assets/videowedding-2/anhchung3.jpg"), x: "55%", y: "15%", w: "20%", h: "70%", sizing: { type: "crop" } });
+    slide2.addImage({ path: getPhoto(0, "/assets/videowedding-2/anhchung.jpg"), x: "5%", y: "15%", w: "20%", h: "70%" });
+    slide2.addImage({ path: getPhoto(1, "/assets/videowedding-2/anhchung2.jpg"), x: "30%", y: "15%", w: "20%", h: "70%" });
+    slide2.addImage({ path: getPhoto(2, "/assets/videowedding-2/anhchung3.jpg"), x: "55%", y: "15%", w: "20%", h: "70%" });
   } catch(e) {}
   slide2.addText("Hành Trình\nTình Yêu", { ...textProps, x: "78%", y: "40%", w: "20%", fontSize: 40 });
 
@@ -145,8 +145,8 @@ export async function exportVideoWedding2ToPPTX(customData: any) {
   const slide3 = pptx.addSlide();
   slide3.background = { color: "0F0407" };
   try {
-    slide3.addImage({ path: getPhoto(4, "/assets/videowedding-2/chure.jpg"), x: "5%", y: "20%", w: "40%", h: "60%", sizing: { type: "crop" } });
-    slide3.addImage({ path: getPhoto(5, "/assets/videowedding-2/codau.jpg"), x: "55%", y: "20%", w: "40%", h: "60%", sizing: { type: "crop" } });
+    slide3.addImage({ path: getPhoto(4, "/assets/videowedding-2/chure.jpg"), x: "5%", y: "20%", w: "40%", h: "60%" });
+    slide3.addImage({ path: getPhoto(5, "/assets/videowedding-2/codau.jpg"), x: "55%", y: "20%", w: "40%", h: "60%" });
   } catch(e) {}
   slide3.addText(groomName, { ...textProps, x: "5%", y: "85%", w: "40%", fontSize: 32 });
   slide3.addText(brideName, { ...textProps, x: "55%", y: "85%", w: "40%", fontSize: 32 });
@@ -155,7 +155,7 @@ export async function exportVideoWedding2ToPPTX(customData: any) {
   const slide4 = pptx.addSlide();
   slide4.background = { color: "0F0407" };
   try {
-    slide4.addImage({ path: getPhoto(6, "/assets/videowedding-2/anhchung7.jpg"), x: "10%", y: "10%", w: "80%", h: "80%", sizing: { type: "crop" } });
+    slide4.addImage({ path: getPhoto(6, "/assets/videowedding-2/anhchung7.jpg"), x: "10%", y: "10%", w: "80%", h: "80%" });
   } catch(e) {}
   slide4.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: "100%", h: "100%", fill: { color: "000000", transparency: 60 } });
   slide4.addText(text2, { ...textProps, y: "40%", w: "100%", fontSize: 48, bold: true });
