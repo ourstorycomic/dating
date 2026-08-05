@@ -218,18 +218,18 @@ export const VideoWeddingOneComposition = ({ customData }: any) => {
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#11070A" }}>
-      {(!customData?.isCompact && customData?.musicUrl) && <Audio src={getAudioUrl(customData.musicUrl)} />}
+      {(customData?.musicUrl && !customData?.generalAudioUrl) && <Audio src={getAudioUrl(customData.musicUrl)} />}
       <Fonts />
       
       {/* Background */}
       <div style={{ position: "absolute", inset: 0, opacity: 0.85 }}>
-        {(!customData?.isCompact && customData?.generalAudioUrl) && <Audio src={getAudioUrl(customData.generalAudioUrl)} volume={0.6} />}
+        {(customData?.generalAudioUrl) && <Audio src={getAudioUrl(customData.generalAudioUrl)} volume={0.6} />}
         {/* @ts-ignore */}
         <OffthreadVideo 
           src={getBgVideoUrl()} 
           // @ts-ignore
           loop
-          muted={customData?.isCompact}
+          muted={true}
           style={{ width: "100%", height: "100%", objectFit: "cover" }} 
         />
       </div>

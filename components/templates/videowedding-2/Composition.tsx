@@ -49,13 +49,13 @@ export const VideoWeddingTwoComposition = ({ customData = VIDEOWEDDING_2_DATA }:
   return (
     <CompactContext.Provider value={isCompact}>
       <AbsoluteFill className="bg-[#0f0407]">
-        {(!isCompact && voiceUrl) && <Audio src={getAudioSrc(voiceUrl)} volume={1} />}
-        {(!isCompact && generalAudioUrl) && <Audio src={getAudioSrc(generalAudioUrl)} volume={bgVolume} />}
+        {(voiceUrl) && <Audio src={getAudioSrc(voiceUrl)} volume={1} />}
+        {(generalAudioUrl) && <Audio src={getAudioSrc(generalAudioUrl)} volume={bgVolume} />}
       <OffthreadVideo 
         src={getBgVideoUrl()} 
         // @ts-ignore
         loop
-        muted={isCompact}
+        muted={true}
         style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute" }} 
       />
       <div className="absolute inset-0 pointer-events-none z-0" style={{ background: "radial-gradient(circle, transparent 30%, rgba(15,4,7,0.95) 130%)" }} />
