@@ -119,7 +119,7 @@ export function WeddingThreeExperience({
   const handleOpen = () => {
     setIsOpened(true);
     setTimeout(() => setAllowScroll(true), 1500);
-    if (audioRef.current && !compact) {
+    if (audioRef.current) {
       audioRef.current.play().catch(() => {});
       setIsPlaying(true);
     }
@@ -170,7 +170,7 @@ export function WeddingThreeExperience({
     <div ref={containerRef} className={`relative w-full bg-[#FFFFFF] text-[#2D2A28] scroll-smooth ${allowScroll ? "h-full overflow-y-auto overflow-x-hidden no-scrollbar" : "h-[100dvh] overflow-hidden"} ${compact ? "rounded-3xl" : ""}`}>
       
       {/* Background Music */}
-      {!compact && <audio ref={audioRef} src={musicUrl} loop />}
+      {musicUrl && <audio ref={audioRef} src={musicUrl} loop preload="auto" autoPlay={autoPlay} muted={compact && !autoPlay && !isBuilderPreview} />}
 
       {/* MAIN CONTENT (Only visible when opened) */}
       <div className={`relative z-10 w-full flex flex-col items-center transition-opacity duration-1000 ${allowScroll ? "opacity-100" : "opacity-0"}`}>

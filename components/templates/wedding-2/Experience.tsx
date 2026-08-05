@@ -118,7 +118,7 @@ export function WeddingTwoExperience({
   const handleOpen = () => {
     setIsOpened(true);
     setTimeout(() => setAllowScroll(true), 1500);
-    if (audioRef.current && !compact) {
+    if (audioRef.current) {
       audioRef.current.play().catch(() => {});
       setIsPlaying(true);
     }
@@ -173,7 +173,7 @@ export function WeddingTwoExperience({
       />
       
       {/* Background Music */}
-      {!compact && <audio ref={audioRef} src={musicUrl} loop />}
+      {musicUrl && <audio ref={audioRef} src={musicUrl} loop preload="auto" autoPlay={autoPlay} muted={compact && !autoPlay && !isBuilderPreview} />}
 
       {/* MAIN CONTENT (Only visible when opened) */}
       <div className={`relative z-10 w-full flex flex-col items-center transition-opacity duration-1000 ${allowScroll ? "opacity-100" : "opacity-0"}`}>

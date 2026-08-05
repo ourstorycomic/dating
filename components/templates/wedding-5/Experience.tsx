@@ -143,7 +143,7 @@ export function WeddingFiveExperience({
       />
 
       <div ref={containerRef} className="absolute inset-0 z-10 w-full h-full overflow-y-auto overflow-x-hidden no-scrollbar scroll-smooth">
-        {!compact && <audio ref={audioRef} src={musicUrl} loop />}
+        {musicUrl && <audio ref={audioRef} src={musicUrl} loop preload="auto" autoPlay={autoPlay} muted={compact && !autoPlay && !isBuilderPreview} />}
         
         <div className="w-full max-w-md mx-auto relative min-h-[100dvh] flex flex-col items-center">
           

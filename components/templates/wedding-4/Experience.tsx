@@ -198,7 +198,7 @@ export function WeddingFourExperience({
       <div ref={containerRef} className={`absolute inset-0 z-10 w-full h-full scroll-smooth ${allowScroll ? "overflow-y-auto overflow-x-hidden no-scrollbar" : "overflow-hidden"}`}>
       
         {/* Background Music */}
-        {!compact && <audio ref={audioRef} src={musicUrl} loop />}
+        {musicUrl && <audio ref={audioRef} src={musicUrl} loop preload="auto" autoPlay={autoPlay} muted={compact && !autoPlay && !isBuilderPreview} />}
 
         {/* HERO SECTION */}
         {/* HERO SECTION */}
