@@ -103,7 +103,7 @@ export default function VideoWeddingOnePreview({
 
   // If not active or noFrame/compact, we might just want to show a poster or basic preview
   return (
-    <div className="w-full h-full flex items-center justify-center bg-[#1a0b0f] overflow-hidden rounded-[2.5rem]">
+    <div className="template-preview-surface w-full h-full flex items-center justify-center bg-[#1a0b0f] overflow-hidden rounded-[2.5rem]">
       <Player
         ref={playerRef}
         component={VideoWeddingOneComposition}
