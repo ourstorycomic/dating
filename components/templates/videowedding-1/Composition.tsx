@@ -78,26 +78,26 @@ const AnimatedText = ({ text, delay = 0, className, style }: any) => {
 };
 
 // Slide 1: Save Our Date (Text Only)
-const Slide1 = () => {
+const Slide1 = ({ text4, text5, text6, date }: any) => {
   const frame = useCurrentFrame();
   const opacityOut = interpolate(frame, [270, 300], [1, 0], { extrapolateRight: "clamp" });
 
   return (
     <AbsoluteFill style={{ opacity: opacityOut, display: "flex", justifyContent: "center", alignItems: "center", zIndex: 10 }}>
       <div style={{ position: "relative", textAlign: "center" }}>
-        <AnimatedText delay={10} className="font-montserrat" text="SAVE" style={{ fontSize: "140px", color: "#E8D9C8", letterSpacing: "0.1em", fontWeight: 300, lineHeight: 1 }} />
+        <AnimatedText delay={10} className="font-montserrat" text={text4} style={{ fontSize: "140px", color: "#E8D9C8", letterSpacing: "0.1em", fontWeight: 300, lineHeight: 1 }} />
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "-30px" }}>
-          <AnimatedText delay={30} className="font-montserrat" text="OUR" style={{ fontSize: "60px", color: "#E8D9C8", letterSpacing: "0.1em", fontWeight: 300, marginRight: "40px" }} />
-          <AnimatedText delay={50} className="font-montserrat" text="DATE" style={{ fontSize: "140px", color: "#E8D9C8", letterSpacing: "0.1em", fontWeight: 300, lineHeight: 1 }} />
+          <AnimatedText delay={30} className="font-montserrat" text={text5} style={{ fontSize: "60px", color: "#E8D9C8", letterSpacing: "0.1em", fontWeight: 300, marginRight: "40px" }} />
+          <AnimatedText delay={50} className="font-montserrat" text={text6} style={{ fontSize: "140px", color: "#E8D9C8", letterSpacing: "0.1em", fontWeight: 300, lineHeight: 1 }} />
         </div>
-        <AnimatedText delay={70} className="font-montserrat" text="04.06.2026" style={{ fontSize: "50px", color: "#D4AF37", letterSpacing: "0.2em", fontWeight: 400, marginTop: "20px" }} />
+        <AnimatedText delay={70} className="font-montserrat" text={date} style={{ fontSize: "50px", color: "#D4AF37", letterSpacing: "0.2em", fontWeight: 400, marginTop: "20px" }} />
       </div>
     </AbsoluteFill>
   );
 };
 
 // Slide 2: 3 Vertical Photos Left, Text Right
-const Slide2 = ({ image1, image2, image3, text1, text2 }: any) => {
+const Slide2 = ({ image1, image2, image3, text1, text2, text7 }: any) => {
   const frame = useCurrentFrame();
   const opacityOut = interpolate(frame, [270, 300], [1, 0], { extrapolateRight: "clamp" });
 
@@ -111,7 +111,7 @@ const Slide2 = ({ image1, image2, image3, text1, text2 }: any) => {
          <AnimatedText delay={40} className="font-vibes" text={text1} style={{ fontSize: "110px", color: "#F4EFEA", fontWeight: 400 }} />
        </div>
        <div style={{ position: "absolute", right: "6%", bottom: "15%", textAlign: "right" }}>
-         <AnimatedText delay={60} className="font-montserrat" text="WEDDING DAY" style={{ fontSize: "36px", color: "#D4AF37", letterSpacing: "0.3em", fontWeight: 500 }} />
+         <AnimatedText delay={60} className="font-montserrat" text={text7} style={{ fontSize: "36px", color: "#D4AF37", letterSpacing: "0.3em", fontWeight: 500 }} />
          <AnimatedText delay={70} className="font-montserrat" text={text2} style={{ fontSize: "32px", color: "#E8D9C8", letterSpacing: "0.2em", fontWeight: 300, marginTop: "10px" }} />
        </div>
     </AbsoluteFill>
@@ -211,19 +211,36 @@ export const VideoWeddingOneComposition = ({ customData }: any) => {
     return url;
   };
 
+  const formatDate = (dateStr: string) => {
+    if (!dateStr || !dateStr.includes('T')) return dateStr;
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const year = d.getFullYear();
+      return `${day} - ${month} - ${year}`;
+    } catch (e) {
+      return dateStr;
+    }
+  };
+
   const getBgVideoUrl = () => {
     if (customData?.serverUrl) return customData.serverUrl + "/assets/videowedding-1/bg_h264.mp4";
     return staticFile("/assets/videowedding-1/bg_h264.mp4");
   };
 
+  const audioStartFrame = customData?.audioStartTime ? Number(customData.audioStartTime) * 30 : 0;
+  const audioEndFrame = customData?.audioEndTime ? Number(customData.audioEndTime) * 30 : undefined;
+
   return (
     <AbsoluteFill style={{ backgroundColor: "#11070A" }}>
-      {(customData?.musicUrl && !customData?.generalAudioUrl) && <Audio src={getAudioUrl(customData.musicUrl)} />}
+      {(customData?.musicUrl && !customData?.generalAudioUrl) && <Audio src={getAudioUrl(customData.musicUrl)} startFrom={audioStartFrame} endAt={audioEndFrame} />}
       <Fonts />
       
       {/* Background */}
       <div style={{ position: "absolute", inset: 0, opacity: 0.85 }}>
-        {(customData?.generalAudioUrl) && <Audio src={getAudioUrl(customData.generalAudioUrl)} volume={0.6} />}
+        {(customData?.generalAudioUrl) && <Audio src={getAudioUrl(customData.generalAudioUrl)} volume={0.6} startFrom={audioStartFrame} endAt={audioEndFrame} />}
         {/* @ts-ignore */}
         <OffthreadVideo 
           src={getBgVideoUrl()} 
@@ -236,7 +253,12 @@ export const VideoWeddingOneComposition = ({ customData }: any) => {
       <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.1)", pointerEvents: "none" }} />
       
       <Sequence from={0} durationInFrames={300}>
-        <Slide1 />
+        <Slide1 
+          text4={customData?.text4 || "SAVE OUR"}
+          text5={customData?.text5 || "DATE"}
+          text6={customData?.text6 || "DATE"}
+          date={formatDate(customData?.date || "04 - 06 - 2026")}
+        />
       </Sequence>
 
       <Sequence from={270} durationInFrames={300}>
@@ -245,7 +267,8 @@ export const VideoWeddingOneComposition = ({ customData }: any) => {
           image2={getPhoto(3)} 
           image3={getPhoto(2)} 
           text1={customData?.text3 || "Lễ Thành Hôn"} 
-          text2={customData?.date || "04 - 06 - 2026"} 
+          text2={formatDate(customData?.date || "04 - 06 - 2026")} 
+          text7={customData?.text7 || "WEDDING DAY"}
         />
       </Sequence>
 
@@ -261,8 +284,8 @@ export const VideoWeddingOneComposition = ({ customData }: any) => {
          <Slide4 
           image1={customData?.image1 || "/assets/videowedding-1/chure.jpg"} 
           image2={customData?.image2 || "/assets/videowedding-1/codau.jpg"} 
-          text1="THE" 
-          text2="Beginning" 
+          text1={customData?.text8 || "THE"}
+          text2={customData?.text9 || "Beginning"}
         />
       </Sequence>
 
@@ -271,8 +294,8 @@ export const VideoWeddingOneComposition = ({ customData }: any) => {
           image1={getPhoto(1)} 
           image2={getPhoto(4)} 
           image3={getPhoto(7)} 
-          text1='"GUARDING YOU IN THIS ENDLESS TIME, PUT A SMILE BACK ON YOUR FACE TO KEEP YOU IN MIND"' 
-          text2="i saw that you were perfect and so i loved you. then i saw that you were not perfect and i loved you even more." 
+          text1={customData?.text10 || '"GUARDING YOU IN THIS ENDLESS TIME, PUT A SMILE BACK ON YOUR FACE TO KEEP YOU IN MIND"'}
+          text2={customData?.text11 || "i saw that you were perfect and so i loved you. then i saw that you were not perfect and i loved you even more."}
         />
       </Sequence>
 
@@ -283,7 +306,7 @@ export const VideoWeddingOneComposition = ({ customData }: any) => {
         
         return (
           <Sequence key={i} from={startFrame} durationInFrames={300}>
-            {styleType === 0 && <Slide2 image1={getPhoto(i + 5)} image2={getPhoto(i + 8)} image3={getPhoto(i + 11)} text1="Forever Love" text2="Tình yêu bất diệt" />}
+            {styleType === 0 && <Slide2 image1={getPhoto(i + 5)} image2={getPhoto(i + 8)} image3={getPhoto(i + 11)} text1="Forever Love" text2="Tình yêu bất diệt" text7={customData?.text7 || "WEDDING DAY"} />}
             {styleType === 1 && <Slide4 image1={getPhoto(i + 2)} image2={getPhoto(i + 7)} text1="OUR" text2="Journey" />}
             {styleType === 2 && <Slide5 image1={getPhoto(i + 3)} image2={getPhoto(i + 6)} image3={getPhoto(i + 9)} text1="HẠNH PHÚC LÀ KHI ĐƯỢC CÙNG NHAU GIÀ ĐI" text2="Cảm ơn vì đã đến và thanh xuân này chúng ta có nhau." />}
             {styleType === 3 && <Slide3 text1="Thank You" text2="Cảm ơn sự hiện diện của bạn" text3="Đó là món quà tuyệt vời nhất" />}

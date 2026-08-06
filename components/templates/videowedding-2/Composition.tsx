@@ -20,7 +20,22 @@ const Img = (props: any) => {
 };
 
 export const VideoWeddingTwoComposition = ({ customData = VIDEOWEDDING_2_DATA }: { customData?: any }) => {
-  const { photos, groomName, brideName, date, text1, text2, text3, text4, text5, text6, text7, voiceUrl, generalAudioUrl, backgroundVideo, isCompact } = { ...VIDEOWEDDING_2_DATA, ...customData };
+  const formatDate = (dateStr: string) => {
+    if (!dateStr || !dateStr.includes('T')) return dateStr;
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const year = d.getFullYear();
+      return `${day} - ${month} - ${year}`;
+    } catch (e) {
+      return dateStr;
+    }
+  };
+
+  const { photos, groomName, brideName, text1, text2, text3, text4, text5, text6, text7, voiceUrl, generalAudioUrl, backgroundVideo, isCompact } = { ...VIDEOWEDDING_2_DATA, ...customData };
+  const date = formatDate(customData?.date || VIDEOWEDDING_2_DATA.date);
   const getPhoto = (idx: number) => {
     let src = photos[idx] || photos[0];
     if (src?.startsWith("/") && customData?.serverUrl) {
@@ -42,6 +57,9 @@ export const VideoWeddingTwoComposition = ({ customData = VIDEOWEDDING_2_DATA }:
     if (customData?.serverUrl) return customData.serverUrl + "/assets/videowedding-2/bg_short.mp4";
     return staticFile(backgroundVideo || "/assets/videowedding-2/bg_short.mp4");
   };
+  const audioStartFrame = customData?.audioStartTime ? Number(customData.audioStartTime) * 30 : 0;
+  const audioEndFrame = customData?.audioEndTime ? Number(customData.audioEndTime) * 30 : undefined;
+
   const bgVolume = voiceUrl 
     ? interpolate(frame, [300, 450], [0.02, 0.4], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
     : 0.4;
@@ -49,8 +67,9 @@ export const VideoWeddingTwoComposition = ({ customData = VIDEOWEDDING_2_DATA }:
   return (
     <CompactContext.Provider value={isCompact}>
       <AbsoluteFill className="bg-[#0f0407]">
+        {/* Audio & Video Background */}
+        {(generalAudioUrl) && <Audio src={getAudioSrc(generalAudioUrl)} volume={bgVolume} startFrom={audioStartFrame} endAt={audioEndFrame} />}
         {(voiceUrl) && <Audio src={getAudioSrc(voiceUrl)} volume={1} />}
-        {(generalAudioUrl) && <Audio src={getAudioSrc(generalAudioUrl)} volume={bgVolume} />}
       <OffthreadVideo 
         src={getBgVideoUrl()} 
         // @ts-ignore

@@ -362,7 +362,20 @@ export const MOCK_TEMPLATES: any[] = [
     status_label: "Mới",
     sort_order: 31,
     thumbnail_url: "/assets/videowedding-1/anhchung2.jpg",
-    data_schema: [],
+    data_schema: [
+      { section: "2. Thời Gian", key: "date", label: "Ngày hiển thị", type: "date", default: "2026-06-04T09:00" },
+      { section: "Tùy chỉnh nội dung", key: "text1", label: "Tên Cô Dâu Chú Rể", type: "text", default: "Thanh Tú & Mai Duyên" },
+      { section: "Tùy chỉnh nội dung", key: "text3", label: "Tiêu đề (vd: Lễ Thành Hôn)", type: "text", default: "Lễ Thành Hôn" },
+      { section: "Tùy chỉnh nội dung", key: "text2", label: "Nội dung thư mời", type: "textarea", default: "Chúng con rất hân hạnh được chào đón sự góp mặt đông đủ của quý vị khách quý." },
+      { section: "Tùy chỉnh nội dung", key: "text4", label: "Chữ 1 - Đầu video", type: "text", default: "SAVE" },
+      { section: "Tùy chỉnh nội dung", key: "text5", label: "Chữ 2 - Đầu video", type: "text", default: "OUR" },
+      { section: "Tùy chỉnh nội dung", key: "text6", label: "Chữ 3 - Đầu video", type: "text", default: "DATE" },
+      { section: "Tùy chỉnh nội dung", key: "text7", label: "Tiêu đề tiếng anh", type: "text", default: "WEDDING DAY" },
+      { section: "Tùy chỉnh nội dung", key: "text8", label: "Chữ 1 - Giữa video", type: "text", default: "THE" },
+      { section: "Tùy chỉnh nội dung", key: "text9", label: "Chữ 2 - Giữa video", type: "text", default: "Beginning" },
+      { section: "Tùy chỉnh nội dung", key: "text10", label: "Câu quote 1", type: "textarea", default: "\"GUARDING YOU IN THIS ENDLESS TIME, PUT A SMILE BACK ON YOUR FACE TO KEEP YOU IN MIND\"" },
+      { section: "Tùy chỉnh nội dung", key: "text11", label: "Câu quote 2", type: "textarea", default: "i saw that you were perfect and so i loved you. then i saw that you were not perfect and i loved you even more." }
+    ],
     sample_data: {},
     template_categories: { slug: "wedding", name: "Wedding", description: null }
   },
@@ -379,7 +392,18 @@ export const MOCK_TEMPLATES: any[] = [
     status_label: "Mới",
     sort_order: 32,
     thumbnail_url: "/assets/videowedding-2/anhchung12.jpg",
-    data_schema: [],
+    data_schema: [
+      { section: "2. Thời Gian", key: "date", label: "Ngày hiển thị", type: "date", default: "2026-07-25T09:00" },
+      { section: "Tùy chỉnh nội dung", key: "groomName", label: "Tên Chú Rể", type: "text", default: "Huy Bình" },
+      { section: "Tùy chỉnh nội dung", key: "brideName", label: "Tên Cô Dâu", type: "text", default: "Anh Thư" },
+      { section: "Tùy chỉnh nội dung", key: "text1", label: "Tiêu đề 1", type: "text", default: "LỄ THÀNH HÔN" },
+      { section: "Tùy chỉnh nội dung", key: "text2", label: "Tiêu đề 2", type: "text", default: "CHÚNG TÔI SẮP KẾT HÔN!" },
+      { section: "Tùy chỉnh nội dung", key: "text3", label: "Tiêu đề 3", type: "text", default: "TÌNH YÊU ĐÍCH THỰC" },
+      { section: "Tùy chỉnh nội dung", key: "text5", label: "Câu quote 1", type: "text", default: "Hai trái tim, một nhịp đập." },
+      { section: "Tùy chỉnh nội dung", key: "text6", label: "Câu quote 2", type: "text", default: "Chuyện tình viết nên từ những vì sao." },
+      { section: "Tùy chỉnh nội dung", key: "text7", label: "Câu quote 3", type: "text", default: "Từ hôm nay và mãi về sau..." },
+      { section: "Tùy chỉnh nội dung", key: "text4", label: "Lời kết", type: "text", default: "Trân trọng cảm ơn" }
+    ],
     sample_data: { voiceUrl: "/assets/videowedding-2/intro.mp3" },
     template_categories: { slug: "wedding", name: "Wedding", description: null }
   }
@@ -426,8 +450,8 @@ export async function getPublishedTemplates() {
     if (mock) {
       return {
         ...dbTemp,
-        data_schema: (mock.slug.startsWith('wedding-') || !(Array.isArray(dbTemp.data_schema) && dbTemp.data_schema.length > 0)) ? mock.data_schema : dbTemp.data_schema,
-        sample_data: (mock.slug.startsWith('wedding-') || !(typeof dbTemp.sample_data === 'object' && dbTemp.sample_data !== null && Object.keys(dbTemp.sample_data).length > 0)) ? mock.sample_data : dbTemp.sample_data
+        data_schema: (mock.slug.startsWith('wedding-') || mock.slug.startsWith('videowedding-') || !(Array.isArray(dbTemp.data_schema) && dbTemp.data_schema.length > 0)) ? mock.data_schema : dbTemp.data_schema,
+        sample_data: (mock.slug.startsWith('wedding-') || mock.slug.startsWith('videowedding-') || !(typeof dbTemp.sample_data === 'object' && dbTemp.sample_data !== null && Object.keys(dbTemp.sample_data).length > 0)) ? mock.sample_data : dbTemp.sample_data
       };
     }
     return dbTemp;
@@ -464,8 +488,8 @@ export async function getTemplateBySlug(slug: string) {
   if (mock) {
     template = {
       ...template,
-      data_schema: (mock.slug.startsWith('wedding-') || !(Array.isArray(template.data_schema) && template.data_schema.length > 0)) ? mock.data_schema : template.data_schema,
-      sample_data: (mock.slug.startsWith('wedding-') || !(typeof template.sample_data === 'object' && template.sample_data !== null && Object.keys(template.sample_data).length > 0)) ? mock.sample_data : template.sample_data
+      data_schema: (mock.slug.startsWith('wedding-') || mock.slug.startsWith('videowedding-') || !(Array.isArray(template.data_schema) && template.data_schema.length > 0)) ? mock.data_schema : template.data_schema,
+      sample_data: (mock.slug.startsWith('wedding-') || mock.slug.startsWith('videowedding-') || !(typeof template.sample_data === 'object' && template.sample_data !== null && Object.keys(template.sample_data).length > 0)) ? mock.sample_data : template.sample_data
     };
   }
 

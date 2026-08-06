@@ -925,6 +925,9 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     if (!previewContainer) return;
     const audios = previewContainer.querySelectorAll("audio");
     audios.forEach(audio => {
+      // For video templates, let Remotion handle the audio entirely
+      if (isVideoTemplate) return;
+      
       audio.volume = builderVolume;
       audio.muted = builderVolume === 0;
       if (builderVolume > 0 && audio.paused && audio.src && !audio.src.includes("click") && !audio.src.includes("yay") && !audio.src.includes("meow") && !audio.src.includes("lopi") && !audio.src.includes("touch")) {
@@ -932,7 +935,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
         audio.play().catch(() => {});
       }
     });
-  }, [builderVolume, generalAudioUrl, selectedComponentKey, previewStepIndex]);
+  }, [builderVolume, generalAudioUrl, selectedComponentKey, previewStepIndex, isVideoTemplate]);
 
   useEffect(() => {
     if (!result || result.unlocked) return;
@@ -1151,7 +1154,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
 
   // Dedicated background music previewer
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || isVideoTemplate) return;
     
     let urlToPlay = generalAudioUrl;
     if (!urlToPlay) {
@@ -1173,7 +1176,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
       audio.pause();
       audio.src = "";
     };
-  }, [generalAudioUrl]);
+  }, [generalAudioUrl, isVideoTemplate]);
 
 
   async function createOrder() {
@@ -2905,7 +2908,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
                   return f;
                 });
 
-                if (!schema.some((f: any) => f.key === 'tiecName')) {
+                if (!schema.some((f: any) => f.key === 'tiecName') && !isVideoTemplate) {
                   // Add Tiệc Mừng dates to Thời Gian
                   const thoiGianIndex = schema.findIndex(f => f.section === "2. Thời Gian");
                   if (thoiGianIndex !== -1) {
