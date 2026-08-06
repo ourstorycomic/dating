@@ -1,9 +1,18 @@
-import React from "react";
-import { Composition } from "remotion";
+import React, { useEffect, useState } from "react";
+import "../app/globals.css";
+import { Composition, delayRender, continueRender } from "remotion";
 import { VideoWeddingTwoComposition } from "../components/templates/videowedding-2/Composition";
 import { VideoWeddingOneComposition } from "../components/templates/videowedding-1/Composition";
 
 export const RemotionRoot: React.FC = () => {
+  const [handle] = useState(() => delayRender());
+
+  useEffect(() => {
+    document.fonts.ready.then(() => {
+      continueRender(handle);
+    });
+  }, [handle]);
+
   return (
     <>
       <Composition
