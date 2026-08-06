@@ -1,5 +1,5 @@
 import React from "react";
-import { AbsoluteFill, OffthreadVideo, Sequence, useCurrentFrame, useVideoConfig, spring, interpolate, Img, staticFile, Audio } from "remotion";
+import { AbsoluteFill, Video, Sequence, useCurrentFrame, useVideoConfig, spring, interpolate, Img, staticFile, Audio } from "remotion";
 
 const Fonts = () => (
   <style>
@@ -230,8 +230,8 @@ export const VideoWeddingOneComposition = ({ customData }: any) => {
     return staticFile("/assets/videowedding-1/bg_h264.mp4");
   };
 
-  const audioStartFrame = customData?.audioStartTime ? Number(customData.audioStartTime) * 30 : 0;
-  const audioEndFrame = customData?.audioEndTime ? Number(customData.audioEndTime) * 30 : undefined;
+  const audioStartFrame = (customData?.audioStartTime && !isNaN(Number(customData.audioStartTime))) ? Math.floor(Number(customData.audioStartTime) * 30) : 0;
+  const audioEndFrame = (customData?.audioEndTime && !isNaN(Number(customData.audioEndTime))) ? Math.floor(Number(customData.audioEndTime) * 30) : undefined;
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#11070A" }}>
@@ -241,13 +241,11 @@ export const VideoWeddingOneComposition = ({ customData }: any) => {
       {/* Background */}
       <div style={{ position: "absolute", inset: 0, opacity: 0.85 }}>
         {(customData?.generalAudioUrl) && <Audio src={getAudioUrl(customData.generalAudioUrl)} volume={0.6} startFrom={audioStartFrame} endAt={audioEndFrame} />}
-        {/* @ts-ignore */}
-        <OffthreadVideo 
+        <Video 
           src={getBgVideoUrl()} 
-          // @ts-ignore
           loop
           muted={true}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+          style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute", opacity: 0.8 }} 
         />
       </div>
       <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.1)", pointerEvents: "none" }} />

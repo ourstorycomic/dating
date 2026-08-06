@@ -1,4 +1,4 @@
-import { AbsoluteFill, Img as RemotionImg, Sequence, Series, Audio, Video, OffthreadVideo, staticFile, useCurrentFrame, useVideoConfig, spring, interpolate } from "remotion";
+import { AbsoluteFill, Audio, Img as RemotionImg, interpolate, Sequence, useCurrentFrame, useVideoConfig, Series, Video, staticFile, spring } from "remotion";
 import React from "react";
 import { VIDEOWEDDING_2_DATA } from "./config";
 
@@ -57,8 +57,8 @@ export const VideoWeddingTwoComposition = ({ customData = VIDEOWEDDING_2_DATA }:
     if (customData?.serverUrl) return customData.serverUrl + "/assets/videowedding-2/bg_short.mp4";
     return staticFile(backgroundVideo || "/assets/videowedding-2/bg_short.mp4");
   };
-  const audioStartFrame = customData?.audioStartTime ? Number(customData.audioStartTime) * 30 : 0;
-  const audioEndFrame = customData?.audioEndTime ? Number(customData.audioEndTime) * 30 : undefined;
+  const audioStartFrame = (customData?.audioStartTime && !isNaN(Number(customData.audioStartTime))) ? Math.floor(Number(customData.audioStartTime) * 30) : 0;
+  const audioEndFrame = (customData?.audioEndTime && !isNaN(Number(customData.audioEndTime))) ? Math.floor(Number(customData.audioEndTime) * 30) : undefined;
 
   const bgVolume = voiceUrl 
     ? interpolate(frame, [300, 450], [0.02, 0.4], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
@@ -70,9 +70,8 @@ export const VideoWeddingTwoComposition = ({ customData = VIDEOWEDDING_2_DATA }:
         {/* Audio & Video Background */}
         {(generalAudioUrl) && <Audio src={getAudioSrc(generalAudioUrl)} volume={bgVolume} startFrom={audioStartFrame} endAt={audioEndFrame} />}
         {(voiceUrl) && <Audio src={getAudioSrc(voiceUrl)} volume={1} />}
-      <OffthreadVideo 
+      <Video 
         src={getBgVideoUrl()} 
-        // @ts-ignore
         loop
         muted={true}
         style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute" }} 
