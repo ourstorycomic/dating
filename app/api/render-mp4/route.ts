@@ -89,7 +89,14 @@ export async function POST(req: Request) {
       command += ` --jpeg-quality=90`; // Default to slightly better JPEG quality for FHD too
     }
     
-    const { stdout, stderr } = await execAsync(command, { maxBuffer: 1024 * 1024 * 10 }); // 10MB buffer for logs
+    const { stdout, stderr } = await execAsync(command, { 
+      maxBuffer: 1024 * 1024 * 10,
+      env: {
+        ...process.env,
+        TMP: tempDir,
+        TEMP: tempDir
+      }
+    }); // 10MB buffer for logs
     
     console.log("Render stdout:", stdout);
     if (stderr) {
