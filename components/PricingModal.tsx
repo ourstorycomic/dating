@@ -11,8 +11,9 @@ function useCountdown() {
     const cycleDuration = 5 * 24 * 60 * 60 * 1000;
     const updateCountdown = () => {
       const now = Date.now();
-      const startEpoch = new Date("2024-01-01T00:00:00Z").getTime();
-      const elapsed = now - startEpoch;
+      // Đặt mốc thời gian gần đây (28/08/2026) để thời gian còn lại luôn hiển thị ~4-5 ngày ở thời điểm hiện tại
+      const startEpoch = new Date("2026-08-28T00:00:00+07:00").getTime();
+      const elapsed = Math.max(0, now - startEpoch);
       const timePassedInCycle = elapsed % cycleDuration;
       const remainingTime = cycleDuration - timePassedInCycle;
 
