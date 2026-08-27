@@ -4,13 +4,43 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
+function useCountdown() {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  useEffect(() => {
+    const cycleDuration = 5 * 24 * 60 * 60 * 1000;
+    const updateCountdown = () => {
+      const now = Date.now();
+      const startEpoch = new Date("2024-01-01T00:00:00Z").getTime();
+      const elapsed = now - startEpoch;
+      const timePassedInCycle = elapsed % cycleDuration;
+      const remainingTime = cycleDuration - timePassedInCycle;
+
+      const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((remainingTime / 1000 / 60) % 60);
+      const seconds = Math.floor((remainingTime / 1000) % 60);
+
+      setTimeLeft({ days, hours, minutes, seconds });
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return timeLeft;
+}
+
 const PACKAGES = [
   {
     tier: "01",
     name: "Theo Mẫu",
     desc: "Bạn chuẩn bị sẵn nội dung, shop làm y hệt mẫu. Nhanh gọn!",
-    valentine: ["99K", "119K"],
-    dating:    ["79K",  "99K"],
+    oldValentine: ["298K", "318K"],
+    valentine: ["168K", "188K"],
+    oldDating: ["278K", "298K"],
+    dating:    ["148K", "168K"],
     popular: false,
     color: "#fce7f3",
     textColor: "#be185d",
@@ -19,9 +49,11 @@ const PACKAGES = [
     tier: "02",
     name: "Chỉnh Cảm Xúc",
     desc: "Shop sắp xếp ảnh, chỉnh câu chữ cho hợp cảm xúc. Hỗ trợ sửa 1 lần.",
-    valentine: ["119K", "139K"],
-    dating:    ["99K",  "119K"],
-    popular: true,
+    oldValentine: ["450K", "470K"],
+    valentine: ["295K", "315K"],
+    oldDating: ["430K", "450K"],
+    dating:    ["275K", "295K"],
+    popular: false,
     color: "#fdf4ff",
     textColor: "#a21caf",
   },
@@ -29,9 +61,11 @@ const PACKAGES = [
     tier: "03",
     name: "Đặc Biệt",
     desc: "Tư vấn concept riêng, viết lời nhắn sâu sắc. Hỗ trợ sửa 2 lần.",
-    valentine: ["179K", "199K"],
-    dating:    ["159K", "179K"],
-    popular: false,
+    oldValentine: ["990K", "1.010K"],
+    valentine: ["450K", "470K"],
+    oldDating: ["970K", "990K"],
+    dating:    ["430K", "450K"],
+    popular: true,
     color: "#fef3c7",
     textColor: "#b45309",
   },
@@ -57,6 +91,7 @@ export function PricingModal({
   const [tab, setTab] = useState<"normal" | "wedding">(
     defaultTab || (hideWedding ? "normal" : "wedding")
   );
+  const { days, hours, minutes, seconds } = useCountdown();
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -126,6 +161,28 @@ export function PricingModal({
                   </h2>
                   <p className="mt-1 text-xs text-gray-400">Cùng Lovora tạo nên những món quà đầy ý nghĩa nhé!</p>
 
+                  {/* Global Sale Countdown */}
+                  <div className="mt-4 flex justify-center w-full px-6">
+                    <div className="flex flex-col items-center gap-2 bg-gradient-to-r from-rose-500 via-pink-500 to-rose-500 rounded-2xl px-6 py-3 shadow-lg shadow-rose-500/40 border border-rose-400 w-full relative overflow-hidden">
+                      {/* Shine effect */}
+                      <div className="absolute inset-0 bg-white/20 -skew-x-12 translate-x-[-150%] opacity-0 hover:opacity-100 transition-opacity" />
+                      
+                      <span className="text-sm font-black text-white uppercase tracking-widest drop-shadow-md flex items-center gap-2">
+                        <svg className="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        Khuyến mãi kết thúc sau
+                      </span>
+                      <div className="flex gap-2 items-center z-10">
+                        <div className="bg-white text-rose-600 text-xl font-black px-3 py-1.5 rounded-lg shadow-md min-w-[40px] text-center tracking-wider">{String(days).padStart(2, '0')}</div>
+                        <span className="text-white font-black text-xl animate-pulse">:</span>
+                        <div className="bg-white text-rose-600 text-xl font-black px-3 py-1.5 rounded-lg shadow-md min-w-[40px] text-center tracking-wider">{String(hours).padStart(2, '0')}</div>
+                        <span className="text-white font-black text-xl animate-pulse">:</span>
+                        <div className="bg-white text-rose-600 text-xl font-black px-3 py-1.5 rounded-lg shadow-md min-w-[40px] text-center tracking-wider">{String(minutes).padStart(2, '0')}</div>
+                        <span className="text-white font-black text-xl animate-pulse">:</span>
+                        <div className="bg-white text-rose-600 text-xl font-black px-3 py-1.5 rounded-lg shadow-md min-w-[40px] text-center tracking-wider">{String(seconds).padStart(2, '0')}</div>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Tabs */}
                   {(!hideWedding && !hideNormal) && (
                     <div className="mt-4 inline-flex rounded-full p-1 gap-1" style={{ background: "rgba(236,72,153,0.1)" }}>
@@ -151,55 +208,70 @@ export function PricingModal({
                 <div className="px-5 pb-4">
                   {tab === "normal" ? (
                     <>
-                      {/* 2-col category labels */}
-                      <div className="grid grid-cols-2 gap-3 mb-3 ml-[36%]">
-                        <div className="text-center">
-                          <p className="text-[10px] font-black uppercase tracking-wider text-rose-400">Valentine & Sinh Nhật</p>
-                          <p className="text-[9px] text-rose-300">giá gốc</p>
+                      {/* Unified Grid Header */}
+                      <div className="grid items-end mb-2 px-4 gap-3" style={{ gridTemplateColumns: "1.8fr 1fr 1fr 1fr 1fr" }}>
+                        <div></div> {/* Empty for first col */}
+                        <div className="col-span-2 text-center">
+                          <p className="text-xs font-black uppercase tracking-wider text-rose-400 mb-2">Valentine & Sinh Nhật</p>
+                          <div className="flex justify-around px-2">
+                            <span className="text-[11px] font-bold text-gray-400">~24h</span>
+                            <span className="text-[11px] font-bold text-gray-400">Vài giờ</span>
+                          </div>
                         </div>
-                        <div className="text-center">
-                          <p className="text-[10px] font-black uppercase tracking-wider text-violet-400">Tỏ Tình & Xin Lỗi</p>
-                          <p className="text-[9px] text-violet-300 flex items-center justify-center gap-1">giảm 20K <span className="rounded-full bg-rose-500 px-1 text-white text-[8px] font-black">SALE</span></p>
+                        <div className="col-span-2 text-center">
+                          <p className="text-xs font-black uppercase tracking-wider text-violet-400 mb-2 flex flex-col items-center gap-0.5">
+                            Tỏ Tình & Xin Lỗi
+                            <span className="rounded-full bg-rose-500 px-1.5 py-0.5 text-white text-[9px] font-black w-fit">GIẢM 20K</span>
+                          </p>
+                          <div className="flex justify-around px-2">
+                            <span className="text-[11px] font-bold text-gray-400">~24h</span>
+                            <span className="text-[11px] font-bold text-gray-400">Vài giờ</span>
+                          </div>
                         </div>
-                      </div>
-
-                      {/* Time sub-headers */}
-                      <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr] mb-1 ml-[calc(36%+12px)] gap-0">
-                        {["~24h", "Vài giờ", "~24h", "Vài giờ"].map((t, i) => (
-                          <p key={i} className="text-center text-[9px] font-semibold text-gray-400">{t}</p>
-                        ))}
                       </div>
 
                       {/* Package rows as cards */}
-                      <div className="flex flex-col gap-2">
+                      <div className="flex flex-col gap-3">
                         {PACKAGES.map((pkg) => (
                           <div
                             key={pkg.tier}
-                            className="grid items-center gap-3 rounded-2xl px-4 py-3 transition-all hover:scale-[1.01]"
+                            className="grid items-center gap-3 rounded-2xl px-4 py-4 transition-all hover:scale-[1.01]"
                             style={{
                               background: "white",
-                              gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr",
-                              border: pkg.popular ? "1.5px solid rgba(236,72,153,0.3)" : "1.5px solid rgba(236,72,153,0.08)",
-                              boxShadow: pkg.popular ? "0 2px 16px rgba(236,72,153,0.1)" : "0 1px 6px rgba(0,0,0,0.04)",
+                              gridTemplateColumns: "1.8fr 1fr 1fr 1fr 1fr",
+                              border: pkg.popular ? "2px solid rgba(236,72,153,0.4)" : "1.5px solid rgba(236,72,153,0.1)",
+                              boxShadow: pkg.popular ? "0 8px 24px rgba(236,72,153,0.15)" : "0 2px 8px rgba(0,0,0,0.04)",
                             }}
                           >
-                            {/* Package info — spans the first "column" but we use absolute grid */}
-                            <div className="col-span-1" style={{ gridColumn: "1 / 2" }}>
-                              <div className="flex items-center gap-1.5 flex-wrap">
-                                <span className="text-[9px] font-bold text-gray-300">{pkg.tier}</span>
-                                <span className="text-sm font-black text-gray-800">{pkg.name}</span>
+                            {/* Package info */}
+                            <div className="col-span-1 flex flex-col justify-center">
+                              <div className="flex items-center gap-2 flex-wrap mb-1">
+                                <span className="text-xs font-bold text-gray-300">{pkg.tier}</span>
+                                <span className="text-base sm:text-lg font-black text-gray-800">{pkg.name}</span>
                                 {pkg.popular && (
-                                  <span className="rounded-full px-2 py-0.5 text-[8px] font-black" style={{ background: "linear-gradient(135deg, #f43f5e, #ec4899)", color: "#fff" }}>
+                                  <span className="rounded-full px-2 py-0.5 text-[9px] font-black uppercase tracking-wider" style={{ background: "linear-gradient(135deg, #f43f5e, #ec4899)", color: "#fff" }}>
                                     Hot
                                   </span>
                                 )}
                               </div>
-                              <p className="text-[10px] text-gray-400 mt-0.5 leading-snug">{pkg.desc}</p>
+                              <p className="text-xs text-gray-500 leading-relaxed pr-2">{pkg.desc}</p>
                             </div>
-                            <p className="text-base font-black text-rose-500 text-center">{pkg.valentine[0]}</p>
-                            <p className="text-base font-black text-rose-400 text-center">{pkg.valentine[1]}</p>
-                            <p className="text-base font-black text-violet-500 text-center">{pkg.dating[0]}</p>
-                            <p className="text-base font-black text-violet-400 text-center">{pkg.dating[1]}</p>
+                            <div className="flex flex-col items-center justify-center">
+                              <p className="text-[11px] font-semibold text-gray-400 line-through leading-none mb-1">{pkg.oldValentine[0]}</p>
+                              <p className="text-lg sm:text-xl font-black text-rose-500 leading-tight">{pkg.valentine[0]}</p>
+                            </div>
+                            <div className="flex flex-col items-center justify-center">
+                              <p className="text-[11px] font-semibold text-gray-400 line-through leading-none mb-1">{pkg.oldValentine[1]}</p>
+                              <p className="text-lg sm:text-xl font-black text-rose-400 leading-tight">{pkg.valentine[1]}</p>
+                            </div>
+                            <div className="flex flex-col items-center justify-center">
+                              <p className="text-[11px] font-semibold text-gray-400 line-through leading-none mb-1">{pkg.oldDating[0]}</p>
+                              <p className="text-lg sm:text-xl font-black text-violet-500 leading-tight">{pkg.dating[0]}</p>
+                            </div>
+                            <div className="flex flex-col items-center justify-center">
+                              <p className="text-[11px] font-semibold text-gray-400 line-through leading-none mb-1">{pkg.oldDating[1]}</p>
+                              <p className="text-lg sm:text-xl font-black text-violet-400 leading-tight">{pkg.dating[1]}</p>
+                            </div>
                           </div>
                         ))}
                       </div>

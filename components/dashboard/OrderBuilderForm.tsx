@@ -40,22 +40,22 @@ const VIDEOWEDDING_SONGS = [
 
 // Gói cho Valentine & Sinh nhật (giá gốc)
 const SERVICE_PACKAGES = [
-  { id: "goi1-thuong", label: "GÓI 1: THEO MẪU (~24h): 99K", price: 99000 },
-  { id: "goi1-gap", label: "GÓI 1: THEO MẪU (Vài giờ): 119K", price: 119000 },
-  { id: "goi2-thuong", label: "GÓI 2: CHỈNH CẢM XÚC (~24h): 119K", price: 119000 },
-  { id: "goi2-gap", label: "GÓI 2: CHỈNH CẢM XÚC (Vài giờ): 139K", price: 139000 },
-  { id: "goi3-thuong", label: "GÓI 3: ĐẶC BIỆT (~24h): 179K", price: 179000 },
-  { id: "goi3-gap", label: "GÓI 3: ĐẶC BIỆT (Vài giờ): 199K", price: 199000 },
+  { id: "goi1-thuong", label: "GÓI 1: THEO MẪU (~24h): 168K", price: 168000 },
+  { id: "goi1-gap", label: "GÓI 1: THEO MẪU (Vài giờ): 188K", price: 188000 },
+  { id: "goi2-thuong", label: "GÓI 2: CHỈNH CẢM XÚC (~24h): 295K", price: 295000 },
+  { id: "goi2-gap", label: "GÓI 2: CHỈNH CẢM XÚC (Vài giờ): 315K", price: 315000 },
+  { id: "goi3-thuong", label: "GÓI 3: ĐẶC BIỆT (~24h): 450K", price: 450000 },
+  { id: "goi3-gap", label: "GÓI 3: ĐẶC BIỆT (Vài giờ): 470K", price: 470000 },
 ];
 
 // Gói cho Dating & Xin lỗi (giảm 20k)
 const DATING_SORRY_PACKAGES = [
-  { id: "dating-goi1-thuong", label: "GÓI 1: THEO MẪU (~24h): 79K", price: 79000 },
-  { id: "dating-goi1-gap", label: "GÓI 1: THEO MẪU (Vài giờ): 99K", price: 99000 },
-  { id: "dating-goi2-thuong", label: "GÓI 2: CHỈNH CẢM XÚC (~24h): 99K", price: 99000 },
-  { id: "dating-goi2-gap", label: "GÓI 2: CHỈNH CẢM XÚC (Vài giờ): 119K", price: 119000 },
-  { id: "dating-goi3-thuong", label: "GÓI 3: ĐẶC BIỆT (~24h): 159K", price: 159000 },
-  { id: "dating-goi3-gap", label: "GÓI 3: ĐẶC BIỆT (Vài giờ): 179K", price: 179000 },
+  { id: "dating-goi1-thuong", label: "GÓI 1: THEO MẪU (~24h): 148K", price: 148000 },
+  { id: "dating-goi1-gap", label: "GÓI 1: THEO MẪU (Vài giờ): 168K", price: 168000 },
+  { id: "dating-goi2-thuong", label: "GÓI 2: CHỈNH CẢM XÚC (~24h): 275K", price: 275000 },
+  { id: "dating-goi2-gap", label: "GÓI 2: CHỈNH CẢM XÚC (Vài giờ): 295K", price: 295000 },
+  { id: "dating-goi3-thuong", label: "GÓI 3: ĐẶC BIỆT (~24h): 430K", price: 430000 },
+  { id: "dating-goi3-gap", label: "GÓI 3: ĐẶC BIỆT (Vài giờ): 450K", price: 450000 },
 ];
 
 const WEDDING_SERVICE_PACKAGES = [
