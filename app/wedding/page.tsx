@@ -5,33 +5,12 @@ import { FACEBOOK_URL } from "@/lib/constants";
 import { InteractiveTemplatePreview } from "@/components/templates/InteractiveTemplatePreview";
 import { MessengerButton } from "@/components/MessengerButton";
 import { WeddingGallery } from "@/components/wedding/WeddingGallery";
+import { WeddingPricing } from "@/components/wedding/WeddingPricing";
 import { getPublishedTemplates } from "@/lib/supabase/server";
 
 export const revalidate = 300;
 
-const packages = [
-  {
-    name: "Gói Cơ bản (1 thiệp)",
-    price: "139.000đ",
-    description: "Dành cho 1 thiệp (Nhà Trai HOẶC Nhà Gái)",
-    features: ["Làm thường (2-3 ngày): 139.000đ", "Làm gấp (<24h): 189.000đ", "Có nhạc nền", "Form xác nhận tham dự"],
-    featured: false,
-  },
-  {
-    name: "Gói Trọn vẹn (Thiệp chung)",
-    price: "209.000đ",
-    description: "1 thiệp dùng chung cho cả Nhà Trai & Nhà Gái (gồm thông tin lễ, tiệc cả 2 nhà)",
-    features: ["Làm thường (2-3 ngày): 209.000đ", "Làm gấp (<24h): 279.000đ", "Chỉnh sửa nội dung cơ bản", "Đầy đủ nhạc & Form xác nhận"],
-    featured: true,
-  },
-  {
-    name: "Gói Song hành (Combo 2 thiệp)",
-    price: "239.000đ",
-    description: "Combo 2 thiệp riêng biệt (1 Nhà Trai + 1 Nhà Gái)",
-    features: ["Chung mẫu: 239k (Gấp: 319k)", "Khác mẫu: 269k (Gấp: 359k)", "Chỉnh sửa nội dung cơ bản", "Đầy đủ nhạc & Form xác nhận"],
-    featured: false,
-  },
-];
+
 
 function facebookLink(templateName?: string) {
   const text = templateName
@@ -153,48 +132,7 @@ export default async function WeddingLandingPage() {
           </div>
         </section>
 
-        {/* Packages Section */}
-        <section id="packages" className="mt-28 relative">
-          <div className="absolute inset-0 bg-[#C5A880]/5 rounded-[3rem] -z-10 transform -rotate-1" />
-          <div className="text-center mb-16 pt-10">
-            <h2 className="font-serif-elegant text-3xl font-semibold text-[#2D2A28] sm:text-4xl mb-4">Bảng Giá Dịch Vụ</h2>
-            <p className="text-[#7A726D] max-w-2xl mx-auto">Chọn gói dịch vụ phù hợp nhất với nhu cầu của bạn.</p>
-          </div>
-          
-          <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
-            {packages.map((pkg, i) => (
-              <div key={i} className={`relative flex flex-col rounded-[2rem] bg-white p-8 shadow-[0_8px_30px_rgba(45,42,40,0.04)] border ${pkg.featured ? 'border-[#C5A880] ring-1 ring-[#C5A880]/50 transform md:-translate-y-4' : 'border-[#F4EFEA]'} transition-all hover:shadow-[0_20px_50px_rgba(45,42,40,0.08)]`}>
-                {pkg.featured && (
-                  <span className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-[#C5A880] px-4 py-1 text-xs font-bold uppercase tracking-widest text-white shadow-sm">
-                    Phổ Biến Nhất
-                  </span>
-                )}
-                <div className="flex-1">
-                  <h3 className="font-serif-elegant text-xl font-bold mb-2 text-[#2D2A28]">{pkg.name}</h3>
-                  <p className="text-sm mb-6 text-[#7A726D]">{pkg.description}</p>
-                  <p className="text-4xl font-serif-elegant font-semibold mb-8 text-[#2D2A28]">{pkg.price}</p>
-                  
-                  <ul className="space-y-4 text-sm text-[#4A4542]">
-                    {pkg.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-3">
-                        <span className="mt-1.5 h-1.5 w-1.5 rounded-full flex-shrink-0 bg-[#C5A880]" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="mt-8 flex flex-col gap-3">
-                  <a href={facebookLink(pkg.name)} target="_blank" rel="noopener noreferrer" className="w-full block text-center rounded-full py-4 text-sm font-bold bg-[#C5A880] text-[#2D2A28] shadow-[0_4px_14px_rgba(197,168,128,0.25)] transition hover:bg-[#B3966D] hover:-translate-y-0.5">
-                    Chọn & Nhắn Page
-                  </a>
-                  <a href="#why-us" className="w-full block text-center rounded-full py-3.5 text-sm font-semibold border border-[#E8D9C8] text-[#7A726D] transition hover:bg-[#FDFBF7] hover:text-[#2D2A28]">
-                    Xem chi tiết
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+        <WeddingPricing />
 
         {/* Footer CTA */}
         <section className="mt-28 mb-10 text-center">
