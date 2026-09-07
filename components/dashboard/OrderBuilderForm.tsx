@@ -59,14 +59,14 @@ const DATING_SORRY_PACKAGES = [
 ];
 
 const WEDDING_SERVICE_PACKAGES = [
-  { id: "wedding-goi1-thuong", label: "GÓI 1 (1 Thiệp Lẻ) - ~24h: 99K", price: 99000 },
-  { id: "wedding-goi1-gap", label: "GÓI 1 (1 Thiệp Lẻ) - Vài giờ: 149K", price: 149000 },
-  { id: "wedding-goi2-thuong", label: "GÓI 2 (1 Thiệp Chung) - ~24h: 169K", price: 169000 },
-  { id: "wedding-goi2-gap", label: "GÓI 2 (1 Thiệp Chung) - Vài giờ: 239K", price: 239000 },
-  { id: "wedding-goi3-chung-thuong", label: "GÓI 3 (Combo Chung Mẫu) - ~24h: 199K", price: 199000 },
-  { id: "wedding-goi3-chung-gap", label: "GÓI 3 (Combo Chung Mẫu) - Vài giờ: 279K", price: 279000 },
-  { id: "wedding-goi4-khac-thuong", label: "GÓI 4 (Combo Khác Mẫu) - ~24h: 229K", price: 229000 },
-  { id: "wedding-goi4-khac-gap", label: "GÓI 4 (Combo Khác Mẫu) - Vài giờ: 319K", price: 319000 },
+  { id: "wedding-goi1-thuong", label: "GÓI 1 (1 Thiệp Lẻ) - ~24h: 139K", price: 139000 },
+  { id: "wedding-goi1-gap", label: "GÓI 1 (1 Thiệp Lẻ) - Vài giờ: 189K", price: 189000 },
+  { id: "wedding-goi2-thuong", label: "GÓI 2 (1 Thiệp Chung) - ~24h: 209K", price: 209000 },
+  { id: "wedding-goi2-gap", label: "GÓI 2 (1 Thiệp Chung) - Vài giờ: 279K", price: 279000 },
+  { id: "wedding-goi3-chung-thuong", label: "GÓI 3 (Combo Chung Mẫu) - ~24h: 239K", price: 239000 },
+  { id: "wedding-goi3-chung-gap", label: "GÓI 3 (Combo Chung Mẫu) - Vài giờ: 319K", price: 319000 },
+  { id: "wedding-goi4-khac-thuong", label: "GÓI 4 (Combo Khác Mẫu) - ~24h: 269K", price: 269000 },
+  { id: "wedding-goi4-khac-gap", label: "GÓI 4 (Combo Khác Mẫu) - Vài giờ: 359K", price: 359000 },
 ];
 
 type MyOrderRow = {
