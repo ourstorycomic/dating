@@ -59,7 +59,8 @@ export async function generateMetadata({
   const proto = headersList.get("x-forwarded-proto") || "https";
   const origin = `${proto}://${host}`;
 
-  const thumbnail = order.templates?.thumbnail_url || "/thumbnails/valentine1.png";
+  const customShareImage = typeof cd.shareImage === "string" ? cd.shareImage.trim() : "";
+  const thumbnail = customShareImage || order.templates?.thumbnail_url || "/thumbnails/valentine1.png";
   // Use absolute URL matching current request origin for social crawlers
   const imageUrl = thumbnail.startsWith('http') ? thumbnail : `${origin}${thumbnail}`;
   const images = [{ url: imageUrl, width: 1200, height: 630, alt: title }];

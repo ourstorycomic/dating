@@ -605,6 +605,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
   const [recipientName, setRecipientName] = useState("Em");
   const [shareTitle, setShareTitle] = useState("");
   const [shareDescription, setShareDescription] = useState("");
+  const [shareImage, setShareImage] = useState("");
   const [affiliateId, setAffiliateId] = useState("");
   const [affiliates, setAffiliates] = useState<Array<{ id: string; name: string; ref_code: string }>>([]);
   const [qrTimeLeft, setQrTimeLeft] = useState(600);
@@ -995,6 +996,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     senderName,
     shareTitle: shareTitle.trim(),
     shareDescription: shareDescription.trim(),
+    shareImage: shareImage.trim(),
     stage1Accent,
     stage1Background,
     stage1ImageUrl,
@@ -1443,6 +1445,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
     setSenderName(order.custom_data?.senderName || "Anh");
     setShareTitle(typeof cd.shareTitle === "string" ? cd.shareTitle : "");
     setShareDescription(typeof cd.shareDescription === "string" ? cd.shareDescription : "");
+    setShareImage(typeof cd.shareImage === "string" ? cd.shareImage : "");
     setAffiliateId(order.affiliate_id || "");
     if (fullTemplate) {
       setLoadedTemplate(fullTemplate as any);
@@ -1904,64 +1907,103 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               <p className="text-xs text-slate-500 mt-2">Sau thời gian này, toàn bộ dữ liệu đơn sẽ bị xóa để tiết kiệm dung lượng. Các thông tin nhật ký, thống kê vẫn được giữ nguyên.</p>
             </div>
 
-          <div className="md:col-span-2 grid gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <div>
-              <p className="text-sm font-semibold opacity-90">Tiêu đề gửi link</p>
-              <p className="text-xs text-white/50 mt-0.5">Không bắt buộc. Nếu để trống sẽ dùng nội dung mặc định theo mẫu.</p>
+          <div className="md:col-span-2 rounded-2xl border border-rose-200/70 bg-white/75 p-5 shadow-sm">
+            <div className="mb-4 border-b border-rose-100 pb-3">
+              <p className="text-base font-bold text-slate-800">Tiêu đề & ảnh gửi link</p>
+              <p className="mt-0.5 text-xs text-slate-500">
+                Không bắt buộc. Nếu để trống sẽ tự động dùng tiêu đề, mô tả và ảnh mặc định theo mẫu.
+              </p>
             </div>
-            <TextInput
-              label="Tiêu đề gửi link"
-              onChange={setShareTitle}
-              value={shareTitle}
-              placeholder={
-                isWedding
-                  ? `Mặc định: Thiệp Mời Đám Cưới | ${dynamicData?.groomName || "Chú Rể"} & ${dynamicData?.brideName || "Cô Dâu"}`
-                  : `Mặc định: Một món quà đặc biệt dành cho ${recipientName || "bạn"} 🎁 | Lovora`
-              }
-            />
-            <TextArea
-              label="Mô tả gửi link"
-              onChange={setShareDescription}
-              value={shareDescription}
-              placeholder={
-                isWedding
-                  ? `Mặc định: Trân trọng kính mời ${recipientName ? ` ${recipientName}` : " bạn"} đến chung vui cùng gia đình chúng tôi.`
-                  : `Mặc định: ${recipientName || "bạn"} có một món quà bất ngờ đã được chuẩn bị sẵn. Hãy mở ra xem nhé!`
-              }
-            />
 
-            {/* Live Embed Showcase */}
-            <div className="grid gap-2 pt-1">
-              <p className="text-xs font-medium text-white/60">Xem trước hiển thị khi gửi link:</p>
-              <div className="max-w-sm rounded-2xl border border-slate-200/80 bg-[#e6f0ff] p-3 text-slate-900 shadow-sm">
-                <p suppressHydrationWarning className="truncate text-xs text-blue-600 underline mb-2">
-                  {result?.giftLink || `${typeof window !== "undefined" ? window.location.origin : "https://lovora-two.vercel.app"}/gift/LOVEXXXXXXXX`}
-                </p>
-                <div className="overflow-hidden rounded-xl bg-white shadow-sm border border-slate-200/60">
-                  <div className="aspect-[1200/630] w-full overflow-hidden bg-slate-100">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={selectedTemplate?.thumbnail_url || "/thumbnails/valentine1.png"}
-                      alt="Xem trước ảnh gửi link"
-                      className="h-full w-full object-cover"
-                    />
+            <div className="grid gap-5 lg:grid-cols-12 items-start">
+              {/* Cột trái: Các ô nhập */}
+              <div className="lg:col-span-7 grid gap-3.5">
+                <label className="grid gap-1.5 text-sm">
+                  <span className="font-medium text-slate-700">Tiêu đề gửi link</span>
+                  <input
+                    type="text"
+                    value={shareTitle}
+                    onChange={(e) => setShareTitle(e.target.value)}
+                    placeholder={
+                      isWedding
+                        ? `Mặc định: Thiệp Mời Đám Cưới | ${dynamicData?.groomName || "Chú Rể"} & ${dynamicData?.brideName || "Cô Dâu"}`
+                        : `Mặc định: Một món quà đặc biệt dành cho ${recipientName || "bạn"} 🎁 | Lovora`
+                    }
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-pink-400 focus:ring-2 focus:ring-pink-100"
+                  />
+                </label>
+
+                <label className="grid gap-1.5 text-sm">
+                  <span className="font-medium text-slate-700">Mô tả gửi link</span>
+                  <textarea
+                    rows={2}
+                    value={shareDescription}
+                    onChange={(e) => setShareDescription(e.target.value)}
+                    placeholder={
+                      isWedding
+                        ? `Mặc định: Trân trọng kính mời${recipientName ? ` ${recipientName}` : " bạn"} đến chung vui cùng gia đình chúng tôi.`
+                        : `Mặc định: ${recipientName || "bạn"} có một món quà bất ngờ đã được chuẩn bị sẵn. Hãy mở ra xem nhé!`
+                    }
+                    className="w-full resize-y rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-pink-400 focus:ring-2 focus:ring-pink-100"
+                  />
+                </label>
+
+                <div className="grid gap-1.5 text-sm">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-medium text-slate-700">Ảnh hiển thị khi gửi link (khuyên dùng 1200×630)</span>
+                    {shareImage ? (
+                      <button
+                        type="button"
+                        onClick={() => setShareImage("")}
+                        className="text-xs font-semibold text-rose-500 hover:text-rose-600 transition"
+                      >
+                        Dùng ảnh mặc định
+                      </button>
+                    ) : null}
                   </div>
-                  <div className="p-3">
-                    <p className="line-clamp-2 text-sm font-bold leading-snug text-slate-900">
-                      {shareTitle.trim() ||
-                        (isWedding
-                          ? `Thiệp Mời Đám Cưới | ${dynamicData?.groomName || "Chú Rể"} & ${dynamicData?.brideName || "Cô Dâu"}`
-                          : `Một món quà đặc biệt dành cho ${recipientName || "bạn"} 🎁 | Lovora`)}
-                    </p>
-                    <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-600">
-                      {shareDescription.trim() ||
-                        (isWedding
-                          ? `Trân trọng kính mời${recipientName ? ` ${recipientName}` : " bạn"} đến chung vui cùng gia đình chúng tôi.`
-                          : `${recipientName || "bạn"} có một món quà bất ngờ đã được chuẩn bị sẵn. Hãy mở ra xem nhé!`)}
-                    </p>
-                    <p suppressHydrationWarning className="mt-1.5 truncate text-[11px] font-medium text-blue-600">
-                      {typeof window !== "undefined" ? window.location.host : "lovora-two.vercel.app"}
-                    </p>
+                  <MediaInput
+                    label=""
+                    accept="image/*"
+                    onChange={(url) => setShareImage(url)}
+                  />
+                </div>
+              </div>
+
+              {/* Cột phải: Live Embed Showcase */}
+              <div className="lg:col-span-5">
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  Xem trước khi gửi link
+                </p>
+                <div className="rounded-2xl border border-blue-200/80 bg-gradient-to-b from-[#eef5ff] to-[#e4efff] p-3 shadow-sm">
+                  <p suppressHydrationWarning className="mb-2 truncate text-xs font-medium text-blue-600 underline">
+                    {result?.giftLink || `${typeof window !== "undefined" ? window.location.origin : "https://lovora-two.vercel.app"}/gift/LOVEXXXXXXXX`}
+                  </p>
+                  <div className="overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-sm">
+                    <div className="aspect-[1200/630] w-full overflow-hidden bg-slate-100">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={shareImage.trim() || selectedTemplate?.thumbnail_url || "/thumbnails/valentine1.png"}
+                        alt="Xem trước ảnh gửi link"
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                    <div className="p-3">
+                      <p className="line-clamp-2 text-[13px] font-bold leading-snug text-slate-900">
+                        {shareTitle.trim() ||
+                          (isWedding
+                            ? `Thiệp Mời Đám Cưới | ${dynamicData?.groomName || "Chú Rể"} & ${dynamicData?.brideName || "Cô Dâu"}`
+                            : `Một món quà đặc biệt dành cho ${recipientName || "bạn"} 🎁 | Lovora`)}
+                      </p>
+                      <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-600">
+                        {shareDescription.trim() ||
+                          (isWedding
+                            ? `Trân trọng kính mời${recipientName ? ` ${recipientName}` : " bạn"} đến chung vui cùng gia đình chúng tôi.`
+                            : `${recipientName || "bạn"} có một món quà bất ngờ đã được chuẩn bị sẵn. Hãy mở ra xem nhé!`)}
+                      </p>
+                      <p suppressHydrationWarning className="mt-1.5 truncate text-[11px] font-semibold text-blue-600">
+                        {typeof window !== "undefined" ? window.location.host : "lovora-two.vercel.app"}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
