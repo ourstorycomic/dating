@@ -34,19 +34,24 @@ export async function generateMetadata({
   }
   const isWedding = componentKey.startsWith("wedding");
 
-  let title, description;
+  let defaultTitle, defaultDescription;
   
   if (isWedding) {
      const groom = cd.groomName || "Chú Rể";
      const bride = cd.brideName || "Cô Dâu";
      const guest = order.recipient_name ? ` ${order.recipient_name}` : " bạn";
-     title = `Thiệp Mời Đám Cưới | ${groom} & ${bride}`;
-     description = `Trân trọng kính mời${guest} đến chung vui cùng gia đình chúng tôi.`;
+     defaultTitle = `Thiệp Mời Đám Cưới | ${groom} & ${bride}`;
+     defaultDescription = `Trân trọng kính mời${guest} đến chung vui cùng gia đình chúng tôi.`;
   } else {
      const guest = order.recipient_name || "bạn";
-     title = `Một món quà đặc biệt dành cho ${guest} 🎁 | Lovora`;
-     description = `${guest} có một món quà bất ngờ đã được chuẩn bị sẵn. Hãy mở ra xem nhé!`;
+     defaultTitle = `Một món quà đặc biệt dành cho ${guest} 🎁 | Lovora`;
+     defaultDescription = `${guest} có một món quà bất ngờ đã được chuẩn bị sẵn. Hãy mở ra xem nhé!`;
   }
+
+  const customShareTitle = typeof cd.shareTitle === "string" ? cd.shareTitle.trim() : "";
+  const customShareDescription = typeof cd.shareDescription === "string" ? cd.shareDescription.trim() : "";
+  const title = customShareTitle || defaultTitle;
+  const description = customShareDescription || defaultDescription;
 
   const thumbnail = order.templates?.thumbnail_url || "/thumbnails/valentine1.png";
   // Use absolute URL for Zalo/social crawlers
