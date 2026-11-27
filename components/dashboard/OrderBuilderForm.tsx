@@ -1915,7 +1915,7 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               value={shareTitle}
               placeholder={
                 isWedding
-                  ? "Mặc định: Thiệp Mời Đám Cưới | Chú Rể & Cô Dâu"
+                  ? `Mặc định: Thiệp Mời Đám Cưới | ${dynamicData?.groomName || "Chú Rể"} & ${dynamicData?.brideName || "Cô Dâu"}`
                   : `Mặc định: Một món quà đặc biệt dành cho ${recipientName || "bạn"} 🎁 | Lovora`
               }
             />
@@ -1925,10 +1925,47 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               value={shareDescription}
               placeholder={
                 isWedding
-                  ? `Mặc định: Trân trọng kính mời ${recipientName || "bạn"} đến chung vui cùng gia đình chúng tôi.`
+                  ? `Mặc định: Trân trọng kính mời ${recipientName ? ` ${recipientName}` : " bạn"} đến chung vui cùng gia đình chúng tôi.`
                   : `Mặc định: ${recipientName || "bạn"} có một món quà bất ngờ đã được chuẩn bị sẵn. Hãy mở ra xem nhé!`
               }
             />
+
+            {/* Live Embed Showcase */}
+            <div className="grid gap-2 pt-1">
+              <p className="text-xs font-medium text-white/60">Xem trước hiển thị khi gửi link:</p>
+              <div className="max-w-sm rounded-2xl border border-slate-200/80 bg-[#e6f0ff] p-3 text-slate-900 shadow-sm">
+                <p suppressHydrationWarning className="truncate text-xs text-blue-600 underline mb-2">
+                  {result?.giftLink || `${typeof window !== "undefined" ? window.location.origin : "https://lovora-two.vercel.app"}/gift/LOVEXXXXXXXX`}
+                </p>
+                <div className="overflow-hidden rounded-xl bg-white shadow-sm border border-slate-200/60">
+                  <div className="aspect-[1200/630] w-full overflow-hidden bg-slate-100">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={selectedTemplate?.thumbnail_url || "/thumbnails/valentine1.png"}
+                      alt="Xem trước ảnh gửi link"
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <div className="p-3">
+                    <p className="line-clamp-2 text-sm font-bold leading-snug text-slate-900">
+                      {shareTitle.trim() ||
+                        (isWedding
+                          ? `Thiệp Mời Đám Cưới | ${dynamicData?.groomName || "Chú Rể"} & ${dynamicData?.brideName || "Cô Dâu"}`
+                          : `Một món quà đặc biệt dành cho ${recipientName || "bạn"} 🎁 | Lovora`)}
+                    </p>
+                    <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-600">
+                      {shareDescription.trim() ||
+                        (isWedding
+                          ? `Trân trọng kính mời${recipientName ? ` ${recipientName}` : " bạn"} đến chung vui cùng gia đình chúng tôi.`
+                          : `${recipientName || "bạn"} có một món quà bất ngờ đã được chuẩn bị sẵn. Hãy mở ra xem nhé!`)}
+                    </p>
+                    <p suppressHydrationWarning className="mt-1.5 truncate text-[11px] font-medium text-blue-600">
+                      {typeof window !== "undefined" ? window.location.host : "lovora-two.vercel.app"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="md:col-span-2">
