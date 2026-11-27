@@ -519,7 +519,7 @@ function Section({
   );
 }
 
-export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFree, initialOrder }: { currentRole: "ADMIN" | "STAFF" | "EMPLOYEE"; myOrders: MyOrderRow[]; templates: TemplateCatalogItem[]; canCreateFree?: boolean; initialOrder?: any }) {
+export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFree, initialOrder }: { currentRole: "ADMIN" | "STAFF" | "EMPLOYEE"; userPermissions?: string[]; myOrders: MyOrderRow[]; templates: TemplateCatalogItem[]; canCreateFree?: boolean; initialOrder?: any }) {
   const router = useRouter();
   const [isInitializing, setIsInitializing] = useState(!!initialOrder);
   const [isMobileDevice, setIsMobileDevice] = useState(false);
