@@ -1861,33 +1861,6 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
           </div>
           <TextInput label="Người gửi" onChange={setSenderName} value={senderName} />
           <TextInput label="Người nhận" onChange={setRecipientName} value={recipientName} />
-
-          <div className="md:col-span-2 grid gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <div>
-              <p className="text-sm font-semibold opacity-90">Tùy biến hiển thị khi gửi link (Zalo, Messenger...)</p>
-              <p className="text-xs text-white/50 mt-0.5">Không bắt buộc. Nếu để trống sẽ dùng tiêu đề & mô tả mặc định theo mẫu.</p>
-            </div>
-            <TextInput
-              label="Tiêu đề khi gửi link"
-              onChange={setShareTitle}
-              value={shareTitle}
-              placeholder={
-                isWedding
-                  ? "Mặc định: Thiệp Mời Đám Cưới | Chú Rể & Cô Dâu"
-                  : `Mặc định: Một món quà đặc biệt dành cho ${recipientName || "bạn"} 🎁 | Lovora`
-              }
-            />
-            <TextArea
-              label="Mô tả ngắn khi gửi link"
-              onChange={setShareDescription}
-              value={shareDescription}
-              placeholder={
-                isWedding
-                  ? `Mặc định: Trân trọng kính mời ${recipientName || "bạn"} đến chung vui cùng gia đình chúng tôi.`
-                  : `Mặc định: ${recipientName || "bạn"} có một món quà bất ngờ đã được chuẩn bị sẵn. Hãy mở ra xem nhé!`
-              }
-            />
-          </div>
           
           <div className="md:col-span-2">
             <label className="mb-2 block text-sm font-semibold opacity-90">
@@ -1930,6 +1903,33 @@ export function OrderBuilderForm({ currentRole, myOrders, templates, canCreateFr
               />
               <p className="text-xs text-slate-500 mt-2">Sau thời gian này, toàn bộ dữ liệu đơn sẽ bị xóa để tiết kiệm dung lượng. Các thông tin nhật ký, thống kê vẫn được giữ nguyên.</p>
             </div>
+
+          <div className="md:col-span-2 grid gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+            <div>
+              <p className="text-sm font-semibold opacity-90">Tiêu đề gửi link</p>
+              <p className="text-xs text-white/50 mt-0.5">Không bắt buộc. Nếu để trống sẽ dùng nội dung mặc định theo mẫu.</p>
+            </div>
+            <TextInput
+              label="Tiêu đề gửi link"
+              onChange={setShareTitle}
+              value={shareTitle}
+              placeholder={
+                isWedding
+                  ? "Mặc định: Thiệp Mời Đám Cưới | Chú Rể & Cô Dâu"
+                  : `Mặc định: Một món quà đặc biệt dành cho ${recipientName || "bạn"} 🎁 | Lovora`
+              }
+            />
+            <TextArea
+              label="Mô tả gửi link"
+              onChange={setShareDescription}
+              value={shareDescription}
+              placeholder={
+                isWedding
+                  ? `Mặc định: Trân trọng kính mời ${recipientName || "bạn"} đến chung vui cùng gia đình chúng tôi.`
+                  : `Mặc định: ${recipientName || "bạn"} có một món quà bất ngờ đã được chuẩn bị sẵn. Hãy mở ra xem nhé!`
+              }
+            />
+          </div>
 
           <div className="md:col-span-2">
             {!result ? (

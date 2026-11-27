@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import { GiftFullscreenView } from "@/components/gift/GiftFullscreenView";
 import { PaymentLockedView } from "@/components/gift/PaymentLockedView";
 import { getOrderByPublicId } from "@/lib/supabase/server";
@@ -53,9 +54,14 @@ export async function generateMetadata({
   const title = customShareTitle || defaultTitle;
   const description = customShareDescription || defaultDescription;
 
+  const headersList = await headers();
+  const host = headersList.get("x-forwarded-host") || headersList.get("host") || "lovora-two.vercel.app";
+  const proto = headersList.get("x-forwarded-proto") || "https";
+  const origin = `${proto}://${host}`;
+
   const thumbnail = order.templates?.thumbnail_url || "/thumbnails/valentine1.png";
-  // Use absolute URL for Zalo/social crawlers
-  const imageUrl = thumbnail.startsWith('http') ? thumbnail : `https://lovora.click${thumbnail}`;
+  // Use absolute URL matching current request origin for social crawlers
+  const imageUrl = thumbnail.startsWith('http') ? thumbnail : `${origin}${thumbnail}`;
   const images = [{ url: imageUrl, width: 1200, height: 630, alt: title }];
 
   return {
@@ -64,7 +70,7 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      url: `https://lovora.click/gift/${rawId}`,
+      url: `${origin}/gift/${rawId}`,
       siteName: "Lovora",
       type: "website",
       images,
